@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ConvolutionFFT.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.maths</a> &gt; <span class="el_source">ConvolutionFFT.java</span></div><h1>ConvolutionFFT.java</h1><pre class="source lang-java linenums">package com.thealgorithms.maths;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
+/**
+ * Class for linear convolution of two discrete signals using the convolution
+ * theorem.
+ *
+ * @author Ioannis Karavitsis
+ * @version 1.0
+ */
+public final class ConvolutionFFT {
+    private ConvolutionFFT() {
+    }
+
+    /**
+     * This method pads the signal with zeros until it reaches the new size.
+     *
+     * @param x The signal to be padded.
+     * @param newSize The new size of the signal.
+     */
+    private static void padding(Collection&lt;FFT.Complex&gt; x, int newSize) {
+<span class="fc bfc" id="L24" title="All 2 branches covered.">        if (x.size() &lt; newSize) {</span>
+<span class="fc" id="L25">            int diff = newSize - x.size();</span>
+<span class="fc bfc" id="L26" title="All 2 branches covered.">            for (int i = 0; i &lt; diff; i++) {</span>
+<span class="fc" id="L27">                x.add(new FFT.Complex());</span>
+            }
+        }
+<span class="fc" id="L30">    }</span>
+
+    /**
+     * Discrete linear convolution function. It uses the convolution theorem for
+     * discrete signals convolved: = IDFT(DFT(a)*DFT(b)). This is true for
+     * circular convolution. In order to get the linear convolution of the two
+     * signals we first pad the two signals to have the same size equal to the
+     * convolved signal (a.size() + b.size() - 1). Then we use the FFT algorithm
+     * for faster calculations of the two DFTs and the final IDFT.
+     *
+     * &lt;p&gt;
+     * More info: https://en.wikipedia.org/wiki/Convolution_theorem
+     * https://ccrma.stanford.edu/~jos/ReviewFourier/FFT_Convolution.html
+     *
+     * @param a The first signal.
+     * @param b The other signal.
+     * @return The convolved signal.
+     */
+    public static ArrayList&lt;FFT.Complex&gt; convolutionFFT(ArrayList&lt;FFT.Complex&gt; a, ArrayList&lt;FFT.Complex&gt; b) {
+<span class="fc" id="L49">        int convolvedSize = a.size() + b.size() - 1; // The size of the convolved signal</span>
+<span class="fc" id="L50">        padding(a, convolvedSize); // Zero padding both signals</span>
+<span class="fc" id="L51">        padding(b, convolvedSize);</span>
+
+        /* Find the FFTs of both signals (Note that the size of the FFTs will be bigger than the
+         * convolvedSize because of the extra zero padding in FFT algorithm) */
+<span class="fc" id="L55">        FFT.fft(a, false);</span>
+<span class="fc" id="L56">        FFT.fft(b, false);</span>
+<span class="fc" id="L57">        ArrayList&lt;FFT.Complex&gt; convolved = new ArrayList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L59" title="All 2 branches covered.">        for (int i = 0; i &lt; a.size(); i++) {</span>
+<span class="fc" id="L60">            convolved.add(a.get(i).multiply(b.get(i))); // FFT(a)*FFT(b)</span>
+        }
+<span class="fc" id="L62">        FFT.fft(convolved, true); // IFFT</span>
+<span class="fc" id="L63">        convolved.subList(convolvedSize, convolved.size()).clear(); // Remove the remaining zeros after the convolvedSize. These extra zeros came</span>
+                                                                    // from
+        // paddingPowerOfTwo() method inside the fft() method.
+
+<span class="fc" id="L67">        return convolved;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SingleBitOperations.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.bitmanipulation</a> &gt; <span class="el_source">SingleBitOperations.java</span></div><h1>SingleBitOperations.java</h1><pre class="source lang-java linenums">package com.thealgorithms.bitmanipulation;
+
+/**
+ * A utility class for performing single-bit operations on integers.
+ * These operations include flipping, setting, clearing, and getting
+ * individual bits at specified positions.
+ *
+ * Bit positions are zero-indexed (i.e., the least significant bit is at position 0).
+ * These methods leverage bitwise operations for optimal performance.
+ *
+ * Examples:
+ * - `flipBit(3, 1)` flips the bit at index 1 in binary `11` (result: `1`).
+ * - `setBit(4, 0)` sets the bit at index 0 in `100` (result: `101` or 5).
+ * - `clearBit(7, 1)` clears the bit at index 1 in `111` (result: `101` or 5).
+ * - `getBit(6, 0)` checks if the least significant bit is set (result: `0`).
+ *
+ * Time Complexity: O(1) for all operations.
+ *
+ * Author: lukasb1b (https://github.com/lukasb1b)
+ */
+public final class SingleBitOperations {
+    private SingleBitOperations() {
+    }
+
+    /**
+     * Flips (toggles) the bit at the specified position.
+     *
+     * @param num the input number
+     * @param bit the position of the bit to flip (0-indexed)
+     * @return the new number after flipping the specified bit
+     */
+    public static int flipBit(final int num, final int bit) {
+<span class="fc" id="L33">        return num ^ (1 &lt;&lt; bit);</span>
+    }
+
+    /**
+     * Sets the bit at the specified position to 1.
+     *
+     * @param num the input number
+     * @param bit the position of the bit to set (0-indexed)
+     * @return the new number after setting the specified bit to 1
+     */
+    public static int setBit(final int num, final int bit) {
+<span class="fc" id="L44">        return num | (1 &lt;&lt; bit);</span>
+    }
+
+    /**
+     * Clears the bit at the specified position (sets it to 0).
+     *
+     * @param num the input number
+     * @param bit the position of the bit to clear (0-indexed)
+     * @return the new number after clearing the specified bit
+     */
+    public static int clearBit(final int num, final int bit) {
+<span class="fc" id="L55">        return num &amp; ~(1 &lt;&lt; bit);</span>
+    }
+
+    /**
+     * Gets the bit value (0 or 1) at the specified position.
+     *
+     * @param num the input number
+     * @param bit the position of the bit to retrieve (0-indexed)
+     * @return 1 if the bit is set, 0 otherwise
+     */
+    public static int getBit(final int num, final int bit) {
+<span class="fc" id="L66">        return (num &gt;&gt; bit) &amp; 1;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

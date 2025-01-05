@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Dijkstra.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.others</a> &gt; <span class="el_source">Dijkstra.java</span></div><h1>Dijkstra.java</h1><pre class="source lang-java linenums">package com.thealgorithms.others;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.NavigableSet;
+import java.util.TreeSet;
+/**
+ * Dijkstra's algorithm,is a graph search algorithm that solves the
+ * single-source shortest path problem for a graph with nonnegative edge path
+ * costs, producing a shortest path tree.
+ *
+ * &lt;p&gt;
+ * NOTE: The inputs to Dijkstra's algorithm are a directed and weighted graph
+ * consisting of 2 or more nodes, generally represented by an adjacency matrix
+ * or list, and a start node.
+ *
+ * &lt;p&gt;
+ * Original source of code:
+ * https://rosettacode.org/wiki/Dijkstra%27s_algorithm#Java Also most of the
+ * comments are from RosettaCode.
+ */
+public final class Dijkstra {
+    private Dijkstra() {
+    }
+
+<span class="nc" id="L26">    private static final Graph.Edge[] GRAPH = {</span>
+        // Distance from node &quot;a&quot; to node &quot;b&quot; is 7.
+        // In the current Graph there is no way to move the other way (e,g, from &quot;b&quot; to &quot;a&quot;),
+        // a new edge would be needed for that
+        new Graph.Edge(&quot;a&quot;, &quot;b&quot;, 7),
+        new Graph.Edge(&quot;a&quot;, &quot;c&quot;, 9),
+        new Graph.Edge(&quot;a&quot;, &quot;f&quot;, 14),
+        new Graph.Edge(&quot;b&quot;, &quot;c&quot;, 10),
+        new Graph.Edge(&quot;b&quot;, &quot;d&quot;, 15),
+        new Graph.Edge(&quot;c&quot;, &quot;d&quot;, 11),
+        new Graph.Edge(&quot;c&quot;, &quot;f&quot;, 2),
+        new Graph.Edge(&quot;d&quot;, &quot;e&quot;, 6),
+        new Graph.Edge(&quot;e&quot;, &quot;f&quot;, 9),
+    };
+    private static final String START = &quot;a&quot;;
+    private static final String END = &quot;e&quot;;
+
+    /**
+     * main function Will run the code with &quot;GRAPH&quot; that was defined above.
+     */
+    public static void main(String[] args) {
+<span class="nc" id="L47">        Graph g = new Graph(GRAPH);</span>
+<span class="nc" id="L48">        g.dijkstra(START);</span>
+<span class="nc" id="L49">        g.printPath(END);</span>
+        // g.printAllPaths();
+<span class="nc" id="L51">    }</span>
+}
+
+class Graph {
+
+    // mapping of vertex names to Vertex objects, built from a set of Edges
+
+    private final Map&lt;String, Vertex&gt; graph;
+
+    /**
+     * One edge of the graph (only used by Graph constructor)
+     */
+    public static class Edge {
+
+        public final String v1;
+        public final String v2;
+        public final int dist;
+
+<span class="nc" id="L69">        Edge(String v1, String v2, int dist) {</span>
+<span class="nc" id="L70">            this.v1 = v1;</span>
+<span class="nc" id="L71">            this.v2 = v2;</span>
+<span class="nc" id="L72">            this.dist = dist;</span>
+<span class="nc" id="L73">        }</span>
+    }
+
+    /**
+     * One vertex of the graph, complete with mappings to neighbouring vertices
+     */
+    public static class Vertex implements Comparable&lt;Vertex&gt; {
+
+        public final String name;
+        // MAX_VALUE assumed to be infinity
+<span class="nc" id="L83">        public int dist = Integer.MAX_VALUE;</span>
+<span class="nc" id="L84">        public Vertex previous = null;</span>
+<span class="nc" id="L85">        public final Map&lt;Vertex, Integer&gt; neighbours = new HashMap&lt;&gt;();</span>
+
+<span class="nc" id="L87">        Vertex(String name) {</span>
+<span class="nc" id="L88">            this.name = name;</span>
+<span class="nc" id="L89">        }</span>
+
+        private void printPath() {
+<span class="nc bnc" id="L92" title="All 2 branches missed.">            if (this == this.previous) {</span>
+<span class="nc" id="L93">                System.out.printf(&quot;%s&quot;, this.name);</span>
+<span class="nc bnc" id="L94" title="All 2 branches missed.">            } else if (this.previous == null) {</span>
+<span class="nc" id="L95">                System.out.printf(&quot;%s(unreached)&quot;, this.name);</span>
+            } else {
+<span class="nc" id="L97">                this.previous.printPath();</span>
+<span class="nc" id="L98">                System.out.printf(&quot; -&gt; %s(%d)&quot;, this.name, this.dist);</span>
+            }
+<span class="nc" id="L100">        }</span>
+
+        public int compareTo(Vertex other) {
+<span class="nc bnc" id="L103" title="All 2 branches missed.">            if (dist == other.dist) {</span>
+<span class="nc" id="L104">                return name.compareTo(other.name);</span>
+            }
+
+<span class="nc" id="L107">            return Integer.compare(dist, other.dist);</span>
+        }
+
+        @Override
+        public boolean equals(Object object) {
+<span class="nc bnc" id="L112" title="All 2 branches missed.">            if (this == object) {</span>
+<span class="nc" id="L113">                return true;</span>
+            }
+<span class="nc bnc" id="L115" title="All 4 branches missed.">            if (object == null || getClass() != object.getClass()) {</span>
+<span class="nc" id="L116">                return false;</span>
+            }
+<span class="nc bnc" id="L118" title="All 2 branches missed.">            if (!super.equals(object)) {</span>
+<span class="nc" id="L119">                return false;</span>
+            }
+
+<span class="nc" id="L122">            Vertex vertex = (Vertex) object;</span>
+
+<span class="nc bnc" id="L124" title="All 2 branches missed.">            if (dist != vertex.dist) {</span>
+<span class="nc" id="L125">                return false;</span>
+            }
+<span class="nc bnc" id="L127" title="All 6 branches missed.">            if (name != null ? !name.equals(vertex.name) : vertex.name != null) {</span>
+<span class="nc" id="L128">                return false;</span>
+            }
+<span class="nc bnc" id="L130" title="All 6 branches missed.">            if (previous != null ? !previous.equals(vertex.previous) : vertex.previous != null) {</span>
+<span class="nc" id="L131">                return false;</span>
+            }
+<span class="nc bnc" id="L133" title="All 4 branches missed.">            return neighbours != null ? neighbours.equals(vertex.neighbours) : vertex.neighbours == null;</span>
+        }
+
+        @Override
+        public int hashCode() {
+<span class="nc" id="L138">            int result = super.hashCode();</span>
+<span class="nc bnc" id="L139" title="All 2 branches missed.">            result = 31 * result + (name != null ? name.hashCode() : 0);</span>
+<span class="nc" id="L140">            result = 31 * result + dist;</span>
+<span class="nc bnc" id="L141" title="All 2 branches missed.">            result = 31 * result + (previous != null ? previous.hashCode() : 0);</span>
+<span class="nc bnc" id="L142" title="All 2 branches missed.">            result = 31 * result + (neighbours != null ? neighbours.hashCode() : 0);</span>
+<span class="nc" id="L143">            return result;</span>
+        }
+
+        @Override
+        public String toString() {
+<span class="nc" id="L148">            return &quot;(&quot; + name + &quot;, &quot; + dist + &quot;)&quot;;</span>
+        }
+    }
+
+    /**
+     * Builds a graph from a set of edges
+     */
+<span class="nc" id="L155">    Graph(Edge[] edges) {</span>
+<span class="nc" id="L156">        graph = new HashMap&lt;&gt;(edges.length);</span>
+
+        // one pass to find all vertices
+<span class="nc bnc" id="L159" title="All 2 branches missed.">        for (Edge e : edges) {</span>
+<span class="nc bnc" id="L160" title="All 2 branches missed.">            if (!graph.containsKey(e.v1)) {</span>
+<span class="nc" id="L161">                graph.put(e.v1, new Vertex(e.v1));</span>
+            }
+<span class="nc bnc" id="L163" title="All 2 branches missed.">            if (!graph.containsKey(e.v2)) {</span>
+<span class="nc" id="L164">                graph.put(e.v2, new Vertex(e.v2));</span>
+            }
+        }
+
+        // another pass to set neighbouring vertices
+<span class="nc bnc" id="L169" title="All 2 branches missed.">        for (Edge e : edges) {</span>
+<span class="nc" id="L170">            graph.get(e.v1).neighbours.put(graph.get(e.v2), e.dist);</span>
+            // graph.get(e.v2).neighbours.put(graph.get(e.v1), e.dist); // also do this for an
+            // undirected graph
+        }
+<span class="nc" id="L174">    }</span>
+
+    /**
+     * Runs dijkstra using a specified source vertex
+     */
+    public void dijkstra(String startName) {
+<span class="nc bnc" id="L180" title="All 2 branches missed.">        if (!graph.containsKey(startName)) {</span>
+<span class="nc" id="L181">            System.err.printf(&quot;Graph doesn't contain start vertex \&quot;%s\&quot;%n&quot;, startName);</span>
+<span class="nc" id="L182">            return;</span>
+        }
+<span class="nc" id="L184">        final Vertex source = graph.get(startName);</span>
+<span class="nc" id="L185">        NavigableSet&lt;Vertex&gt; q = new TreeSet&lt;&gt;();</span>
+
+        // set-up vertices
+<span class="nc bnc" id="L188" title="All 2 branches missed.">        for (Vertex v : graph.values()) {</span>
+<span class="nc bnc" id="L189" title="All 2 branches missed.">            v.previous = v == source ? source : null;</span>
+<span class="nc bnc" id="L190" title="All 2 branches missed.">            v.dist = v == source ? 0 : Integer.MAX_VALUE;</span>
+<span class="nc" id="L191">            q.add(v);</span>
+<span class="nc" id="L192">        }</span>
+
+<span class="nc" id="L194">        dijkstra(q);</span>
+<span class="nc" id="L195">    }</span>
+
+    /**
+     * Implementation of dijkstra's algorithm using a binary heap.
+     */
+    private void dijkstra(final NavigableSet&lt;Vertex&gt; q) {
+        Vertex u;
+        Vertex v;
+<span class="nc bnc" id="L203" title="All 2 branches missed.">        while (!q.isEmpty()) {</span>
+            // vertex with shortest distance (first iteration will return source)
+<span class="nc" id="L205">            u = q.pollFirst();</span>
+<span class="nc bnc" id="L206" title="All 2 branches missed.">            if (u.dist == Integer.MAX_VALUE) {</span>
+<span class="nc" id="L207">                break; // we can ignore u (and any other remaining vertices) since they are</span>
+                       // unreachable
+            }
+            // look at distances to each neighbour
+<span class="nc bnc" id="L211" title="All 2 branches missed.">            for (Map.Entry&lt;Vertex, Integer&gt; a : u.neighbours.entrySet()) {</span>
+<span class="nc" id="L212">                v = a.getKey(); // the neighbour in this iteration</span>
+
+<span class="nc" id="L214">                final int alternateDist = u.dist + a.getValue();</span>
+<span class="nc bnc" id="L215" title="All 2 branches missed.">                if (alternateDist &lt; v.dist) { // shorter path to neighbour found</span>
+<span class="nc" id="L216">                    q.remove(v);</span>
+<span class="nc" id="L217">                    v.dist = alternateDist;</span>
+<span class="nc" id="L218">                    v.previous = u;</span>
+<span class="nc" id="L219">                    q.add(v);</span>
+                }
+<span class="nc" id="L221">            }</span>
+        }
+<span class="nc" id="L223">    }</span>
+
+    /**
+     * Prints a path from the source to the specified vertex
+     */
+    public void printPath(String endName) {
+<span class="nc bnc" id="L229" title="All 2 branches missed.">        if (!graph.containsKey(endName)) {</span>
+<span class="nc" id="L230">            System.err.printf(&quot;Graph doesn't contain end vertex \&quot;%s\&quot;%n&quot;, endName);</span>
+<span class="nc" id="L231">            return;</span>
+        }
+
+<span class="nc" id="L234">        graph.get(endName).printPath();</span>
+<span class="nc" id="L235">        System.out.println();</span>
+<span class="nc" id="L236">    }</span>
+
+    /**
+     * Prints the path from the source to every vertex (output order is not
+     * guaranteed)
+     */
+    public void printAllPaths() {
+<span class="nc bnc" id="L243" title="All 2 branches missed.">        for (Vertex v : graph.values()) {</span>
+<span class="nc" id="L244">            v.printPath();</span>
+<span class="nc" id="L245">            System.out.println();</span>
+<span class="nc" id="L246">        }</span>
+<span class="nc" id="L247">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

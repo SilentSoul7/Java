@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AVLTree.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.trees</a> &gt; <span class="el_source">AVLTree.java</span></div><h1>AVLTree.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.trees;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Represents an AVL Tree, a self-balancing binary search tree.
+ * In an AVL tree, the heights of the two child subtrees of any node
+ * differ by at most one. If they differ by more than one at any time,
+ * rebalancing is performed to restore this property.
+ */
+<span class="fc" id="L12">public class AVLTree {</span>
+
+    private Node root;
+
+    private static class Node {
+        private int key;
+        private int balance;
+        private int height;
+        private Node left;
+        private Node right;
+        private Node parent;
+
+<span class="fc" id="L24">        Node(int k, Node p) {</span>
+<span class="fc" id="L25">            key = k;</span>
+<span class="fc" id="L26">            parent = p;</span>
+<span class="fc" id="L27">        }</span>
+
+        public Integer getBalance() {
+<span class="fc" id="L30">            return balance;</span>
+        }
+    }
+
+    /**
+     * Inserts a new key into the AVL tree.
+     *
+     * @param key the key to be inserted
+     * @return {@code true} if the key was inserted, {@code false} if the key already exists
+     */
+    public boolean insert(int key) {
+<span class="fc bfc" id="L41" title="All 2 branches covered.">        if (root == null) {</span>
+<span class="fc" id="L42">            root = new Node(key, null);</span>
+        } else {
+<span class="fc" id="L44">            Node n = root;</span>
+            Node parent;
+            while (true) {
+<span class="fc bfc" id="L47" title="All 2 branches covered.">                if (n.key == key) {</span>
+<span class="fc" id="L48">                    return false;</span>
+                }
+
+<span class="fc" id="L51">                parent = n;</span>
+<span class="fc bfc" id="L52" title="All 2 branches covered.">                boolean goLeft = n.key &gt; key;</span>
+<span class="fc bfc" id="L53" title="All 2 branches covered.">                n = goLeft ? n.left : n.right;</span>
+
+<span class="fc bfc" id="L55" title="All 2 branches covered.">                if (n == null) {</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">                    if (goLeft) {</span>
+<span class="fc" id="L57">                        parent.left = new Node(key, parent);</span>
+                    } else {
+<span class="fc" id="L59">                        parent.right = new Node(key, parent);</span>
+                    }
+<span class="fc" id="L61">                    rebalance(parent);</span>
+<span class="fc" id="L62">                    break;</span>
+                }
+<span class="fc" id="L64">            }</span>
+        }
+<span class="fc" id="L66">        return true;</span>
+    }
+
+    /**
+     * Deletes a key from the AVL tree.
+     *
+     * @param delKey the key to be deleted
+     */
+    public void delete(int delKey) {
+<span class="pc bpc" id="L75" title="1 of 2 branches missed.">        if (root == null) {</span>
+<span class="nc" id="L76">            return;</span>
+        }
+
+        // Find the node to be deleted
+<span class="fc" id="L80">        Node node = root;</span>
+<span class="fc" id="L81">        Node child = root;</span>
+<span class="pc bpc" id="L82" title="1 of 2 branches missed.">        while (child != null) {</span>
+<span class="fc" id="L83">            node = child;</span>
+<span class="fc bfc" id="L84" title="All 2 branches covered.">            child = delKey &gt;= node.key ? node.right : node.left;</span>
+<span class="fc bfc" id="L85" title="All 2 branches covered.">            if (delKey == node.key) {</span>
+<span class="fc" id="L86">                delete(node);</span>
+<span class="fc" id="L87">                return;</span>
+            }
+        }
+<span class="nc" id="L90">    }</span>
+
+    private void delete(Node node) {
+<span class="pc bpc" id="L93" title="1 of 4 branches missed.">        if (node.left == null &amp;&amp; node.right == null) {</span>
+            // Leaf node
+<span class="pc bpc" id="L95" title="1 of 2 branches missed.">            if (node.parent == null) {</span>
+<span class="nc" id="L96">                root = null;</span>
+            } else {
+<span class="fc" id="L98">                Node parent = node.parent;</span>
+<span class="fc bfc" id="L99" title="All 2 branches covered.">                if (parent.left == node) {</span>
+<span class="fc" id="L100">                    parent.left = null;</span>
+                } else {
+<span class="fc" id="L102">                    parent.right = null;</span>
+                }
+<span class="fc" id="L104">                rebalance(parent);</span>
+            }
+<span class="fc" id="L106">            return;</span>
+        }
+
+        // Node has one or two children
+        Node child;
+<span class="pc bpc" id="L111" title="1 of 2 branches missed.">        if (node.left != null) {</span>
+<span class="fc" id="L112">            child = node.left;</span>
+<span class="fc bfc" id="L113" title="All 2 branches covered.">            while (child.right != null) {</span>
+<span class="fc" id="L114">                child = child.right;</span>
+            }
+        } else {
+<span class="nc" id="L117">            child = node.right;</span>
+<span class="nc bnc" id="L118" title="All 2 branches missed.">            while (child.left != null) {</span>
+<span class="nc" id="L119">                child = child.left;</span>
+            }
+        }
+<span class="fc" id="L122">        node.key = child.key;</span>
+<span class="fc" id="L123">        delete(child);</span>
+<span class="fc" id="L124">    }</span>
+
+    /**
+     * Returns a list of balance factors for each node in the tree.
+     *
+     * @return a list of integers representing the balance factors of the nodes
+     */
+    public List&lt;Integer&gt; returnBalance() {
+<span class="fc" id="L132">        List&lt;Integer&gt; balances = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L133">        returnBalance(root, balances);</span>
+<span class="fc" id="L134">        return balances;</span>
+    }
+
+    private void returnBalance(Node n, List&lt;Integer&gt; balances) {
+<span class="fc bfc" id="L138" title="All 2 branches covered.">        if (n != null) {</span>
+<span class="fc" id="L139">            returnBalance(n.left, balances);</span>
+<span class="fc" id="L140">            balances.add(n.getBalance());</span>
+<span class="fc" id="L141">            returnBalance(n.right, balances);</span>
+        }
+<span class="fc" id="L143">    }</span>
+
+    /**
+     * Searches for a key in the AVL tree.
+     *
+     * @param key the key to be searched
+     * @return true if the key is found, false otherwise
+     */
+    public boolean search(int key) {
+<span class="fc" id="L152">        Node result = searchHelper(this.root, key);</span>
+<span class="fc bfc" id="L153" title="All 2 branches covered.">        return result != null;</span>
+    }
+
+    private Node searchHelper(Node root, int key) {
+<span class="fc bfc" id="L157" title="All 4 branches covered.">        if (root == null || root.key == key) {</span>
+<span class="fc" id="L158">            return root;</span>
+        }
+
+<span class="fc bfc" id="L161" title="All 2 branches covered.">        if (root.key &gt; key) {</span>
+<span class="fc" id="L162">            return searchHelper(root.left, key);</span>
+        }
+<span class="fc" id="L164">        return searchHelper(root.right, key);</span>
+    }
+
+    private void rebalance(Node n) {
+<span class="fc" id="L168">        setBalance(n);</span>
+<span class="fc bfc" id="L169" title="All 2 branches covered.">        if (n.balance == -2) {</span>
+<span class="pc bpc" id="L170" title="1 of 2 branches missed.">            if (height(n.left.left) &gt;= height(n.left.right)) {</span>
+<span class="fc" id="L171">                n = rotateRight(n);</span>
+            } else {
+<span class="nc" id="L173">                n = rotateLeftThenRight(n);</span>
+            }
+<span class="fc bfc" id="L175" title="All 2 branches covered.">        } else if (n.balance == 2) {</span>
+<span class="fc bfc" id="L176" title="All 2 branches covered.">            if (height(n.right.right) &gt;= height(n.right.left)) {</span>
+<span class="fc" id="L177">                n = rotateLeft(n);</span>
+            } else {
+<span class="fc" id="L179">                n = rotateRightThenLeft(n);</span>
+            }
+        }
+
+<span class="fc bfc" id="L183" title="All 2 branches covered.">        if (n.parent != null) {</span>
+<span class="fc" id="L184">            rebalance(n.parent);</span>
+        } else {
+<span class="fc" id="L186">            root = n;</span>
+        }
+<span class="fc" id="L188">    }</span>
+
+    private Node rotateLeft(Node a) {
+<span class="fc" id="L191">        Node b = a.right;</span>
+<span class="fc" id="L192">        b.parent = a.parent;</span>
+
+<span class="fc" id="L194">        a.right = b.left;</span>
+
+<span class="pc bpc" id="L196" title="1 of 2 branches missed.">        if (a.right != null) {</span>
+<span class="nc" id="L197">            a.right.parent = a;</span>
+        }
+
+<span class="fc" id="L200">        b.left = a;</span>
+<span class="fc" id="L201">        a.parent = b;</span>
+
+<span class="pc bpc" id="L203" title="1 of 2 branches missed.">        if (b.parent != null) {</span>
+<span class="nc bnc" id="L204" title="All 2 branches missed.">            if (b.parent.right == a) {</span>
+<span class="nc" id="L205">                b.parent.right = b;</span>
+            } else {
+<span class="nc" id="L207">                b.parent.left = b;</span>
+            }
+        }
+
+<span class="fc" id="L211">        setBalance(a, b);</span>
+<span class="fc" id="L212">        return b;</span>
+    }
+
+    private Node rotateRight(Node a) {
+<span class="fc" id="L216">        Node b = a.left;</span>
+<span class="fc" id="L217">        b.parent = a.parent;</span>
+
+<span class="fc" id="L219">        a.left = b.right;</span>
+
+<span class="pc bpc" id="L221" title="1 of 2 branches missed.">        if (a.left != null) {</span>
+<span class="nc" id="L222">            a.left.parent = a;</span>
+        }
+
+<span class="fc" id="L225">        b.right = a;</span>
+<span class="fc" id="L226">        a.parent = b;</span>
+
+<span class="fc bfc" id="L228" title="All 2 branches covered.">        if (b.parent != null) {</span>
+<span class="pc bpc" id="L229" title="1 of 2 branches missed.">            if (b.parent.right == a) {</span>
+<span class="fc" id="L230">                b.parent.right = b;</span>
+            } else {
+<span class="nc" id="L232">                b.parent.left = b;</span>
+            }
+        }
+
+<span class="fc" id="L236">        setBalance(a, b);</span>
+<span class="fc" id="L237">        return b;</span>
+    }
+
+    private Node rotateLeftThenRight(Node n) {
+<span class="nc" id="L241">        n.left = rotateLeft(n.left);</span>
+<span class="nc" id="L242">        return rotateRight(n);</span>
+    }
+
+    private Node rotateRightThenLeft(Node n) {
+<span class="fc" id="L246">        n.right = rotateRight(n.right);</span>
+<span class="fc" id="L247">        return rotateLeft(n);</span>
+    }
+
+    private int height(Node n) {
+<span class="fc bfc" id="L251" title="All 2 branches covered.">        if (n == null) {</span>
+<span class="fc" id="L252">            return -1;</span>
+        }
+<span class="fc" id="L254">        return n.height;</span>
+    }
+
+    private void setBalance(Node... nodes) {
+<span class="fc bfc" id="L258" title="All 2 branches covered.">        for (Node n : nodes) {</span>
+<span class="fc" id="L259">            reheight(n);</span>
+<span class="fc" id="L260">            n.balance = height(n.right) - height(n.left);</span>
+        }
+<span class="fc" id="L262">    }</span>
+
+    private void reheight(Node node) {
+<span class="pc bpc" id="L265" title="1 of 2 branches missed.">        if (node != null) {</span>
+<span class="fc" id="L266">            node.height = 1 + Math.max(height(node.left), height(node.right));</span>
+        }
+<span class="fc" id="L268">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

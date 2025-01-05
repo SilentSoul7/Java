@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Abbreviation.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.dynamicprogramming</a> &gt; <span class="el_source">Abbreviation.java</span></div><h1>Abbreviation.java</h1><pre class="source lang-java linenums">package com.thealgorithms.dynamicprogramming;
+
+/**
+ * A class that provides a solution to the abbreviation problem.
+ *
+ * Problem: Given two strings, `a` and `b`, determine if string `a` can be
+ * transformed into string `b` by performing the following operations:
+ * 1. Capitalize zero or more of `a`'s lowercase letters (i.e., convert them to uppercase).
+ * 2. Delete any of the remaining lowercase letters from `a`.
+ *
+ * The task is to determine whether it is possible to make string `a` equal to string `b`.
+ *
+ * @author Hardvan
+ */
+public final class Abbreviation {
+    private Abbreviation() {
+    }
+
+    /**
+     * Determines if string `a` can be transformed into string `b` by capitalizing
+     * some of its lowercase letters and deleting the rest.
+     *
+     * @param a The input string which may contain both uppercase and lowercase letters.
+     * @param b The target string containing only uppercase letters.
+     * @return {@code true} if string `a` can be transformed into string `b`,
+     *         {@code false} otherwise.
+     *
+     * Time Complexity: O(n * m) where n = length of string `a` and m = length of string `b`.
+     * Space Complexity: O(n * m) due to the dynamic programming table.
+     */
+    public static boolean abbr(String a, String b) {
+<span class="fc" id="L32">        int n = a.length();</span>
+<span class="fc" id="L33">        int m = b.length();</span>
+
+<span class="fc" id="L35">        boolean[][] dp = new boolean[n + 1][m + 1];</span>
+
+<span class="fc" id="L37">        dp[0][0] = true;</span>
+
+<span class="fc bfc" id="L39" title="All 2 branches covered.">        for (int i = 0; i &lt; n; i++) {</span>
+<span class="fc bfc" id="L40" title="All 2 branches covered.">            for (int j = 0; j &lt;= m; j++) {</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">                if (dp[i][j]) {</span>
+                    // Case 1: If the current characters match (or can be capitalized to match)
+<span class="fc bfc" id="L43" title="All 4 branches covered.">                    if (j &lt; m &amp;&amp; Character.toUpperCase(a.charAt(i)) == b.charAt(j)) {</span>
+<span class="fc" id="L44">                        dp[i + 1][j + 1] = true;</span>
+                    }
+                    // Case 2: If the character in `a` is lowercase, we can skip it
+<span class="fc bfc" id="L47" title="All 2 branches covered.">                    if (Character.isLowerCase(a.charAt(i))) {</span>
+<span class="fc" id="L48">                        dp[i + 1][j] = true;</span>
+                    }
+                }
+            }
+        }
+
+<span class="fc" id="L54">        return dp[n][m];</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

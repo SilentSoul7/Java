@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TarjansAlgorithm.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.graphs</a> &gt; <span class="el_source">TarjansAlgorithm.java</span></div><h1>TarjansAlgorithm.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.graphs;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
+
+/**
+ * Java program that implements Tarjan's Algorithm to find Strongly Connected Components (SCCs) in a directed graph.
+ *
+ * &lt;p&gt;
+ * Tarjan's algorithm is a linear time algorithm (O(V + E)) that identifies the SCCs of a directed graph.
+ * An SCC is a maximal subgraph where every vertex is reachable from every other vertex within the subgraph.
+ *
+ * &lt;h3&gt;Algorithm Overview:&lt;/h3&gt;
+ * &lt;ul&gt;
+ * &lt;li&gt;DFS Search: A depth-first search (DFS) is performed on the graph to generate a DFS tree.&lt;/li&gt;
+ * &lt;li&gt;Identification of SCCs: SCCs correspond to subtrees within this DFS tree.&lt;/li&gt;
+ * &lt;li&gt;Low-Link Values: For each node, a low-link value is maintained, which indicates the earliest visited
+ * vertex (the one with the minimum insertion time) that can be reached from that subtree.&lt;/li&gt;
+ * &lt;li&gt;Stack Usage: Nodes are stored in a stack during DFS. When an SCC is identified, nodes are popped from
+ * the stack until the head of the SCC is reached.&lt;/li&gt;
+ * &lt;/ul&gt;
+ *
+ * &lt;p&gt;
+ * Example of a directed graph:
+ * &lt;pre&gt;
+ *  0 --------&gt; 1 -------&gt; 3 --------&gt; 4
+ *  ^          /
+ *  |         /
+ *  |        /
+ *  |       /
+ *  |      /
+ *  |     /
+ *  |    /
+ *  |   /
+ *  |  /
+ *  | /
+ *  V
+ *  2
+ * &lt;/pre&gt;
+ *
+ * &lt;p&gt;
+ * For the above graph, the SCC list is as follows:
+ * &lt;ul&gt;
+ * &lt;li&gt;1, 2, 0&lt;/li&gt;
+ * &lt;li&gt;3&lt;/li&gt;
+ * &lt;li&gt;4&lt;/li&gt;
+ * &lt;/ul&gt;
+ * The order of nodes in an SCC does not matter as they form cycles.
+ *
+ * &lt;h3&gt;Comparison with Kosaraju's Algorithm:&lt;/h3&gt;
+ * &lt;p&gt;
+ * Kosaraju's algorithm also identifies SCCs but does so using two DFS traversals.
+ * In contrast, Tarjan's algorithm achieves this in a single DFS traversal, leading to improved performance
+ * in terms of constant factors.
+ * &lt;/p&gt;
+ */
+<span class="fc" id="L58">public class TarjansAlgorithm {</span>
+
+    // Timer for tracking low time and insertion time
+    private int time;
+
+    // List to store all strongly connected components
+<span class="fc" id="L64">    private final List&lt;List&lt;Integer&gt;&gt; sccList = new ArrayList&lt;&gt;();</span>
+
+    /**
+     * Finds and returns the strongly connected components (SCCs) of the directed graph.
+     *
+     * @param v the number of vertices in the graph
+     * @param graph the adjacency list representation of the graph
+     * @return a list of lists, where each inner list represents a strongly connected component
+     */
+    public List&lt;List&lt;Integer&gt;&gt; stronglyConnectedComponents(int v, List&lt;List&lt;Integer&gt;&gt; graph) {
+        // Initialize arrays for insertion time and low-link values
+<span class="fc" id="L75">        int[] lowTime = new int[v];</span>
+<span class="fc" id="L76">        int[] insertionTime = new int[v];</span>
+<span class="fc bfc" id="L77" title="All 2 branches covered.">        for (int i = 0; i &lt; v; i++) {</span>
+<span class="fc" id="L78">            insertionTime[i] = -1;</span>
+<span class="fc" id="L79">            lowTime[i] = -1;</span>
+        }
+
+        // Track if vertices are in the stack
+<span class="fc" id="L83">        boolean[] isInStack = new boolean[v];</span>
+
+        // Stack to hold nodes during DFS
+<span class="fc" id="L86">        Stack&lt;Integer&gt; st = new Stack&lt;&gt;();</span>
+
+<span class="fc bfc" id="L88" title="All 2 branches covered.">        for (int i = 0; i &lt; v; i++) {</span>
+<span class="fc bfc" id="L89" title="All 2 branches covered.">            if (insertionTime[i] == -1) {</span>
+<span class="fc" id="L90">                stronglyConnCompsUtil(i, lowTime, insertionTime, isInStack, st, graph);</span>
+            }
+        }
+
+<span class="fc" id="L94">        return sccList;</span>
+    }
+
+    /**
+     * A utility function to perform DFS and find SCCs.
+     *
+     * @param u the current vertex being visited
+     * @param lowTime array to keep track of the low-link values
+     * @param insertionTime array to keep track of the insertion times
+     * @param isInStack boolean array indicating if a vertex is in the stack
+     * @param st the stack used for DFS
+     * @param graph the adjacency list representation of the graph
+     */
+    private void stronglyConnCompsUtil(int u, int[] lowTime, int[] insertionTime, boolean[] isInStack, Stack&lt;Integer&gt; st, List&lt;List&lt;Integer&gt;&gt; graph) {
+        // Set insertion time and low-link value
+<span class="fc" id="L109">        insertionTime[u] = time;</span>
+<span class="fc" id="L110">        lowTime[u] = time;</span>
+<span class="fc" id="L111">        time++;</span>
+
+        // Push current node onto the stack
+<span class="fc" id="L114">        isInStack[u] = true;</span>
+<span class="fc" id="L115">        st.push(u);</span>
+
+        // Explore adjacent vertices
+<span class="fc bfc" id="L118" title="All 2 branches covered.">        for (Integer vertex : graph.get(u)) {</span>
+<span class="fc bfc" id="L119" title="All 2 branches covered.">            if (insertionTime[vertex] == -1) {</span>
+<span class="fc" id="L120">                stronglyConnCompsUtil(vertex, lowTime, insertionTime, isInStack, st, graph);</span>
+                // Update low-link value
+<span class="fc" id="L122">                lowTime[u] = Math.min(lowTime[u], lowTime[vertex]);</span>
+<span class="pc bpc" id="L123" title="1 of 2 branches missed.">            } else if (isInStack[vertex]) {</span>
+                // Vertex is in the stack; update low-link value
+<span class="fc" id="L125">                lowTime[u] = Math.min(lowTime[u], insertionTime[vertex]);</span>
+            }
+<span class="fc" id="L127">        }</span>
+
+        // Check if the current vertex is the root of an SCC
+<span class="fc bfc" id="L130" title="All 2 branches covered.">        if (lowTime[u] == insertionTime[u]) {</span>
+<span class="fc" id="L131">            int w = -1;</span>
+<span class="fc" id="L132">            List&lt;Integer&gt; scc = new ArrayList&lt;&gt;();</span>
+
+            // Pop vertices from the stack until the root is found
+<span class="fc bfc" id="L135" title="All 2 branches covered.">            while (w != u) {</span>
+<span class="fc" id="L136">                w = st.pop();</span>
+<span class="fc" id="L137">                scc.add(w);</span>
+<span class="fc" id="L138">                isInStack[w] = false;</span>
+            }
+<span class="fc" id="L140">            sccList.add(scc);</span>
+        }
+<span class="fc" id="L142">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

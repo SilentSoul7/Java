@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>nearestRightKey.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.trees</a> &gt; <span class="el_source">nearestRightKey.java</span></div><h1>nearestRightKey.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.trees;
+
+import java.util.Scanner;
+import java.util.concurrent.ThreadLocalRandom;
+
+final class NearestRightKey {
+    private NearestRightKey() {
+    }
+
+    public static void main(String[] args) {
+<span class="nc" id="L11">        NRKTree root = buildTree();</span>
+<span class="nc" id="L12">        Scanner sc = new Scanner(System.in);</span>
+<span class="nc" id="L13">        System.out.print(&quot;Enter first number: &quot;);</span>
+<span class="nc" id="L14">        int inputX0 = sc.nextInt();</span>
+<span class="nc" id="L15">        int toPrint = nearestRightKey(root, inputX0);</span>
+<span class="nc" id="L16">        System.out.println(&quot;Key: &quot; + toPrint);</span>
+<span class="nc" id="L17">        sc.close();</span>
+<span class="nc" id="L18">    }</span>
+
+    public static NRKTree buildTree() {
+<span class="nc" id="L21">        int randomX = ThreadLocalRandom.current().nextInt(0, 100 + 1);</span>
+<span class="nc" id="L22">        NRKTree root = new NRKTree(null, null, randomX);</span>
+
+<span class="nc bnc" id="L24" title="All 2 branches missed.">        for (int i = 0; i &lt; 1000; i++) {</span>
+<span class="nc" id="L25">            randomX = ThreadLocalRandom.current().nextInt(0, 100 + 1);</span>
+<span class="nc" id="L26">            root = root.insertKey(root, randomX);</span>
+        }
+
+<span class="nc" id="L29">        return root;</span>
+    }
+
+    public static int nearestRightKey(NRKTree root, int x0) {
+        // Check whether tree is empty
+<span class="nc bnc" id="L34" title="All 2 branches missed.">        if (root == null) {</span>
+<span class="nc" id="L35">            return 0;</span>
+        } else {
+<span class="nc bnc" id="L37" title="All 2 branches missed.">            if (root.data - x0 &gt; 0) {</span>
+                // Go left
+<span class="nc" id="L39">                int temp = nearestRightKey(root.left, x0);</span>
+<span class="nc bnc" id="L40" title="All 2 branches missed.">                if (temp == 0) {</span>
+<span class="nc" id="L41">                    return root.data;</span>
+                }
+<span class="nc" id="L43">                return temp;</span>
+            } else {
+                // Go right
+<span class="nc" id="L46">                return nearestRightKey(root.right, x0);</span>
+            }
+        }
+    }
+}
+
+class NRKTree {
+
+    public NRKTree left;
+    public NRKTree right;
+    public int data;
+
+<span class="nc" id="L58">    NRKTree(int x) {</span>
+<span class="nc" id="L59">        this.left = null;</span>
+<span class="nc" id="L60">        this.right = null;</span>
+<span class="nc" id="L61">        this.data = x;</span>
+<span class="nc" id="L62">    }</span>
+
+<span class="nc" id="L64">    NRKTree(NRKTree right, NRKTree left, int x) {</span>
+<span class="nc" id="L65">        this.left = left;</span>
+<span class="nc" id="L66">        this.right = right;</span>
+<span class="nc" id="L67">        this.data = x;</span>
+<span class="nc" id="L68">    }</span>
+
+    public NRKTree insertKey(NRKTree current, int value) {
+<span class="nc bnc" id="L71" title="All 2 branches missed.">        if (current == null) {</span>
+<span class="nc" id="L72">            return new NRKTree(value);</span>
+        }
+
+<span class="nc bnc" id="L75" title="All 2 branches missed.">        if (value &lt; current.data) {</span>
+<span class="nc" id="L76">            current.left = insertKey(current.left, value);</span>
+<span class="nc bnc" id="L77" title="All 2 branches missed.">        } else if (value &gt; current.data) {</span>
+<span class="nc" id="L78">            current.right = insertKey(current.right, value);</span>
+        }
+
+<span class="nc" id="L81">        return current;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

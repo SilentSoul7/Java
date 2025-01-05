@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CreateBinaryTreeFromInorderPreorder.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.trees</a> &gt; <span class="el_source">CreateBinaryTreeFromInorderPreorder.java</span></div><h1>CreateBinaryTreeFromInorderPreorder.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.trees;
+
+import com.thealgorithms.datastructures.trees.BinaryTree.Node;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * Approach: Naive Solution: Create root node from first value present in
+ * preorder traversal. Look for the index of root node's value in inorder
+ * traversal. That will tell total nodes present in left subtree and right
+ * subtree. Based on that index create left and right subtree. Complexity: Time:
+ * O(n^2) for each node there is iteration to find index in inorder array Space:
+ * Stack size = O(height) = O(lg(n))
+ * &lt;p&gt;
+ * Optimized Solution: Instead of iterating over inorder array to find index of
+ * root value, create a hashmap and find out the index of root value.
+ * Complexity: Time: O(n) hashmap reduced iteration to find index in inorder
+ * array Space: O(n) space taken by hashmap
+ */
+public final class CreateBinaryTreeFromInorderPreorder {
+    private CreateBinaryTreeFromInorderPreorder() {
+    }
+    public static Node createTree(final Integer[] preorder, final Integer[] inorder) {
+<span class="pc bpc" id="L24" title="1 of 4 branches missed.">        if (preorder == null || inorder == null) {</span>
+<span class="fc" id="L25">            return null;</span>
+        }
+<span class="fc" id="L27">        return createTree(preorder, inorder, 0, 0, inorder.length);</span>
+    }
+
+    public static Node createTreeOptimized(final Integer[] preorder, final Integer[] inorder) {
+<span class="pc bpc" id="L31" title="1 of 4 branches missed.">        if (preorder == null || inorder == null) {</span>
+<span class="fc" id="L32">            return null;</span>
+        }
+<span class="fc" id="L34">        Map&lt;Integer, Integer&gt; inorderMap = new HashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L35" title="All 2 branches covered.">        for (int i = 0; i &lt; inorder.length; i++) {</span>
+<span class="fc" id="L36">            inorderMap.put(inorder[i], i);</span>
+        }
+<span class="fc" id="L38">        return createTreeOptimized(preorder, inorderMap, 0, 0, inorder.length);</span>
+    }
+
+    private static Node createTree(final Integer[] preorder, final Integer[] inorder, final int preStart, final int inStart, final int size) {
+<span class="fc bfc" id="L42" title="All 2 branches covered.">        if (size == 0) {</span>
+<span class="fc" id="L43">            return null;</span>
+        }
+
+<span class="fc" id="L46">        Node root = new Node(preorder[preStart]);</span>
+<span class="fc" id="L47">        int i = inStart;</span>
+<span class="fc bfc" id="L48" title="All 2 branches covered.">        while (!preorder[preStart].equals(inorder[i])) {</span>
+<span class="fc" id="L49">            i++;</span>
+        }
+<span class="fc" id="L51">        int leftNodesCount = i - inStart;</span>
+<span class="fc" id="L52">        int rightNodesCount = size - leftNodesCount - 1;</span>
+<span class="fc" id="L53">        root.left = createTree(preorder, inorder, preStart + 1, inStart, leftNodesCount);</span>
+<span class="fc" id="L54">        root.right = createTree(preorder, inorder, preStart + leftNodesCount + 1, i + 1, rightNodesCount);</span>
+<span class="fc" id="L55">        return root;</span>
+    }
+
+    private static Node createTreeOptimized(final Integer[] preorder, final Map&lt;Integer, Integer&gt; inorderMap, final int preStart, final int inStart, final int size) {
+<span class="fc bfc" id="L59" title="All 2 branches covered.">        if (size == 0) {</span>
+<span class="fc" id="L60">            return null;</span>
+        }
+
+<span class="fc" id="L63">        Node root = new Node(preorder[preStart]);</span>
+<span class="fc" id="L64">        int i = inorderMap.get(preorder[preStart]);</span>
+<span class="fc" id="L65">        int leftNodesCount = i - inStart;</span>
+<span class="fc" id="L66">        int rightNodesCount = size - leftNodesCount - 1;</span>
+<span class="fc" id="L67">        root.left = createTreeOptimized(preorder, inorderMap, preStart + 1, inStart, leftNodesCount);</span>
+<span class="fc" id="L68">        root.right = createTreeOptimized(preorder, inorderMap, preStart + leftNodesCount + 1, i + 1, rightNodesCount);</span>
+<span class="fc" id="L69">        return root;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

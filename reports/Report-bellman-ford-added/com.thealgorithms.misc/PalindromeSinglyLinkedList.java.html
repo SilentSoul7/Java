@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PalindromeSinglyLinkedList.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.misc</a> &gt; <span class="el_source">PalindromeSinglyLinkedList.java</span></div><h1>PalindromeSinglyLinkedList.java</h1><pre class="source lang-java linenums">package com.thealgorithms.misc;
+
+import java.util.Stack;
+
+/**
+ * A simple way of knowing if a singly linked list is palindrome is to push all
+ * the values into a Stack and then compare the list to popped vales from the
+ * Stack.
+ *
+ * See more:
+ * https://www.geeksforgeeks.org/function-to-check-if-a-singly-linked-list-is-palindrome/
+ */
+public final class PalindromeSinglyLinkedList {
+    private PalindromeSinglyLinkedList() {
+    }
+
+    public static boolean isPalindrome(final Iterable linkedList) {
+<span class="fc" id="L18">        var linkedListValues = new Stack&lt;&gt;();</span>
+
+<span class="fc bfc" id="L20" title="All 2 branches covered.">        for (final var x : linkedList) {</span>
+<span class="fc" id="L21">            linkedListValues.push(x);</span>
+<span class="fc" id="L22">        }</span>
+
+<span class="fc bfc" id="L24" title="All 2 branches covered.">        for (final var x : linkedList) {</span>
+<span class="fc bfc" id="L25" title="All 2 branches covered.">            if (x != linkedListValues.pop()) {</span>
+<span class="fc" id="L26">                return false;</span>
+            }
+<span class="fc" id="L28">        }</span>
+
+<span class="fc" id="L30">        return true;</span>
+    }
+
+    // Optimised approach with O(n) time complexity and O(1) space complexity
+
+    public static boolean isPalindromeOptimised(Node head) {
+<span class="fc bfc" id="L36" title="All 4 branches covered.">        if (head == null || head.next == null) {</span>
+<span class="fc" id="L37">            return true;</span>
+        }
+<span class="fc" id="L39">        Node slow = head;</span>
+<span class="fc" id="L40">        Node fast = head;</span>
+<span class="fc bfc" id="L41" title="All 4 branches covered.">        while (fast != null &amp;&amp; fast.next != null) {</span>
+<span class="fc" id="L42">            slow = slow.next;</span>
+<span class="fc" id="L43">            fast = fast.next.next;</span>
+        }
+<span class="fc" id="L45">        Node midNode = slow;</span>
+
+<span class="fc" id="L47">        Node prevNode = null;</span>
+<span class="fc" id="L48">        Node currNode = midNode;</span>
+        Node nextNode;
+<span class="fc bfc" id="L50" title="All 2 branches covered.">        while (currNode != null) {</span>
+<span class="fc" id="L51">            nextNode = currNode.next;</span>
+<span class="fc" id="L52">            currNode.next = prevNode;</span>
+<span class="fc" id="L53">            prevNode = currNode;</span>
+<span class="fc" id="L54">            currNode = nextNode;</span>
+        }
+<span class="fc" id="L56">        Node left = head;</span>
+<span class="fc" id="L57">        Node right = prevNode;</span>
+<span class="fc bfc" id="L58" title="All 4 branches covered.">        while (left != null &amp;&amp; right != null) {</span>
+<span class="fc bfc" id="L59" title="All 2 branches covered.">            if (left.val != right.val) {</span>
+<span class="fc" id="L60">                return false;</span>
+            }
+<span class="fc" id="L62">            right = right.next;</span>
+<span class="fc" id="L63">            left = left.next;</span>
+        }
+<span class="fc" id="L65">        return true;</span>
+    }
+    static class Node {
+        int val;
+        Node next;
+<span class="fc" id="L70">        Node(int val) {</span>
+<span class="fc" id="L71">            this.val = val;</span>
+<span class="fc" id="L72">            this.next = null;</span>
+<span class="fc" id="L73">        }</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

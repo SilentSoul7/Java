@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UnitsConverter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.conversions</a> &gt; <span class="el_source">UnitsConverter.java</span></div><h1>UnitsConverter.java</h1><pre class="source lang-java linenums">package com.thealgorithms.conversions;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
+import org.apache.commons.lang3.tuple.Pair;
+
+/**
+ * A class that handles unit conversions using affine transformations.
+ *
+ * &lt;p&gt;The {@code UnitsConverter} allows converting values between different units using
+ * pre-defined affine conversion formulas. Each conversion is represented by an
+ * {@link AffineConverter} that defines the scaling and offset for the conversion.
+ *
+ * &lt;p&gt;For each unit, both direct conversions (e.g., Celsius to Fahrenheit) and inverse
+ * conversions (e.g., Fahrenheit to Celsius) are generated automatically. It also computes
+ * transitive conversions (e.g., Celsius to Kelvin via Fahrenheit if both conversions exist).
+ *
+ * &lt;p&gt;Key features include:
+ * &lt;ul&gt;
+ *   &lt;li&gt;Automatic handling of inverse conversions (e.g., Fahrenheit to Celsius).&lt;/li&gt;
+ *   &lt;li&gt;Compositional conversions, meaning if conversions between A -&gt; B and B -&gt; C exist,
+ *       it can automatically generate A -&gt; C conversion.&lt;/li&gt;
+ *   &lt;li&gt;Supports multiple unit systems as long as conversions are provided in pairs.&lt;/li&gt;
+ * &lt;/ul&gt;
+ *
+ * &lt;h2&gt;Example Usage&lt;/h2&gt;
+ * &lt;pre&gt;
+ * Map&amp;lt;Pair&amp;lt;String, String&amp;gt;, AffineConverter&amp;gt; basicConversions = Map.ofEntries(
+ *     entry(Pair.of(&quot;Celsius&quot;, &quot;Fahrenheit&quot;), new AffineConverter(9.0 / 5.0, 32.0)),
+ *     entry(Pair.of(&quot;Kelvin&quot;, &quot;Celsius&quot;), new AffineConverter(1.0, -273.15))
+ * );
+ *
+ * UnitsConverter converter = new UnitsConverter(basicConversions);
+ * double result = converter.convert(&quot;Celsius&quot;, &quot;Fahrenheit&quot;, 100.0);
+ * // Output: 212.0 (Celsius to Fahrenheit conversion of 100°C)
+ * &lt;/pre&gt;
+ *
+ * &lt;h2&gt;Exception Handling&lt;/h2&gt;
+ * &lt;ul&gt;
+ *   &lt;li&gt;If the input unit and output unit are the same, an {@link IllegalArgumentException} is thrown.&lt;/li&gt;
+ *   &lt;li&gt;If a conversion between the requested units does not exist, a {@link NoSuchElementException} is thrown.&lt;/li&gt;
+ * &lt;/ul&gt;
+ */
+public final class UnitsConverter {
+    private final Map&lt;Pair&lt;String, String&gt;, AffineConverter&gt; conversions;
+    private final Set&lt;String&gt; units;
+
+    private static void putIfNeeded(Map&lt;Pair&lt;String, String&gt;, AffineConverter&gt; conversions, final String inputUnit, final String outputUnit, final AffineConverter converter) {
+<span class="fc bfc" id="L52" title="All 2 branches covered.">        if (!inputUnit.equals(outputUnit)) {</span>
+<span class="fc" id="L53">            final var key = Pair.of(inputUnit, outputUnit);</span>
+<span class="fc" id="L54">            conversions.putIfAbsent(key, converter);</span>
+        }
+<span class="fc" id="L56">    }</span>
+
+    private static Map&lt;Pair&lt;String, String&gt;, AffineConverter&gt; addInversions(final Map&lt;Pair&lt;String, String&gt;, AffineConverter&gt; knownConversions) {
+<span class="fc" id="L59">        Map&lt;Pair&lt;String, String&gt;, AffineConverter&gt; res = new HashMap&lt;Pair&lt;String, String&gt;, AffineConverter&gt;();</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">        for (final var curConversion : knownConversions.entrySet()) {</span>
+<span class="fc" id="L61">            final var inputUnit = curConversion.getKey().getKey();</span>
+<span class="fc" id="L62">            final var outputUnit = curConversion.getKey().getValue();</span>
+<span class="fc" id="L63">            putIfNeeded(res, inputUnit, outputUnit, curConversion.getValue());</span>
+<span class="fc" id="L64">            putIfNeeded(res, outputUnit, inputUnit, curConversion.getValue().invert());</span>
+<span class="fc" id="L65">        }</span>
+<span class="fc" id="L66">        return res;</span>
+    }
+
+    private static Map&lt;Pair&lt;String, String&gt;, AffineConverter&gt; addCompositions(final Map&lt;Pair&lt;String, String&gt;, AffineConverter&gt; knownConversions) {
+<span class="fc" id="L70">        Map&lt;Pair&lt;String, String&gt;, AffineConverter&gt; res = new HashMap&lt;Pair&lt;String, String&gt;, AffineConverter&gt;();</span>
+<span class="fc bfc" id="L71" title="All 2 branches covered.">        for (final var first : knownConversions.entrySet()) {</span>
+<span class="fc" id="L72">            final var firstKey = first.getKey();</span>
+<span class="fc" id="L73">            putIfNeeded(res, firstKey.getKey(), firstKey.getValue(), first.getValue());</span>
+<span class="fc bfc" id="L74" title="All 2 branches covered.">            for (final var second : knownConversions.entrySet()) {</span>
+<span class="fc" id="L75">                final var secondKey = second.getKey();</span>
+<span class="fc bfc" id="L76" title="All 2 branches covered.">                if (firstKey.getValue().equals(secondKey.getKey())) {</span>
+<span class="fc" id="L77">                    final var newConversion = second.getValue().compose(first.getValue());</span>
+<span class="fc" id="L78">                    putIfNeeded(res, firstKey.getKey(), secondKey.getValue(), newConversion);</span>
+                }
+<span class="fc" id="L80">            }</span>
+<span class="fc" id="L81">        }</span>
+<span class="fc" id="L82">        return res;</span>
+    }
+
+    private static Map&lt;Pair&lt;String, String&gt;, AffineConverter&gt; addAll(final Map&lt;Pair&lt;String, String&gt;, AffineConverter&gt; knownConversions) {
+<span class="fc" id="L86">        final var res = addInversions(knownConversions);</span>
+<span class="fc" id="L87">        return addCompositions(res);</span>
+    }
+
+    private static Map&lt;Pair&lt;String, String&gt;, AffineConverter&gt; computeAllConversions(final Map&lt;Pair&lt;String, String&gt;, AffineConverter&gt; basicConversions) {
+<span class="fc" id="L91">        var tmp = basicConversions;</span>
+<span class="fc" id="L92">        var res = addAll(tmp);</span>
+<span class="fc bfc" id="L93" title="All 2 branches covered.">        while (res.size() != tmp.size()) {</span>
+<span class="fc" id="L94">            tmp = res;</span>
+<span class="fc" id="L95">            res = addAll(tmp);</span>
+        }
+<span class="fc" id="L97">        return res;</span>
+    }
+
+    private static Set&lt;String&gt; extractUnits(final Map&lt;Pair&lt;String, String&gt;, AffineConverter&gt; conversions) {
+<span class="fc" id="L101">        Set&lt;String&gt; res = new HashSet&lt;&gt;();</span>
+<span class="fc bfc" id="L102" title="All 2 branches covered.">        for (final var conversion : conversions.entrySet()) {</span>
+<span class="fc" id="L103">            res.add(conversion.getKey().getKey());</span>
+<span class="fc" id="L104">        }</span>
+<span class="fc" id="L105">        return res;</span>
+    }
+
+    /**
+     * Constructor for {@code UnitsConverter}.
+     *
+     * &lt;p&gt;Accepts a map of basic conversions and automatically generates inverse and
+     * transitive conversions.
+     *
+     * @param basicConversions the initial set of unit conversions to add.
+     */
+<span class="fc" id="L116">    public UnitsConverter(final Map&lt;Pair&lt;String, String&gt;, AffineConverter&gt; basicConversions) {</span>
+<span class="fc" id="L117">        conversions = computeAllConversions(basicConversions);</span>
+<span class="fc" id="L118">        units = extractUnits(conversions);</span>
+<span class="fc" id="L119">    }</span>
+
+    /**
+     * Converts a value from one unit to another.
+     *
+     * @param inputUnit the unit of the input value.
+     * @param outputUnit the unit to convert the value into.
+     * @param value the value to convert.
+     * @return the converted value in the target unit.
+     * @throws IllegalArgumentException if inputUnit equals outputUnit.
+     * @throws NoSuchElementException if no conversion exists between the units.
+     */
+    public double convert(final String inputUnit, final String outputUnit, final double value) {
+<span class="fc bfc" id="L132" title="All 2 branches covered.">        if (inputUnit.equals(outputUnit)) {</span>
+<span class="fc" id="L133">            throw new IllegalArgumentException(&quot;inputUnit must be different from outputUnit.&quot;);</span>
+        }
+<span class="fc" id="L135">        final var conversionKey = Pair.of(inputUnit, outputUnit);</span>
+<span class="fc" id="L136">        return conversions.computeIfAbsent(conversionKey, k -&gt; { throw new NoSuchElementException(&quot;No converter for: &quot; + k); }).convert(value);</span>
+    }
+
+    /**
+     * Retrieves the set of all units supported by this converter.
+     *
+     * @return a set of available units.
+     */
+    public Set&lt;String&gt; availableUnits() {
+<span class="fc" id="L145">        return units;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

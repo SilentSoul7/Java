@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FibonacciSearch.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.searches</a> &gt; <span class="el_source">FibonacciSearch.java</span></div><h1>FibonacciSearch.java</h1><pre class="source lang-java linenums">package com.thealgorithms.searches;
+
+import com.thealgorithms.devutils.searches.SearchAlgorithm;
+
+/**
+ * FibonacciSearch is a search algorithm that finds the position of a target value in
+ * a sorted array using Fibonacci numbers.
+ *
+ * &lt;p&gt;
+ * The time complexity for this search algorithm is O(log n).
+ * The space complexity for this search algorithm is O(1).
+ * &lt;/p&gt;
+ *
+ * &lt;p&gt;
+ * Note: This algorithm requires that the input array be sorted.
+ * &lt;/p&gt;
+ */
+<span class="fc" id="L18">public class FibonacciSearch implements SearchAlgorithm {</span>
+
+    /**
+     * Finds the index of the specified key in a sorted array using Fibonacci search.
+     *
+     * @param array The sorted array to search.
+     * @param key The element to search for.
+     * @param &lt;T&gt; The type of the elements in the array, which must be comparable.
+     * @throws IllegalArgumentException if the input array is not sorted or empty, or if the key is null.
+     * @return The index of the key if found, otherwise -1.
+     */
+    @Override
+    public &lt;T extends Comparable&lt;T&gt;&gt; int find(T[] array, T key) {
+<span class="fc bfc" id="L31" title="All 2 branches covered.">        if (array.length == 0) {</span>
+<span class="fc" id="L32">            throw new IllegalArgumentException(&quot;Input array must not be empty.&quot;);</span>
+        }
+<span class="fc bfc" id="L34" title="All 2 branches covered.">        if (!isSorted(array)) {</span>
+<span class="fc" id="L35">            throw new IllegalArgumentException(&quot;Input array must be sorted.&quot;);</span>
+        }
+<span class="fc bfc" id="L37" title="All 2 branches covered.">        if (key == null) {</span>
+<span class="fc" id="L38">            throw new IllegalArgumentException(&quot;Key must not be null.&quot;);</span>
+        }
+
+<span class="fc" id="L41">        int fibMinus1 = 1;</span>
+<span class="fc" id="L42">        int fibMinus2 = 0;</span>
+<span class="fc" id="L43">        int fibNumber = fibMinus1 + fibMinus2;</span>
+<span class="fc" id="L44">        int n = array.length;</span>
+
+<span class="fc bfc" id="L46" title="All 2 branches covered.">        while (fibNumber &lt; n) {</span>
+<span class="fc" id="L47">            fibMinus2 = fibMinus1;</span>
+<span class="fc" id="L48">            fibMinus1 = fibNumber;</span>
+<span class="fc" id="L49">            fibNumber = fibMinus2 + fibMinus1;</span>
+        }
+
+<span class="fc" id="L52">        int offset = -1;</span>
+
+<span class="fc bfc" id="L54" title="All 2 branches covered.">        while (fibNumber &gt; 1) {</span>
+<span class="fc" id="L55">            int i = Math.min(offset + fibMinus2, n - 1);</span>
+
+<span class="fc bfc" id="L57" title="All 2 branches covered.">            if (array[i].compareTo(key) &lt; 0) {</span>
+<span class="fc" id="L58">                fibNumber = fibMinus1;</span>
+<span class="fc" id="L59">                fibMinus1 = fibMinus2;</span>
+<span class="fc" id="L60">                fibMinus2 = fibNumber - fibMinus1;</span>
+<span class="fc" id="L61">                offset = i;</span>
+<span class="fc bfc" id="L62" title="All 2 branches covered.">            } else if (array[i].compareTo(key) &gt; 0) {</span>
+<span class="fc" id="L63">                fibNumber = fibMinus2;</span>
+<span class="fc" id="L64">                fibMinus1 = fibMinus1 - fibMinus2;</span>
+<span class="fc" id="L65">                fibMinus2 = fibNumber - fibMinus1;</span>
+            } else {
+<span class="fc" id="L67">                return i;</span>
+            }
+<span class="fc" id="L69">        }</span>
+
+<span class="fc bfc" id="L71" title="All 4 branches covered.">        if (fibMinus1 == 1 &amp;&amp; array[offset + 1] == key) {</span>
+<span class="fc" id="L72">            return offset + 1;</span>
+        }
+
+<span class="fc" id="L75">        return -1;</span>
+    }
+
+    private boolean isSorted(Comparable[] array) {
+<span class="fc bfc" id="L79" title="All 2 branches covered.">        for (int i = 1; i &lt; array.length; i++) {</span>
+<span class="fc bfc" id="L80" title="All 2 branches covered.">            if (array[i - 1].compareTo(array[i]) &gt; 0) {</span>
+<span class="fc" id="L81">                return false;</span>
+            }
+        }
+<span class="fc" id="L84">        return true;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

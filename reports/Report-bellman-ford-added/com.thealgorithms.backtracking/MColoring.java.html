@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MColoring.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.backtracking</a> &gt; <span class="el_source">MColoring.java</span></div><h1>MColoring.java</h1><pre class="source lang-java linenums">package com.thealgorithms.backtracking;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Set;
+
+/**
+ * Node class represents a graph node. Each node is associated with a color
+ * (initially 1) and contains a set of edges representing its adjacent nodes.
+ *
+ * @author Bama Charan Chhandogi (https://github.com/BamaCharanChhandogi)
+ */
+<span class="fc" id="L15">class Node {</span>
+<span class="fc" id="L16">    int color = 1; // Initial color for each node</span>
+<span class="fc" id="L17">    Set&lt;Integer&gt; edges = new HashSet&lt;Integer&gt;(); // Set of edges representing adjacent nodes</span>
+}
+
+/**
+ * MColoring class solves the M-Coloring problem where the goal is to determine
+ * if it's possible to color a graph using at most M colors such that no two
+ * adjacent nodes have the same color.
+ */
+public final class MColoring {
+
+    private MColoring() {
+    } // Prevent instantiation of utility class
+
+    /**
+     * Determines whether it is possible to color the graph using at most M colors.
+     *
+     * @param nodes List of nodes representing the graph.
+     * @param n     The total number of nodes in the graph.
+     * @param m     The maximum number of allowed colors.
+     * @return true if the graph can be colored using M colors, false otherwise.
+     */
+    static boolean isColoringPossible(ArrayList&lt;Node&gt; nodes, int n, int m) {
+
+        // Visited array keeps track of whether each node has been processed.
+<span class="fc" id="L41">        ArrayList&lt;Integer&gt; visited = new ArrayList&lt;Integer&gt;();</span>
+<span class="fc bfc" id="L42" title="All 2 branches covered.">        for (int i = 0; i &lt; n + 1; i++) {</span>
+<span class="fc" id="L43">            visited.add(0); // Initialize all nodes as unvisited (0)</span>
+        }
+
+        // The number of colors used so far (initially set to 1, since all nodes
+        // start with color 1).
+<span class="fc" id="L48">        int maxColors = 1;</span>
+
+        // Loop through all the nodes to ensure every node is visited, in case the
+        // graph is disconnected.
+<span class="fc bfc" id="L52" title="All 2 branches covered.">        for (int sv = 1; sv &lt;= n; sv++) {</span>
+<span class="fc bfc" id="L53" title="All 2 branches covered.">            if (visited.get(sv) &gt; 0) {</span>
+<span class="fc" id="L54">                continue; // Skip nodes that are already visited</span>
+            }
+
+            // If the node is unvisited, mark it as visited and add it to the queue for BFS.
+<span class="fc" id="L58">            visited.set(sv, 1);</span>
+<span class="fc" id="L59">            Queue&lt;Integer&gt; q = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L60">            q.add(sv);</span>
+
+            // Perform BFS to process all nodes and their adjacent nodes
+<span class="fc bfc" id="L63" title="All 2 branches covered.">            while (q.size() != 0) {</span>
+<span class="fc" id="L64">                int top = q.peek(); // Get the current node from the queue</span>
+<span class="fc" id="L65">                q.remove();</span>
+
+                // Check all adjacent nodes of the current node
+<span class="fc bfc" id="L68" title="All 2 branches covered.">                for (int it : nodes.get(top).edges) {</span>
+
+                    // If the adjacent node has the same color as the current node, increment its
+                    // color to avoid conflict.
+<span class="fc bfc" id="L72" title="All 2 branches covered.">                    if (nodes.get(top).color == nodes.get(it).color) {</span>
+<span class="fc" id="L73">                        nodes.get(it).color += 1;</span>
+                    }
+
+                    // Keep track of the maximum number of colors used so far
+<span class="fc" id="L77">                    maxColors = Math.max(maxColors, Math.max(nodes.get(top).color, nodes.get(it).color));</span>
+
+                    // If the number of colors used exceeds the allowed limit M, return false.
+<span class="fc bfc" id="L80" title="All 2 branches covered.">                    if (maxColors &gt; m) {</span>
+<span class="fc" id="L81">                        return false;</span>
+                    }
+
+                    // If the adjacent node hasn't been visited yet, mark it as visited and add it
+                    // to the queue for further processing.
+<span class="fc bfc" id="L86" title="All 2 branches covered.">                    if (visited.get(it) == 0) {</span>
+<span class="fc" id="L87">                        visited.set(it, 1);</span>
+<span class="fc" id="L88">                        q.add(it);</span>
+                    }
+<span class="fc" id="L90">                }</span>
+<span class="fc" id="L91">            }</span>
+        }
+
+<span class="fc" id="L94">        return true; // Possible to color the entire graph with M or fewer colors.</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

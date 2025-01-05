@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MinimizingLateness.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.greedyalgorithms</a> &gt; <span class="el_source">MinimizingLateness.java</span></div><h1>MinimizingLateness.java</h1><pre class="source lang-java linenums">package com.thealgorithms.greedyalgorithms;
+
+import java.util.Arrays;
+
+public final class MinimizingLateness {
+    private MinimizingLateness() {
+    }
+
+    public static class Job {
+        String jobName;
+<span class="fc" id="L11">        int startTime = 0;</span>
+<span class="fc" id="L12">        int lateness = 0;</span>
+        int processingTime;
+        int deadline;
+
+<span class="fc" id="L16">        public Job(String jobName, int processingTime, int deadline) {</span>
+<span class="fc" id="L17">            this.jobName = jobName;</span>
+<span class="fc" id="L18">            this.processingTime = processingTime;</span>
+<span class="fc" id="L19">            this.deadline = deadline;</span>
+<span class="fc" id="L20">        }</span>
+
+        public static Job of(String jobName, int processingTime, int deadline) {
+<span class="nc" id="L23">            return new Job(jobName, processingTime, deadline);</span>
+        }
+
+        @Override
+        public String toString() {
+<span class="nc" id="L28">            return String.format(&quot;%s, startTime: %d, endTime: %d, lateness: %d&quot;, jobName, startTime, processingTime + startTime, lateness);</span>
+        }
+    }
+
+    static void calculateLateness(Job... jobs) {
+
+        // sort the jobs based on their deadline
+<span class="fc" id="L35">        Arrays.sort(jobs, (a, b) -&gt; a.deadline - b.deadline);</span>
+
+<span class="fc" id="L37">        int startTime = 0;</span>
+
+<span class="fc bfc" id="L39" title="All 2 branches covered.">        for (Job job : jobs) {</span>
+<span class="fc" id="L40">            job.startTime = startTime;</span>
+<span class="fc" id="L41">            startTime += job.processingTime;</span>
+<span class="fc" id="L42">            job.lateness = Math.max(0, startTime - job.deadline); // if the job finishes before deadline the lateness is 0</span>
+        }
+<span class="fc" id="L44">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

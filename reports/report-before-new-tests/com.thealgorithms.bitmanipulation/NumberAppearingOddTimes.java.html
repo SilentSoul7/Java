@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NumberAppearingOddTimes.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.bitmanipulation</a> &gt; <span class="el_source">NumberAppearingOddTimes.java</span></div><h1>NumberAppearingOddTimes.java</h1><pre class="source lang-java linenums">package com.thealgorithms.bitmanipulation;
+
+/**
+ * This class provides a method to find the element that appears an
+ * odd number of times in an array. All other elements in the array
+ * must appear an even number of times for the logic to work.
+ *
+ * The solution uses the XOR operation, which has the following properties:
+ * - a ^ a = 0 (XOR-ing the same numbers cancels them out)
+ * - a ^ 0 = a
+ * - XOR is commutative and associative.
+ *
+ * Time Complexity: O(n), where n is the size of the array.
+ * Space Complexity: O(1), as no extra space is used.
+ *
+ * Usage Example:
+ * int result = NumberAppearingOddTimes.findOddOccurrence(new int[]{1, 2, 1, 2, 3});
+ * // result will be 3
+ *
+ * @author Lakshyajeet Singh Goyal (https://github.com/DarkMatter-999)
+ */
+
+public final class NumberAppearingOddTimes {
+    private NumberAppearingOddTimes() {
+    }
+
+    /**
+     * Finds the element in the array that appears an odd number of times.
+     *
+     * @param arr the input array containing integers, where all elements
+     *            except one appear an even number of times.
+     * @return the integer that appears an odd number of times.
+     */
+    public static int findOddOccurrence(int[] arr) {
+<span class="fc" id="L35">        int result = 0;</span>
+<span class="fc bfc" id="L36" title="All 2 branches covered.">        for (int num : arr) {</span>
+<span class="fc" id="L37">            result ^= num;</span>
+        }
+<span class="fc" id="L39">        return result;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ArrayLeftRotation.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.others</a> &gt; <span class="el_source">ArrayLeftRotation.java</span></div><h1>ArrayLeftRotation.java</h1><pre class="source lang-java linenums">package com.thealgorithms.others;
+
+/**
+ * Provides a method to perform a left rotation on an array.
+ * A left rotation operation shifts each element of the array
+ * by a specified number of positions to the left.
+ *
+ * @author sangin-lee
+ */
+public final class ArrayLeftRotation {
+    private ArrayLeftRotation() {
+    }
+
+    /**
+     * Performs a left rotation on the given array by the specified number of positions.
+     *
+     * @param arr the array to be rotated
+     * @param n the number of positions to rotate the array to the left
+     * @return a new array containing the elements of the input array rotated to the left
+     */
+    public static int[] rotateLeft(int[] arr, int n) {
+<span class="fc" id="L22">        int size = arr.length;</span>
+
+        // Handle cases where array is empty or rotation count is zero
+<span class="fc bfc" id="L25" title="All 4 branches covered.">        if (size == 0 || n &lt;= 0) {</span>
+<span class="fc" id="L26">            return arr.clone();</span>
+        }
+
+        // Normalize the number of rotations
+<span class="fc" id="L30">        n = n % size;</span>
+<span class="fc bfc" id="L31" title="All 2 branches covered.">        if (n == 0) {</span>
+<span class="fc" id="L32">            return arr.clone();</span>
+        }
+
+<span class="fc" id="L35">        int[] rotated = new int[size];</span>
+
+        // Perform rotation
+<span class="fc bfc" id="L38" title="All 2 branches covered.">        for (int i = 0; i &lt; size; i++) {</span>
+<span class="fc" id="L39">            rotated[i] = arr[(i + n) % size];</span>
+        }
+
+<span class="fc" id="L42">        return rotated;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

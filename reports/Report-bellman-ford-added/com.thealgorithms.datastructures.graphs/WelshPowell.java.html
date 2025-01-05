@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WelshPowell.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.graphs</a> &gt; <span class="el_source">WelshPowell.java</span></div><h1>WelshPowell.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.graphs;
+
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.stream.IntStream;
+
+/**
+ * The Welsh-Powell algorithm is a graph coloring algorithm that aims to color a graph
+ * using the minimum number of colors such that no two adjacent vertices share the same color.
+ *
+ * &lt;p&gt;
+ * The algorithm works by:
+ * &lt;ol&gt;
+ * &lt;li&gt;Sorting the vertices in descending order based on their degrees (number of edges connected).&lt;/li&gt;
+ * &lt;li&gt;Iterating through each vertex and assigning it the smallest available color that has not been used by its adjacent vertices.&lt;/li&gt;
+ * &lt;li&gt;Coloring adjacent vertices with the same color is avoided.&lt;/li&gt;
+ * &lt;/ol&gt;
+ * &lt;/p&gt;
+ *
+ * &lt;p&gt;
+ * For more information, see &lt;a href=&quot;https://en.wikipedia.org/wiki/Graph_coloring&quot;&gt;Graph Coloring&lt;/a&gt;.
+ * &lt;/p&gt;
+ */
+public final class WelshPowell {
+    private static final int BLANK_COLOR = -1; // Constant representing an uncolored state
+
+    private WelshPowell() {
+    }
+
+    /**
+     * Represents a graph using an adjacency list.
+     */
+    static final class Graph {
+        private final HashSet&lt;Integer&gt;[] adjacencyLists;
+
+        /**
+         * Initializes a graph with a specified number of vertices.
+         *
+         * @param vertices the number of vertices in the graph
+         * @throws IllegalArgumentException if the number of vertices is negative
+         */
+<span class="fc" id="L43">        private Graph(int vertices) {</span>
+<span class="fc bfc" id="L44" title="All 2 branches covered.">            if (vertices &lt; 0) {</span>
+<span class="fc" id="L45">                throw new IllegalArgumentException(&quot;Number of vertices cannot be negative&quot;);</span>
+            }
+
+<span class="fc" id="L48">            adjacencyLists = new HashSet[vertices];</span>
+<span class="fc" id="L49">            Arrays.setAll(adjacencyLists, i -&gt; new HashSet&lt;&gt;());</span>
+<span class="fc" id="L50">        }</span>
+
+        /**
+         * Adds an edge between two vertices in the graph.
+         *
+         * @param nodeA one end of the edge
+         * @param nodeB the other end of the edge
+         * @throws IllegalArgumentException if the vertices are out of bounds or if a self-loop is attempted
+         */
+        private void addEdge(int nodeA, int nodeB) {
+<span class="fc" id="L60">            validateVertex(nodeA);</span>
+<span class="fc" id="L61">            validateVertex(nodeB);</span>
+<span class="fc bfc" id="L62" title="All 2 branches covered.">            if (nodeA == nodeB) {</span>
+<span class="fc" id="L63">                throw new IllegalArgumentException(&quot;Self-loops are not allowed&quot;);</span>
+            }
+<span class="fc" id="L65">            adjacencyLists[nodeA].add(nodeB);</span>
+<span class="fc" id="L66">            adjacencyLists[nodeB].add(nodeA);</span>
+<span class="fc" id="L67">        }</span>
+
+        /**
+         * Validates that the vertex index is within the bounds of the graph.
+         *
+         * @param vertex the index of the vertex to validate
+         * @throws IllegalArgumentException if the vertex is out of bounds
+         */
+        private void validateVertex(int vertex) {
+<span class="fc bfc" id="L76" title="All 4 branches covered.">            if (vertex &lt; 0 || vertex &gt;= getNumVertices()) {</span>
+<span class="fc" id="L77">                throw new IllegalArgumentException(&quot;Vertex &quot; + vertex + &quot; is out of bounds&quot;);</span>
+            }
+<span class="fc" id="L79">        }</span>
+
+        /**
+         * Returns the adjacency list for a specific vertex.
+         *
+         * @param vertex the index of the vertex
+         * @return the set of adjacent vertices
+         */
+        HashSet&lt;Integer&gt; getAdjacencyList(int vertex) {
+<span class="fc" id="L88">            return adjacencyLists[vertex];</span>
+        }
+
+        /**
+         * Returns the number of vertices in the graph.
+         *
+         * @return the number of vertices
+         */
+        int getNumVertices() {
+<span class="fc" id="L97">            return adjacencyLists.length;</span>
+        }
+    }
+
+    /**
+     * Creates a graph with the specified number of vertices and edges.
+     *
+     * @param numberOfVertices the total number of vertices
+     * @param listOfEdges a 2D array representing edges where each inner array contains two vertex indices
+     * @return a Graph object representing the created graph
+     * @throws IllegalArgumentException if the edge array is invalid or vertices are out of bounds
+     */
+    public static Graph makeGraph(int numberOfVertices, int[][] listOfEdges) {
+<span class="fc" id="L110">        Graph graph = new Graph(numberOfVertices);</span>
+<span class="fc bfc" id="L111" title="All 2 branches covered.">        for (int[] edge : listOfEdges) {</span>
+<span class="fc bfc" id="L112" title="All 2 branches covered.">            if (edge.length != 2) {</span>
+<span class="fc" id="L113">                throw new IllegalArgumentException(&quot;Edge array must have exactly two elements&quot;);</span>
+            }
+<span class="fc" id="L115">            graph.addEdge(edge[0], edge[1]);</span>
+        }
+<span class="fc" id="L117">        return graph;</span>
+    }
+
+    /**
+     * Finds the coloring of the given graph using the Welsh-Powell algorithm.
+     *
+     * @param graph the input graph to color
+     * @return an array of integers where each index represents a vertex and the value represents the color assigned
+     */
+    public static int[] findColoring(Graph graph) {
+<span class="fc" id="L127">        int[] colors = initializeColors(graph.getNumVertices());</span>
+<span class="fc" id="L128">        Integer[] sortedVertices = getSortedNodes(graph);</span>
+<span class="fc bfc" id="L129" title="All 2 branches covered.">        for (int vertex : sortedVertices) {</span>
+<span class="fc bfc" id="L130" title="All 2 branches covered.">            if (isBlank(colors[vertex])) {</span>
+<span class="fc" id="L131">                boolean[] usedColors = computeUsedColors(graph, vertex, colors);</span>
+<span class="fc" id="L132">                final var newColor = firstUnusedColor(usedColors);</span>
+<span class="fc" id="L133">                colors[vertex] = newColor;</span>
+<span class="fc" id="L134">                Arrays.stream(sortedVertices).forEach(otherVertex -&gt; {</span>
+<span class="fc bfc" id="L135" title="All 4 branches covered.">                    if (isBlank(colors[otherVertex]) &amp;&amp; !isAdjacentToColored(graph, otherVertex, colors)) {</span>
+<span class="fc" id="L136">                        colors[otherVertex] = newColor;</span>
+                    }
+<span class="fc" id="L138">                });</span>
+            }
+        }
+<span class="fc" id="L141">        return colors;</span>
+    }
+
+    /**
+     * Helper method to check if a color is unassigned
+     *
+     * @param color the color to check
+     * @return {@code true} if the color is unassigned, {@code false} otherwise
+     */
+    private static boolean isBlank(int color) {
+<span class="fc bfc" id="L151" title="All 2 branches covered.">        return color == BLANK_COLOR;</span>
+    }
+
+    /**
+     * Checks if a vertex has adjacent colored vertices
+     *
+     * @param graph the input graph
+     * @param vertex the vertex to check
+     * @param colors the array of colors assigned to the vertices
+     * @return {@code true} if the vertex has adjacent colored vertices, {@code false} otherwise
+     */
+    private static boolean isAdjacentToColored(Graph graph, int vertex, int[] colors) {
+<span class="fc bfc" id="L163" title="All 2 branches covered.">        return graph.getAdjacencyList(vertex).stream().anyMatch(otherVertex -&gt; !isBlank(colors[otherVertex]));</span>
+    }
+
+    /**
+     * Initializes the colors array with blank color
+     *
+     * @param numberOfVertices the number of vertices in the graph
+     * @return an array of integers representing the colors assigned to the vertices
+     */
+    private static int[] initializeColors(int numberOfVertices) {
+<span class="fc" id="L173">        int[] colors = new int[numberOfVertices];</span>
+<span class="fc" id="L174">        Arrays.fill(colors, BLANK_COLOR);</span>
+<span class="fc" id="L175">        return colors;</span>
+    }
+
+    /**
+     * Sorts the vertices by their degree in descending order
+     *
+     * @param graph the input graph
+     * @return an array of integers representing the vertices sorted by degree
+     */
+    private static Integer[] getSortedNodes(final Graph graph) {
+<span class="fc" id="L185">        return IntStream.range(0, graph.getNumVertices()).boxed().sorted(Comparator.comparingInt(v -&gt; - graph.getAdjacencyList(v).size())).toArray(Integer[] ::new);</span>
+    }
+
+    /**
+     * Computes the colors already used by the adjacent vertices
+     *
+     * @param graph the input graph
+     * @param vertex the vertex to check
+     * @param colors the array of colors assigned to the vertices
+     * @return an array of booleans representing the colors used by the adjacent vertices
+     */
+    private static boolean[] computeUsedColors(final Graph graph, final int vertex, final int[] colors) {
+<span class="fc" id="L197">        boolean[] usedColors = new boolean[graph.getNumVertices()];</span>
+<span class="fc bfc" id="L198" title="All 2 branches covered.">        graph.getAdjacencyList(vertex).stream().map(neighbor -&gt; colors[neighbor]).filter(color -&gt; !isBlank(color)).forEach(color -&gt; usedColors[color] = true);</span>
+<span class="fc" id="L199">        return usedColors;</span>
+    }
+
+    /**
+     * Finds the first unused color
+     *
+     * @param usedColors the array of colors used by the adjacent vertices
+     * @return the first unused color
+     */
+    private static int firstUnusedColor(boolean[] usedColors) {
+<span class="fc bfc" id="L209" title="All 2 branches covered.">        return IntStream.range(0, usedColors.length).filter(color -&gt; !usedColors[color]).findFirst().getAsInt();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

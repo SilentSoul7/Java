@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TwosComplement.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.bitmanipulation</a> &gt; <span class="el_source">TwosComplement.java</span></div><h1>TwosComplement.java</h1><pre class="source lang-java linenums">package com.thealgorithms.bitmanipulation;
+
+/**
+ * This class provides a method to compute the Two's Complement of a given binary number.
+ *
+ * &lt;p&gt;In two's complement representation, a binary number's negative value is obtained
+ * by taking the one's complement (inverting all bits) and then adding 1 to the result.
+ * This method handles both small and large binary strings and ensures the output is
+ * correct for all binary inputs, including edge cases like all zeroes and all ones.
+ *
+ * &lt;p&gt;For more information on Two's Complement:
+ * @see &lt;a href=&quot;https://en.wikipedia.org/wiki/Two%27s_complement&quot;&gt;Wikipedia - Two's Complement&lt;/a&gt;
+ *
+ * &lt;p&gt;Algorithm originally suggested by Jon von Neumann.
+ *
+ * @author Abhinay Verma (https://github.com/Monk-AbhinayVerma)
+ */
+public final class TwosComplement {
+    private TwosComplement() {
+    }
+
+    /**
+     * Computes the Two's Complement of the given binary string.
+     * Steps:
+     * 1. Compute the One's Complement (invert all bits).
+     * 2. Add 1 to the One's Complement to get the Two's Complement.
+     * 3. Iterate from the rightmost bit to the left, adding 1 and carrying over as needed.
+     * 4. If a carry is still present after the leftmost bit, prepend '1' to handle overflow.
+     *
+     * @param binary The binary number as a string (only '0' and '1' characters allowed).
+     * @return The two's complement of the input binary string as a new binary string.
+     * @throws IllegalArgumentException If the input contains non-binary characters.
+     */
+    public static String twosComplement(String binary) {
+<span class="fc bfc" id="L35" title="All 2 branches covered.">        if (!binary.matches(&quot;[01]+&quot;)) {</span>
+<span class="fc" id="L36">            throw new IllegalArgumentException(&quot;Input must contain only '0' and '1'.&quot;);</span>
+        }
+
+<span class="fc" id="L39">        StringBuilder onesComplement = new StringBuilder();</span>
+<span class="fc bfc" id="L40" title="All 2 branches covered.">        for (char bit : binary.toCharArray()) {</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">            onesComplement.append(bit == '0' ? '1' : '0');</span>
+        }
+
+<span class="fc" id="L44">        StringBuilder twosComplement = new StringBuilder(onesComplement);</span>
+<span class="fc" id="L45">        boolean carry = true;</span>
+
+<span class="fc bfc" id="L47" title="All 4 branches covered.">        for (int i = onesComplement.length() - 1; i &gt;= 0 &amp;&amp; carry; i--) {</span>
+<span class="fc bfc" id="L48" title="All 2 branches covered.">            if (onesComplement.charAt(i) == '1') {</span>
+<span class="fc" id="L49">                twosComplement.setCharAt(i, '0');</span>
+            } else {
+<span class="fc" id="L51">                twosComplement.setCharAt(i, '1');</span>
+<span class="fc" id="L52">                carry = false;</span>
+            }
+        }
+
+<span class="fc bfc" id="L56" title="All 2 branches covered.">        if (carry) {</span>
+<span class="fc" id="L57">            twosComplement.insert(0, '1');</span>
+        }
+
+<span class="fc" id="L60">        return twosComplement.toString();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

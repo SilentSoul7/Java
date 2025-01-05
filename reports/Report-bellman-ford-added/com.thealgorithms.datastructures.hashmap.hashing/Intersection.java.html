@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Intersection.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.hashmap.hashing</a> &gt; <span class="el_source">Intersection.java</span></div><h1>Intersection.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.hashmap.hashing;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * The {@code Intersection} class provides a method to compute the intersection of two integer arrays.
+ * The intersection is defined as the set of common elements present in both arrays.
+ * &lt;p&gt;
+ * This class utilizes a HashMap to efficiently count occurrences of elements in the first array,
+ * allowing for an efficient lookup of common elements in the second array.
+ * &lt;/p&gt;
+ *
+ * &lt;p&gt;
+ * Example:
+ * &lt;pre&gt;
+ * int[] array1 = {1, 2, 2, 1};
+ * int[] array2 = {2, 2};
+ * List&lt;Integer&gt; result = Intersection.intersection(array1, array2); // result will contain [2, 2]
+ * &lt;/pre&gt;
+ * &lt;/p&gt;
+ *
+ * &lt;p&gt;
+ * Note: The order of the returned list may vary since it depends on the order of elements
+ * in the input arrays.
+ * &lt;/p&gt;
+ */
+public final class Intersection {
+
+    /**
+     * Computes the intersection of two integer arrays.
+     * Steps:
+     * 1. Count the occurrences of each element in the first array using a HashMap.
+     * 2. Iterate over the second array and check if the element is present in the HashMap.
+     * If it is, add it to the result list and decrement the count in the HashMap.
+     * 3. Return the result list containing the intersection of the two arrays.
+     *
+     * @param arr1 the first array of integers
+     * @param arr2 the second array of integers
+     * @return a list containing the intersection of the two arrays, or an empty list if either array is null or empty
+     */
+    public static List&lt;Integer&gt; intersection(int[] arr1, int[] arr2) {
+<span class="fc bfc" id="L46" title="All 8 branches covered.">        if (arr1 == null || arr2 == null || arr1.length == 0 || arr2.length == 0) {</span>
+<span class="fc" id="L47">            return Collections.emptyList();</span>
+        }
+
+<span class="fc" id="L50">        Map&lt;Integer, Integer&gt; cnt = new HashMap&lt;&gt;(16);</span>
+<span class="fc bfc" id="L51" title="All 2 branches covered.">        for (int v : arr1) {</span>
+<span class="fc" id="L52">            cnt.put(v, cnt.getOrDefault(v, 0) + 1);</span>
+        }
+
+<span class="fc" id="L55">        List&lt;Integer&gt; res = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">        for (int v : arr2) {</span>
+<span class="fc bfc" id="L57" title="All 4 branches covered.">            if (cnt.containsKey(v) &amp;&amp; cnt.get(v) &gt; 0) {</span>
+<span class="fc" id="L58">                res.add(v);</span>
+<span class="fc" id="L59">                cnt.put(v, cnt.get(v) - 1);</span>
+            }
+        }
+<span class="fc" id="L62">        return res;</span>
+    }
+
+    private Intersection() {
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

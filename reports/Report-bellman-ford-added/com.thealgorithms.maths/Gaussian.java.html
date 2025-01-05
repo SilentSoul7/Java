@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Gaussian.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.maths</a> &gt; <span class="el_source">Gaussian.java</span></div><h1>Gaussian.java</h1><pre class="source lang-java linenums">package com.thealgorithms.maths;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public final class Gaussian {
+    private Gaussian() {
+    }
+
+    public static ArrayList&lt;Double&gt; gaussian(int matSize, List&lt;Double&gt; matrix) {
+        int i;
+<span class="fc" id="L12">        int j = 0;</span>
+
+<span class="fc" id="L14">        double[][] mat = new double[matSize + 1][matSize + 1];</span>
+<span class="fc" id="L15">        double[][] x = new double[matSize][matSize + 1];</span>
+
+        // Values from arraylist to matrix
+<span class="fc bfc" id="L18" title="All 2 branches covered.">        for (i = 0; i &lt; matSize; i++) {</span>
+<span class="fc bfc" id="L19" title="All 2 branches covered.">            for (j = 0; j &lt;= matSize; j++) {</span>
+<span class="fc" id="L20">                mat[i][j] = matrix.get(i);</span>
+            }
+        }
+
+<span class="fc" id="L24">        mat = gaussianElimination(matSize, i, mat);</span>
+<span class="fc" id="L25">        return valueOfGaussian(matSize, x, mat);</span>
+    }
+
+    // Perform Gaussian elimination
+    public static double[][] gaussianElimination(int matSize, int i, double[][] mat) {
+<span class="fc" id="L30">        int step = 0;</span>
+<span class="fc bfc" id="L31" title="All 2 branches covered.">        for (step = 0; step &lt; matSize - 1; step++) {</span>
+<span class="fc bfc" id="L32" title="All 2 branches covered.">            for (i = step; i &lt; matSize - 1; i++) {</span>
+<span class="fc" id="L33">                double a = (mat[i + 1][step] / mat[step][step]);</span>
+
+<span class="fc bfc" id="L35" title="All 2 branches covered.">                for (int j = step; j &lt;= matSize; j++) {</span>
+<span class="fc" id="L36">                    mat[i + 1][j] = mat[i + 1][j] - (a * mat[step][j]);</span>
+                }
+            }
+        }
+<span class="fc" id="L40">        return mat;</span>
+    }
+
+    // calculate the x_1, x_2, ... values of the gaussian and save it in an arraylist.
+    public static ArrayList&lt;Double&gt; valueOfGaussian(int matSize, double[][] x, double[][] mat) {
+<span class="fc" id="L45">        ArrayList&lt;Double&gt; answerArray = new ArrayList&lt;Double&gt;();</span>
+        int i;
+        int j;
+
+<span class="fc bfc" id="L49" title="All 2 branches covered.">        for (i = 0; i &lt; matSize; i++) {</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">            for (j = 0; j &lt;= matSize; j++) {</span>
+<span class="fc" id="L51">                x[i][j] = mat[i][j];</span>
+            }
+        }
+
+<span class="fc bfc" id="L55" title="All 2 branches covered.">        for (i = matSize - 1; i &gt;= 0; i--) {</span>
+<span class="fc" id="L56">            double sum = 0;</span>
+<span class="fc bfc" id="L57" title="All 2 branches covered.">            for (j = matSize - 1; j &gt; i; j--) {</span>
+<span class="fc" id="L58">                x[i][j] = x[j][j] * x[i][j];</span>
+<span class="fc" id="L59">                sum = x[i][j] + sum;</span>
+            }
+<span class="fc bfc" id="L61" title="All 2 branches covered.">            if (x[i][i] == 0) {</span>
+<span class="fc" id="L62">                x[i][i] = 0;</span>
+            } else {
+<span class="fc" id="L64">                x[i][i] = (x[i][matSize] - sum) / (x[i][i]);</span>
+            }
+<span class="fc" id="L66">            answerArray.add(x[i][j]);</span>
+        }
+<span class="fc" id="L68">        return answerArray;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

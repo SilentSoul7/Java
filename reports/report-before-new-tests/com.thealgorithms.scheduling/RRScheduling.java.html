@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RRScheduling.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.scheduling</a> &gt; <span class="el_source">RRScheduling.java</span></div><h1>RRScheduling.java</h1><pre class="source lang-java linenums">/**
+ * @author Md Asif Joardar
+ */
+
+package com.thealgorithms.scheduling;
+
+import com.thealgorithms.devutils.entities.ProcessDetails;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+
+/**
+ * The Round-robin scheduling algorithm is a kind of preemptive First come, First Serve CPU
+ * Scheduling algorithm. This can be understood here -
+ * https://www.scaler.com/topics/round-robin-scheduling-in-os/
+ */
+
+public class RRScheduling {
+    private List&lt;ProcessDetails&gt; processes;
+    private int quantumTime;
+
+<span class="fc" id="L23">    RRScheduling(final List&lt;ProcessDetails&gt; processes, int quantumTime) {</span>
+<span class="fc" id="L24">        this.processes = processes;</span>
+<span class="fc" id="L25">        this.quantumTime = quantumTime;</span>
+<span class="fc" id="L26">    }</span>
+
+    public void scheduleProcesses() {
+<span class="fc" id="L29">        evaluateTurnAroundTime();</span>
+<span class="fc" id="L30">        evaluateWaitingTime();</span>
+<span class="fc" id="L31">    }</span>
+
+    private void evaluateTurnAroundTime() {
+<span class="fc" id="L34">        int processesNumber = processes.size();</span>
+
+<span class="pc bpc" id="L36" title="1 of 2 branches missed.">        if (processesNumber == 0) {</span>
+<span class="nc" id="L37">            return;</span>
+        }
+
+<span class="fc" id="L40">        Queue&lt;Integer&gt; queue = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L41">        queue.add(0);</span>
+<span class="fc" id="L42">        int currentTime = 0; // keep track of the time</span>
+<span class="fc" id="L43">        int completed = 0;</span>
+<span class="fc" id="L44">        int[] mark = new int[processesNumber];</span>
+<span class="fc" id="L45">        Arrays.fill(mark, 0);</span>
+<span class="fc" id="L46">        mark[0] = 1;</span>
+
+        // a copy of burst time to store the remaining burst time
+<span class="fc" id="L49">        int[] remainingBurstTime = new int[processesNumber];</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">        for (int i = 0; i &lt; processesNumber; i++) {</span>
+<span class="fc" id="L51">            remainingBurstTime[i] = processes.get(i).getBurstTime();</span>
+        }
+
+<span class="fc bfc" id="L54" title="All 2 branches covered.">        while (completed != processesNumber) {</span>
+<span class="fc" id="L55">            int index = queue.poll();</span>
+
+<span class="fc bfc" id="L57" title="All 2 branches covered.">            if (remainingBurstTime[index] == processes.get(index).getBurstTime()) {</span>
+<span class="fc" id="L58">                currentTime = Math.max(currentTime, processes.get(index).getArrivalTime());</span>
+            }
+
+<span class="fc bfc" id="L61" title="All 2 branches covered.">            if (remainingBurstTime[index] - quantumTime &gt; 0) {</span>
+<span class="fc" id="L62">                remainingBurstTime[index] -= quantumTime;</span>
+<span class="fc" id="L63">                currentTime += quantumTime;</span>
+            } else {
+<span class="fc" id="L65">                currentTime += remainingBurstTime[index];</span>
+<span class="fc" id="L66">                processes.get(index).setTurnAroundTimeTime(currentTime - processes.get(index).getArrivalTime());</span>
+<span class="fc" id="L67">                completed++;</span>
+<span class="fc" id="L68">                remainingBurstTime[index] = 0;</span>
+            }
+
+            // If some process has arrived when this process was executing, insert them into the
+            // queue.
+<span class="fc bfc" id="L73" title="All 2 branches covered.">            for (int i = 1; i &lt; processesNumber; i++) {</span>
+<span class="fc bfc" id="L74" title="All 6 branches covered.">                if (remainingBurstTime[i] &gt; 0 &amp;&amp; processes.get(i).getArrivalTime() &lt;= currentTime &amp;&amp; mark[i] == 0) {</span>
+<span class="fc" id="L75">                    mark[i] = 1;</span>
+<span class="fc" id="L76">                    queue.add(i);</span>
+                }
+            }
+
+            // If the current process has burst time remaining, push the process into the queue
+            // again.
+<span class="fc bfc" id="L82" title="All 2 branches covered.">            if (remainingBurstTime[index] &gt; 0) {</span>
+<span class="fc" id="L83">                queue.add(index);</span>
+            }
+
+            // If the queue is empty, pick the first process from the list that is not completed.
+<span class="fc bfc" id="L87" title="All 2 branches covered.">            if (queue.isEmpty()) {</span>
+<span class="fc bfc" id="L88" title="All 2 branches covered.">                for (int i = 1; i &lt; processesNumber; i++) {</span>
+<span class="pc bpc" id="L89" title="1 of 2 branches missed.">                    if (remainingBurstTime[i] &gt; 0) {</span>
+<span class="nc" id="L90">                        mark[i] = 1;</span>
+<span class="nc" id="L91">                        queue.add(i);</span>
+<span class="nc" id="L92">                        break;</span>
+                    }
+                }
+            }
+<span class="fc" id="L96">        }</span>
+<span class="fc" id="L97">    }</span>
+
+    private void evaluateWaitingTime() {
+<span class="fc bfc" id="L100" title="All 2 branches covered.">        for (final var process : processes) {</span>
+<span class="fc" id="L101">            process.setWaitingTime(process.getTurnAroundTimeTime() - process.getBurstTime());</span>
+<span class="fc" id="L102">        }</span>
+<span class="fc" id="L103">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

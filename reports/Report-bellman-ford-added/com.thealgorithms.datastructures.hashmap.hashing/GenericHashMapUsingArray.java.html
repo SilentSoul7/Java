@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GenericHashMapUsingArray.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.hashmap.hashing</a> &gt; <span class="el_source">GenericHashMapUsingArray.java</span></div><h1>GenericHashMapUsingArray.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.hashmap.hashing;
+
+import java.util.LinkedList;
+
+/**
+ * A generic implementation of a hash map using an array of linked lists for collision resolution.
+ * This class provides a way to store key-value pairs efficiently, allowing for average-case
+ * constant time complexity for insertion, deletion, and retrieval operations.
+ *
+ * &lt;p&gt;
+ * The hash map uses separate chaining for collision resolution. Each bucket in the hash map is a
+ * linked list that stores nodes containing key-value pairs. When a collision occurs (i.e., when
+ * two keys hash to the same index), the new key-value pair is simply added to the corresponding
+ * linked list.
+ * &lt;/p&gt;
+ *
+ * &lt;p&gt;
+ * The hash map automatically resizes itself when the load factor exceeds 0.75. The load factor is
+ * defined as the ratio of the number of entries to the number of buckets. When resizing occurs,
+ * all existing entries are rehashed and inserted into the new buckets.
+ * &lt;/p&gt;
+ *
+ * @param &lt;K&gt; the type of keys maintained by this hash map
+ * @param &lt;V&gt; the type of mapped values
+ */
+public class GenericHashMapUsingArray&lt;K, V&gt; {
+
+    private int size; // Total number of key-value pairs
+    private LinkedList&lt;Node&gt;[] buckets; // Array of linked lists (buckets) for storing entries
+
+    /**
+     * Constructs a new empty hash map with an initial capacity of 16.
+     */
+<span class="fc" id="L34">    public GenericHashMapUsingArray() {</span>
+<span class="fc" id="L35">        initBuckets(16);</span>
+<span class="fc" id="L36">        size = 0;</span>
+<span class="fc" id="L37">    }</span>
+
+    /**
+     * Initializes the buckets for the hash map with the specified number of buckets.
+     *
+     * @param n the number of buckets to initialize
+     */
+    private void initBuckets(int n) {
+<span class="fc" id="L45">        buckets = new LinkedList[n];</span>
+<span class="fc bfc" id="L46" title="All 2 branches covered.">        for (int i = 0; i &lt; buckets.length; i++) {</span>
+<span class="fc" id="L47">            buckets[i] = new LinkedList&lt;&gt;();</span>
+        }
+<span class="fc" id="L49">    }</span>
+
+    /**
+     * Associates the specified value with the specified key in this map.
+     * If the map previously contained a mapping for the key, the old value is replaced.
+     *
+     * @param key the key with which the specified value is to be associated
+     * @param value the value to be associated with the specified key
+     */
+    public void put(K key, V value) {
+<span class="fc" id="L59">        int bucketIndex = hashFunction(key);</span>
+<span class="fc" id="L60">        LinkedList&lt;Node&gt; nodes = buckets[bucketIndex];</span>
+        // Update existing key's value if present
+<span class="fc bfc" id="L62" title="All 2 branches covered.">        for (Node node : nodes) {</span>
+<span class="pc bpc" id="L63" title="1 of 2 branches missed.">            if (node.key.equals(key)) {</span>
+<span class="fc" id="L64">                node.value = value;</span>
+<span class="fc" id="L65">                return;</span>
+            }
+<span class="nc" id="L67">        }</span>
+
+        // Insert new key-value pair
+<span class="fc" id="L70">        nodes.add(new Node(key, value));</span>
+<span class="fc" id="L71">        size++;</span>
+
+        // Check if rehashing is needed
+        // Load factor threshold for resizing
+<span class="fc" id="L75">        float loadFactorThreshold = 0.75f;</span>
+<span class="fc bfc" id="L76" title="All 2 branches covered.">        if ((float) size / buckets.length &gt; loadFactorThreshold) {</span>
+<span class="fc" id="L77">            reHash();</span>
+        }
+<span class="fc" id="L79">    }</span>
+
+    /**
+     * Returns the index of the bucket in which the key would be stored.
+     *
+     * @param key the key whose bucket index is to be computed
+     * @return the bucket index
+     */
+    private int hashFunction(K key) {
+<span class="fc" id="L88">        return Math.floorMod(key.hashCode(), buckets.length);</span>
+    }
+
+    /**
+     * Rehashes the map by doubling the number of buckets and re-inserting all entries.
+     */
+    private void reHash() {
+<span class="fc" id="L95">        LinkedList&lt;Node&gt;[] oldBuckets = buckets;</span>
+<span class="fc" id="L96">        initBuckets(oldBuckets.length * 2);</span>
+<span class="fc" id="L97">        this.size = 0;</span>
+
+<span class="fc bfc" id="L99" title="All 2 branches covered.">        for (LinkedList&lt;Node&gt; nodes : oldBuckets) {</span>
+<span class="fc bfc" id="L100" title="All 2 branches covered.">            for (Node node : nodes) {</span>
+<span class="fc" id="L101">                put(node.key, node.value);</span>
+<span class="fc" id="L102">            }</span>
+        }
+<span class="fc" id="L104">    }</span>
+
+    /**
+     * Removes the mapping for the specified key from this map if present.
+     *
+     * @param key the key whose mapping is to be removed from the map
+     */
+    public void remove(K key) {
+<span class="fc" id="L112">        int bucketIndex = hashFunction(key);</span>
+<span class="fc" id="L113">        LinkedList&lt;Node&gt; nodes = buckets[bucketIndex];</span>
+
+<span class="fc" id="L115">        Node target = null;</span>
+<span class="fc bfc" id="L116" title="All 2 branches covered.">        for (Node node : nodes) {</span>
+<span class="pc bpc" id="L117" title="1 of 2 branches missed.">            if (node.key.equals(key)) {</span>
+<span class="fc" id="L118">                target = node;</span>
+<span class="fc" id="L119">                break;</span>
+            }
+<span class="nc" id="L121">        }</span>
+
+<span class="fc bfc" id="L123" title="All 2 branches covered.">        if (target != null) {</span>
+<span class="fc" id="L124">            nodes.remove(target);</span>
+<span class="fc" id="L125">            size--;</span>
+        }
+<span class="fc" id="L127">    }</span>
+
+    /**
+     * Returns the number of key-value pairs in this map.
+     *
+     * @return the number of key-value pairs
+     */
+    public int size() {
+<span class="fc" id="L135">        return this.size;</span>
+    }
+
+    /**
+     * Returns the value to which the specified key is mapped, or null if this map contains no mapping for the key.
+     *
+     * @param key the key whose associated value is to be returned
+     * @return the value associated with the specified key, or null if no mapping exists
+     */
+    public V get(K key) {
+<span class="fc" id="L145">        int bucketIndex = hashFunction(key);</span>
+<span class="fc" id="L146">        LinkedList&lt;Node&gt; nodes = buckets[bucketIndex];</span>
+<span class="fc bfc" id="L147" title="All 2 branches covered.">        for (Node node : nodes) {</span>
+<span class="pc bpc" id="L148" title="1 of 2 branches missed.">            if (node.key.equals(key)) {</span>
+<span class="fc" id="L149">                return node.value;</span>
+            }
+<span class="nc" id="L151">        }</span>
+<span class="fc" id="L152">        return null;</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="fc" id="L157">        StringBuilder builder = new StringBuilder();</span>
+<span class="fc" id="L158">        builder.append(&quot;{&quot;);</span>
+<span class="fc bfc" id="L159" title="All 2 branches covered.">        for (LinkedList&lt;Node&gt; nodes : buckets) {</span>
+<span class="fc bfc" id="L160" title="All 2 branches covered.">            for (Node node : nodes) {</span>
+<span class="fc" id="L161">                builder.append(node.key);</span>
+<span class="fc" id="L162">                builder.append(&quot; : &quot;);</span>
+<span class="fc" id="L163">                builder.append(node.value);</span>
+<span class="fc" id="L164">                builder.append(&quot;, &quot;);</span>
+<span class="fc" id="L165">            }</span>
+        }
+        // Remove trailing comma and space
+<span class="pc bpc" id="L168" title="1 of 2 branches missed.">        if (builder.length() &gt; 1) {</span>
+<span class="fc" id="L169">            builder.setLength(builder.length() - 2);</span>
+        }
+<span class="fc" id="L171">        builder.append(&quot;}&quot;);</span>
+<span class="fc" id="L172">        return builder.toString();</span>
+    }
+
+    /**
+     * Returns true if this map contains a mapping for the specified key.
+     *
+     * @param key the key whose presence in this map is to be tested
+     * @return true if this map contains a mapping for the specified key
+     */
+    public boolean containsKey(K key) {
+<span class="fc bfc" id="L182" title="All 2 branches covered.">        return get(key) != null;</span>
+    }
+
+    /**
+     * A private class representing a key-value pair (node) in the hash map.
+     */
+    public class Node {
+        K key;
+        V value;
+
+        /**
+         * Constructs a new Node with the specified key and value.
+         *
+         * @param key the key of the key-value pair
+         * @param value the value of the key-value pair
+         */
+<span class="fc" id="L198">        public Node(K key, V value) {</span>
+<span class="fc" id="L199">            this.key = key;</span>
+<span class="fc" id="L200">            this.value = value;</span>
+<span class="fc" id="L201">        }</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

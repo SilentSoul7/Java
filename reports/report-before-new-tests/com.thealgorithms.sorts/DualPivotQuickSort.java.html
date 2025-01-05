@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DualPivotQuickSort.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.sorts</a> &gt; <span class="el_source">DualPivotQuickSort.java</span></div><h1>DualPivotQuickSort.java</h1><pre class="source lang-java linenums">package com.thealgorithms.sorts;
+
+/**
+ * Dual Pivot Quick Sort Algorithm
+ *
+ * @author Debasish Biswas (https://github.com/debasishbsws) *
+ * @see SortAlgorithm
+ */
+<span class="fc" id="L9">public class DualPivotQuickSort implements SortAlgorithm {</span>
+
+    /**
+     * Sorts an array using the Dual Pivot QuickSort algorithm.
+     *
+     * @param array The array to be sorted
+     * @param &lt;T&gt;   The type of elements in the array, which must be comparable
+     * @return The sorted array
+     */
+    @Override
+    public &lt;T extends Comparable&lt;T&gt;&gt; T[] sort(final T[] array) {
+<span class="fc bfc" id="L20" title="All 2 branches covered.">        if (array.length &lt;= 1) {</span>
+<span class="fc" id="L21">            return array;</span>
+        }
+
+<span class="fc" id="L24">        dualPivotQuicksort(array, 0, array.length - 1);</span>
+<span class="fc" id="L25">        return array;</span>
+    }
+
+    /**
+     * Recursively applies the Dual Pivot QuickSort algorithm to subarrays.
+     *
+     * @param array The array to be sorted
+     * @param left  The starting index of the subarray
+     * @param right The ending index of the subarray
+     * @param &lt;T&gt;   The type of elements in the array, which must be comparable
+     */
+    private static &lt;T extends Comparable&lt;T&gt;&gt; void dualPivotQuicksort(final T[] array, final int left, final int right) {
+<span class="fc bfc" id="L37" title="All 2 branches covered.">        if (left &lt; right) {</span>
+<span class="fc" id="L38">            final int[] pivots = partition(array, left, right);</span>
+
+<span class="fc" id="L40">            dualPivotQuicksort(array, left, pivots[0] - 1);</span>
+<span class="fc" id="L41">            dualPivotQuicksort(array, pivots[0] + 1, pivots[1] - 1);</span>
+<span class="fc" id="L42">            dualPivotQuicksort(array, pivots[1] + 1, right);</span>
+        }
+<span class="fc" id="L44">    }</span>
+
+    /**
+     * Partitions the array into three parts using two pivots.
+     *
+     * @param array The array to be partitioned
+     * @param left  The starting index for partitioning
+     * @param right The ending index for partitioning
+     * @param &lt;T&gt;   The type of elements in the array, which must be comparable
+     * @return An array containing the indices of the two pivots
+     */
+    private static &lt;T extends Comparable&lt;T&gt;&gt; int[] partition(final T[] array, int left, final int right) {
+<span class="fc bfc" id="L56" title="All 2 branches covered.">        if (SortUtils.greater(array[left], array[right])) {</span>
+<span class="fc" id="L57">            SortUtils.swap(array, left, right);</span>
+        }
+
+<span class="fc" id="L60">        final T pivot1 = array[left];</span>
+<span class="fc" id="L61">        final T pivot2 = array[right];</span>
+
+<span class="fc" id="L63">        int pivot1End = left + 1;</span>
+<span class="fc" id="L64">        int low = left + 1;</span>
+<span class="fc" id="L65">        int high = right - 1;</span>
+
+<span class="fc bfc" id="L67" title="All 2 branches covered.">        while (low &lt;= high) {</span>
+<span class="fc bfc" id="L68" title="All 2 branches covered.">            if (SortUtils.less(array[low], pivot1)) {</span>
+<span class="fc" id="L69">                SortUtils.swap(array, low, pivot1End);</span>
+<span class="fc" id="L70">                pivot1End++;</span>
+<span class="fc bfc" id="L71" title="All 2 branches covered.">            } else if (SortUtils.greaterOrEqual(array[low], pivot2)) {</span>
+<span class="fc bfc" id="L72" title="All 4 branches covered.">                while (low &lt; high &amp;&amp; SortUtils.greater(array[high], pivot2)) {</span>
+<span class="fc" id="L73">                    high--;</span>
+                }
+<span class="fc" id="L75">                SortUtils.swap(array, low, high);</span>
+<span class="fc" id="L76">                high--;</span>
+
+<span class="fc bfc" id="L78" title="All 2 branches covered.">                if (SortUtils.less(array[low], pivot1)) {</span>
+<span class="fc" id="L79">                    SortUtils.swap(array, low, pivot1End);</span>
+<span class="fc" id="L80">                    pivot1End++;</span>
+                }
+            }
+<span class="fc" id="L83">            low++;</span>
+        }
+
+        // Place the pivots in their correct positions
+<span class="fc" id="L87">        pivot1End--;</span>
+<span class="fc" id="L88">        high++;</span>
+
+<span class="fc" id="L90">        SortUtils.swap(array, left, pivot1End);</span>
+<span class="fc" id="L91">        SortUtils.swap(array, right, high);</span>
+
+        // Return the indices of the pivots
+<span class="fc" id="L94">        return new int[] {low, high};</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SquareRootWithNewtonRaphsonMethod.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.maths</a> &gt; <span class="el_source">SquareRootWithNewtonRaphsonMethod.java</span></div><h1>SquareRootWithNewtonRaphsonMethod.java</h1><pre class="source lang-java linenums">package com.thealgorithms.maths;
+
+/*
+ *To learn about the method, visit the link below :
+ * https://en.wikipedia.org/wiki/Newton%27s_method
+ *
+ * To obtain the square root, no built-in functions should be used
+ *
+ * The formula to calculate the root is : root = 0.5(x + n/x),
+ * here, n is the no. whose square root has to be calculated and
+ * x has to be guessed such that, the calculation should result into
+ * the square root of n.
+ * And the root will be obtained when the error &lt; 0.5 or the precision value can also
+ * be changed according to the user preference.
+ */
+
+public final class SquareRootWithNewtonRaphsonMethod {
+    private SquareRootWithNewtonRaphsonMethod() {
+    }
+
+    public static double squareRoot(int n) {
+<span class="nc" id="L22">        double x = n; // initially taking a guess that x = n.</span>
+<span class="nc" id="L23">        double root = 0.5 * (x + n / x); // applying Newton-Raphson Method.</span>
+
+<span class="nc bnc" id="L25" title="All 2 branches missed.">        while (Math.abs(root - x) &gt; 0.0000001) { // root - x = error and error &lt; 0.0000001, 0.0000001</span>
+                                                 // is the precision value taken over here.
+<span class="nc" id="L27">            x = root; // decreasing the value of x to root, i.e. decreasing the guess.</span>
+<span class="nc" id="L28">            root = 0.5 * (x + n / x);</span>
+        }
+
+<span class="nc" id="L31">        return root;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

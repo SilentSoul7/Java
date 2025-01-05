@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MedianFinder.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.heaps</a> &gt; <span class="el_source">MedianFinder.java</span></div><h1>MedianFinder.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.heaps;
+
+import java.util.PriorityQueue;
+
+/**
+ * This class maintains the median of a dynamically changing data stream using
+ * two heaps: a max-heap and a min-heap. The max-heap stores the smaller half
+ * of the numbers, and the min-heap stores the larger half.
+ * This data structure ensures that retrieving the median is efficient.
+ *
+ * Time Complexity:
+ * - Adding a number: O(log n) due to heap insertion.
+ * - Finding the median: O(1).
+ *
+ * Space Complexity: O(n), where n is the total number of elements added.
+ *
+ * @author Hardvan
+ */
+public final class MedianFinder {
+<span class="fc" id="L20">    MedianFinder() {</span>
+<span class="fc" id="L21">    }</span>
+
+<span class="fc" id="L23">    private PriorityQueue&lt;Integer&gt; minHeap = new PriorityQueue&lt;&gt;();</span>
+<span class="fc" id="L24">    private PriorityQueue&lt;Integer&gt; maxHeap = new PriorityQueue&lt;&gt;((a, b) -&gt; b - a);</span>
+
+    /**
+     * Adds a new number to the data stream. The number is placed in the appropriate
+     * heap to maintain the balance between the two heaps.
+     *
+     * @param num the number to be added to the data stream
+     */
+    public void addNum(int num) {
+<span class="pc bpc" id="L33" title="1 of 4 branches missed.">        if (maxHeap.isEmpty() || num &lt;= maxHeap.peek()) {</span>
+<span class="fc" id="L34">            maxHeap.offer(num);</span>
+        } else {
+<span class="fc" id="L36">            minHeap.offer(num);</span>
+        }
+
+<span class="pc bpc" id="L39" title="1 of 2 branches missed.">        if (maxHeap.size() &gt; minHeap.size() + 1) {</span>
+<span class="nc" id="L40">            minHeap.offer(maxHeap.poll());</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">        } else if (minHeap.size() &gt; maxHeap.size()) {</span>
+<span class="fc" id="L42">            maxHeap.offer(minHeap.poll());</span>
+        }
+<span class="fc" id="L44">    }</span>
+
+    /**
+     * Finds the median of the numbers added so far. If the total number of elements
+     * is even, the median is the average of the two middle elements. If odd, the
+     * median is the middle element from the max-heap.
+     *
+     * @return the median of the numbers in the data stream
+     */
+    public double findMedian() {
+<span class="fc bfc" id="L54" title="All 2 branches covered.">        if (maxHeap.size() == minHeap.size()) {</span>
+<span class="fc" id="L55">            return (maxHeap.peek() + minHeap.peek()) / 2.0;</span>
+        }
+<span class="fc" id="L57">        return maxHeap.peek();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

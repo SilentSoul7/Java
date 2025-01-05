@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TowerOfHanoi.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.others</a> &gt; <span class="el_source">TowerOfHanoi.java</span></div><h1>TowerOfHanoi.java</h1><pre class="source lang-java linenums">package com.thealgorithms.others;
+
+import java.util.List;
+
+/**
+ * The {@code TowerOfHanoi} class provides a recursive solution to the Tower of Hanoi puzzle.
+ * This puzzle involves moving a set of discs from one pole to another, following specific rules:
+ * 1. Only one disc can be moved at a time.
+ * 2. A disc can only be placed on top of a larger disc.
+ * 3. All discs must start on one pole and end on another.
+ *
+ * This implementation recursively calculates the steps required to solve the puzzle and stores them
+ * in a provided list.
+ *
+ * &lt;p&gt;
+ * For more information about the Tower of Hanoi, see
+ * &lt;a href=&quot;https://en.wikipedia.org/wiki/Tower_of_Hanoi&quot;&gt;Tower of Hanoi on Wikipedia&lt;/a&gt;.
+ * &lt;/p&gt;
+ *
+ * The {@code shift} method takes the number of discs and the names of the poles,
+ * and appends the steps required to solve the puzzle to the provided list.
+ * Time Complexity: O(2^n) - Exponential time complexity due to the recursive nature of the problem.
+ * Space Complexity: O(n) - Linear space complexity due to the recursion stack.
+ * Wikipedia: https://en.wikipedia.org/wiki/Tower_of_Hanoi
+ */
+final class TowerOfHanoi {
+
+    private TowerOfHanoi() {
+    }
+
+    /**
+     * Recursively solve the Tower of Hanoi puzzle by moving discs between poles.
+     *
+     * @param n                The number of discs to move.
+     * @param startPole        The name of the start pole from which discs are moved.
+     * @param intermediatePole The name of the intermediate pole used as a temporary holding area.
+     * @param endPole          The name of the end pole to which discs are moved.
+     * @param result           A list to store the steps required to solve the puzzle.
+     *
+     *                         &lt;p&gt;
+     *                         This method is called recursively to move n-1 discs
+     *                         to the intermediate pole,
+     *                         then moves the nth disc to the end pole, and finally
+     *                         moves the n-1 discs from the
+     *                         intermediate pole to the end pole.
+     *                         &lt;/p&gt;
+     *
+     *                         &lt;p&gt;
+     *                         Time Complexity: O(2^n) - Exponential time complexity due to the recursive nature of the problem.
+     *                         Space Complexity: O(n) - Linear space complexity due to the recursion stack.
+     *                         &lt;/p&gt;
+     */
+    public static void shift(int n, String startPole, String intermediatePole, String endPole, List&lt;String&gt; result) {
+<span class="fc bfc" id="L54" title="All 2 branches covered.">        if (n != 0) {</span>
+            // Move n-1 discs from startPole to intermediatePole
+<span class="fc" id="L56">            shift(n - 1, startPole, endPole, intermediatePole, result);</span>
+
+            // Add the move of the nth disc from startPole to endPole
+<span class="fc" id="L59">            result.add(String.format(&quot;Move %d from %s to %s&quot;, n, startPole, endPole));</span>
+
+            // Move the n-1 discs from intermediatePole to endPole
+<span class="fc" id="L62">            shift(n - 1, intermediatePole, startPole, endPole, result);</span>
+        }
+<span class="fc" id="L64">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

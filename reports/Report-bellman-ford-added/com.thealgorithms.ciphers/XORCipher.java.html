@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>XORCipher.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.ciphers</a> &gt; <span class="el_source">XORCipher.java</span></div><h1>XORCipher.java</h1><pre class="source lang-java linenums">package com.thealgorithms.ciphers;
+
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.HexFormat;
+
+/**
+ * A simple implementation of the XOR cipher that allows both encryption and decryption
+ * using a given key. This cipher works by applying the XOR bitwise operation between
+ * the bytes of the input text and the corresponding bytes of the key (repeating the key
+ * if necessary).
+ *
+ * Usage:
+ * - Encryption: Converts plaintext into a hexadecimal-encoded ciphertext.
+ * - Decryption: Converts the hexadecimal ciphertext back into plaintext.
+ *
+ * Characteristics:
+ * - Symmetric: The same key is used for both encryption and decryption.
+ * - Simple but vulnerable: XOR encryption is insecure for real-world cryptography,
+ *   especially when the same key is reused.
+ *
+ * Example:
+ * Plaintext: &quot;Hello!&quot;
+ * Key: &quot;key&quot;
+ * Encrypted: &quot;27090c03120b&quot;
+ * Decrypted: &quot;Hello!&quot;
+ *
+ * Reference: &lt;a href=&quot;https://en.wikipedia.org/wiki/XOR_cipher&quot;&gt;XOR Cipher - Wikipedia&lt;/a&gt;
+ *
+ * @author &lt;a href=&quot;https://github.com/lcsjunior&quot;&gt;lcsjunior&lt;/a&gt;
+ */
+public final class XORCipher {
+
+    // Default character encoding for string conversion
+<span class="fc" id="L35">    private static final Charset CS_DEFAULT = StandardCharsets.UTF_8;</span>
+
+    private XORCipher() {
+    }
+
+    /**
+     * Applies the XOR operation between the input bytes and the key bytes.
+     * If the key is shorter than the input, it wraps around (cyclically).
+     *
+     * @param inputBytes The input byte array (plaintext or ciphertext).
+     * @param keyBytes The key byte array used for XOR operation.
+     * @return A new byte array containing the XOR result.
+     */
+    public static byte[] xor(final byte[] inputBytes, final byte[] keyBytes) {
+<span class="fc" id="L49">        byte[] outputBytes = new byte[inputBytes.length];</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">        for (int i = 0; i &lt; inputBytes.length; ++i) {</span>
+<span class="fc" id="L51">            outputBytes[i] = (byte) (inputBytes[i] ^ keyBytes[i % keyBytes.length]);</span>
+        }
+<span class="fc" id="L53">        return outputBytes;</span>
+    }
+
+    /**
+     * Encrypts the given plaintext using the XOR cipher with the specified key.
+     * The result is a hexadecimal-encoded string representing the ciphertext.
+     *
+     * @param plainText The input plaintext to encrypt.
+     * @param key The encryption key.
+     * @throws IllegalArgumentException if the key is empty.
+     * @return A hexadecimal string representing the encrypted text.
+     */
+    public static String encrypt(final String plainText, final String key) {
+<span class="fc bfc" id="L66" title="All 2 branches covered.">        if (key.isEmpty()) {</span>
+<span class="fc" id="L67">            throw new IllegalArgumentException(&quot;Key must not be empty&quot;);</span>
+        }
+
+<span class="fc" id="L70">        byte[] plainTextBytes = plainText.getBytes(CS_DEFAULT);</span>
+<span class="fc" id="L71">        byte[] keyBytes = key.getBytes(CS_DEFAULT);</span>
+<span class="fc" id="L72">        byte[] xorResult = xor(plainTextBytes, keyBytes);</span>
+<span class="fc" id="L73">        return HexFormat.of().formatHex(xorResult);</span>
+    }
+
+    /**
+     * Decrypts the given ciphertext (in hexadecimal format) using the XOR cipher
+     * with the specified key. The result is the original plaintext.
+     *
+     * @param cipherText The hexadecimal string representing the encrypted text.
+     * @param key The decryption key (must be the same as the encryption key).
+     * @throws IllegalArgumentException if the key is empty.
+     * @return The decrypted plaintext.
+     */
+    public static String decrypt(final String cipherText, final String key) {
+<span class="fc bfc" id="L86" title="All 2 branches covered.">        if (key.isEmpty()) {</span>
+<span class="fc" id="L87">            throw new IllegalArgumentException(&quot;Key must not be empty&quot;);</span>
+        }
+
+<span class="fc" id="L90">        byte[] cipherBytes = HexFormat.of().parseHex(cipherText);</span>
+<span class="fc" id="L91">        byte[] keyBytes = key.getBytes(CS_DEFAULT);</span>
+<span class="fc" id="L92">        byte[] xorResult = xor(cipherBytes, keyBytes);</span>
+<span class="fc" id="L93">        return new String(xorResult, CS_DEFAULT);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

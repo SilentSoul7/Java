@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>StackArrayList.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.stacks</a> &gt; <span class="el_source">StackArrayList.java</span></div><h1>StackArrayList.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.stacks;
+
+import java.util.ArrayList;
+import java.util.EmptyStackException;
+
+/**
+ * A stack implementation backed by an {@link ArrayList}, offering dynamic resizing
+ * and LIFO (Last-In-First-Out) behavior.
+ *
+ * &lt;p&gt;The stack grows dynamically as elements are added, and elements are removed
+ * in reverse order of their addition.
+ *
+ * @param &lt;T&gt; the type of elements stored in this stack
+ */
+public class StackArrayList&lt;T&gt; implements Stack&lt;T&gt; {
+
+    private final ArrayList&lt;T&gt; stack;
+
+    /**
+     * Constructs an empty stack.
+     */
+<span class="fc" id="L22">    public StackArrayList() {</span>
+<span class="fc" id="L23">        stack = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L24">    }</span>
+
+    /**
+     * Adds an element to the top of the stack.
+     *
+     * @param value the element to be added
+     */
+    @Override
+    public void push(T value) {
+<span class="fc" id="L33">        stack.add(value);</span>
+<span class="fc" id="L34">    }</span>
+
+    /**
+     * Removes and returns the element from the top of the stack.
+     *
+     * @return the element removed from the top of the stack
+     * @throws EmptyStackException if the stack is empty
+     */
+    @Override
+    public T pop() {
+<span class="fc bfc" id="L44" title="All 2 branches covered.">        if (isEmpty()) {</span>
+<span class="fc" id="L45">            throw new EmptyStackException();</span>
+        }
+<span class="fc" id="L47">        return stack.removeLast();</span>
+    }
+
+    /**
+     * Returns the element at the top of the stack without removing it.
+     *
+     * @return the top element of the stack
+     * @throws EmptyStackException if the stack is empty
+     */
+    @Override
+    public T peek() {
+<span class="fc bfc" id="L58" title="All 2 branches covered.">        if (isEmpty()) {</span>
+<span class="fc" id="L59">            throw new EmptyStackException();</span>
+        }
+<span class="fc" id="L61">        return stack.getLast();</span>
+    }
+
+    /**
+     * Checks if the stack is empty.
+     *
+     * @return {@code true} if the stack is empty, {@code false} otherwise
+     */
+    @Override
+    public boolean isEmpty() {
+<span class="fc" id="L71">        return stack.isEmpty();</span>
+    }
+
+    /**
+     * Empties the stack, removing all elements.
+     */
+    @Override
+    public void makeEmpty() {
+<span class="fc" id="L79">        stack.clear();</span>
+<span class="fc" id="L80">    }</span>
+
+    /**
+     * Returns the number of elements in the stack.
+     *
+     * @return the current size of the stack
+     */
+    @Override
+    public int size() {
+<span class="fc" id="L89">        return stack.size();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

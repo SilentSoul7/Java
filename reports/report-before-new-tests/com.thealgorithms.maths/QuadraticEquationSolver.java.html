@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>QuadraticEquationSolver.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.maths</a> &gt; <span class="el_source">QuadraticEquationSolver.java</span></div><h1>QuadraticEquationSolver.java</h1><pre class="source lang-java linenums">package com.thealgorithms.maths;
+
+/**
+ * This class represents a complex number which has real and imaginary part
+ */
+class ComplexNumber {
+    Double real;
+    Double imaginary;
+
+<span class="fc" id="L10">    ComplexNumber(double real, double imaginary) {</span>
+<span class="fc" id="L11">        this.real = real;</span>
+<span class="fc" id="L12">        this.imaginary = imaginary;</span>
+<span class="fc" id="L13">    }</span>
+
+<span class="fc" id="L15">    ComplexNumber(double real) {</span>
+<span class="fc" id="L16">        this.real = real;</span>
+<span class="fc" id="L17">        this.imaginary = null;</span>
+<span class="fc" id="L18">    }</span>
+}
+
+/**
+ * Quadratic Equation Formula is used to find
+ * the roots of a quadratic equation of the form ax^2 + bx + c = 0
+ *
+ * @see &lt;a href=&quot;https://en.wikipedia.org/wiki/Quadratic_equation&quot;&gt;Quadratic Equation&lt;/a&gt;
+ */
+<span class="fc" id="L27">public class QuadraticEquationSolver {</span>
+    /**
+     * Function takes in the coefficients of the quadratic equation
+     *
+     * @param a is the coefficient of x^2
+     * @param b is the coefficient of x
+     * @param c is the constant
+     * @return roots of the equation which are ComplexNumber type
+     */
+    public ComplexNumber[] solveEquation(double a, double b, double c) {
+<span class="fc" id="L37">        double discriminant = b * b - 4 * a * c;</span>
+
+        // if discriminant is positive, roots will be different
+<span class="fc bfc" id="L40" title="All 2 branches covered.">        if (discriminant &gt; 0) {</span>
+<span class="fc" id="L41">            return new ComplexNumber[] {new ComplexNumber((-b + Math.sqrt(discriminant)) / (2 * a)), new ComplexNumber((-b - Math.sqrt(discriminant)) / (2 * a))};</span>
+        }
+
+        // if discriminant is zero, roots will be same
+<span class="fc bfc" id="L45" title="All 2 branches covered.">        if (discriminant == 0) {</span>
+<span class="fc" id="L46">            return new ComplexNumber[] {new ComplexNumber((-b) / (2 * a))};</span>
+        }
+
+        // if discriminant is negative, roots will have imaginary parts
+<span class="pc bpc" id="L50" title="1 of 2 branches missed.">        if (discriminant &lt; 0) {</span>
+<span class="fc" id="L51">            double realPart = -b / (2 * a);</span>
+<span class="fc" id="L52">            double imaginaryPart = Math.sqrt(-discriminant) / (2 * a);</span>
+
+<span class="fc" id="L54">            return new ComplexNumber[] {new ComplexNumber(realPart, imaginaryPart), new ComplexNumber(realPart, -imaginaryPart)};</span>
+        }
+
+        // return no roots
+<span class="nc" id="L58">        return new ComplexNumber[] {};</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

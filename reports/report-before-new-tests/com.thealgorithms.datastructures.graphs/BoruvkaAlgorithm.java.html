@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BoruvkaAlgorithm.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.graphs</a> &gt; <span class="el_source">BoruvkaAlgorithm.java</span></div><h1>BoruvkaAlgorithm.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.graphs;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Boruvka's algorithm to find Minimum Spanning Tree
+ * (https://en.wikipedia.org/wiki/Bor%C5%AFvka%27s_algorithm)
+ *
+ * @author itakurah (https://github.com/itakurah)
+ */
+
+final class BoruvkaAlgorithm {
+    private BoruvkaAlgorithm() {
+    }
+
+    /**
+     * Represents an edge in the graph
+     */
+    static class Edge {
+        final int src;
+        final int dest;
+        final int weight;
+
+<span class="fc" id="L25">        Edge(final int src, final int dest, final int weight) {</span>
+<span class="fc" id="L26">            this.src = src;</span>
+<span class="fc" id="L27">            this.dest = dest;</span>
+<span class="fc" id="L28">            this.weight = weight;</span>
+<span class="fc" id="L29">        }</span>
+    }
+
+    /**
+     * Represents the graph
+     */
+    static class Graph {
+        final int vertex;
+        final List&lt;Edge&gt; edges;
+
+        /**
+         * Constructor for the graph
+         *
+         * @param vertex number of vertices
+         * @param edges  list of edges
+         */
+<span class="fc" id="L45">        Graph(final int vertex, final List&lt;Edge&gt; edges) {</span>
+<span class="fc bfc" id="L46" title="All 2 branches covered.">            if (vertex &lt; 0) {</span>
+<span class="fc" id="L47">                throw new IllegalArgumentException(&quot;Number of vertices must be positive&quot;);</span>
+            }
+<span class="fc bfc" id="L49" title="All 4 branches covered.">            if (edges == null || edges.isEmpty()) {</span>
+<span class="fc" id="L50">                throw new IllegalArgumentException(&quot;Edges list must not be null or empty&quot;);</span>
+            }
+<span class="fc bfc" id="L52" title="All 2 branches covered.">            for (final var edge : edges) {</span>
+<span class="fc" id="L53">                checkEdgeVertices(edge.src, vertex);</span>
+<span class="fc" id="L54">                checkEdgeVertices(edge.dest, vertex);</span>
+<span class="fc" id="L55">            }</span>
+
+<span class="fc" id="L57">            this.vertex = vertex;</span>
+<span class="fc" id="L58">            this.edges = edges;</span>
+<span class="fc" id="L59">        }</span>
+    }
+
+    /**
+     * Represents a subset for Union-Find operations
+     */
+    private static class Component {
+        int parent;
+        int rank;
+
+<span class="fc" id="L69">        Component(final int parent, final int rank) {</span>
+<span class="fc" id="L70">            this.parent = parent;</span>
+<span class="fc" id="L71">            this.rank = rank;</span>
+<span class="fc" id="L72">        }</span>
+    }
+
+    /**
+     * Represents the state of Union-Find components and the result list
+     */
+    private static class BoruvkaState {
+        List&lt;Edge&gt; result;
+        Component[] components;
+        final Graph graph;
+
+<span class="fc" id="L83">        BoruvkaState(final Graph graph) {</span>
+<span class="fc" id="L84">            this.result = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L85">            this.components = initializeComponents(graph);</span>
+<span class="fc" id="L86">            this.graph = graph;</span>
+<span class="fc" id="L87">        }</span>
+
+        /**
+         * Adds the cheapest edges to the result list and performs Union operation on the subsets.
+         *
+         * @param cheapest Array containing the cheapest edge for each subset.
+         */
+        void merge(final Edge[] cheapest) {
+<span class="fc bfc" id="L95" title="All 2 branches covered.">            for (int i = 0; i &lt; graph.vertex; ++i) {</span>
+<span class="fc bfc" id="L96" title="All 2 branches covered.">                if (cheapest[i] != null) {</span>
+<span class="fc" id="L97">                    final var component1 = find(components, cheapest[i].src);</span>
+<span class="fc" id="L98">                    final var component2 = find(components, cheapest[i].dest);</span>
+
+<span class="fc bfc" id="L100" title="All 2 branches covered.">                    if (component1 != component2) {</span>
+<span class="fc" id="L101">                        result.add(cheapest[i]);</span>
+<span class="fc" id="L102">                        union(components, component1, component2);</span>
+                    }
+                }
+            }
+<span class="fc" id="L106">        }</span>
+
+        /**
+         * Checks if there are more edges to add to the result list
+         *
+         * @return true if there are more edges to add, false otherwise
+         */
+        boolean hasMoreEdgesToAdd() {
+<span class="fc bfc" id="L114" title="All 2 branches covered.">            return result.size() &lt; graph.vertex - 1;</span>
+        }
+
+        /**
+         * Computes the cheapest edges for each subset in the Union-Find structure.
+         *
+         * @return an array containing the cheapest edge for each subset.
+         */
+        private Edge[] computeCheapestEdges() {
+<span class="fc" id="L123">            Edge[] cheapest = new Edge[graph.vertex];</span>
+<span class="fc bfc" id="L124" title="All 2 branches covered.">            for (final var edge : graph.edges) {</span>
+<span class="fc" id="L125">                final var set1 = find(components, edge.src);</span>
+<span class="fc" id="L126">                final var set2 = find(components, edge.dest);</span>
+
+<span class="fc bfc" id="L128" title="All 2 branches covered.">                if (set1 != set2) {</span>
+<span class="fc bfc" id="L129" title="All 4 branches covered.">                    if (cheapest[set1] == null || edge.weight &lt; cheapest[set1].weight) {</span>
+<span class="fc" id="L130">                        cheapest[set1] = edge;</span>
+                    }
+<span class="fc bfc" id="L132" title="All 4 branches covered.">                    if (cheapest[set2] == null || edge.weight &lt; cheapest[set2].weight) {</span>
+<span class="fc" id="L133">                        cheapest[set2] = edge;</span>
+                    }
+                }
+<span class="fc" id="L136">            }</span>
+<span class="fc" id="L137">            return cheapest;</span>
+        }
+
+        /**
+         * Initializes subsets for Union-Find
+         *
+         * @param graph the graph
+         * @return the initialized subsets
+         */
+        private static Component[] initializeComponents(final Graph graph) {
+<span class="fc" id="L147">            Component[] components = new Component[graph.vertex];</span>
+<span class="fc bfc" id="L148" title="All 2 branches covered.">            for (int v = 0; v &lt; graph.vertex; ++v) {</span>
+<span class="fc" id="L149">                components[v] = new Component(v, 0);</span>
+            }
+<span class="fc" id="L151">            return components;</span>
+        }
+    }
+
+    /**
+     * Finds the parent of the subset using path compression
+     *
+     * @param components array of subsets
+     * @param i          index of the subset
+     * @return the parent of the subset
+     */
+    static int find(final Component[] components, final int i) {
+<span class="fc bfc" id="L163" title="All 2 branches covered.">        if (components[i].parent != i) {</span>
+<span class="fc" id="L164">            components[i].parent = find(components, components[i].parent);</span>
+        }
+<span class="fc" id="L166">        return components[i].parent;</span>
+    }
+
+    /**
+     * Performs the Union operation for Union-Find
+     *
+     * @param components array of subsets
+     * @param x          index of the first subset
+     * @param y          index of the second subset
+     */
+    static void union(Component[] components, final int x, final int y) {
+<span class="fc" id="L177">        final int xroot = find(components, x);</span>
+<span class="fc" id="L178">        final int yroot = find(components, y);</span>
+
+<span class="fc bfc" id="L180" title="All 2 branches covered.">        if (components[xroot].rank &lt; components[yroot].rank) {</span>
+<span class="fc" id="L181">            components[xroot].parent = yroot;</span>
+<span class="fc bfc" id="L182" title="All 2 branches covered.">        } else if (components[xroot].rank &gt; components[yroot].rank) {</span>
+<span class="fc" id="L183">            components[yroot].parent = xroot;</span>
+        } else {
+<span class="fc" id="L185">            components[yroot].parent = xroot;</span>
+<span class="fc" id="L186">            components[xroot].rank++;</span>
+        }
+<span class="fc" id="L188">    }</span>
+
+    /**
+     * Boruvka's algorithm to find the Minimum Spanning Tree
+     *
+     * @param graph the graph
+     * @return list of edges in the Minimum Spanning Tree
+     */
+    static List&lt;Edge&gt; boruvkaMST(final Graph graph) {
+<span class="fc" id="L197">        var boruvkaState = new BoruvkaState(graph);</span>
+
+<span class="fc bfc" id="L199" title="All 2 branches covered.">        while (boruvkaState.hasMoreEdgesToAdd()) {</span>
+<span class="fc" id="L200">            final var cheapest = boruvkaState.computeCheapestEdges();</span>
+<span class="fc" id="L201">            boruvkaState.merge(cheapest);</span>
+<span class="fc" id="L202">        }</span>
+<span class="fc" id="L203">        return boruvkaState.result;</span>
+    }
+
+    /**
+     * Checks if the edge vertices are in a valid range
+     *
+     * @param vertex     the vertex to check
+     * @param upperBound the upper bound for the vertex range
+     */
+    private static void checkEdgeVertices(final int vertex, final int upperBound) {
+<span class="fc bfc" id="L213" title="All 4 branches covered.">        if (vertex &lt; 0 || vertex &gt;= upperBound) {</span>
+<span class="fc" id="L214">            throw new IllegalArgumentException(&quot;Edge vertex out of range&quot;);</span>
+        }
+<span class="fc" id="L216">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

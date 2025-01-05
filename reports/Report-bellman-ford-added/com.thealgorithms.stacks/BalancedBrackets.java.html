@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BalancedBrackets.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.stacks</a> &gt; <span class="el_source">BalancedBrackets.java</span></div><h1>BalancedBrackets.java</h1><pre class="source lang-java linenums">package com.thealgorithms.stacks;
+
+import java.util.Stack;
+
+/**
+ * The nested brackets problem is a problem that determines if a sequence of
+ * brackets are properly nested. A sequence of brackets s is considered properly
+ * nested if any of the following conditions are true: - s is empty - s has the
+ * form (U) or [U] or {U} where U is a properly nested string - s has the form
+ * VW where V and W are properly nested strings For example, the string
+ * &quot;()()[()]&quot; is properly nested but &quot;[(()]&quot; is not. The function called
+ * is_balanced takes as input a string S which is a sequence of brackets and
+ * returns true if S is nested and false otherwise.
+ *
+ * @author akshay sharma
+ * @author &lt;a href=&quot;https://github.com/khalil2535&quot;&gt;khalil2535&lt;a&gt;
+ * @author shellhub
+ */
+final class BalancedBrackets {
+    private BalancedBrackets() {
+    }
+
+    /**
+     * Check if {@code leftBracket} and {@code rightBracket} is paired or not
+     *
+     * @param leftBracket left bracket
+     * @param rightBracket right bracket
+     * @return {@code true} if {@code leftBracket} and {@code rightBracket} is
+     * paired, otherwise {@code false}
+     */
+    public static boolean isPaired(char leftBracket, char rightBracket) {
+<span class="fc" id="L32">        char[][] pairedBrackets = {</span>
+            {'(', ')'},
+            {'[', ']'},
+            {'{', '}'},
+            {'&lt;', '&gt;'},
+        };
+<span class="fc bfc" id="L38" title="All 2 branches covered.">        for (char[] pairedBracket : pairedBrackets) {</span>
+<span class="fc bfc" id="L39" title="All 4 branches covered.">            if (pairedBracket[0] == leftBracket &amp;&amp; pairedBracket[1] == rightBracket) {</span>
+<span class="fc" id="L40">                return true;</span>
+            }
+        }
+<span class="fc" id="L43">        return false;</span>
+    }
+
+    /**
+     * Check if {@code brackets} is balanced
+     *
+     * @param brackets the brackets
+     * @return {@code true} if {@code brackets} is balanced, otherwise
+     * {@code false}
+     */
+    public static boolean isBalanced(String brackets) {
+<span class="fc bfc" id="L54" title="All 2 branches covered.">        if (brackets == null) {</span>
+<span class="fc" id="L55">            throw new IllegalArgumentException(&quot;brackets is null&quot;);</span>
+        }
+<span class="fc" id="L57">        Stack&lt;Character&gt; bracketsStack = new Stack&lt;&gt;();</span>
+<span class="fc bfc" id="L58" title="All 2 branches covered.">        for (char bracket : brackets.toCharArray()) {</span>
+<span class="fc bfc" id="L59" title="All 3 branches covered.">            switch (bracket) {</span>
+            case '(':
+            case '[':
+            case '&lt;':
+            case '{':
+<span class="fc" id="L64">                bracketsStack.push(bracket);</span>
+<span class="fc" id="L65">                break;</span>
+            case ')':
+            case ']':
+            case '&gt;':
+            case '}':
+<span class="fc bfc" id="L70" title="All 4 branches covered.">                if (bracketsStack.isEmpty() || !isPaired(bracketsStack.pop(), bracket)) {</span>
+<span class="fc" id="L71">                    return false;</span>
+                }
+                break;
+            default:
+<span class="fc" id="L75">                return false;</span>
+            }
+        }
+<span class="fc" id="L78">        return bracketsStack.isEmpty();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

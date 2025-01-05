@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FlashSort.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.sorts</a> &gt; <span class="el_source">FlashSort.java</span></div><h1>FlashSort.java</h1><pre class="source lang-java linenums">package com.thealgorithms.sorts;
+
+/**
+ * Implementation of Flash Sort algorithm that implements the SortAlgorithm interface.
+ *
+ * Sorts an array using the Flash Sort algorithm.
+ * &lt;p&gt;
+ * Flash Sort is a distribution sorting algorithm that partitions the data into
+ * different classes based on a classification array. It performs the sorting by
+ * first distributing the data elements into different buckets (or classes) and
+ * then permuting these buckets into the sorted order.
+ * &lt;p&gt;
+ * The method works as follows:
+ * &lt;ol&gt;
+ *     &lt;li&gt;Finds the minimum and maximum values in the array.&lt;/li&gt;
+ *     &lt;li&gt;Initializes a classification array `L` to keep track of the number of elements in each class.&lt;/li&gt;
+ *     &lt;li&gt;Computes a normalization constant `c1` to map elements into classes.&lt;/li&gt;
+ *     &lt;li&gt;Classifies each element of the array into the corresponding bucket in the classification array.&lt;/li&gt;
+ *     &lt;li&gt;Transforms the classification array to compute the starting indices of each bucket.&lt;/li&gt;
+ *     &lt;li&gt;Permutes the elements of the array into sorted order based on the classification.&lt;/li&gt;
+ *     &lt;li&gt;Uses insertion sort for the final arrangement to ensure complete sorting.&lt;/li&gt;
+ * &lt;/ol&gt;
+ */
+public class FlashSort implements SortAlgorithm {
+<span class="fc" id="L25">    private double classificationRatio = 0.45;</span>
+
+<span class="fc" id="L27">    public FlashSort() {</span>
+<span class="fc" id="L28">    }</span>
+
+<span class="fc" id="L30">    public FlashSort(double classificationRatio) {</span>
+<span class="fc bfc" id="L31" title="All 4 branches covered.">        if (classificationRatio &lt;= 0 || classificationRatio &gt;= 1) {</span>
+<span class="fc" id="L32">            throw new IllegalArgumentException(&quot;Classification ratio must be between 0 and 1 (exclusive).&quot;);</span>
+        }
+<span class="fc" id="L34">        this.classificationRatio = classificationRatio;</span>
+<span class="fc" id="L35">    }</span>
+
+    public double getClassificationRatio() {
+<span class="fc" id="L38">        return classificationRatio;</span>
+    }
+
+    public void setClassificationRatio(double classificationRatio) {
+<span class="pc bpc" id="L42" title="2 of 4 branches missed.">        if (classificationRatio &lt;= 0 || classificationRatio &gt;= 1) {</span>
+<span class="nc" id="L43">            throw new IllegalArgumentException(&quot;Classification ratio must be between 0 and 1 (exclusive).&quot;);</span>
+        }
+<span class="fc" id="L45">        this.classificationRatio = classificationRatio;</span>
+<span class="fc" id="L46">    }</span>
+
+    /**
+     * Sorts an array using the Flash Sort algorithm.
+     *
+     * @param array the array to be sorted.
+     * @param &lt;T&gt; the type of elements to be sorted, must be comparable.
+     * @return the sorted array.
+     */
+    @Override
+    public &lt;T extends Comparable&lt;T&gt;&gt; T[] sort(T[] array) {
+<span class="fc" id="L57">        flashSort(array);</span>
+<span class="fc" id="L58">        return array;</span>
+    }
+
+    /**
+     * Sorts an array using the Flash Sort algorithm.
+     *
+     * @param arr the array to be sorted.
+     * @param &lt;T&gt; the type of elements to be sorted, must be comparable.
+     */
+    private &lt;T extends Comparable&lt;? super T&gt;&gt; void flashSort(T[] arr) {
+<span class="fc bfc" id="L68" title="All 2 branches covered.">        if (arr.length == 0) {</span>
+<span class="fc" id="L69">            return;</span>
+        }
+
+<span class="fc" id="L72">        final T min = findMin(arr);</span>
+<span class="fc" id="L73">        final int maxIndex = findMaxIndex(arr);</span>
+
+<span class="fc bfc" id="L75" title="All 2 branches covered.">        if (arr[maxIndex].compareTo(min) == 0) {</span>
+<span class="fc" id="L76">            return; // All elements are the same</span>
+        }
+
+<span class="fc" id="L79">        final int m = (int) (classificationRatio * arr.length);</span>
+
+<span class="fc" id="L81">        final int[] classificationArray = new int[m];</span>
+
+<span class="fc" id="L83">        final double c1 = (double) (m - 1) / arr[maxIndex].compareTo(min);</span>
+
+<span class="fc" id="L85">        classify(arr, classificationArray, c1, min);</span>
+
+<span class="fc" id="L87">        transform(classificationArray);</span>
+
+<span class="fc" id="L89">        permute(arr, classificationArray, c1, min, arr.length, m);</span>
+
+<span class="fc" id="L91">        insertionSort(arr);</span>
+<span class="fc" id="L92">    }</span>
+
+    /**
+     * Finds the minimum value in the array.
+     *
+     * @param arr the array to find the minimum value in.
+     * @param &lt;T&gt; the type of elements in the array, must be comparable.
+     * @return the minimum value in the array.
+     */
+    private &lt;T extends Comparable&lt;? super T&gt;&gt; T findMin(final T[] arr) {
+<span class="fc" id="L102">        T min = arr[0];</span>
+<span class="fc bfc" id="L103" title="All 2 branches covered.">        for (int i = 1; i &lt; arr.length; i++) {</span>
+<span class="fc bfc" id="L104" title="All 2 branches covered.">            if (arr[i].compareTo(min) &lt; 0) {</span>
+<span class="fc" id="L105">                min = arr[i];</span>
+            }
+        }
+<span class="fc" id="L108">        return min;</span>
+    }
+
+    /**
+     * Finds the index of the maximum value in the array.
+     *
+     * @param arr the array to find the maximum value index in.
+     * @param &lt;T&gt; the type of elements in the array, must be comparable.
+     * @return the index of the maximum value in the array.
+     */
+    private &lt;T extends Comparable&lt;? super T&gt;&gt; int findMaxIndex(final T[] arr) {
+<span class="fc" id="L119">        int maxIndex = 0;</span>
+<span class="fc bfc" id="L120" title="All 2 branches covered.">        for (int i = 1; i &lt; arr.length; i++) {</span>
+<span class="fc bfc" id="L121" title="All 2 branches covered.">            if (arr[i].compareTo(arr[maxIndex]) &gt; 0) {</span>
+<span class="fc" id="L122">                maxIndex = i;</span>
+            }
+        }
+<span class="fc" id="L125">        return maxIndex;</span>
+    }
+
+    /**
+     * Classifies elements of the array into the classification array classificationArray.
+     *
+     * @param arr the array to be classified.
+     * @param classificationArray the classification array holding the count of elements in each class.
+     * @param c1 the normalization constant used to map the elements to the classification array.
+     * @param min the minimum value in the array.
+     * @param &lt;T&gt; the type of elements in the array, must be comparable.
+     */
+    private &lt;T extends Comparable&lt;? super T&gt;&gt; void classify(final T[] arr, final int[] classificationArray, final double c1, final T min) {
+<span class="fc bfc" id="L138" title="All 2 branches covered.">        for (int i = 0; i &lt; arr.length; i++) {</span>
+<span class="fc" id="L139">            int k = (int) (c1 * arr[i].compareTo(min));</span>
+<span class="fc" id="L140">            classificationArray[k]++;</span>
+        }
+<span class="fc" id="L142">    }</span>
+
+    /**
+     * Transforms the classification array classificationArray into the starting index array.
+     *
+     * @param classificationArray the classification array holding the count of elements in each class.
+     */
+    private void transform(final int[] classificationArray) {
+<span class="fc bfc" id="L150" title="All 2 branches covered.">        for (int i = 1; i &lt; classificationArray.length; i++) {</span>
+<span class="fc" id="L151">            classificationArray[i] += classificationArray[i - 1];</span>
+        }
+<span class="fc" id="L153">    }</span>
+
+    /**
+     * Permutes the array into sorted order based on the classification array classificationArray.
+     *
+     * @param arr the array to be permuted.
+     * @param classificationArray the classification array holding the count of elements in each class.
+     * @param c1 the normalization constant used to map the elements to the classification array.
+     * @param min the minimum value in the array.
+     * @param n the length of the array.
+     * @param m the number of classes in the classification array.
+     * @param &lt;T&gt; the type of elements in the array, must be comparable.
+     */
+    private &lt;T extends Comparable&lt;? super T&gt;&gt; void permute(final T[] arr, final int[] classificationArray, final double c1, T min, int n, int m) {
+<span class="fc" id="L167">        int move = 0;</span>
+<span class="fc" id="L168">        int j = 0;</span>
+<span class="fc" id="L169">        int k = m - 1;</span>
+        T flash;
+<span class="fc bfc" id="L171" title="All 2 branches covered.">        while (move &lt; n - 1) {</span>
+<span class="fc bfc" id="L172" title="All 2 branches covered.">            while (j &gt; classificationArray[k] - 1) {</span>
+<span class="fc" id="L173">                j++;</span>
+<span class="fc" id="L174">                k = (int) (c1 * arr[j].compareTo(min));</span>
+            }
+<span class="fc" id="L176">            flash = arr[j];</span>
+<span class="fc bfc" id="L177" title="All 2 branches covered.">            while (j != classificationArray[k]) {</span>
+<span class="fc" id="L178">                k = (int) (c1 * flash.compareTo(min));</span>
+<span class="fc" id="L179">                T temp = arr[classificationArray[k] - 1];</span>
+<span class="fc" id="L180">                arr[classificationArray[k] - 1] = flash;</span>
+<span class="fc" id="L181">                flash = temp;</span>
+<span class="fc" id="L182">                classificationArray[k]--;</span>
+<span class="fc" id="L183">                move++;</span>
+<span class="fc" id="L184">            }</span>
+        }
+<span class="fc" id="L186">    }</span>
+
+    /**
+     * Sorts an array using the insertion sort algorithm.
+     *
+     * @param arr the array to be sorted.
+     * @param &lt;T&gt; the type of elements to be sorted, must be comparable.
+     */
+    private &lt;T extends Comparable&lt;? super T&gt;&gt; void insertionSort(final T[] arr) {
+<span class="fc" id="L195">        int n = arr.length;</span>
+<span class="fc bfc" id="L196" title="All 2 branches covered.">        for (int i = 1; i &lt; n; i++) {</span>
+<span class="fc" id="L197">            T key = arr[i];</span>
+<span class="fc" id="L198">            int j = i - 1;</span>
+<span class="fc bfc" id="L199" title="All 4 branches covered.">            while (j &gt;= 0 &amp;&amp; arr[j].compareTo(key) &gt; 0) {</span>
+<span class="fc" id="L200">                arr[j + 1] = arr[j];</span>
+<span class="fc" id="L201">                j--;</span>
+            }
+<span class="fc" id="L203">            arr[j + 1] = key;</span>
+        }
+<span class="fc" id="L205">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

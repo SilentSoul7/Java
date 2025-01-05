@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BaconianCipher.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.ciphers</a> &gt; <span class="el_source">BaconianCipher.java</span></div><h1>BaconianCipher.java</h1><pre class="source lang-java linenums">package com.thealgorithms.ciphers;
+
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * The Baconian Cipher is a substitution cipher where each letter is represented
+ * by a group of five binary digits (A's and B's). It can also be used to hide
+ * messages within other texts, making it a simple form of steganography.
+ * https://en.wikipedia.org/wiki/Bacon%27s_cipher
+ *
+ * @author Bennybebo
+ */
+<span class="fc" id="L14">public class BaconianCipher {</span>
+
+<span class="fc" id="L16">    private static final Map&lt;Character, String&gt; BACONIAN_MAP = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L17">    private static final Map&lt;String, Character&gt; REVERSE_BACONIAN_MAP = new HashMap&lt;&gt;();</span>
+
+    static {
+        // Initialize the Baconian cipher mappings
+<span class="fc" id="L21">        String[] baconianAlphabet = {&quot;AAAAA&quot;, &quot;AAAAB&quot;, &quot;AAABA&quot;, &quot;AAABB&quot;, &quot;AABAA&quot;, &quot;AABAB&quot;, &quot;AABBA&quot;, &quot;AABBB&quot;, &quot;ABAAA&quot;, &quot;ABAAB&quot;, &quot;ABABA&quot;, &quot;ABABB&quot;, &quot;ABBAA&quot;, &quot;ABBAB&quot;, &quot;ABBBA&quot;, &quot;ABBBB&quot;, &quot;BAAAA&quot;, &quot;BAAAB&quot;, &quot;BAABA&quot;, &quot;BAABB&quot;, &quot;BABAA&quot;, &quot;BABAB&quot;, &quot;BABBA&quot;, &quot;BABBB&quot;, &quot;BBAAA&quot;, &quot;BBAAB&quot;};</span>
+<span class="fc" id="L22">        char letter = 'A';</span>
+<span class="fc bfc" id="L23" title="All 2 branches covered.">        for (String code : baconianAlphabet) {</span>
+<span class="fc" id="L24">            BACONIAN_MAP.put(letter, code);</span>
+<span class="fc" id="L25">            REVERSE_BACONIAN_MAP.put(code, letter);</span>
+<span class="fc" id="L26">            letter++;</span>
+        }
+
+        // Handle I/J as the same letter
+<span class="fc" id="L30">        BACONIAN_MAP.put('I', BACONIAN_MAP.get('J'));</span>
+<span class="fc" id="L31">        REVERSE_BACONIAN_MAP.put(BACONIAN_MAP.get('I'), 'I');</span>
+<span class="fc" id="L32">    }</span>
+
+    /**
+     * Encrypts the given plaintext using the Baconian cipher.
+     *
+     * @param plaintext The plaintext message to encrypt.
+     * @return The ciphertext as a binary (A/B) sequence.
+     */
+    public String encrypt(String plaintext) {
+<span class="fc" id="L41">        StringBuilder ciphertext = new StringBuilder();</span>
+<span class="fc" id="L42">        plaintext = plaintext.toUpperCase().replaceAll(&quot;[^A-Z]&quot;, &quot;&quot;); // Remove non-letter characters</span>
+
+<span class="fc bfc" id="L44" title="All 2 branches covered.">        for (char letter : plaintext.toCharArray()) {</span>
+<span class="fc" id="L45">            ciphertext.append(BACONIAN_MAP.get(letter));</span>
+        }
+
+<span class="fc" id="L48">        return ciphertext.toString();</span>
+    }
+
+    /**
+     * Decrypts the given ciphertext encoded in binary (A/B) format using the Baconian cipher.
+     *
+     * @param ciphertext The ciphertext to decrypt.
+     * @return The decrypted plaintext message.
+     */
+    public String decrypt(String ciphertext) {
+<span class="fc" id="L58">        StringBuilder plaintext = new StringBuilder();</span>
+
+<span class="fc bfc" id="L60" title="All 2 branches covered.">        for (int i = 0; i &lt; ciphertext.length(); i += 5) {</span>
+<span class="fc" id="L61">            String code = ciphertext.substring(i, i + 5);</span>
+<span class="pc bpc" id="L62" title="1 of 2 branches missed.">            if (REVERSE_BACONIAN_MAP.containsKey(code)) {</span>
+<span class="fc" id="L63">                plaintext.append(REVERSE_BACONIAN_MAP.get(code));</span>
+            } else {
+<span class="nc" id="L65">                throw new IllegalArgumentException(&quot;Invalid Baconian code: &quot; + code);</span>
+            }
+        }
+
+<span class="fc" id="L69">        return plaintext.toString();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

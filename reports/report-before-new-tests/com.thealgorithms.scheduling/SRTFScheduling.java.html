@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SRTFScheduling.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.scheduling</a> &gt; <span class="el_source">SRTFScheduling.java</span></div><h1>SRTFScheduling.java</h1><pre class="source lang-java linenums">package com.thealgorithms.scheduling;
+
+import com.thealgorithms.devutils.entities.ProcessDetails;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Implementation of Shortest Remaining Time First Scheduling Algorithm.
+ * In the SRTF scheduling algorithm, the process with the smallest amount of time remaining until completion is selected to execute.
+ * Example:
+ * Consider the processes p1, p2 and the following table with info about their arrival and burst time:
+ * Process | Burst Time | Arrival Time
+ * P1      | 6 ms        | 0 ms
+ * P2      | 2 ms        | 1 ms
+ * In this example, P1 will be executed at time = 0 until time = 1 when P2 arrives. At time = 2, P2 will be executed until time = 4. At time 4, P2 is done, and P1 is executed again to be done.
+ * That's a simple example of how the algorithm works.
+ * More information you can find here -&gt; https://en.wikipedia.org/wiki/Shortest_remaining_time
+ */
+public class SRTFScheduling {
+    protected List&lt;ProcessDetails&gt; processes;
+    protected List&lt;String&gt; ready;
+
+    /**
+     * Constructor
+     * @param processes ArrayList of ProcessDetails given as input
+     */
+<span class="fc" id="L27">    public SRTFScheduling(ArrayList&lt;ProcessDetails&gt; processes) {</span>
+<span class="fc" id="L28">        this.processes = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L29">        ready = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L30">        this.processes = processes;</span>
+<span class="fc" id="L31">    }</span>
+
+    public void evaluateScheduling() {
+<span class="fc" id="L34">        int time = 0;</span>
+<span class="fc" id="L35">        int cr = 0; // cr=current running process, time= units of time</span>
+<span class="fc" id="L36">        int n = processes.size();</span>
+<span class="fc" id="L37">        int[] remainingTime = new int[n];</span>
+
+        /* calculating remaining time of every process and total units of time */
+<span class="fc bfc" id="L40" title="All 2 branches covered.">        for (int i = 0; i &lt; n; i++) {</span>
+<span class="fc" id="L41">            remainingTime[i] = processes.get(i).getBurstTime();</span>
+<span class="fc" id="L42">            time += processes.get(i).getBurstTime();</span>
+        }
+
+        /* if the first process doesn't arrive at 0, we have more units of time */
+<span class="pc bpc" id="L46" title="1 of 2 branches missed.">        if (processes.get(0).getArrivalTime() != 0) {</span>
+<span class="nc" id="L47">            time += processes.get(0).getArrivalTime();</span>
+        }
+
+        /* printing id of the process which is executed at every unit of time */
+        // if the first process doesn't arrive at 0, we print only \n until it arrives
+<span class="pc bpc" id="L52" title="1 of 2 branches missed.">        if (processes.get(0).getArrivalTime() != 0) {</span>
+<span class="nc bnc" id="L53" title="All 2 branches missed.">            for (int i = 0; i &lt; processes.get(0).getArrivalTime(); i++) {</span>
+<span class="nc" id="L54">                ready.add(null);</span>
+            }
+        }
+
+<span class="fc bfc" id="L58" title="All 2 branches covered.">        for (int i = processes.get(0).getArrivalTime(); i &lt; time; i++) {</span>
+            /* checking if there's a process with remaining time less than current running process.
+               If we find it, then it executes. */
+<span class="fc bfc" id="L61" title="All 2 branches covered.">            for (int j = 0; j &lt; n; j++) {</span>
+<span class="fc bfc" id="L62" title="All 8 branches covered.">                if (processes.get(j).getArrivalTime() &lt;= i &amp;&amp; (remainingTime[j] &lt; remainingTime[cr] &amp;&amp; remainingTime[j] &gt; 0 || remainingTime[cr] == 0)) {</span>
+<span class="fc" id="L63">                    cr = j;</span>
+                }
+            }
+<span class="fc" id="L66">            ready.add(processes.get(cr).getProcessId());</span>
+<span class="fc" id="L67">            remainingTime[cr]--;</span>
+        }
+<span class="fc" id="L69">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

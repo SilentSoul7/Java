@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PerfectNumber.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.maths</a> &gt; <span class="el_source">PerfectNumber.java</span></div><h1>PerfectNumber.java</h1><pre class="source lang-java linenums">package com.thealgorithms.maths;
+
+/**
+ * In number theory, a perfect number is a positive integer that is equal to the
+ * sum of its positive divisors, excluding the number itself. For instance, 6
+ * has divisors 1, 2 and 3 (excluding itself), and 1 + 2 + 3 = 6, so 6 is a
+ * perfect number.
+ *
+ * link:https://en.wikipedia.org/wiki/Perfect_number
+ */
+public final class PerfectNumber {
+    private PerfectNumber() {
+    }
+
+    /**
+     * Check if {@code number} is perfect number or not
+     *
+     * @param number the number
+     * @return {@code true} if {@code number} is perfect number, otherwise false
+     */
+    public static boolean isPerfectNumber(int number) {
+<span class="fc bfc" id="L22" title="All 2 branches covered.">        if (number &lt;= 0) {</span>
+<span class="fc" id="L23">            return false;</span>
+        }
+<span class="fc" id="L25">        int sum = 0;</span>
+        /* sum of its positive divisors */
+<span class="fc bfc" id="L27" title="All 2 branches covered.">        for (int i = 1; i &lt; number; ++i) {</span>
+<span class="fc bfc" id="L28" title="All 2 branches covered.">            if (number % i == 0) {</span>
+<span class="fc" id="L29">                sum += i;</span>
+            }
+        }
+<span class="fc bfc" id="L32" title="All 2 branches covered.">        return sum == number;</span>
+    }
+
+    /**
+     * Check if {@code n} is perfect number or not
+     *
+     * @param n the number
+     * @return {@code true} if {@code number} is perfect number, otherwise false
+     */
+    public static boolean isPerfectNumber2(int n) {
+<span class="fc bfc" id="L42" title="All 2 branches covered.">        if (n &lt;= 0) {</span>
+<span class="fc" id="L43">            return false;</span>
+        }
+<span class="fc" id="L45">        int sum = 1;</span>
+<span class="fc" id="L46">        double root = Math.sqrt(n);</span>
+
+        /*
+         * We can get the factors after the root by dividing number by its factors
+         * before the root.
+         * Ex- Factors of 100 are 1, 2, 4, 5, 10, 20, 25, 50 and 100.
+         * Root of 100 is 10. So factors before 10 are 1, 2, 4 and 5.
+         * Now by dividing 100 by each factor before 10 we get:
+         * 100/1 = 100, 100/2 = 50, 100/4 = 25 and 100/5 = 20
+         * So we get 100, 50, 25 and 20 which are factors of 100 after 10
+         */
+<span class="fc bfc" id="L57" title="All 2 branches covered.">        for (int i = 2; i &lt;= root; i++) {</span>
+<span class="fc bfc" id="L58" title="All 2 branches covered.">            if (n % i == 0) {</span>
+<span class="fc" id="L59">                sum += i + n / i;</span>
+            }
+        }
+
+        // if n is a perfect square then its root was added twice in above loop, so subtracting root
+        // from sum
+<span class="fc bfc" id="L65" title="All 2 branches covered.">        if (root == (int) root) {</span>
+<span class="fc" id="L66">            sum -= root;</span>
+        }
+
+<span class="fc bfc" id="L69" title="All 2 branches covered.">        return sum == n;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

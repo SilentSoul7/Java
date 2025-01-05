@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MazeRecursion.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.backtracking</a> &gt; <span class="el_source">MazeRecursion.java</span></div><h1>MazeRecursion.java</h1><pre class="source lang-java linenums">package com.thealgorithms.backtracking;
+
+/**
+ * This class contains methods to solve a maze using recursive backtracking.
+ * The maze is represented as a 2D array where walls, paths, and visited/dead
+ * ends are marked with different integers.
+ *
+ * The goal is to find a path from a starting position to the target position
+ * (map[6][5]) while navigating through the maze.
+ */
+public final class MazeRecursion {
+
+    private MazeRecursion() {
+    }
+
+    /**
+     * This method solves the maze using the &quot;down -&gt; right -&gt; up -&gt; left&quot;
+     * movement strategy.
+     *
+     * @param map The 2D array representing the maze (walls, paths, etc.)
+     * @return The solved maze with paths marked, or null if no solution exists.
+     */
+    public static int[][] solveMazeUsingFirstStrategy(int[][] map) {
+<span class="pc bpc" id="L24" title="1 of 2 branches missed.">        if (setWay(map, 1, 1)) {</span>
+<span class="fc" id="L25">            return map;</span>
+        }
+<span class="nc" id="L27">        return null;</span>
+    }
+
+    /**
+     * This method solves the maze using the &quot;up -&gt; right -&gt; down -&gt; left&quot;
+     * movement strategy.
+     *
+     * @param map The 2D array representing the maze (walls, paths, etc.)
+     * @return The solved maze with paths marked, or null if no solution exists.
+     */
+    public static int[][] solveMazeUsingSecondStrategy(int[][] map) {
+<span class="pc bpc" id="L38" title="1 of 2 branches missed.">        if (setWay2(map, 1, 1)) {</span>
+<span class="fc" id="L39">            return map;</span>
+        }
+<span class="nc" id="L41">        return null;</span>
+    }
+
+    /**
+     * Attempts to find a path through the maze using a &quot;down -&gt; right -&gt; up -&gt; left&quot;
+     * movement strategy. The path is marked with '2' for valid paths and '3' for dead ends.
+     *
+     * @param map The 2D array representing the maze (walls, paths, etc.)
+     * @param i   The current x-coordinate of the ball (row index)
+     * @param j   The current y-coordinate of the ball (column index)
+     * @return True if a path is found to (6,5), otherwise false
+     */
+    private static boolean setWay(int[][] map, int i, int j) {
+<span class="fc bfc" id="L54" title="All 2 branches covered.">        if (map[6][5] == 2) {</span>
+<span class="fc" id="L55">            return true;</span>
+        }
+
+        // If the current position is unvisited (0), explore it
+<span class="fc bfc" id="L59" title="All 2 branches covered.">        if (map[i][j] == 0) {</span>
+            // Mark the current position as '2'
+<span class="fc" id="L61">            map[i][j] = 2;</span>
+
+            // Move down
+<span class="fc bfc" id="L64" title="All 2 branches covered.">            if (setWay(map, i + 1, j)) {</span>
+<span class="fc" id="L65">                return true;</span>
+            }
+            // Move right
+<span class="pc bpc" id="L68" title="1 of 2 branches missed.">            else if (setWay(map, i, j + 1)) {</span>
+<span class="fc" id="L69">                return true;</span>
+            }
+            // Move up
+<span class="nc bnc" id="L72" title="All 2 branches missed.">            else if (setWay(map, i - 1, j)) {</span>
+<span class="nc" id="L73">                return true;</span>
+            }
+            // Move left
+<span class="nc bnc" id="L76" title="All 2 branches missed.">            else if (setWay(map, i, j - 1)) {</span>
+<span class="nc" id="L77">                return true;</span>
+            }
+
+<span class="nc" id="L80">            map[i][j] = 3; // Mark as dead end (3) if no direction worked</span>
+<span class="nc" id="L81">            return false;</span>
+        }
+<span class="fc" id="L83">        return false;</span>
+    }
+
+    /**
+     * Attempts to find a path through the maze using an alternative movement
+     * strategy &quot;up -&gt; right -&gt; down -&gt; left&quot;.
+     *
+     * @param map The 2D array representing the maze (walls, paths, etc.)
+     * @param i   The current x-coordinate of the ball (row index)
+     * @param j   The current y-coordinate of the ball (column index)
+     * @return True if a path is found to (6,5), otherwise false
+     */
+    private static boolean setWay2(int[][] map, int i, int j) {
+<span class="fc bfc" id="L96" title="All 2 branches covered.">        if (map[6][5] == 2) {</span>
+<span class="fc" id="L97">            return true;</span>
+        }
+
+<span class="fc bfc" id="L100" title="All 2 branches covered.">        if (map[i][j] == 0) {</span>
+<span class="fc" id="L101">            map[i][j] = 2;</span>
+
+            // Move up
+<span class="fc bfc" id="L104" title="All 2 branches covered.">            if (setWay2(map, i - 1, j)) {</span>
+<span class="fc" id="L105">                return true;</span>
+            }
+            // Move right
+<span class="fc bfc" id="L108" title="All 2 branches covered.">            else if (setWay2(map, i, j + 1)) {</span>
+<span class="fc" id="L109">                return true;</span>
+            }
+            // Move down
+<span class="pc bpc" id="L112" title="1 of 2 branches missed.">            else if (setWay2(map, i + 1, j)) {</span>
+<span class="fc" id="L113">                return true;</span>
+            }
+            // Move left
+<span class="nc bnc" id="L116" title="All 2 branches missed.">            else if (setWay2(map, i, j - 1)) {</span>
+<span class="nc" id="L117">                return true;</span>
+            }
+
+<span class="nc" id="L120">            map[i][j] = 3; // Mark as dead end (3) if no direction worked</span>
+<span class="nc" id="L121">            return false;</span>
+        }
+<span class="fc" id="L123">        return false;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

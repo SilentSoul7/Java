@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SimpleSubCipher.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.ciphers</a> &gt; <span class="el_source">SimpleSubCipher.java</span></div><h1>SimpleSubCipher.java</h1><pre class="source lang-java linenums">package com.thealgorithms.ciphers;
+
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * The simple substitution cipher is a cipher that has been in use for many
+ * hundreds of years (an excellent history is given in Simon Singhs 'the Code
+ * Book'). It basically consists of substituting every plaintext character for a
+ * different ciphertext character. It differs from the Caesar cipher in that the
+ * cipher alphabet is not simply the alphabet shifted, it is completely jumbled.
+ */
+<span class="fc" id="L13">public class SimpleSubCipher {</span>
+
+    /**
+     * Encrypt text by replacing each element with its opposite character.
+     *
+     * @param message
+     * @param cipherSmall
+     * @return Encrypted message
+     */
+    public String encode(String message, String cipherSmall) {
+<span class="fc" id="L23">        StringBuilder encoded = new StringBuilder();</span>
+
+        // This map is used to encode
+<span class="fc" id="L26">        Map&lt;Character, Character&gt; cipherMap = new HashMap&lt;&gt;();</span>
+
+<span class="fc" id="L28">        char beginSmallLetter = 'a';</span>
+<span class="fc" id="L29">        char beginCapitalLetter = 'A';</span>
+
+<span class="fc" id="L31">        cipherSmall = cipherSmall.toLowerCase();</span>
+<span class="fc" id="L32">        String cipherCapital = cipherSmall.toUpperCase();</span>
+
+        // To handle Small and Capital letters
+<span class="fc bfc" id="L35" title="All 2 branches covered.">        for (int i = 0; i &lt; cipherSmall.length(); i++) {</span>
+<span class="fc" id="L36">            cipherMap.put(beginSmallLetter++, cipherSmall.charAt(i));</span>
+<span class="fc" id="L37">            cipherMap.put(beginCapitalLetter++, cipherCapital.charAt(i));</span>
+        }
+
+<span class="fc bfc" id="L40" title="All 2 branches covered.">        for (int i = 0; i &lt; message.length(); i++) {</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">            if (Character.isAlphabetic(message.charAt(i))) {</span>
+<span class="fc" id="L42">                encoded.append(cipherMap.get(message.charAt(i)));</span>
+            } else {
+<span class="fc" id="L44">                encoded.append(message.charAt(i));</span>
+            }
+        }
+
+<span class="fc" id="L48">        return encoded.toString();</span>
+    }
+
+    /**
+     * Decrypt message by replacing each element with its opposite character in
+     * cipher.
+     *
+     * @param encryptedMessage
+     * @param cipherSmall
+     * @return message
+     */
+    public String decode(String encryptedMessage, String cipherSmall) {
+<span class="fc" id="L60">        StringBuilder decoded = new StringBuilder();</span>
+
+<span class="fc" id="L62">        Map&lt;Character, Character&gt; cipherMap = new HashMap&lt;&gt;();</span>
+
+<span class="fc" id="L64">        char beginSmallLetter = 'a';</span>
+<span class="fc" id="L65">        char beginCapitalLetter = 'A';</span>
+
+<span class="fc" id="L67">        cipherSmall = cipherSmall.toLowerCase();</span>
+<span class="fc" id="L68">        String cipherCapital = cipherSmall.toUpperCase();</span>
+
+<span class="fc bfc" id="L70" title="All 2 branches covered.">        for (int i = 0; i &lt; cipherSmall.length(); i++) {</span>
+<span class="fc" id="L71">            cipherMap.put(cipherSmall.charAt(i), beginSmallLetter++);</span>
+<span class="fc" id="L72">            cipherMap.put(cipherCapital.charAt(i), beginCapitalLetter++);</span>
+        }
+
+<span class="fc bfc" id="L75" title="All 2 branches covered.">        for (int i = 0; i &lt; encryptedMessage.length(); i++) {</span>
+<span class="fc bfc" id="L76" title="All 2 branches covered.">            if (Character.isAlphabetic(encryptedMessage.charAt(i))) {</span>
+<span class="fc" id="L77">                decoded.append(cipherMap.get(encryptedMessage.charAt(i)));</span>
+            } else {
+<span class="fc" id="L79">                decoded.append(encryptedMessage.charAt(i));</span>
+            }
+        }
+
+<span class="fc" id="L83">        return decoded.toString();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

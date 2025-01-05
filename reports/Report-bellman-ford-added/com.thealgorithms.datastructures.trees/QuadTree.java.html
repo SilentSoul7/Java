@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>QuadTree.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.trees</a> &gt; <span class="el_source">QuadTree.java</span></div><h1>QuadTree.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.trees;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Point is a simple class that represents a point in 2D space.
+ *
+ * @see &lt;a href=&quot;https://en.wikipedia.org/wiki/Point_(geometry)&quot;&gt;Point&lt;/a&gt;
+ * @author &lt;a href=&quot;https://github.com/sailok&quot;&gt;Sailok Chinta&lt;/a&gt;
+ */
+class Point {
+    public double x;
+    public double y;
+
+<span class="fc" id="L16">    Point(double x, double y) {</span>
+<span class="fc" id="L17">        this.x = x;</span>
+<span class="fc" id="L18">        this.y = y;</span>
+<span class="fc" id="L19">    }</span>
+}
+
+/**
+ * BoundingBox is a simple class that represents a bounding box in 2D space.
+ *
+ * @see &lt;a href=&quot;https://en.wikipedia.org/wiki/Bounding_box&quot;&gt;Bounding Box&lt;/a&gt;
+ * @author &lt;a href=&quot;https://github.com/sailok&quot;&gt;Sailok Chinta&lt;/a&gt;
+ */
+class BoundingBox {
+    public Point center;
+    public double halfWidth;
+
+<span class="fc" id="L32">    BoundingBox(Point center, double halfWidth) {</span>
+<span class="fc" id="L33">        this.center = center;</span>
+<span class="fc" id="L34">        this.halfWidth = halfWidth;</span>
+<span class="fc" id="L35">    }</span>
+
+    /**
+     * Checks if the point is inside the bounding box
+     *
+     * @param point The point to check
+     * @return true if the point is inside the bounding box, false otherwise
+     */
+    public boolean containsPoint(Point point) {
+<span class="pc bpc" id="L44" title="1 of 8 branches missed.">        return point.x &gt;= center.x - halfWidth &amp;&amp; point.x &lt;= center.x + halfWidth &amp;&amp; point.y &gt;= center.y - halfWidth &amp;&amp; point.y &lt;= center.y + halfWidth;</span>
+    }
+
+    /**
+     * Checks if the bounding box intersects with the other bounding box
+     *
+     * @param otherBoundingBox The other bounding box
+     * @return true if the bounding box intersects with the other bounding box, false otherwise
+     */
+    public boolean intersectsBoundingBox(BoundingBox otherBoundingBox) {
+<span class="pc bpc" id="L54" title="2 of 8 branches missed.">        return otherBoundingBox.center.x - otherBoundingBox.halfWidth &lt;= center.x + halfWidth &amp;&amp; otherBoundingBox.center.x + otherBoundingBox.halfWidth &gt;= center.x - halfWidth &amp;&amp; otherBoundingBox.center.y - otherBoundingBox.halfWidth &lt;= center.y + halfWidth</span>
+            &amp;&amp; otherBoundingBox.center.y + otherBoundingBox.halfWidth &gt;= center.y - halfWidth;
+    }
+}
+
+/**
+ * QuadTree is a tree data structure that is used to store spatial information
+ * in an efficient way.
+ *
+ * This implementation is specific to Point QuadTrees
+ *
+ * @see &lt;a href=&quot;https://en.wikipedia.org/wiki/Quadtree&quot;&gt;Quad Tree&lt;/a&gt;
+ * @author &lt;a href=&quot;https://github.com/sailok&quot;&gt;Sailok Chinta&lt;/a&gt;
+ */
+public class QuadTree {
+    private final BoundingBox boundary;
+    private final int capacity;
+
+    private List&lt;Point&gt; pointList;
+    private boolean divided;
+    private QuadTree northWest;
+    private QuadTree northEast;
+    private QuadTree southWest;
+    private QuadTree southEast;
+
+<span class="fc" id="L79">    public QuadTree(BoundingBox boundary, int capacity) {</span>
+<span class="fc" id="L80">        this.boundary = boundary;</span>
+<span class="fc" id="L81">        this.capacity = capacity;</span>
+
+<span class="fc" id="L83">        this.pointList = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L84">        this.divided = false;</span>
+<span class="fc" id="L85">        this.northWest = null;</span>
+<span class="fc" id="L86">        this.northEast = null;</span>
+<span class="fc" id="L87">        this.southWest = null;</span>
+<span class="fc" id="L88">        this.southEast = null;</span>
+<span class="fc" id="L89">    }</span>
+
+    /**
+     * Inserts a point into the tree
+     *
+     * @param point The point to insert
+     * @return true if the point is successfully inserted, false otherwise
+     */
+    public boolean insert(Point point) {
+<span class="fc bfc" id="L98" title="All 2 branches covered.">        if (point == null) {</span>
+<span class="fc" id="L99">            return false;</span>
+        }
+
+        // Ignore points that don't belong to this quad tree
+<span class="fc bfc" id="L103" title="All 2 branches covered.">        if (!boundary.containsPoint(point)) {</span>
+<span class="fc" id="L104">            return false;</span>
+        }
+
+        // if the space is not already occupied, add it to the list
+<span class="fc bfc" id="L108" title="All 2 branches covered.">        if (pointList.size() &lt; capacity) {</span>
+<span class="fc" id="L109">            pointList.add(point);</span>
+<span class="fc" id="L110">            return true;</span>
+        }
+
+        // if subdivision hasn't happened, divide the tree
+<span class="fc bfc" id="L114" title="All 2 branches covered.">        if (!divided) {</span>
+<span class="fc" id="L115">            subDivide();</span>
+        }
+
+        // try to add the point in one of the four quadrants
+<span class="fc bfc" id="L119" title="All 2 branches covered.">        if (northWest.insert(point)) {</span>
+<span class="fc" id="L120">            return true;</span>
+        }
+
+<span class="fc bfc" id="L123" title="All 2 branches covered.">        if (northEast.insert(point)) {</span>
+<span class="fc" id="L124">            return true;</span>
+        }
+
+<span class="fc bfc" id="L127" title="All 2 branches covered.">        if (southWest.insert(point)) {</span>
+<span class="fc" id="L128">            return true;</span>
+        }
+
+<span class="pc bpc" id="L131" title="1 of 2 branches missed.">        if (southEast.insert(point)) {</span>
+<span class="fc" id="L132">            return true;</span>
+        }
+
+<span class="nc" id="L135">        return false;</span>
+    }
+
+    /**
+     * Create four children that fully divide this quad into four quads of equal area
+     */
+    private void subDivide() {
+<span class="fc" id="L142">        double quadrantHalfWidth = boundary.halfWidth / 2;</span>
+
+<span class="fc" id="L144">        northWest = new QuadTree(new BoundingBox(new Point(boundary.center.x - quadrantHalfWidth, boundary.center.y + quadrantHalfWidth), quadrantHalfWidth), this.capacity);</span>
+<span class="fc" id="L145">        northEast = new QuadTree(new BoundingBox(new Point(boundary.center.x + quadrantHalfWidth, boundary.center.y + quadrantHalfWidth), quadrantHalfWidth), this.capacity);</span>
+<span class="fc" id="L146">        southWest = new QuadTree(new BoundingBox(new Point(boundary.center.x - quadrantHalfWidth, boundary.center.y - quadrantHalfWidth), quadrantHalfWidth), this.capacity);</span>
+<span class="fc" id="L147">        southEast = new QuadTree(new BoundingBox(new Point(boundary.center.x + quadrantHalfWidth, boundary.center.y - quadrantHalfWidth), quadrantHalfWidth), this.capacity);</span>
+<span class="fc" id="L148">        divided = true;</span>
+<span class="fc" id="L149">    }</span>
+
+    /**
+     * Queries all the points that intersect with the other bounding box
+     *
+     * @param otherBoundingBox The other bounding box
+     * @return List of points that intersect with the other bounding box
+     */
+    public List&lt;Point&gt; query(BoundingBox otherBoundingBox) {
+<span class="fc" id="L158">        List&lt;Point&gt; points = new ArrayList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L160" title="All 2 branches covered.">        if (!boundary.intersectsBoundingBox(otherBoundingBox)) {</span>
+<span class="fc" id="L161">            return points;</span>
+        }
+
+        // filter the points that intersect with the other bounding box
+<span class="fc" id="L165">        points.addAll(pointList.stream().filter(otherBoundingBox::containsPoint).toList());</span>
+
+<span class="fc bfc" id="L167" title="All 2 branches covered.">        if (divided) {</span>
+<span class="fc" id="L168">            points.addAll(northWest.query(otherBoundingBox));</span>
+<span class="fc" id="L169">            points.addAll(northEast.query(otherBoundingBox));</span>
+<span class="fc" id="L170">            points.addAll(southWest.query(otherBoundingBox));</span>
+<span class="fc" id="L171">            points.addAll(southEast.query(otherBoundingBox));</span>
+        }
+
+<span class="fc" id="L174">        return points;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

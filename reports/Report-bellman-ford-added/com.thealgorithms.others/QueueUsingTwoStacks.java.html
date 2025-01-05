@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>QueueUsingTwoStacks.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.others</a> &gt; <span class="el_source">QueueUsingTwoStacks.java</span></div><h1>QueueUsingTwoStacks.java</h1><pre class="source lang-java linenums">package com.thealgorithms.others;
+
+import java.util.Stack;
+
+/**
+ * This implements Queue using two Stacks.
+ *
+ * &lt;p&gt;
+ * Big O Runtime: insert(): O(1) remove(): O(1) amortized isEmpty(): O(1)
+ *
+ * &lt;p&gt;
+ * A queue data structure functions the same as a real world queue. The elements
+ * that are added first are the first to be removed. New elements are added to
+ * the back/rear of the queue.
+ *
+ * @author sahilb2 (https://www.github.com/sahilb2)
+ */
+public class QueueUsingTwoStacks {
+    private final Stack&lt;Object&gt; inStack;
+    private final Stack&lt;Object&gt; outStack;
+
+    /**
+     * Constructor
+     */
+<span class="fc" id="L25">    public QueueUsingTwoStacks() {</span>
+<span class="fc" id="L26">        this.inStack = new Stack&lt;&gt;();</span>
+<span class="fc" id="L27">        this.outStack = new Stack&lt;&gt;();</span>
+<span class="fc" id="L28">    }</span>
+
+    /**
+     * Inserts an element at the rear of the queue
+     *
+     * @param x element to be added
+     */
+    public void insert(Object x) {
+        // Insert element into inStack
+<span class="fc" id="L37">        this.inStack.push(x);</span>
+<span class="fc" id="L38">    }</span>
+
+    /**
+     * Remove an element from the front of the queue
+     *
+     * @return the new front of the queue
+     */
+    public Object remove() {
+<span class="fc bfc" id="L46" title="All 2 branches covered.">        if (this.outStack.isEmpty()) {</span>
+            // Move all elements from inStack to outStack (preserving the order)
+<span class="fc bfc" id="L48" title="All 2 branches covered.">            while (!this.inStack.isEmpty()) {</span>
+<span class="fc" id="L49">                this.outStack.push(this.inStack.pop());</span>
+            }
+        }
+<span class="fc" id="L52">        return this.outStack.pop();</span>
+    }
+
+    /**
+     * Peek at the element from the front of the queue
+     *
+     * @return the front element of the queue
+     */
+    public Object peekFront() {
+<span class="fc bfc" id="L61" title="All 2 branches covered.">        if (this.outStack.isEmpty()) {</span>
+            // Move all elements from inStack to outStack (preserving the order)
+<span class="fc bfc" id="L63" title="All 2 branches covered.">            while (!this.inStack.isEmpty()) {</span>
+<span class="fc" id="L64">                this.outStack.push(this.inStack.pop());</span>
+            }
+        }
+<span class="fc" id="L67">        return this.outStack.peek();</span>
+    }
+
+    /**
+     * Peek at the element from the back of the queue
+     *
+     * @return the back element of the queue
+     */
+    public Object peekBack() {
+<span class="fc" id="L76">        return this.inStack.peek();</span>
+    }
+
+    /**
+     * Returns true if the queue is empty
+     *
+     * @return true if the queue is empty
+     */
+    public boolean isEmpty() {
+<span class="pc bpc" id="L85" title="1 of 4 branches missed.">        return (this.inStack.isEmpty() &amp;&amp; this.outStack.isEmpty());</span>
+    }
+
+    /**
+     * Returns true if the inStack is empty.
+     *
+     * @return true if the inStack is empty.
+     */
+    public boolean isInStackEmpty() {
+<span class="fc" id="L94">        return (inStack.isEmpty());</span>
+    }
+
+    /**
+     * Returns true if the outStack is empty.
+     *
+     * @return true if the outStack is empty.
+     */
+    public boolean isOutStackEmpty() {
+<span class="fc" id="L103">        return (outStack.isEmpty());</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

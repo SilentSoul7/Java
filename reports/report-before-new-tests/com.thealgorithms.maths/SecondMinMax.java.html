@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SecondMinMax.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.maths</a> &gt; <span class="el_source">SecondMinMax.java</span></div><h1>SecondMinMax.java</h1><pre class="source lang-java linenums">package com.thealgorithms.maths;
+
+import java.util.function.BiPredicate;
+
+public final class SecondMinMax {
+
+    /**
+     * Utility class for finding second maximum or minimum based on BiPredicate
+     * @exception IllegalArgumentException =&gt; if input array is of length less than 2 also if all elements are same
+     * @return the second minimum / maximum value from the input array
+     * @author Bharath Sanjeevi ( https://github.com/BharathSanjeeviT )
+     */
+
+    private SecondMinMax() {
+    }
+
+    private static int secondBest(final int[] arr, final int initialVal, final BiPredicate&lt;Integer, Integer&gt; isBetter) {
+<span class="fc" id="L18">        checkInput(arr);</span>
+<span class="fc" id="L19">        int best = initialVal;</span>
+<span class="fc" id="L20">        int secBest = initialVal;</span>
+<span class="fc bfc" id="L21" title="All 2 branches covered.">        for (final int num : arr) {</span>
+<span class="fc bfc" id="L22" title="All 2 branches covered.">            if (isBetter.test(num, best)) {</span>
+<span class="fc" id="L23">                secBest = best;</span>
+<span class="fc" id="L24">                best = num;</span>
+<span class="fc bfc" id="L25" title="All 4 branches covered.">            } else if ((isBetter.test(num, secBest)) &amp;&amp; (num != best)) {</span>
+<span class="fc" id="L26">                secBest = num;</span>
+            }
+        }
+<span class="fc" id="L29">        checkOutput(secBest, initialVal);</span>
+<span class="fc" id="L30">        return secBest;</span>
+    }
+
+    /**
+     * @brief Finds the Second minimum / maximum value from the array
+     * @param arr the input array
+     * @exception IllegalArgumentException =&gt; if input array is of length less than 2 also if all elements are same
+     * @return the second minimum / maximum value from the input array
+     * @author Bharath Sanjeevi ( https://github.com/BharathSanjeeviT )
+     */
+
+    public static int findSecondMin(final int[] arr) {
+<span class="fc bfc" id="L42" title="All 2 branches covered.">        return secondBest(arr, Integer.MAX_VALUE, (a, b) -&gt; a &lt; b);</span>
+    }
+
+    public static int findSecondMax(final int[] arr) {
+<span class="fc bfc" id="L46" title="All 2 branches covered.">        return secondBest(arr, Integer.MIN_VALUE, (a, b) -&gt; a &gt; b);</span>
+    }
+
+    private static void checkInput(final int[] arr) {
+<span class="fc bfc" id="L50" title="All 2 branches covered.">        if (arr.length &lt; 2) {</span>
+<span class="fc" id="L51">            throw new IllegalArgumentException(&quot;Input array must have length of at least two&quot;);</span>
+        }
+<span class="fc" id="L53">    }</span>
+
+    private static void checkOutput(final int secNum, final int initialVal) {
+<span class="fc bfc" id="L56" title="All 2 branches covered.">        if (secNum == initialVal) {</span>
+<span class="fc" id="L57">            throw new IllegalArgumentException(&quot;Input array should have at least 2 distinct elements&quot;);</span>
+        }
+<span class="fc" id="L59">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

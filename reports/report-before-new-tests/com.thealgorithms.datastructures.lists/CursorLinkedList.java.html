@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CursorLinkedList.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.lists</a> &gt; <span class="el_source">CursorLinkedList.java</span></div><h1>CursorLinkedList.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.lists;
+
+import java.util.Objects;
+
+/**
+ * CursorLinkedList is an array-based implementation of a singly linked list.
+ * Each node in the array simulates a linked list node, storing an element and
+ * the index of the next node. This structure allows for efficient list operations
+ * without relying on traditional pointers.
+ *
+ * @param &lt;T&gt; the type of elements in this list
+ */
+public class CursorLinkedList&lt;T&gt; {
+
+    /**
+     * Node represents an individual element in the list, containing the element
+     * itself and a pointer (index) to the next node.
+     */
+    private static class Node&lt;T&gt; {
+        T element;
+        int next;
+
+<span class="fc" id="L23">        Node(T element, int next) {</span>
+<span class="fc" id="L24">            this.element = element;</span>
+<span class="fc" id="L25">            this.next = next;</span>
+<span class="fc" id="L26">        }</span>
+    }
+
+    private final int os;
+    private int head;
+    private final Node&lt;T&gt;[] cursorSpace;
+    private int count;
+    private static final int CURSOR_SPACE_SIZE = 100;
+
+    {
+        // Initialize cursor space array and free list pointers
+<span class="fc" id="L37">        cursorSpace = new Node[CURSOR_SPACE_SIZE];</span>
+<span class="fc bfc" id="L38" title="All 2 branches covered.">        for (int i = 0; i &lt; CURSOR_SPACE_SIZE; i++) {</span>
+<span class="fc" id="L39">            cursorSpace[i] = new Node&lt;&gt;(null, i + 1);</span>
+        }
+<span class="fc" id="L41">        cursorSpace[CURSOR_SPACE_SIZE - 1].next = 0;</span>
+    }
+
+    /**
+     * Constructs an empty CursorLinkedList with the default capacity.
+     */
+<span class="fc" id="L47">    public CursorLinkedList() {</span>
+<span class="fc" id="L48">        os = 0;</span>
+<span class="fc" id="L49">        count = 0;</span>
+<span class="fc" id="L50">        head = -1;</span>
+<span class="fc" id="L51">    }</span>
+
+    /**
+     * Prints all elements in the list in their current order.
+     */
+    public void printList() {
+<span class="nc bnc" id="L57" title="All 2 branches missed.">        if (head != -1) {</span>
+<span class="nc" id="L58">            int start = head;</span>
+<span class="nc bnc" id="L59" title="All 2 branches missed.">            while (start != -1) {</span>
+<span class="nc" id="L60">                T element = cursorSpace[start].element;</span>
+<span class="nc" id="L61">                System.out.println(element.toString());</span>
+<span class="nc" id="L62">                start = cursorSpace[start].next;</span>
+<span class="nc" id="L63">            }</span>
+        }
+<span class="nc" id="L65">    }</span>
+
+    /**
+     * Finds the logical index of a specified element in the list.
+     *
+     * @param element the element to search for in the list
+     * @return the logical index of the element, or -1 if not found
+     * @throws NullPointerException if element is null
+     */
+    public int indexOf(T element) {
+<span class="fc bfc" id="L75" title="All 2 branches covered.">        if (element == null) {</span>
+<span class="fc" id="L76">            throw new NullPointerException(&quot;Element cannot be null&quot;);</span>
+        }
+        try {
+<span class="fc" id="L79">            Objects.requireNonNull(element);</span>
+<span class="fc" id="L80">            Node&lt;T&gt; iterator = cursorSpace[head];</span>
+<span class="pc bpc" id="L81" title="1 of 2 branches missed.">            for (int i = 0; i &lt; count; i++) {</span>
+<span class="fc bfc" id="L82" title="All 2 branches covered.">                if (iterator.element.equals(element)) {</span>
+<span class="fc" id="L83">                    return i;</span>
+                }
+<span class="fc" id="L85">                iterator = cursorSpace[iterator.next];</span>
+            }
+<span class="fc" id="L87">        } catch (Exception e) {</span>
+<span class="fc" id="L88">            return -1;</span>
+<span class="nc" id="L89">        }</span>
+<span class="nc" id="L90">        return -1;</span>
+    }
+
+    /**
+     * Retrieves an element at a specified logical index in the list.
+     *
+     * @param position the logical index of the element
+     * @return the element at the specified position, or null if index is out of bounds
+     */
+    public T get(int position) {
+<span class="fc bfc" id="L100" title="All 4 branches covered.">        if (position &gt;= 0 &amp;&amp; position &lt; count) {</span>
+<span class="fc" id="L101">            int start = head;</span>
+<span class="fc" id="L102">            int counter = 0;</span>
+<span class="pc bpc" id="L103" title="1 of 2 branches missed.">            while (start != -1) {</span>
+<span class="fc" id="L104">                T element = cursorSpace[start].element;</span>
+<span class="fc bfc" id="L105" title="All 2 branches covered.">                if (counter == position) {</span>
+<span class="fc" id="L106">                    return element;</span>
+                }
+<span class="fc" id="L108">                start = cursorSpace[start].next;</span>
+<span class="fc" id="L109">                counter++;</span>
+<span class="fc" id="L110">            }</span>
+        }
+<span class="fc" id="L112">        return null;</span>
+    }
+
+    /**
+     * Removes the element at a specified logical index from the list.
+     *
+     * @param index the logical index of the element to remove
+     */
+    public void removeByIndex(int index) {
+<span class="pc bpc" id="L121" title="2 of 4 branches missed.">        if (index &gt;= 0 &amp;&amp; index &lt; count) {</span>
+<span class="fc" id="L122">            T element = get(index);</span>
+<span class="fc" id="L123">            remove(element);</span>
+        }
+<span class="fc" id="L125">    }</span>
+
+    /**
+     * Removes a specified element from the list.
+     *
+     * @param element the element to be removed
+     * @throws NullPointerException if element is null
+     */
+    public void remove(T element) {
+<span class="fc" id="L134">        Objects.requireNonNull(element);</span>
+<span class="fc" id="L135">        T tempElement = cursorSpace[head].element;</span>
+<span class="fc" id="L136">        int tempNext = cursorSpace[head].next;</span>
+<span class="fc bfc" id="L137" title="All 2 branches covered.">        if (tempElement.equals(element)) {</span>
+<span class="fc" id="L138">            free(head);</span>
+<span class="fc" id="L139">            head = tempNext;</span>
+        } else {
+<span class="fc" id="L141">            int prevIndex = head;</span>
+<span class="fc" id="L142">            int currentIndex = cursorSpace[prevIndex].next;</span>
+<span class="pc bpc" id="L143" title="1 of 2 branches missed.">            while (currentIndex != -1) {</span>
+<span class="fc" id="L144">                T currentElement = cursorSpace[currentIndex].element;</span>
+<span class="pc bpc" id="L145" title="1 of 2 branches missed.">                if (currentElement.equals(element)) {</span>
+<span class="fc" id="L146">                    cursorSpace[prevIndex].next = cursorSpace[currentIndex].next;</span>
+<span class="fc" id="L147">                    free(currentIndex);</span>
+<span class="fc" id="L148">                    break;</span>
+                }
+<span class="nc" id="L150">                prevIndex = currentIndex;</span>
+<span class="nc" id="L151">                currentIndex = cursorSpace[prevIndex].next;</span>
+<span class="nc" id="L152">            }</span>
+        }
+<span class="fc" id="L154">        count--;</span>
+<span class="fc" id="L155">    }</span>
+
+    /**
+     * Allocates a new node index for storing an element.
+     *
+     * @return the index of the newly allocated node
+     * @throws OutOfMemoryError if no space is available in cursor space
+     */
+    private int alloc() {
+<span class="fc" id="L164">        int availableNodeIndex = cursorSpace[os].next;</span>
+<span class="fc bfc" id="L165" title="All 2 branches covered.">        if (availableNodeIndex == 0) {</span>
+<span class="fc" id="L166">            throw new OutOfMemoryError();</span>
+        }
+<span class="fc" id="L168">        cursorSpace[os].next = cursorSpace[availableNodeIndex].next;</span>
+<span class="fc" id="L169">        cursorSpace[availableNodeIndex].next = -1;</span>
+<span class="fc" id="L170">        return availableNodeIndex;</span>
+    }
+
+    /**
+     * Releases a node back to the free list.
+     *
+     * @param index the index of the node to release
+     */
+    private void free(int index) {
+<span class="fc" id="L179">        Node&lt;T&gt; osNode = cursorSpace[os];</span>
+<span class="fc" id="L180">        int osNext = osNode.next;</span>
+<span class="fc" id="L181">        cursorSpace[os].next = index;</span>
+<span class="fc" id="L182">        cursorSpace[index].element = null;</span>
+<span class="fc" id="L183">        cursorSpace[index].next = osNext;</span>
+<span class="fc" id="L184">    }</span>
+
+    /**
+     * Appends an element to the end of the list.
+     *
+     * @param element the element to append
+     * @throws NullPointerException if element is null
+     */
+    public void append(T element) {
+<span class="fc" id="L193">        Objects.requireNonNull(element);</span>
+<span class="fc" id="L194">        int availableIndex = alloc();</span>
+<span class="fc" id="L195">        cursorSpace[availableIndex].element = element;</span>
+<span class="fc bfc" id="L196" title="All 2 branches covered.">        if (head == -1) {</span>
+<span class="fc" id="L197">            head = availableIndex;</span>
+        } else {
+<span class="fc" id="L199">            int iterator = head;</span>
+<span class="fc bfc" id="L200" title="All 2 branches covered.">            while (cursorSpace[iterator].next != -1) {</span>
+<span class="fc" id="L201">                iterator = cursorSpace[iterator].next;</span>
+            }
+<span class="fc" id="L203">            cursorSpace[iterator].next = availableIndex;</span>
+        }
+<span class="fc" id="L205">        cursorSpace[availableIndex].next = -1;</span>
+<span class="fc" id="L206">        count++;</span>
+<span class="fc" id="L207">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

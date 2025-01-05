@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>KrishnamurthyNumber.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.maths</a> &gt; <span class="el_source">KrishnamurthyNumber.java</span></div><h1>KrishnamurthyNumber.java</h1><pre class="source lang-java linenums">package com.thealgorithms.maths;
+
+/**
+ * Utility class for checking if a number is a Krishnamurthy number.
+ *
+ * A Krishnamurthy number (also known as a Strong number) is a number whose sum of the factorials of its digits is equal to the number itself.
+ *
+ * For example, 145 is a Krishnamurthy number because 1! + 4! + 5! = 1 + 24 + 120 = 145.
+ * &lt;b&gt;Example usage:&lt;/b&gt;
+ * &lt;pre&gt;
+ * boolean isKrishnamurthy = KrishnamurthyNumber.isKrishnamurthy(145);
+ * System.out.println(isKrishnamurthy); // Output: true
+ *
+ * isKrishnamurthy = KrishnamurthyNumber.isKrishnamurthy(123);
+ * System.out.println(isKrishnamurthy); // Output: false
+ * &lt;/pre&gt;
+ */
+public final class KrishnamurthyNumber {
+
+    private KrishnamurthyNumber() {
+    }
+
+    /**
+     * Checks if a number is a Krishnamurthy number.
+     *
+     * @param n The number to check
+     * @return true if the number is a Krishnamurthy number, false otherwise
+     */
+    public static boolean isKrishnamurthy(int n) {
+<span class="fc" id="L30">        int tmp = n;</span>
+<span class="fc" id="L31">        int s = 0;</span>
+
+<span class="fc bfc" id="L33" title="All 2 branches covered.">        if (n &lt;= 0) {</span>
+<span class="fc" id="L34">            return false;</span>
+        } else {
+<span class="fc bfc" id="L36" title="All 2 branches covered.">            while (n != 0) {</span>
+                // initialising the variable fact that will store the factorials of the digits
+<span class="fc" id="L38">                int fact = 1;</span>
+                // computing factorial of each digit
+<span class="fc bfc" id="L40" title="All 2 branches covered.">                for (int i = 1; i &lt;= n % 10; i++) {</span>
+<span class="fc" id="L41">                    fact = fact * i;</span>
+                }
+                // computing the sum of the factorials
+<span class="fc" id="L44">                s = s + fact;</span>
+                // discarding the digit for which factorial has been calculated
+<span class="fc" id="L46">                n = n / 10;</span>
+<span class="fc" id="L47">            }</span>
+
+            // evaluating if sum of the factorials of the digits equals the number itself
+<span class="fc bfc" id="L50" title="All 2 branches covered.">            return tmp == s;</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

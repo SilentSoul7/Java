@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SquareRootBinarySearch.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.searches</a> &gt; <span class="el_source">SquareRootBinarySearch.java</span></div><h1>SquareRootBinarySearch.java</h1><pre class="source lang-java linenums">package com.thealgorithms.searches;
+
+/**
+ * Given an integer x, find the square root of x. If x is not a perfect square,
+ * then return floor(√x).
+ * &lt;p&gt;
+ * For example, if x = 5, The answer should be 2 which is the floor value of √5.
+ * &lt;p&gt;
+ * The approach that will be used for solving the above problem is not going to
+ * be a straight forward Math.sqrt(). Instead we will be using Binary Search to
+ * find the square root of a number in the most optimised way.
+ *
+ * @author sahil
+ */
+public final class SquareRootBinarySearch {
+    private SquareRootBinarySearch() {
+    }
+
+    /**
+     * This function calculates the floor of square root of a number. We use
+     * Binary Search algorithm to calculate the square root in a more optimised
+     * way.
+     *
+     * @param num Number
+     * @return answer
+     */
+    static long squareRoot(long num) {
+<span class="fc bfc" id="L28" title="All 4 branches covered.">        if (num == 0 || num == 1) {</span>
+<span class="fc" id="L29">            return num;</span>
+        }
+<span class="fc" id="L31">        long l = 1;</span>
+<span class="fc" id="L32">        long r = num;</span>
+<span class="fc" id="L33">        long ans = 0;</span>
+<span class="fc bfc" id="L34" title="All 2 branches covered.">        while (l &lt;= r) {</span>
+<span class="fc" id="L35">            long mid = l + (r - l) / 2;</span>
+<span class="fc bfc" id="L36" title="All 2 branches covered.">            if (mid == num / mid) {</span>
+<span class="fc" id="L37">                return mid;</span>
+<span class="fc bfc" id="L38" title="All 2 branches covered.">            } else if (mid &lt; num / mid) {</span>
+<span class="fc" id="L39">                ans = mid;</span>
+<span class="fc" id="L40">                l = mid + 1;</span>
+            } else {
+<span class="fc" id="L42">                r = mid - 1;</span>
+            }
+<span class="fc" id="L44">        }</span>
+<span class="fc" id="L45">        return ans;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

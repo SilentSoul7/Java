@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JohnsonsAlgorithm.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.graphs</a> &gt; <span class="el_source">JohnsonsAlgorithm.java</span></div><h1>JohnsonsAlgorithm.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.graphs;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+/**
+ * This class implements Johnson's algorithm for finding all-pairs shortest paths in a weighted,
+ * directed graph that may contain negative edge weights.
+ *
+ * Johnson's algorithm works by using the Bellman-Ford algorithm to compute a transformation of the
+ * input graph that removes all negative weights, allowing Dijkstra's algorithm to be used for
+ * efficient shortest path computations.
+ *
+ * Time Complexity: O(V^2 * log(V) + V*E)
+ * Space Complexity: O(V^2)
+ *
+ * Where V is the number of vertices and E is the number of edges in the graph.
+ *
+ * For more information, please visit {@link https://en.wikipedia.org/wiki/Johnson%27s_algorithm}
+ */
+public final class JohnsonsAlgorithm {
+
+    private static final double INF = Double.POSITIVE_INFINITY;
+
+    private JohnsonsAlgorithm() {
+    }
+
+    /**
+     * Executes Johnson's algorithm on the given graph.
+     * Steps:
+     * 1. Add a new vertex to the graph and run Bellman-Ford to compute modified weights
+     * 2. t the graph using the modified weights
+     * 3. Run Dijkstra's algorithm for each vertex to compute the shortest paths
+     * The final result is a 2D array of shortest distances between all pairs of vertices.
+     *
+     * @param graph The input graph represented as an adjacency matrix.
+     * @return A 2D array representing the shortest distances between all pairs of vertices.
+     */
+    public static double[][] johnsonAlgorithm(double[][] graph) {
+<span class="fc" id="L41">        int numVertices = graph.length;</span>
+<span class="fc" id="L42">        double[][] edges = convertToEdgeList(graph);</span>
+
+<span class="fc" id="L44">        double[] modifiedWeights = bellmanFord(edges, numVertices);</span>
+
+<span class="fc" id="L46">        double[][] reweightedGraph = reweightGraph(graph, modifiedWeights);</span>
+
+<span class="fc" id="L48">        double[][] shortestDistances = new double[numVertices][numVertices];</span>
+<span class="fc bfc" id="L49" title="All 2 branches covered.">        for (int source = 0; source &lt; numVertices; source++) {</span>
+<span class="fc" id="L50">            shortestDistances[source] = dijkstra(reweightedGraph, source, modifiedWeights);</span>
+        }
+
+<span class="fc" id="L53">        return shortestDistances;</span>
+    }
+
+    /**
+     * Converts the adjacency matrix representation of the graph to an edge list.
+     *
+     * @param graph The input graph as an adjacency matrix.
+     * @return An array of edges, where each edge is represented as [from, to, weight].
+     */
+    public static double[][] convertToEdgeList(double[][] graph) {
+<span class="fc" id="L63">        int numVertices = graph.length;</span>
+<span class="fc" id="L64">        List&lt;double[]&gt; edgeList = new ArrayList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L66" title="All 2 branches covered.">        for (int i = 0; i &lt; numVertices; i++) {</span>
+<span class="fc bfc" id="L67" title="All 2 branches covered.">            for (int j = 0; j &lt; numVertices; j++) {</span>
+<span class="fc bfc" id="L68" title="All 4 branches covered.">                if (i != j &amp;&amp; !Double.isInfinite(graph[i][j])) {</span>
+                    // Only add edges that are not self-loops and have a finite weight
+<span class="fc" id="L70">                    edgeList.add(new double[] {i, j, graph[i][j]});</span>
+                }
+            }
+        }
+
+<span class="fc" id="L75">        return edgeList.toArray(new double[0][]);</span>
+    }
+
+    /**
+     * Implements the Bellman-Ford algorithm to compute the shortest paths from a new vertex
+     * to all other vertices. This is used to calculate the weight function h(v) for reweighting.
+     *
+     * @param edges The edge list of the graph.
+     * @param numVertices The number of vertices in the original graph.
+     * @return An array of modified weights for each vertex.
+     */
+    private static double[] bellmanFord(double[][] edges, int numVertices) {
+<span class="fc" id="L87">        double[] dist = new double[numVertices + 1];</span>
+<span class="fc" id="L88">        Arrays.fill(dist, INF);</span>
+<span class="fc" id="L89">        dist[numVertices] = 0;</span>
+
+        // Add edges from the new vertex to all original vertices
+<span class="fc" id="L92">        double[][] allEdges = Arrays.copyOf(edges, edges.length + numVertices);</span>
+<span class="fc bfc" id="L93" title="All 2 branches covered.">        for (int i = 0; i &lt; numVertices; i++) {</span>
+<span class="fc" id="L94">            allEdges[edges.length + i] = new double[] {numVertices, i, 0};</span>
+        }
+
+        // Relax all edges V times
+<span class="fc bfc" id="L98" title="All 2 branches covered.">        for (int i = 0; i &lt; numVertices; i++) {</span>
+<span class="fc bfc" id="L99" title="All 2 branches covered.">            for (double[] edge : allEdges) {</span>
+<span class="fc" id="L100">                int u = (int) edge[0];</span>
+<span class="fc" id="L101">                int v = (int) edge[1];</span>
+<span class="fc" id="L102">                double weight = edge[2];</span>
+<span class="fc bfc" id="L103" title="All 4 branches covered.">                if (dist[u] != INF &amp;&amp; dist[u] + weight &lt; dist[v]) {</span>
+<span class="fc" id="L104">                    dist[v] = dist[u] + weight;</span>
+                }
+            }
+        }
+
+        // Check for negative weight cycles
+<span class="fc bfc" id="L110" title="All 2 branches covered.">        for (double[] edge : allEdges) {</span>
+<span class="fc" id="L111">            int u = (int) edge[0];</span>
+<span class="fc" id="L112">            int v = (int) edge[1];</span>
+<span class="fc" id="L113">            double weight = edge[2];</span>
+<span class="fc bfc" id="L114" title="All 2 branches covered.">            if (dist[u] + weight &lt; dist[v]) {</span>
+<span class="fc" id="L115">                throw new IllegalArgumentException(&quot;Graph contains a negative weight cycle&quot;);</span>
+            }
+        }
+
+<span class="fc" id="L119">        return Arrays.copyOf(dist, numVertices);</span>
+    }
+
+    /**
+     * Reweights the graph using the modified weights computed by Bellman-Ford.
+     *
+     * @param graph The original graph.
+     * @param modifiedWeights The modified weights from Bellman-Ford.
+     * @return The reweighted graph.
+     */
+    public static double[][] reweightGraph(double[][] graph, double[] modifiedWeights) {
+<span class="fc" id="L130">        int numVertices = graph.length;</span>
+<span class="fc" id="L131">        double[][] reweightedGraph = new double[numVertices][numVertices];</span>
+
+<span class="fc bfc" id="L133" title="All 2 branches covered.">        for (int i = 0; i &lt; numVertices; i++) {</span>
+<span class="fc bfc" id="L134" title="All 2 branches covered.">            for (int j = 0; j &lt; numVertices; j++) {</span>
+<span class="fc bfc" id="L135" title="All 2 branches covered.">                if (graph[i][j] != 0) {</span>
+                    // New weight = original weight + h(u) - h(v)
+<span class="fc" id="L137">                    reweightedGraph[i][j] = graph[i][j] + modifiedWeights[i] - modifiedWeights[j];</span>
+                }
+            }
+        }
+
+<span class="fc" id="L142">        return reweightedGraph;</span>
+    }
+
+    /**
+     * Implements Dijkstra's algorithm for finding shortest paths from a source vertex.
+     *
+     * @param reweightedGraph The reweighted graph to run Dijkstra's on.
+     * @param source The source vertex.
+     * @param modifiedWeights The modified weights from Bellman-Ford.
+     * @return An array of shortest distances from the source to all other vertices.
+     */
+    public static double[] dijkstra(double[][] reweightedGraph, int source, double[] modifiedWeights) {
+<span class="fc" id="L154">        int numVertices = reweightedGraph.length;</span>
+<span class="fc" id="L155">        double[] dist = new double[numVertices];</span>
+<span class="fc" id="L156">        boolean[] visited = new boolean[numVertices];</span>
+<span class="fc" id="L157">        Arrays.fill(dist, INF);</span>
+<span class="fc" id="L158">        dist[source] = 0;</span>
+
+<span class="fc bfc" id="L160" title="All 2 branches covered.">        for (int count = 0; count &lt; numVertices - 1; count++) {</span>
+<span class="fc" id="L161">            int u = minDistance(dist, visited);</span>
+<span class="fc" id="L162">            visited[u] = true;</span>
+
+<span class="fc bfc" id="L164" title="All 2 branches covered.">            for (int v = 0; v &lt; numVertices; v++) {</span>
+<span class="fc bfc" id="L165" title="All 8 branches covered.">                if (!visited[v] &amp;&amp; reweightedGraph[u][v] != 0 &amp;&amp; dist[u] != INF &amp;&amp; dist[u] + reweightedGraph[u][v] &lt; dist[v]) {</span>
+<span class="fc" id="L166">                    dist[v] = dist[u] + reweightedGraph[u][v];</span>
+                }
+            }
+        }
+
+        // Adjust distances back to the original graph weights
+<span class="fc bfc" id="L172" title="All 2 branches covered.">        for (int i = 0; i &lt; numVertices; i++) {</span>
+<span class="fc bfc" id="L173" title="All 2 branches covered.">            if (dist[i] != INF) {</span>
+<span class="fc" id="L174">                dist[i] = dist[i] - modifiedWeights[source] + modifiedWeights[i];</span>
+            }
+        }
+
+<span class="fc" id="L178">        return dist;</span>
+    }
+
+    /**
+     * Finds the vertex with the minimum distance value from the set of vertices
+     * not yet included in the shortest path tree.
+     *
+     * @param dist Array of distances.
+     * @param visited Array of visited vertices.
+     * @return The index of the vertex with minimum distance.
+     */
+    public static int minDistance(double[] dist, boolean[] visited) {
+<span class="fc" id="L190">        double min = INF;</span>
+<span class="fc" id="L191">        int minIndex = -1;</span>
+<span class="fc bfc" id="L192" title="All 2 branches covered.">        for (int v = 0; v &lt; dist.length; v++) {</span>
+<span class="fc bfc" id="L193" title="All 4 branches covered.">            if (!visited[v] &amp;&amp; dist[v] &lt;= min) {</span>
+<span class="fc" id="L194">                min = dist[v];</span>
+<span class="fc" id="L195">                minIndex = v;</span>
+            }
+        }
+<span class="fc" id="L198">        return minIndex;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

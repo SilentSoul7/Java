@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LongestIncreasingSubsequence.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.dynamicprogramming</a> &gt; <span class="el_source">LongestIncreasingSubsequence.java</span></div><h1>LongestIncreasingSubsequence.java</h1><pre class="source lang-java linenums">package com.thealgorithms.dynamicprogramming;
+
+/**
+ * @author Afrizal Fikri (https://github.com/icalF)
+ */
+public final class LongestIncreasingSubsequence {
+    private LongestIncreasingSubsequence() {
+    }
+
+    private static int upperBound(int[] ar, int l, int r, int key) {
+<span class="fc bfc" id="L11" title="All 2 branches covered.">        while (l &lt; r - 1) {</span>
+<span class="fc" id="L12">            int m = (l + r) &gt;&gt;&gt; 1;</span>
+<span class="fc bfc" id="L13" title="All 2 branches covered.">            if (ar[m] &gt;= key) {</span>
+<span class="fc" id="L14">                r = m;</span>
+            } else {
+<span class="fc" id="L16">                l = m;</span>
+            }
+<span class="fc" id="L18">        }</span>
+
+<span class="fc" id="L20">        return r;</span>
+    }
+
+    public static int lis(int[] array) {
+<span class="fc" id="L24">        int len = array.length;</span>
+<span class="fc bfc" id="L25" title="All 2 branches covered.">        if (len == 0) {</span>
+<span class="fc" id="L26">            return 0;</span>
+        }
+
+<span class="fc" id="L29">        int[] tail = new int[len];</span>
+
+        // always points empty slot in tail
+<span class="fc" id="L32">        int length = 1;</span>
+
+<span class="fc" id="L34">        tail[0] = array[0];</span>
+<span class="fc bfc" id="L35" title="All 2 branches covered.">        for (int i = 1; i &lt; len; i++) {</span>
+            // new smallest value
+<span class="fc bfc" id="L37" title="All 2 branches covered.">            if (array[i] &lt; tail[0]) {</span>
+<span class="fc" id="L38">                tail[0] = array[i];</span>
+            } // array[i] extends largest subsequence
+<span class="fc bfc" id="L40" title="All 2 branches covered.">            else if (array[i] &gt; tail[length - 1]) {</span>
+<span class="fc" id="L41">                tail[length++] = array[i];</span>
+            } // array[i] will become end candidate of an existing subsequence or
+            // Throw away larger elements in all LIS, to make room for upcoming grater elements than
+            // array[i]
+            // (and also, array[i] would have already appeared in one of LIS, identify the location
+            // and replace it)
+            else {
+<span class="fc" id="L48">                tail[upperBound(tail, -1, length - 1, array[i])] = array[i];</span>
+            }
+        }
+
+<span class="fc" id="L52">        return length;</span>
+    }
+
+    /**
+     * @author Alon Firestein (https://github.com/alonfirestein)
+     */
+    // A function for finding the length of the LIS algorithm in O(nlogn) complexity.
+    public static int findLISLen(int[] a) {
+<span class="fc" id="L60">        final int size = a.length;</span>
+<span class="fc bfc" id="L61" title="All 2 branches covered.">        if (size == 0) {</span>
+<span class="fc" id="L62">            return 0;</span>
+        }
+<span class="fc" id="L64">        int[] arr = new int[size];</span>
+<span class="fc" id="L65">        arr[0] = a[0];</span>
+<span class="fc" id="L66">        int lis = 1;</span>
+<span class="fc bfc" id="L67" title="All 2 branches covered.">        for (int i = 1; i &lt; size; i++) {</span>
+<span class="fc" id="L68">            int index = binarySearchBetween(arr, lis - 1, a[i]);</span>
+<span class="fc" id="L69">            arr[index] = a[i];</span>
+<span class="fc bfc" id="L70" title="All 2 branches covered.">            if (index == lis) {</span>
+<span class="fc" id="L71">                lis++;</span>
+            }
+        }
+<span class="fc" id="L74">        return lis;</span>
+    }
+
+    // O(logn)
+
+    private static int binarySearchBetween(int[] t, int end, int key) {
+<span class="fc" id="L80">        int left = 0;</span>
+<span class="fc" id="L81">        int right = end;</span>
+<span class="fc bfc" id="L82" title="All 2 branches covered.">        if (key &lt; t[0]) {</span>
+<span class="fc" id="L83">            return 0;</span>
+        }
+<span class="fc bfc" id="L85" title="All 2 branches covered.">        if (key &gt; t[end]) {</span>
+<span class="fc" id="L86">            return end + 1;</span>
+        }
+<span class="fc bfc" id="L88" title="All 2 branches covered.">        while (left &lt; right - 1) {</span>
+<span class="fc" id="L89">            final int middle = (left + right) &gt;&gt;&gt; 1;</span>
+<span class="fc bfc" id="L90" title="All 2 branches covered.">            if (t[middle] &lt; key) {</span>
+<span class="fc" id="L91">                left = middle;</span>
+            } else {
+<span class="fc" id="L93">                right = middle;</span>
+            }
+<span class="fc" id="L95">        }</span>
+<span class="fc" id="L96">        return right;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

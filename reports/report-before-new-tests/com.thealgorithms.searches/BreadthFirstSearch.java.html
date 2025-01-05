@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BreadthFirstSearch.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.searches</a> &gt; <span class="el_source">BreadthFirstSearch.java</span></div><h1>BreadthFirstSearch.java</h1><pre class="source lang-java linenums">package com.thealgorithms.searches;
+
+import com.thealgorithms.datastructures.Node;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Queue;
+import java.util.Set;
+
+/**
+ * Breadth-First Search implementation for tree/graph traversal.
+ * @author caos321
+ * @co-author @manishraj27
+ * @see &lt;a href=&quot;https://en.wikipedia.org/wiki/Breadth-first_search&quot;&gt;Breadth-first search&lt;/a&gt;
+ */
+<span class="fc" id="L18">public class BreadthFirstSearch&lt;T&gt; {</span>
+<span class="fc" id="L19">    private final List&lt;T&gt; visited = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L20">    private final Set&lt;T&gt; visitedSet = new HashSet&lt;&gt;();</span>
+
+    /**
+     * Performs a breadth-first search to find a node with the given value.
+     *
+     * @param root The root node to start the search from
+     * @param value The value to search for
+     * @return Optional containing the found node, or empty if not found
+     */
+    public Optional&lt;Node&lt;T&gt;&gt; search(final Node&lt;T&gt; root, final T value) {
+<span class="fc bfc" id="L30" title="All 2 branches covered.">        if (root == null) {</span>
+<span class="fc" id="L31">            return Optional.empty();</span>
+        }
+
+<span class="fc" id="L34">        visited.add(root.getValue());</span>
+<span class="fc" id="L35">        visitedSet.add(root.getValue());</span>
+
+<span class="fc bfc" id="L37" title="All 2 branches covered.">        if (root.getValue() == value) {</span>
+<span class="fc" id="L38">            return Optional.of(root);</span>
+        }
+
+<span class="fc" id="L41">        Queue&lt;Node&lt;T&gt;&gt; queue = new ArrayDeque&lt;&gt;(root.getChildren());</span>
+<span class="fc bfc" id="L42" title="All 2 branches covered.">        while (!queue.isEmpty()) {</span>
+<span class="fc" id="L43">            final Node&lt;T&gt; current = queue.poll();</span>
+<span class="fc" id="L44">            T currentValue = current.getValue();</span>
+
+<span class="pc bpc" id="L46" title="1 of 2 branches missed.">            if (visitedSet.contains(currentValue)) {</span>
+<span class="nc" id="L47">                continue;</span>
+            }
+
+<span class="fc" id="L50">            visited.add(currentValue);</span>
+<span class="fc" id="L51">            visitedSet.add(currentValue);</span>
+
+<span class="pc bpc" id="L53" title="1 of 6 branches missed.">            if (currentValue == value || (value != null &amp;&amp; value.equals(currentValue))) {</span>
+<span class="fc" id="L54">                return Optional.of(current);</span>
+            }
+
+<span class="fc" id="L57">            queue.addAll(current.getChildren());</span>
+<span class="fc" id="L58">        }</span>
+
+<span class="fc" id="L60">        return Optional.empty();</span>
+    }
+
+    /**
+     * Returns the list of nodes in the order they were visited.
+     *
+     * @return List containing the visited nodes
+     */
+    public List&lt;T&gt; getVisited() {
+<span class="fc" id="L69">        return visited;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

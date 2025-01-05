@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>KaratsubaMultiplication.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.maths</a> &gt; <span class="el_source">KaratsubaMultiplication.java</span></div><h1>KaratsubaMultiplication.java</h1><pre class="source lang-java linenums">package com.thealgorithms.maths;
+
+import java.math.BigInteger;
+
+/**
+ * This class provides an implementation of the Karatsuba multiplication algorithm.
+ *
+ * &lt;p&gt;
+ * Karatsuba multiplication is a divide-and-conquer algorithm for multiplying two large
+ * numbers. It is faster than the classical multiplication algorithm and reduces the
+ * time complexity to O(n^1.585) by breaking the multiplication of two n-digit numbers
+ * into three multiplications of n/2-digit numbers.
+ * &lt;/p&gt;
+ *
+ * &lt;p&gt;
+ * The main idea of the Karatsuba algorithm is based on the following observation:
+ * &lt;/p&gt;
+ *
+ * &lt;pre&gt;
+ * Let x and y be two numbers:
+ * x = a * 10^m + b
+ * y = c * 10^m + d
+ *
+ * Then, the product of x and y can be expressed as:
+ * x * y = (a * c) * 10^(2*m) + ((a * d) + (b * c)) * 10^m + (b * d)
+ * &lt;/pre&gt;
+ *
+ * The Karatsuba algorithm calculates this more efficiently by reducing the number of
+ * multiplications from four to three by using the identity:
+ *
+ * &lt;pre&gt;
+ * (a + b)(c + d) = ac + ad + bc + bd
+ * &lt;/pre&gt;
+ *
+ * &lt;p&gt;
+ * The recursion continues until the numbers are small enough to multiply directly using
+ * the traditional method.
+ * &lt;/p&gt;
+ */
+public final class KaratsubaMultiplication {
+
+    /**
+     * Private constructor to hide the implicit public constructor
+     */
+    private KaratsubaMultiplication() {
+    }
+
+    /**
+     * Multiplies two large numbers using the Karatsuba algorithm.
+     *
+     * &lt;p&gt;
+     * This method recursively splits the numbers into smaller parts until they are
+     * small enough to be multiplied directly using the traditional method.
+     * &lt;/p&gt;
+     *
+     * @param x The first large number to be multiplied (BigInteger).
+     * @param y The second large number to be multiplied (BigInteger).
+     * @return The product of the two numbers (BigInteger).
+     */
+    public static BigInteger karatsuba(BigInteger x, BigInteger y) {
+        // Base case: when numbers are small enough, use direct multiplication
+        // If the number is 4 bits or smaller, switch to the classical method
+<span class="fc bfc" id="L63" title="All 4 branches covered.">        if (x.bitLength() &lt;= 4 || y.bitLength() &lt;= 4) {</span>
+<span class="fc" id="L64">            return x.multiply(y);</span>
+        }
+
+        // Find the maximum bit length of the two numbers
+<span class="fc" id="L68">        int n = Math.max(x.bitLength(), y.bitLength());</span>
+
+        // Split the numbers in the middle
+<span class="fc" id="L71">        int m = n / 2;</span>
+
+        // High and low parts of the first number x (x = a * 10^m + b)
+<span class="fc" id="L74">        BigInteger high1 = x.shiftRight(m); // a = x / 2^m (higher part)</span>
+<span class="fc" id="L75">        BigInteger low1 = x.subtract(high1.shiftLeft(m)); // b = x - a * 2^m (lower part)</span>
+
+        // High and low parts of the second number y (y = c * 10^m + d)
+<span class="fc" id="L78">        BigInteger high2 = y.shiftRight(m); // c = y / 2^m (higher part)</span>
+<span class="fc" id="L79">        BigInteger low2 = y.subtract(high2.shiftLeft(m)); // d = y - c * 2^m (lower part)</span>
+
+        // Recursively calculate three products
+<span class="fc" id="L82">        BigInteger z0 = karatsuba(low1, low2); // z0 = b * d (low1 * low2)</span>
+<span class="fc" id="L83">        BigInteger z1 = karatsuba(low1.add(high1), low2.add(high2)); // z1 = (a + b) * (c + d)</span>
+<span class="fc" id="L84">        BigInteger z2 = karatsuba(high1, high2); // z2 = a * c (high1 * high2)</span>
+
+        // Combine the results using Karatsuba's formula
+        // z0 + ((z1 - z2 - z0) &lt;&lt; m) + (z2 &lt;&lt; 2m)
+<span class="fc" id="L88">        return z2</span>
+<span class="fc" id="L89">            .shiftLeft(2 * m) // z2 * 10^(2*m)</span>
+<span class="fc" id="L90">            .add(z1.subtract(z2).subtract(z0).shiftLeft(m)) // (z1 - z2 - z0) * 10^m</span>
+<span class="fc" id="L91">            .add(z0); // z0</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

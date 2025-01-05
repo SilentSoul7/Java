@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ConnectedComponent.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.graphs</a> &gt; <span class="el_source">ConnectedComponent.java</span></div><h1>ConnectedComponent.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.graphs;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+
+/**
+ * A class that counts the number of different connected components in a graph
+ *
+ * @author Lukas Keul, Florian Mercks
+ */
+class Graph&lt;E extends Comparable&lt;E&gt;&gt; {
+
+    class Node {
+
+        E name;
+
+<span class="nc" id="L18">        Node(E name) {</span>
+<span class="nc" id="L19">            this.name = name;</span>
+<span class="nc" id="L20">        }</span>
+    }
+
+    class Edge {
+
+        Node startNode;
+        Node endNode;
+
+<span class="nc" id="L28">        Edge(Node startNode, Node endNode) {</span>
+<span class="nc" id="L29">            this.startNode = startNode;</span>
+<span class="nc" id="L30">            this.endNode = endNode;</span>
+<span class="nc" id="L31">        }</span>
+    }
+
+    ArrayList&lt;Edge&gt; edgeList;
+    ArrayList&lt;Node&gt; nodeList;
+
+<span class="nc" id="L37">    Graph() {</span>
+<span class="nc" id="L38">        edgeList = new ArrayList&lt;Edge&gt;();</span>
+<span class="nc" id="L39">        nodeList = new ArrayList&lt;Node&gt;();</span>
+<span class="nc" id="L40">    }</span>
+
+    /**
+     * Adds a new Edge to the graph. If the nodes aren't yet in nodeList, they
+     * will be added to it.
+     *
+     * @param startNode the starting Node from the edge
+     * @param endNode the ending Node from the edge
+     */
+    public void addEdge(E startNode, E endNode) {
+<span class="nc" id="L50">        Node start = null;</span>
+<span class="nc" id="L51">        Node end = null;</span>
+<span class="nc bnc" id="L52" title="All 2 branches missed.">        for (Node node : nodeList) {</span>
+<span class="nc bnc" id="L53" title="All 2 branches missed.">            if (startNode.compareTo(node.name) == 0) {</span>
+<span class="nc" id="L54">                start = node;</span>
+<span class="nc bnc" id="L55" title="All 2 branches missed.">            } else if (endNode.compareTo(node.name) == 0) {</span>
+<span class="nc" id="L56">                end = node;</span>
+            }
+<span class="nc" id="L58">        }</span>
+<span class="nc bnc" id="L59" title="All 2 branches missed.">        if (start == null) {</span>
+<span class="nc" id="L60">            start = new Node(startNode);</span>
+<span class="nc" id="L61">            nodeList.add(start);</span>
+        }
+<span class="nc bnc" id="L63" title="All 2 branches missed.">        if (end == null) {</span>
+<span class="nc" id="L64">            end = new Node(endNode);</span>
+<span class="nc" id="L65">            nodeList.add(end);</span>
+        }
+
+<span class="nc" id="L68">        edgeList.add(new Edge(start, end));</span>
+<span class="nc" id="L69">    }</span>
+
+    /**
+     * Main method used for counting the connected components. Iterates through
+     * the array of nodes to do a depth first search to get all nodes of the
+     * graph from the actual node. These nodes are added to the array
+     * markedNodes and will be ignored if they are chosen in the nodeList.
+     *
+     * @return returns the amount of unconnected graphs
+     */
+    public int countGraphs() {
+<span class="nc" id="L80">        int count = 0;</span>
+<span class="nc" id="L81">        Set&lt;Node&gt; markedNodes = new HashSet&lt;Node&gt;();</span>
+
+<span class="nc bnc" id="L83" title="All 2 branches missed.">        for (Node n : nodeList) {</span>
+<span class="nc bnc" id="L84" title="All 2 branches missed.">            if (markedNodes.add(n)) {</span>
+<span class="nc" id="L85">                markedNodes.addAll(depthFirstSearch(n, new ArrayList&lt;Node&gt;()));</span>
+<span class="nc" id="L86">                count++;</span>
+            }
+<span class="nc" id="L88">        }</span>
+
+<span class="nc" id="L90">        return count;</span>
+    }
+
+    /**
+     * Implementation of depth first search.
+     *
+     * @param n the actual visiting node
+     * @param visited A list of already visited nodes in the depth first search
+     * @return returns a set of visited nodes
+     */
+    public ArrayList&lt;Node&gt; depthFirstSearch(Node n, ArrayList&lt;Node&gt; visited) {
+<span class="nc" id="L101">        visited.add(n);</span>
+<span class="nc bnc" id="L102" title="All 2 branches missed.">        for (Edge e : edgeList) {</span>
+<span class="nc bnc" id="L103" title="All 4 branches missed.">            if (e.startNode.equals(n) &amp;&amp; !visited.contains(e.endNode)) {</span>
+<span class="nc" id="L104">                depthFirstSearch(e.endNode, visited);</span>
+            }
+<span class="nc" id="L106">        }</span>
+<span class="nc" id="L107">        return visited;</span>
+    }
+}
+
+public final class ConnectedComponent {
+    private ConnectedComponent() {
+    }
+
+    public static void main(String[] args) {
+<span class="nc" id="L116">        Graph&lt;Character&gt; graphChars = new Graph&lt;&gt;();</span>
+
+        // Graph 1
+<span class="nc" id="L119">        graphChars.addEdge('a', 'b');</span>
+<span class="nc" id="L120">        graphChars.addEdge('a', 'e');</span>
+<span class="nc" id="L121">        graphChars.addEdge('b', 'e');</span>
+<span class="nc" id="L122">        graphChars.addEdge('b', 'c');</span>
+<span class="nc" id="L123">        graphChars.addEdge('c', 'd');</span>
+<span class="nc" id="L124">        graphChars.addEdge('d', 'a');</span>
+
+<span class="nc" id="L126">        graphChars.addEdge('x', 'y');</span>
+<span class="nc" id="L127">        graphChars.addEdge('x', 'z');</span>
+
+<span class="nc" id="L129">        graphChars.addEdge('w', 'w');</span>
+
+<span class="nc" id="L131">        Graph&lt;Integer&gt; graphInts = new Graph&lt;&gt;();</span>
+
+        // Graph 2
+<span class="nc" id="L134">        graphInts.addEdge(1, 2);</span>
+<span class="nc" id="L135">        graphInts.addEdge(2, 3);</span>
+<span class="nc" id="L136">        graphInts.addEdge(2, 4);</span>
+<span class="nc" id="L137">        graphInts.addEdge(3, 5);</span>
+
+<span class="nc" id="L139">        graphInts.addEdge(7, 8);</span>
+<span class="nc" id="L140">        graphInts.addEdge(8, 10);</span>
+<span class="nc" id="L141">        graphInts.addEdge(10, 8);</span>
+
+<span class="nc" id="L143">        System.out.println(&quot;Amount of different char-graphs: &quot; + graphChars.countGraphs());</span>
+<span class="nc" id="L144">        System.out.println(&quot;Amount of different int-graphs: &quot; + graphInts.countGraphs());</span>
+<span class="nc" id="L145">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

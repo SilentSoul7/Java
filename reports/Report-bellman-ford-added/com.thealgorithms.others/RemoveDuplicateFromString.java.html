@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RemoveDuplicateFromString.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.others</a> &gt; <span class="el_source">RemoveDuplicateFromString.java</span></div><h1>RemoveDuplicateFromString.java</h1><pre class="source lang-java linenums">package com.thealgorithms.others;
+
+/**
+ * @author Varun Upadhyay (https://github.com/varunu28)
+ */
+public final class RemoveDuplicateFromString {
+    private RemoveDuplicateFromString() {
+    }
+
+    /**
+     * Removes duplicate characters from the given string.
+     *
+     * @param input The input string from which duplicate characters need to be removed.
+     * @return A string containing only unique characters from the input, in their original order.
+     */
+    public static String removeDuplicate(String input) {
+<span class="fc bfc" id="L17" title="All 4 branches covered.">        if (input == null || input.isEmpty()) {</span>
+<span class="fc" id="L18">            return input;</span>
+        }
+
+<span class="fc" id="L21">        StringBuilder uniqueChars = new StringBuilder();</span>
+<span class="fc bfc" id="L22" title="All 2 branches covered.">        for (char c : input.toCharArray()) {</span>
+<span class="fc bfc" id="L23" title="All 2 branches covered.">            if (uniqueChars.indexOf(String.valueOf(c)) == -1) {</span>
+<span class="fc" id="L24">                uniqueChars.append(c); // Append character if it's not already in the StringBuilder</span>
+            }
+        }
+
+<span class="fc" id="L28">        return uniqueChars.toString();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

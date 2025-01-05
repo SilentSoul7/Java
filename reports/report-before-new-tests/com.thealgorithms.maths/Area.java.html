@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Area.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.maths</a> &gt; <span class="el_source">Area.java</span></div><h1>Area.java</h1><pre class="source lang-java linenums">package com.thealgorithms.maths;
+
+/**
+ * Find the area of various geometric shapes
+ */
+public final class Area {
+    private Area() {
+    }
+
+    /**
+     * String of IllegalArgumentException for radius
+     */
+    private static final String POSITIVE_RADIUS = &quot;Must be a positive radius&quot;;
+
+    /**
+     * String of IllegalArgumentException for height
+     */
+    private static final String POSITIVE_HEIGHT = &quot;Must be a positive height&quot;;
+
+    /**
+     * String of IllegalArgumentException for base
+     */
+    private static final String POSITIVE_BASE = &quot;Must be a positive base&quot;;
+
+    /**
+     * Calculate the surface area of a cube.
+     *
+     * @param sideLength side length of cube
+     * @return surface area of given cube
+     */
+    public static double surfaceAreaCube(final double sideLength) {
+<span class="fc bfc" id="L32" title="All 2 branches covered.">        if (sideLength &lt;= 0) {</span>
+<span class="fc" id="L33">            throw new IllegalArgumentException(&quot;Must be a positive sideLength&quot;);</span>
+        }
+<span class="fc" id="L35">        return 6 * sideLength * sideLength;</span>
+    }
+
+    /**
+     * Calculate the surface area of a sphere.
+     *
+     * @param radius radius of sphere
+     * @return surface area of given sphere
+     */
+    public static double surfaceAreaSphere(final double radius) {
+<span class="fc bfc" id="L45" title="All 2 branches covered.">        if (radius &lt;= 0) {</span>
+<span class="fc" id="L46">            throw new IllegalArgumentException(POSITIVE_RADIUS);</span>
+        }
+<span class="fc" id="L48">        return 4 * Math.PI * radius * radius;</span>
+    }
+
+    /**
+     * Calculate the area of a rectangle.
+     *
+     * @param length length of a rectangle
+     * @param width  width of a rectangle
+     * @return area of given rectangle
+     */
+    public static double surfaceAreaRectangle(final double length, final double width) {
+<span class="fc bfc" id="L59" title="All 2 branches covered.">        if (length &lt;= 0) {</span>
+<span class="fc" id="L60">            throw new IllegalArgumentException(&quot;Must be a positive length&quot;);</span>
+        }
+<span class="fc bfc" id="L62" title="All 2 branches covered.">        if (width &lt;= 0) {</span>
+<span class="fc" id="L63">            throw new IllegalArgumentException(&quot;Must be a positive width&quot;);</span>
+        }
+<span class="fc" id="L65">        return length * width;</span>
+    }
+
+    /**
+     * Calculate surface area of a cylinder.
+     *
+     * @param radius radius of the floor
+     * @param height height of the cylinder.
+     * @return volume of given cylinder
+     */
+    public static double surfaceAreaCylinder(final double radius, final double height) {
+<span class="fc bfc" id="L76" title="All 2 branches covered.">        if (radius &lt;= 0) {</span>
+<span class="fc" id="L77">            throw new IllegalArgumentException(POSITIVE_RADIUS);</span>
+        }
+<span class="fc bfc" id="L79" title="All 2 branches covered.">        if (height &lt;= 0) {</span>
+<span class="fc" id="L80">            throw new IllegalArgumentException(POSITIVE_RADIUS);</span>
+        }
+<span class="fc" id="L82">        return 2 * (Math.PI * radius * radius + Math.PI * radius * height);</span>
+    }
+
+    /**
+     * Calculate the area of a square.
+     *
+     * @param sideLength side length of square
+     * @return area of given square
+     */
+    public static double surfaceAreaSquare(final double sideLength) {
+<span class="fc bfc" id="L92" title="All 2 branches covered.">        if (sideLength &lt;= 0) {</span>
+<span class="fc" id="L93">            throw new IllegalArgumentException(&quot;Must be a positive sideLength&quot;);</span>
+        }
+<span class="fc" id="L95">        return sideLength * sideLength;</span>
+    }
+
+    /**
+     * Calculate the area of a triangle.
+     *
+     * @param base   base of triangle
+     * @param height height of triangle
+     * @return area of given triangle
+     */
+    public static double surfaceAreaTriangle(final double base, final double height) {
+<span class="fc bfc" id="L106" title="All 2 branches covered.">        if (base &lt;= 0) {</span>
+<span class="fc" id="L107">            throw new IllegalArgumentException(POSITIVE_BASE);</span>
+        }
+<span class="fc bfc" id="L109" title="All 2 branches covered.">        if (height &lt;= 0) {</span>
+<span class="fc" id="L110">            throw new IllegalArgumentException(POSITIVE_HEIGHT);</span>
+        }
+<span class="fc" id="L112">        return base * height / 2;</span>
+    }
+
+    /**
+     * Calculate the area of a parallelogram.
+     *
+     * @param base   base of a parallelogram
+     * @param height height of a parallelogram
+     * @return area of given parallelogram
+     */
+    public static double surfaceAreaParallelogram(final double base, final double height) {
+<span class="fc bfc" id="L123" title="All 2 branches covered.">        if (base &lt;= 0) {</span>
+<span class="fc" id="L124">            throw new IllegalArgumentException(POSITIVE_BASE);</span>
+        }
+<span class="fc bfc" id="L126" title="All 2 branches covered.">        if (height &lt;= 0) {</span>
+<span class="fc" id="L127">            throw new IllegalArgumentException(POSITIVE_HEIGHT);</span>
+        }
+<span class="fc" id="L129">        return base * height;</span>
+    }
+
+    /**
+     * Calculate the area of a trapezium.
+     *
+     * @param base1  upper base of trapezium
+     * @param base2  bottom base of trapezium
+     * @param height height of trapezium
+     * @return area of given trapezium
+     */
+    public static double surfaceAreaTrapezium(final double base1, final double base2, final double height) {
+<span class="fc bfc" id="L141" title="All 2 branches covered.">        if (base1 &lt;= 0) {</span>
+<span class="fc" id="L142">            throw new IllegalArgumentException(POSITIVE_BASE + 1);</span>
+        }
+<span class="fc bfc" id="L144" title="All 2 branches covered.">        if (base2 &lt;= 0) {</span>
+<span class="fc" id="L145">            throw new IllegalArgumentException(POSITIVE_BASE + 2);</span>
+        }
+<span class="fc bfc" id="L147" title="All 2 branches covered.">        if (height &lt;= 0) {</span>
+<span class="fc" id="L148">            throw new IllegalArgumentException(POSITIVE_HEIGHT);</span>
+        }
+<span class="fc" id="L150">        return (base1 + base2) * height / 2;</span>
+    }
+
+    /**
+     * Calculate the area of a circle.
+     *
+     * @param radius radius of circle
+     * @return area of given circle
+     */
+    public static double surfaceAreaCircle(final double radius) {
+<span class="fc bfc" id="L160" title="All 2 branches covered.">        if (radius &lt;= 0) {</span>
+<span class="fc" id="L161">            throw new IllegalArgumentException(POSITIVE_RADIUS);</span>
+        }
+<span class="fc" id="L163">        return Math.PI * radius * radius;</span>
+    }
+
+    /**
+     * Calculate the surface area of a hemisphere.
+     *
+     * @param radius radius of hemisphere
+     * @return surface area of given hemisphere
+     */
+    public static double surfaceAreaHemisphere(final double radius) {
+<span class="fc bfc" id="L173" title="All 2 branches covered.">        if (radius &lt;= 0) {</span>
+<span class="fc" id="L174">            throw new IllegalArgumentException(POSITIVE_RADIUS);</span>
+        }
+<span class="fc" id="L176">        return 3 * Math.PI * radius * radius;</span>
+    }
+
+    /**
+     * Calculate the surface area of a cone.
+     *
+     * @param radius radius of cone.
+     * @param height of cone.
+     * @return surface area of given cone.
+     */
+    public static double surfaceAreaCone(final double radius, final double height) {
+<span class="fc bfc" id="L187" title="All 2 branches covered.">        if (radius &lt;= 0) {</span>
+<span class="fc" id="L188">            throw new IllegalArgumentException(POSITIVE_RADIUS);</span>
+        }
+<span class="fc bfc" id="L190" title="All 2 branches covered.">        if (height &lt;= 0) {</span>
+<span class="fc" id="L191">            throw new IllegalArgumentException(POSITIVE_HEIGHT);</span>
+        }
+<span class="fc" id="L193">        return Math.PI * radius * (radius + Math.pow(height * height + radius * radius, 0.5));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

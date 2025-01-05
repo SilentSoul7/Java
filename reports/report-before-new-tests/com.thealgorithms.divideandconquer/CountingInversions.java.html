@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CountingInversions.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.divideandconquer</a> &gt; <span class="el_source">CountingInversions.java</span></div><h1>CountingInversions.java</h1><pre class="source lang-java linenums">package com.thealgorithms.divideandconquer;
+
+/**
+ * A utility class for counting the number of inversions in an array.
+ * &lt;p&gt;
+ * An inversion is a pair (i, j) such that i &lt; j and arr[i] &gt; arr[j].
+ * This class implements a divide-and-conquer approach, similar to merge sort,
+ * to count the number of inversions efficiently.
+ * &lt;p&gt;
+ * Time Complexity: O(n log n)
+ * Space Complexity: O(n) (due to temporary arrays during merge step)
+ *
+ * &lt;p&gt;Applications:
+ * - Used in algorithms related to sorting and permutation analysis.
+ * - Helps in determining how far an array is from being sorted.
+ * - Applicable in bioinformatics and signal processing.
+ *
+ * &lt;p&gt;This class cannot be instantiated, as it is intended to provide
+ * only static utility methods.
+ *
+ * @author Hardvan
+ */
+public final class CountingInversions {
+    private CountingInversions() {
+    }
+
+    /**
+     * Counts the number of inversions in the given array.
+     *
+     * @param arr The input array of integers.
+     * @return The total number of inversions in the array.
+     */
+    public static int countInversions(int[] arr) {
+<span class="fc" id="L34">        return mergeSortAndCount(arr, 0, arr.length - 1);</span>
+    }
+
+    /**
+     * Recursively divides the array into two halves, sorts them, and counts
+     * the number of inversions. Uses a modified merge sort approach.
+     *
+     * @param arr  The input array.
+     * @param left The starting index of the current segment.
+     * @param right The ending index of the current segment.
+     * @return The number of inversions within the segment [left, right].
+     */
+    private static int mergeSortAndCount(int[] arr, int left, int right) {
+<span class="fc bfc" id="L47" title="All 2 branches covered.">        if (left &gt;= right) {</span>
+<span class="fc" id="L48">            return 0;</span>
+        }
+
+<span class="fc" id="L51">        int mid = left + (right - left) / 2;</span>
+<span class="fc" id="L52">        int inversions = 0;</span>
+
+<span class="fc" id="L54">        inversions += mergeSortAndCount(arr, left, mid);</span>
+<span class="fc" id="L55">        inversions += mergeSortAndCount(arr, mid + 1, right);</span>
+<span class="fc" id="L56">        inversions += mergeAndCount(arr, left, mid, right);</span>
+<span class="fc" id="L57">        return inversions;</span>
+    }
+
+    /**
+     * Merges two sorted subarrays and counts the cross-inversions between them.
+     * A cross-inversion occurs when an element from the right subarray is
+     * smaller than an element from the left subarray.
+     *
+     * @param arr The input array.
+     * @param left The starting index of the first subarray.
+     * @param mid The ending index of the first subarray and midpoint of the segment.
+     * @param right The ending index of the second subarray.
+     * @return The number of cross-inversions between the two subarrays.
+     */
+    private static int mergeAndCount(int[] arr, int left, int mid, int right) {
+<span class="fc" id="L72">        int[] leftArr = new int[mid - left + 1];</span>
+<span class="fc" id="L73">        int[] rightArr = new int[right - mid];</span>
+
+<span class="fc" id="L75">        System.arraycopy(arr, left, leftArr, 0, mid - left + 1);</span>
+<span class="fc" id="L76">        System.arraycopy(arr, mid + 1, rightArr, 0, right - mid);</span>
+
+<span class="fc" id="L78">        int i = 0;</span>
+<span class="fc" id="L79">        int j = 0;</span>
+<span class="fc" id="L80">        int k = left;</span>
+<span class="fc" id="L81">        int inversions = 0;</span>
+
+<span class="fc bfc" id="L83" title="All 4 branches covered.">        while (i &lt; leftArr.length &amp;&amp; j &lt; rightArr.length) {</span>
+<span class="fc bfc" id="L84" title="All 2 branches covered.">            if (leftArr[i] &lt;= rightArr[j]) {</span>
+<span class="fc" id="L85">                arr[k++] = leftArr[i++];</span>
+            } else {
+<span class="fc" id="L87">                arr[k++] = rightArr[j++];</span>
+<span class="fc" id="L88">                inversions += mid + 1 - left - i;</span>
+            }
+        }
+
+<span class="fc bfc" id="L92" title="All 2 branches covered.">        while (i &lt; leftArr.length) {</span>
+<span class="fc" id="L93">            arr[k++] = leftArr[i++];</span>
+        }
+<span class="fc bfc" id="L95" title="All 2 branches covered.">        while (j &lt; rightArr.length) {</span>
+<span class="fc" id="L96">            arr[k++] = rightArr[j++];</span>
+        }
+
+<span class="fc" id="L99">        return inversions;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

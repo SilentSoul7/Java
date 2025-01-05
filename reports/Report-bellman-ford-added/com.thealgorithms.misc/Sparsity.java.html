@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Sparsity.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.misc</a> &gt; <span class="el_source">Sparsity.java</span></div><h1>Sparsity.java</h1><pre class="source lang-java linenums">package com.thealgorithms.misc;
+
+/*
+ *A matrix is sparse if many of its coefficients are zero (In general if 2/3rd of matrix elements
+ *are 0, it is considered as sparse). The interest in sparsity arises because its exploitation can
+ *lead to enormous computational savings and because many large matrix problems that occur in
+ *practice are sparse.
+ *
+ * @author Ojasva Jain
+ */
+
+final class Sparsity {
+    private Sparsity() {
+    }
+
+    /*
+     * @param mat the input matrix
+     * @return Sparsity of matrix
+     *
+     * where sparsity = number of zeroes/total elements in matrix
+     *
+     */
+    static double sparsity(double[][] mat) {
+<span class="pc bpc" id="L24" title="1 of 4 branches missed.">        if (mat == null || mat.length == 0) {</span>
+<span class="fc" id="L25">            throw new IllegalArgumentException(&quot;Matrix cannot be null or empty&quot;);</span>
+        }
+
+<span class="fc" id="L28">        int zero = 0;</span>
+        // Traversing the matrix to count number of zeroes
+<span class="fc bfc" id="L30" title="All 2 branches covered.">        for (int i = 0; i &lt; mat.length; i++) {</span>
+<span class="fc bfc" id="L31" title="All 2 branches covered.">            for (int j = 0; j &lt; mat[i].length; j++) {</span>
+<span class="fc bfc" id="L32" title="All 2 branches covered.">                if (mat[i][j] == 0) {</span>
+<span class="fc" id="L33">                    zero++;</span>
+                }
+            }
+        }
+        // return sparsity
+<span class="fc" id="L38">        return ((double) zero / (mat.length * mat[0].length));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

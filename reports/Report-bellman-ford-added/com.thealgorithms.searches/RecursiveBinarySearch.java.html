@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RecursiveBinarySearch.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.searches</a> &gt; <span class="el_source">RecursiveBinarySearch.java</span></div><h1>RecursiveBinarySearch.java</h1><pre class="source lang-java linenums">// Code by Pronay Debnath
+// Created:- 1/10/2023
+// File Name should be RecursiveBinarySearch.java
+// Explanation:- https://www.tutorialspoint.com/java-program-for-binary-search-recursive
+package com.thealgorithms.searches;
+
+import java.util.Scanner;
+
+// Create a SearchAlgorithm class with a generic type
+<span class="fc" id="L10">abstract class SearchAlgorithm&lt;T extends Comparable&lt;T&gt;&gt; {</span>
+    // Abstract find method to be implemented by subclasses
+    public abstract int find(T[] arr, T target);
+}
+
+<span class="fc" id="L15">public class RecursiveBinarySearch&lt;T extends Comparable&lt;T&gt;&gt; extends SearchAlgorithm&lt;T&gt; {</span>
+
+    // Override the find method as required
+    @Override
+    public int find(T[] arr, T target) {
+        // Call the recursive binary search function
+<span class="nc" id="L21">        return binsear(arr, 0, arr.length - 1, target);</span>
+    }
+
+    // Recursive binary search function
+    public int binsear(T[] arr, int left, int right, T target) {
+<span class="fc bfc" id="L26" title="All 2 branches covered.">        if (right &gt;= left) {</span>
+<span class="fc" id="L27">            int mid = left + (right - left) / 2;</span>
+
+            // Compare the element at the middle with the target
+<span class="fc" id="L30">            int comparison = arr[mid].compareTo(target);</span>
+
+            // If the element is equal to the target, return its index
+<span class="fc bfc" id="L33" title="All 2 branches covered.">            if (comparison == 0) {</span>
+<span class="fc" id="L34">                return mid;</span>
+            }
+
+            // If the element is greater than the target, search in the left subarray
+<span class="fc bfc" id="L38" title="All 2 branches covered.">            if (comparison &gt; 0) {</span>
+<span class="fc" id="L39">                return binsear(arr, left, mid - 1, target);</span>
+            }
+
+            // Otherwise, search in the right subarray
+<span class="fc" id="L43">            return binsear(arr, mid + 1, right, target);</span>
+        }
+
+        // Element is not present in the array
+<span class="fc" id="L47">        return -1;</span>
+    }
+
+    public static void main(String[] args) {
+<span class="nc" id="L51">        try (Scanner sc = new Scanner(System.in)) {</span>
+            // User inputs
+<span class="nc" id="L53">            System.out.print(&quot;Enter the number of elements in the array: &quot;);</span>
+<span class="nc" id="L54">            int n = sc.nextInt();</span>
+
+<span class="nc" id="L56">            Integer[] a = new Integer[n]; // You can change the array type as needed</span>
+
+<span class="nc" id="L58">            System.out.println(&quot;Enter the elements in sorted order:&quot;);</span>
+
+<span class="nc bnc" id="L60" title="All 2 branches missed.">            for (int i = 0; i &lt; n; i++) {</span>
+<span class="nc" id="L61">                a[i] = sc.nextInt();</span>
+            }
+
+<span class="nc" id="L64">            System.out.print(&quot;Enter the target element to search for: &quot;);</span>
+<span class="nc" id="L65">            int t = sc.nextInt();</span>
+
+<span class="nc" id="L67">            RecursiveBinarySearch&lt;Integer&gt; searcher = new RecursiveBinarySearch&lt;&gt;();</span>
+<span class="nc" id="L68">            int res = searcher.find(a, t);</span>
+
+<span class="nc bnc" id="L70" title="All 2 branches missed.">            if (res == -1) {</span>
+<span class="nc" id="L71">                System.out.println(&quot;Element not found in the array.&quot;);</span>
+            } else {
+<span class="nc" id="L73">                System.out.println(&quot;Element found at index &quot; + res);</span>
+            }
+        }
+<span class="nc" id="L76">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>StronglyConnectedComponentOptimized.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.graph</a> &gt; <span class="el_source">StronglyConnectedComponentOptimized.java</span></div><h1>StronglyConnectedComponentOptimized.java</h1><pre class="source lang-java linenums">package com.thealgorithms.graph;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Stack;
+
+/**
+ * Finds the strongly connected components in a directed graph.
+ *
+ * @param adjList The adjacency list representation of the graph.
+ * @param n The number of nodes in the graph.
+ * @return The number of strongly connected components.
+ */
+<span class="fc" id="L16">public class StronglyConnectedComponentOptimized {</span>
+
+    public void btrack(HashMap&lt;Integer, List&lt;Integer&gt;&gt; adjList, int[] visited, Stack&lt;Integer&gt; dfsCallsNodes, int currentNode) {
+<span class="fc" id="L19">        visited[currentNode] = 1;</span>
+<span class="fc" id="L20">        List&lt;Integer&gt; neighbors = adjList.get(currentNode);</span>
+        // Check for null before iterating
+<span class="pc bpc" id="L22" title="1 of 2 branches missed.">        if (neighbors != null) {</span>
+<span class="fc bfc" id="L23" title="All 2 branches covered.">            for (int neighbor : neighbors) {</span>
+<span class="fc bfc" id="L24" title="All 2 branches covered.">                if (visited[neighbor] == -1) {</span>
+<span class="fc" id="L25">                    btrack(adjList, visited, dfsCallsNodes, neighbor);</span>
+                }
+<span class="fc" id="L27">            }</span>
+        }
+<span class="fc" id="L29">        dfsCallsNodes.add(currentNode);</span>
+<span class="fc" id="L30">    }</span>
+
+    public void btrack2(HashMap&lt;Integer, List&lt;Integer&gt;&gt; adjRevList, int[] visited, int currentNode, List&lt;Integer&gt; newScc) {
+<span class="fc" id="L33">        visited[currentNode] = 1;</span>
+<span class="fc" id="L34">        newScc.add(currentNode);</span>
+<span class="fc" id="L35">        List&lt;Integer&gt; neighbors = adjRevList.get(currentNode);</span>
+        // Check for null before iterating
+<span class="pc bpc" id="L37" title="1 of 2 branches missed.">        if (neighbors != null) {</span>
+<span class="fc bfc" id="L38" title="All 2 branches covered.">            for (int neighbor : neighbors) {</span>
+<span class="fc bfc" id="L39" title="All 2 branches covered.">                if (visited[neighbor] == -1) {</span>
+<span class="fc" id="L40">                    btrack2(adjRevList, visited, neighbor, newScc);</span>
+                }
+<span class="fc" id="L42">            }</span>
+        }
+<span class="fc" id="L44">    }</span>
+
+    public int getOutput(HashMap&lt;Integer, List&lt;Integer&gt;&gt; adjList, int n) {
+<span class="fc" id="L47">        int[] visited = new int[n];</span>
+<span class="fc" id="L48">        Arrays.fill(visited, -1);</span>
+<span class="fc" id="L49">        Stack&lt;Integer&gt; dfsCallsNodes = new Stack&lt;&gt;();</span>
+
+<span class="fc bfc" id="L51" title="All 2 branches covered.">        for (int i = 0; i &lt; n; i++) {</span>
+<span class="fc bfc" id="L52" title="All 2 branches covered.">            if (visited[i] == -1) {</span>
+<span class="fc" id="L53">                btrack(adjList, visited, dfsCallsNodes, i);</span>
+            }
+        }
+
+<span class="fc" id="L57">        HashMap&lt;Integer, List&lt;Integer&gt;&gt; adjRevList = new HashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L58" title="All 2 branches covered.">        for (int i = 0; i &lt; n; i++) {</span>
+<span class="fc" id="L59">            adjRevList.put(i, new ArrayList&lt;&gt;());</span>
+        }
+
+<span class="fc bfc" id="L62" title="All 2 branches covered.">        for (int i = 0; i &lt; n; i++) {</span>
+<span class="fc" id="L63">            List&lt;Integer&gt; neighbors = adjList.get(i);</span>
+            // Check for null before iterating
+<span class="pc bpc" id="L65" title="1 of 2 branches missed.">            if (neighbors != null) {</span>
+<span class="fc bfc" id="L66" title="All 2 branches covered.">                for (int neighbor : neighbors) {</span>
+<span class="fc" id="L67">                    adjRevList.get(neighbor).add(i);</span>
+<span class="fc" id="L68">                }</span>
+            }
+        }
+
+<span class="fc" id="L72">        Arrays.fill(visited, -1);</span>
+<span class="fc" id="L73">        int stronglyConnectedComponents = 0;</span>
+
+<span class="fc bfc" id="L75" title="All 2 branches covered.">        while (!dfsCallsNodes.isEmpty()) {</span>
+<span class="fc" id="L76">            int node = dfsCallsNodes.pop();</span>
+<span class="fc bfc" id="L77" title="All 2 branches covered.">            if (visited[node] == -1) {</span>
+<span class="fc" id="L78">                List&lt;Integer&gt; newScc = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L79">                btrack2(adjRevList, visited, node, newScc);</span>
+<span class="fc" id="L80">                stronglyConnectedComponents++;</span>
+            }
+<span class="fc" id="L82">        }</span>
+
+<span class="fc" id="L84">        return stronglyConnectedComponents;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

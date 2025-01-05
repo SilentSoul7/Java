@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MergeKSortedLinkedList.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.lists</a> &gt; <span class="el_source">MergeKSortedLinkedList.java</span></div><h1>MergeKSortedLinkedList.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.lists;
+
+import java.util.Comparator;
+import java.util.PriorityQueue;
+
+/**
+ * The MergeKSortedLinkedList class provides a method to merge multiple sorted linked lists
+ * into a single sorted linked list.
+ * This implementation uses a min-heap (priority queue) to efficiently
+ * find the smallest node across all lists, thus optimizing the merge process.
+ *
+ * &lt;p&gt;Example usage:
+ * &lt;pre&gt;
+ * Node list1 = new Node(1, new Node(4, new Node(5)));
+ * Node list2 = new Node(1, new Node(3, new Node(4)));
+ * Node list3 = new Node(2, new Node(6));
+ * Node[] lists = { list1, list2, list3 };
+ *
+ * MergeKSortedLinkedList merger = new MergeKSortedLinkedList();
+ * Node mergedHead = merger.mergeKList(lists, lists.length);
+ * &lt;/pre&gt;
+ * &lt;/p&gt;
+ *
+ * &lt;p&gt;This class is designed to handle nodes of integer linked lists and can be expanded for additional data types if needed.&lt;/p&gt;
+ *
+ * @author Arun Pandey (https://github.com/pandeyarun709)
+ */
+<span class="fc" id="L28">public class MergeKSortedLinkedList {</span>
+
+    /**
+     * Merges K sorted linked lists into a single sorted linked list.
+     *
+     * &lt;p&gt;This method uses a priority queue (min-heap) to repeatedly extract the smallest node from the heads of all the lists,
+     * then inserts the next node from that list into the heap. The process continues until all nodes have been processed,
+     * resulting in a fully merged and sorted linked list.&lt;/p&gt;
+     *
+     * @param a Array of linked list heads to be merged.
+     * @param n Number of linked lists.
+     * @return Head of the merged sorted linked list.
+     */
+    Node mergeKList(Node[] a, int n) {
+<span class="pc bpc" id="L42" title="2 of 4 branches missed.">        if (a == null || n == 0) {</span>
+<span class="nc" id="L43">            return null;</span>
+        }
+
+        // Min Heap to store nodes based on their values for efficient retrieval of the smallest element.
+<span class="fc" id="L47">        PriorityQueue&lt;Node&gt; minHeap = new PriorityQueue&lt;&gt;(Comparator.comparingInt(x -&gt; x.data));</span>
+
+        // Initialize the min-heap with the head of each non-null linked list
+<span class="fc bfc" id="L50" title="All 2 branches covered.">        for (Node node : a) {</span>
+<span class="fc bfc" id="L51" title="All 2 branches covered.">            if (node != null) {</span>
+<span class="fc" id="L52">                minHeap.add(node);</span>
+            }
+        }
+
+        // Start merging process
+<span class="fc" id="L57">        Node head = minHeap.poll(); // Smallest head is the initial head of the merged list</span>
+<span class="fc bfc" id="L58" title="All 4 branches covered.">        if (head != null &amp;&amp; head.next != null) {</span>
+<span class="fc" id="L59">            minHeap.add(head.next);</span>
+        }
+
+<span class="fc" id="L62">        Node curr = head;</span>
+<span class="fc bfc" id="L63" title="All 2 branches covered.">        while (!minHeap.isEmpty()) {</span>
+<span class="fc" id="L64">            Node temp = minHeap.poll();</span>
+<span class="fc" id="L65">            curr.next = temp;</span>
+<span class="fc" id="L66">            curr = temp;</span>
+
+            // Add the next node in the current list to the heap if it exists
+<span class="fc bfc" id="L69" title="All 2 branches covered.">            if (temp.next != null) {</span>
+<span class="fc" id="L70">                minHeap.add(temp.next);</span>
+            }
+<span class="fc" id="L72">        }</span>
+
+<span class="fc" id="L74">        return head;</span>
+    }
+
+    /**
+     * Represents a node in the linked list.
+     */
+    static class Node {
+        int data;
+        Node next;
+
+<span class="fc" id="L84">        Node(int data) {</span>
+<span class="fc" id="L85">            this.data = data;</span>
+<span class="fc" id="L86">            this.next = null;</span>
+<span class="fc" id="L87">        }</span>
+
+<span class="fc" id="L89">        Node(int data, Node next) {</span>
+<span class="fc" id="L90">            this.data = data;</span>
+<span class="fc" id="L91">            this.next = next;</span>
+<span class="fc" id="L92">        }</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

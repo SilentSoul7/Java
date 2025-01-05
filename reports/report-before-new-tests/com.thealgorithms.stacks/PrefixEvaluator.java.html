@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PrefixEvaluator.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.stacks</a> &gt; <span class="el_source">PrefixEvaluator.java</span></div><h1>PrefixEvaluator.java</h1><pre class="source lang-java linenums">package com.thealgorithms.stacks;
+
+import java.util.Set;
+import java.util.Stack;
+
+/**
+ * Evaluate a prefix (Polish) expression using a stack.
+ *
+ * &lt;p&gt;Example: Expression &quot;+ * 2 3 4&quot; results in 10.
+ * &lt;p&gt;Applications: Useful for implementing compilers and interpreters.
+ *
+ * @author Hardvan
+ */
+public final class PrefixEvaluator {
+    private PrefixEvaluator() {
+    }
+
+<span class="fc" id="L18">    private static final Set&lt;String&gt; OPERATORS = Set.of(&quot;+&quot;, &quot;-&quot;, &quot;*&quot;, &quot;/&quot;);</span>
+
+    /**
+     * Evaluates the given prefix expression and returns the result.
+     *
+     * @param expression The prefix expression as a string with operands and operators separated by spaces.
+     * @return The result of evaluating the prefix expression.
+     * @throws IllegalArgumentException if the expression is invalid.
+     */
+    public static int evaluatePrefix(String expression) {
+<span class="fc" id="L28">        Stack&lt;Integer&gt; stack = new Stack&lt;&gt;();</span>
+<span class="fc" id="L29">        String[] tokens = expression.split(&quot;\\s+&quot;);</span>
+
+<span class="fc bfc" id="L31" title="All 2 branches covered.">        for (int i = tokens.length - 1; i &gt;= 0; i--) {</span>
+<span class="fc" id="L32">            String token = tokens[i];</span>
+<span class="fc bfc" id="L33" title="All 2 branches covered.">            if (isOperator(token)) {</span>
+<span class="fc" id="L34">                int operand1 = stack.pop();</span>
+<span class="fc" id="L35">                int operand2 = stack.pop();</span>
+<span class="fc" id="L36">                stack.push(applyOperator(token, operand1, operand2));</span>
+<span class="fc" id="L37">            } else {</span>
+<span class="fc" id="L38">                stack.push(Integer.valueOf(token));</span>
+            }
+        }
+
+<span class="fc bfc" id="L42" title="All 2 branches covered.">        if (stack.size() != 1) {</span>
+<span class="fc" id="L43">            throw new IllegalArgumentException(&quot;Invalid expression&quot;);</span>
+        }
+
+<span class="fc" id="L46">        return stack.pop();</span>
+    }
+
+    /**
+     * Checks if the given token is an operator.
+     *
+     * @param token The token to check.
+     * @return true if the token is an operator, false otherwise.
+     */
+    private static boolean isOperator(String token) {
+<span class="fc" id="L56">        return OPERATORS.contains(token);</span>
+    }
+
+    /**
+     * Applies the given operator to the two operands.
+     *
+     * @param operator The operator to apply.
+     * @param a The first operand.
+     * @param b The second operand.
+     * @return The result of applying the operator to the operands.
+     */
+    private static int applyOperator(String operator, int a, int b) {
+<span class="pc bpc" id="L68" title="1 of 5 branches missed.">        return switch (operator) {</span>
+<span class="fc" id="L69">            case &quot;+&quot; -&gt; a + b;</span>
+<span class="fc" id="L70">            case &quot;-&quot; -&gt; a - b;</span>
+<span class="fc" id="L71">            case &quot;*&quot; -&gt; a * b;</span>
+<span class="fc" id="L72">            case &quot;/&quot; -&gt; a / b;</span>
+<span class="nc" id="L73">            default -&gt; throw new IllegalArgumentException(&quot;Invalid operator&quot;);</span>
+        };
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

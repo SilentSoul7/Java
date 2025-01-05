@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CircularBuffer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.buffers</a> &gt; <span class="el_source">CircularBuffer.java</span></div><h1>CircularBuffer.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.buffers;
+
+import java.util.concurrent.atomic.AtomicInteger;
+
+/**
+ * The {@code CircularBuffer} class implements a generic circular (or ring) buffer.
+ * A circular buffer is a fixed-size data structure that operates in a FIFO (First In, First Out) manner.
+ * The buffer allows you to overwrite old data when the buffer is full and efficiently use limited memory.
+ * When the buffer is full, adding a new item will overwrite the oldest data.
+ *
+ * @param &lt;Item&gt; The type of elements stored in the circular buffer.
+ */
+public class CircularBuffer&lt;Item&gt; {
+    private final Item[] buffer;
+    private final CircularPointer putPointer;
+    private final CircularPointer getPointer;
+<span class="fc" id="L17">    private final AtomicInteger size = new AtomicInteger(0);</span>
+
+    /**
+     * Constructor to initialize the circular buffer with a specified size.
+     *
+     * @param size The size of the circular buffer.
+     * @throws IllegalArgumentException if the size is zero or negative.
+     */
+<span class="fc" id="L25">    public CircularBuffer(int size) {</span>
+<span class="fc bfc" id="L26" title="All 2 branches covered.">        if (size &lt;= 0) {</span>
+<span class="fc" id="L27">            throw new IllegalArgumentException(&quot;Buffer size must be positive&quot;);</span>
+        }
+        // noinspection unchecked
+<span class="fc" id="L30">        this.buffer = (Item[]) new Object[size];</span>
+<span class="fc" id="L31">        this.putPointer = new CircularPointer(0, size);</span>
+<span class="fc" id="L32">        this.getPointer = new CircularPointer(0, size);</span>
+<span class="fc" id="L33">    }</span>
+
+    /**
+     * Checks if the circular buffer is empty.
+     * This method is based on the current size of the buffer.
+     *
+     * @return {@code true} if the buffer is empty, {@code false} otherwise.
+     */
+    public boolean isEmpty() {
+<span class="fc bfc" id="L42" title="All 2 branches covered.">        return size.get() == 0;</span>
+    }
+
+    /**
+     * Checks if the circular buffer is full.
+     * The buffer is considered full when its size equals its capacity.
+     *
+     * @return {@code true} if the buffer is full, {@code false} otherwise.
+     */
+    public boolean isFull() {
+<span class="fc bfc" id="L52" title="All 2 branches covered.">        return size.get() == buffer.length;</span>
+    }
+
+    /**
+     * Retrieves and removes the item at the front of the buffer (FIFO).
+     * This operation will move the {@code getPointer} forward.
+     *
+     * @return The item at the front of the buffer, or {@code null} if the buffer is empty.
+     */
+    public Item get() {
+<span class="fc bfc" id="L62" title="All 2 branches covered.">        if (isEmpty()) {</span>
+<span class="fc" id="L63">            return null;</span>
+        }
+
+<span class="fc" id="L66">        Item item = buffer[getPointer.getAndIncrement()];</span>
+<span class="fc" id="L67">        size.decrementAndGet();</span>
+<span class="fc" id="L68">        return item;</span>
+    }
+
+    /**
+     * Adds an item to the end of the buffer (FIFO).
+     * If the buffer is full, this operation will overwrite the oldest data.
+     *
+     * @param item The item to be added.
+     * @throws IllegalArgumentException if the item is null.
+     * @return {@code true} if the item was successfully added, {@code false} if the buffer was full and the item overwrote existing data.
+     */
+    public boolean put(Item item) {
+<span class="fc bfc" id="L80" title="All 2 branches covered.">        if (item == null) {</span>
+<span class="fc" id="L81">            throw new IllegalArgumentException(&quot;Null items are not allowed&quot;);</span>
+        }
+
+<span class="fc" id="L84">        boolean wasEmpty = isEmpty();</span>
+<span class="fc bfc" id="L85" title="All 2 branches covered.">        if (isFull()) {</span>
+<span class="fc" id="L86">            getPointer.getAndIncrement(); // Move get pointer to discard oldest item</span>
+        } else {
+<span class="fc" id="L88">            size.incrementAndGet();</span>
+        }
+
+<span class="fc" id="L91">        buffer[putPointer.getAndIncrement()] = item;</span>
+<span class="fc" id="L92">        return wasEmpty;</span>
+    }
+
+    /**
+     * The {@code CircularPointer} class is a helper class used to track the current index (pointer)
+     * in the circular buffer.
+     * The max value represents the capacity of the buffer.
+     * The `CircularPointer` class ensures that the pointer automatically wraps around to 0
+     * when it reaches the maximum index.
+     * This is achieved in the `getAndIncrement` method, where the pointer
+     * is incremented and then taken modulo the maximum value (`max`).
+     * This operation ensures that the pointer always stays within the bounds of the buffer.
+     */
+    private static class CircularPointer {
+        private int pointer;
+        private final int max;
+
+        /**
+         * Constructor to initialize the circular pointer.
+         *
+         * @param pointer The initial position of the pointer.
+         * @param max The maximum size (capacity) of the circular buffer.
+         */
+<span class="fc" id="L115">        CircularPointer(int pointer, int max) {</span>
+<span class="fc" id="L116">            this.pointer = pointer;</span>
+<span class="fc" id="L117">            this.max = max;</span>
+<span class="fc" id="L118">        }</span>
+
+        /**
+         * Increments the pointer by 1 and wraps it around to 0 if it reaches the maximum value.
+         * This ensures the pointer always stays within the buffer's bounds.
+         *
+         * @return The current pointer value before incrementing.
+         */
+        public int getAndIncrement() {
+<span class="fc" id="L127">            int tmp = pointer;</span>
+<span class="fc" id="L128">            pointer = (pointer + 1) % max;</span>
+<span class="fc" id="L129">            return tmp;</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

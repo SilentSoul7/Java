@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GenericHeap.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.heaps</a> &gt; <span class="el_source">GenericHeap.java</span></div><h1>GenericHeap.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.heaps;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
+/**
+ * A generic implementation of a max heap data structure.
+ *
+ * @param &lt;T&gt; the type of elements in this heap, must extend Comparable.
+ */
+<span class="fc" id="L11">public class GenericHeap&lt;T extends Comparable&lt;T&gt;&gt; {</span>
+
+<span class="fc" id="L13">    private final ArrayList&lt;T&gt; data = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L14">    private final HashMap&lt;T, Integer&gt; map = new HashMap&lt;&gt;();</span>
+
+    /**
+     * Adds an item to the heap, maintaining the heap property.
+     *
+     * @param item the item to be added
+     */
+    public void add(T item) {
+<span class="pc bpc" id="L22" title="1 of 2 branches missed.">        if (item == null) {</span>
+<span class="nc" id="L23">            throw new IllegalArgumentException(&quot;Cannot insert null into the heap.&quot;);</span>
+        }
+
+<span class="fc" id="L26">        this.data.add(item);</span>
+<span class="fc" id="L27">        map.put(item, this.data.size() - 1);</span>
+<span class="fc" id="L28">        upHeapify(this.data.size() - 1);</span>
+<span class="fc" id="L29">    }</span>
+
+    /**
+     * Restores the heap property by moving the item at the given index upwards.
+     *
+     * @param ci the index of the current item
+     */
+    private void upHeapify(int ci) {
+<span class="fc" id="L37">        int pi = (ci - 1) / 2;</span>
+<span class="fc bfc" id="L38" title="All 4 branches covered.">        if (ci &gt; 0 &amp;&amp; isLarger(this.data.get(ci), this.data.get(pi)) &gt; 0) {</span>
+<span class="fc" id="L39">            swap(pi, ci);</span>
+<span class="fc" id="L40">            upHeapify(pi);</span>
+        }
+<span class="fc" id="L42">    }</span>
+
+    /**
+     * Returns the number of elements in the heap.
+     *
+     * @return the size of the heap
+     */
+    public int size() {
+<span class="fc" id="L50">        return this.data.size();</span>
+    }
+
+    /**
+     * Checks if the heap is empty.
+     *
+     * @return true if the heap is empty, false otherwise
+     */
+    public boolean isEmpty() {
+<span class="fc bfc" id="L59" title="All 2 branches covered.">        return this.size() == 0;</span>
+    }
+
+    /**
+     * Removes and returns the maximum item from the heap.
+     *
+     * @return the maximum item
+     */
+    public T remove() {
+<span class="fc bfc" id="L68" title="All 2 branches covered.">        if (isEmpty()) {</span>
+<span class="fc" id="L69">            throw new IllegalStateException(&quot;Heap is empty&quot;);</span>
+        }
+<span class="fc" id="L71">        this.swap(0, this.size() - 1);</span>
+<span class="fc" id="L72">        T rv = this.data.remove(this.size() - 1);</span>
+<span class="fc" id="L73">        map.remove(rv);</span>
+<span class="fc" id="L74">        downHeapify(0);</span>
+<span class="fc" id="L75">        return rv;</span>
+    }
+
+    /**
+     * Restores the heap property by moving the item at the given index downwards.
+     *
+     * @param pi the index of the current item
+     */
+    private void downHeapify(int pi) {
+<span class="fc" id="L84">        int lci = 2 * pi + 1;</span>
+<span class="fc" id="L85">        int rci = 2 * pi + 2;</span>
+<span class="fc" id="L86">        int mini = pi;</span>
+<span class="pc bpc" id="L87" title="1 of 4 branches missed.">        if (lci &lt; this.size() &amp;&amp; isLarger(this.data.get(lci), this.data.get(mini)) &gt; 0) {</span>
+<span class="fc" id="L88">            mini = lci;</span>
+        }
+<span class="pc bpc" id="L90" title="3 of 4 branches missed.">        if (rci &lt; this.size() &amp;&amp; isLarger(this.data.get(rci), this.data.get(mini)) &gt; 0) {</span>
+<span class="nc" id="L91">            mini = rci;</span>
+        }
+<span class="fc bfc" id="L93" title="All 2 branches covered.">        if (mini != pi) {</span>
+<span class="fc" id="L94">            this.swap(pi, mini);</span>
+<span class="fc" id="L95">            downHeapify(mini);</span>
+        }
+<span class="fc" id="L97">    }</span>
+
+    /**
+     * Retrieves the maximum item from the heap without removing it.
+     *
+     * @return the maximum item
+     */
+    public T get() {
+<span class="fc bfc" id="L105" title="All 2 branches covered.">        if (isEmpty()) {</span>
+<span class="fc" id="L106">            throw new IllegalStateException(&quot;Heap is empty&quot;);</span>
+        }
+<span class="fc" id="L108">        return this.data.getFirst();</span>
+    }
+
+    /**
+     * Compares two items to determine their order.
+     *
+     * @param t the first item
+     * @param o the second item
+     * @return a positive integer if t is greater than o, negative if t is less, and zero if they are equal
+     */
+    private int isLarger(T t, T o) {
+<span class="fc" id="L119">        return t.compareTo(o);</span>
+    }
+
+    /**
+     * Swaps two items in the heap and updates their indices in the map.
+     *
+     * @param i index of the first item
+     * @param j index of the second item
+     */
+    private void swap(int i, int j) {
+<span class="fc" id="L129">        T ith = this.data.get(i);</span>
+<span class="fc" id="L130">        T jth = this.data.get(j);</span>
+<span class="fc" id="L131">        this.data.set(i, jth);</span>
+<span class="fc" id="L132">        this.data.set(j, ith);</span>
+<span class="fc" id="L133">        map.put(ith, j);</span>
+<span class="fc" id="L134">        map.put(jth, i);</span>
+<span class="fc" id="L135">    }</span>
+
+    /**
+     * Updates the priority of the specified item by restoring the heap property.
+     *
+     * @param item the item whose priority is to be updated
+     */
+    public void updatePriority(T item) {
+<span class="fc bfc" id="L143" title="All 2 branches covered.">        if (!map.containsKey(item)) {</span>
+<span class="fc" id="L144">            throw new IllegalArgumentException(&quot;Item not found in the heap&quot;);</span>
+        }
+<span class="fc" id="L146">        int index = map.get(item);</span>
+<span class="fc" id="L147">        upHeapify(index);</span>
+<span class="fc" id="L148">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RotateSinglyLinkedLists.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.lists</a> &gt; <span class="el_source">RotateSinglyLinkedLists.java</span></div><h1>RotateSinglyLinkedLists.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.lists;
+
+/**
+ * The RotateSinglyLinkedLists class provides a method to rotate a singly linked list
+ * to the right by a specified number of positions.
+ * &lt;p&gt;
+ * In a right rotation by `k` steps, each node in the list moves `k` positions to the right.
+ * Nodes that are rotated off the end of the list are placed back at the beginning.
+ * &lt;/p&gt;
+ * &lt;p&gt;
+ * Example:
+ * Given linked list: 1 -&gt; 2 -&gt; 3 -&gt; 4 -&gt; 5 and k = 2, the output will be:
+ * 4 -&gt; 5 -&gt; 1 -&gt; 2 -&gt; 3.
+ * &lt;/p&gt;
+ * &lt;p&gt;
+ * Edge Cases:
+ * &lt;ul&gt;
+ *   &lt;li&gt;If the list is empty, returns null.&lt;/li&gt;
+ *   &lt;li&gt;If `k` is 0 or a multiple of the list length, the list remains unchanged.&lt;/li&gt;
+ * &lt;/ul&gt;
+ * &lt;/p&gt;
+ * &lt;p&gt;
+ * Complexity:
+ * &lt;ul&gt;
+ *   &lt;li&gt;Time Complexity: O(n), where n is the number of nodes in the linked list.&lt;/li&gt;
+ *   &lt;li&gt;Space Complexity: O(1), as we only use a constant amount of additional space.&lt;/li&gt;
+ * &lt;/ul&gt;
+ * &lt;/p&gt;
+ *
+ * Author: Bama Charan Chhandogi (https://github.com/BamaCharanChhandogi)
+ */
+<span class="fc" id="L32">public class RotateSinglyLinkedLists {</span>
+
+    /**
+     * Rotates a singly linked list to the right by `k` positions.
+     *
+     * @param head The head node of the singly linked list.
+     * @param k The number of positions to rotate the list to the right.
+     * @return The head of the rotated linked list.
+     */
+    public Node rotateRight(Node head, int k) {
+<span class="fc bfc" id="L42" title="All 6 branches covered.">        if (head == null || head.next == null || k == 0) {</span>
+<span class="fc" id="L43">            return head;</span>
+        }
+
+<span class="fc" id="L46">        Node curr = head;</span>
+<span class="fc" id="L47">        int len = 1;</span>
+<span class="fc bfc" id="L48" title="All 2 branches covered.">        while (curr.next != null) {</span>
+<span class="fc" id="L49">            curr = curr.next;</span>
+<span class="fc" id="L50">            len++;</span>
+        }
+
+<span class="fc" id="L53">        curr.next = head;</span>
+<span class="fc" id="L54">        k = k % len;</span>
+<span class="fc" id="L55">        k = len - k;</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">        while (k &gt; 0) {</span>
+<span class="fc" id="L57">            curr = curr.next;</span>
+<span class="fc" id="L58">            k--;</span>
+        }
+
+<span class="fc" id="L61">        head = curr.next;</span>
+<span class="fc" id="L62">        curr.next = null;</span>
+<span class="fc" id="L63">        return head;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

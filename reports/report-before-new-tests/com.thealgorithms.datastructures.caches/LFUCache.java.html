@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LFUCache.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.caches</a> &gt; <span class="el_source">LFUCache.java</span></div><h1>LFUCache.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.caches;
+
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * The {@code LFUCache} class implements a Least Frequently Used (LFU) cache.
+ * An LFU cache evicts the least frequently used item when the cache reaches its capacity.
+ * It maintains a mapping of keys to nodes, where each node contains the key, its associated value,
+ * and a frequency count that tracks how many times the item has been accessed. A doubly linked list
+ * is used to efficiently manage the ordering of items based on their usage frequency.
+ *
+ * &lt;p&gt;This implementation is designed to provide O(1) time complexity for both the {@code get} and
+ * {@code put} operations, which is achieved through the use of a hashmap for quick access and a
+ * doubly linked list for maintaining the order of item frequencies.&lt;/p&gt;
+ *
+ * &lt;p&gt;
+ * Reference: &lt;a href=&quot;https://en.wikipedia.org/wiki/Least_frequently_used&quot;&gt;LFU Cache - Wikipedia&lt;/a&gt;
+ * &lt;/p&gt;
+ *
+ * @param &lt;K&gt; The type of keys maintained by this cache.
+ * @param &lt;V&gt; The type of mapped values.
+ *
+ * @author Akshay Dubey (https://github.com/itsAkshayDubey)
+ */
+public class LFUCache&lt;K, V&gt; {
+
+    /**
+     * The {@code Node} class represents an element in the LFU cache.
+     * Each node contains a key, a value, and a frequency count.
+     * It also has pointers to the previous and next nodes in the doubly linked list.
+     */
+    private class Node {
+        private final K key;
+        private V value;
+        private int frequency;
+        private Node previous;
+        private Node next;
+
+        /**
+         * Constructs a new {@code Node} with the specified key, value, and frequency.
+         *
+         * @param key The key associated with this node.
+         * @param value The value stored in this node.
+         * @param frequency The frequency of usage of this node.
+         */
+<span class="fc" id="L47">        Node(K key, V value, int frequency) {</span>
+<span class="fc" id="L48">            this.key = key;</span>
+<span class="fc" id="L49">            this.value = value;</span>
+<span class="fc" id="L50">            this.frequency = frequency;</span>
+<span class="fc" id="L51">        }</span>
+    }
+
+    private Node head;
+    private Node tail;
+    private final Map&lt;K, Node&gt; cache;
+    private final int capacity;
+    private static final int DEFAULT_CAPACITY = 100;
+
+    /**
+     * Constructs an LFU cache with the default capacity.
+     */
+    public LFUCache() {
+<span class="nc" id="L64">        this(DEFAULT_CAPACITY);</span>
+<span class="nc" id="L65">    }</span>
+
+    /**
+     * Constructs an LFU cache with the specified capacity.
+     *
+     * @param capacity The maximum number of items that the cache can hold.
+     * @throws IllegalArgumentException if the specified capacity is less than or equal to zero.
+     */
+<span class="fc" id="L73">    public LFUCache(int capacity) {</span>
+<span class="fc bfc" id="L74" title="All 2 branches covered.">        if (capacity &lt;= 0) {</span>
+<span class="fc" id="L75">            throw new IllegalArgumentException(&quot;Capacity must be greater than zero.&quot;);</span>
+        }
+<span class="fc" id="L77">        this.capacity = capacity;</span>
+<span class="fc" id="L78">        this.cache = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L79">    }</span>
+
+    /**
+     * Retrieves the value associated with the given key from the cache.
+     * If the key exists, the node's frequency is incremented, and the node is repositioned
+     * in the linked list based on its updated frequency.
+     *
+     * @param key The key whose associated value is to be returned.
+     * @return The value associated with the key, or {@code null} if the key is not present in the cache.
+     */
+    public V get(K key) {
+<span class="fc" id="L90">        Node node = cache.get(key);</span>
+<span class="fc bfc" id="L91" title="All 2 branches covered.">        if (node == null) {</span>
+<span class="fc" id="L92">            return null;</span>
+        }
+<span class="fc" id="L94">        removeNode(node);</span>
+<span class="fc" id="L95">        node.frequency += 1;</span>
+<span class="fc" id="L96">        addNodeWithUpdatedFrequency(node);</span>
+<span class="fc" id="L97">        return node.value;</span>
+    }
+
+    /**
+     * Inserts or updates a key-value pair in the cache.
+     * If the key already exists, the value is updated and its frequency is incremented.
+     * If the cache is full, the least frequently used item is removed before inserting the new item.
+     *
+     * @param key The key associated with the value to be inserted or updated.
+     * @param value The value to be inserted or updated.
+     */
+    public void put(K key, V value) {
+<span class="fc bfc" id="L109" title="All 2 branches covered.">        if (cache.containsKey(key)) {</span>
+<span class="fc" id="L110">            Node node = cache.get(key);</span>
+<span class="fc" id="L111">            node.value = value;</span>
+<span class="fc" id="L112">            node.frequency += 1;</span>
+<span class="fc" id="L113">            removeNode(node);</span>
+<span class="fc" id="L114">            addNodeWithUpdatedFrequency(node);</span>
+<span class="fc" id="L115">        } else {</span>
+<span class="fc bfc" id="L116" title="All 2 branches covered.">            if (cache.size() &gt;= capacity) {</span>
+<span class="fc" id="L117">                cache.remove(this.head.key); // Evict least frequently used item</span>
+<span class="fc" id="L118">                removeNode(head);</span>
+            }
+<span class="fc" id="L120">            Node node = new Node(key, value, 1);</span>
+<span class="fc" id="L121">            addNodeWithUpdatedFrequency(node);</span>
+<span class="fc" id="L122">            cache.put(key, node);</span>
+        }
+<span class="fc" id="L124">    }</span>
+
+    /**
+     * Adds a node to the linked list in the correct position based on its frequency.
+     * The linked list is ordered by frequency, with the least frequently used node at the head.
+     *
+     * @param node The node to be inserted into the list.
+     */
+    private void addNodeWithUpdatedFrequency(Node node) {
+<span class="pc bpc" id="L133" title="1 of 4 branches missed.">        if (tail != null &amp;&amp; head != null) {</span>
+<span class="fc" id="L134">            Node temp = this.head;</span>
+<span class="pc bpc" id="L135" title="1 of 2 branches missed.">            while (temp != null) {</span>
+<span class="fc bfc" id="L136" title="All 2 branches covered.">                if (temp.frequency &gt; node.frequency) {</span>
+<span class="fc bfc" id="L137" title="All 2 branches covered.">                    if (temp == head) {</span>
+<span class="fc" id="L138">                        node.next = temp;</span>
+<span class="fc" id="L139">                        temp.previous = node;</span>
+<span class="fc" id="L140">                        this.head = node;</span>
+<span class="fc" id="L141">                        break;</span>
+                    } else {
+<span class="fc" id="L143">                        node.next = temp;</span>
+<span class="fc" id="L144">                        node.previous = temp.previous;</span>
+<span class="fc" id="L145">                        temp.previous.next = node;</span>
+<span class="fc" id="L146">                        temp.previous = node;</span>
+<span class="fc" id="L147">                        break;</span>
+                    }
+                } else {
+<span class="fc" id="L150">                    temp = temp.next;</span>
+<span class="fc bfc" id="L151" title="All 2 branches covered.">                    if (temp == null) {</span>
+<span class="fc" id="L152">                        tail.next = node;</span>
+<span class="fc" id="L153">                        node.previous = tail;</span>
+<span class="fc" id="L154">                        node.next = null;</span>
+<span class="fc" id="L155">                        tail = node;</span>
+<span class="fc" id="L156">                        break;</span>
+                    }
+                }
+            }
+<span class="fc" id="L160">        } else {</span>
+<span class="fc" id="L161">            tail = node;</span>
+<span class="fc" id="L162">            head = tail;</span>
+        }
+<span class="fc" id="L164">    }</span>
+
+    /**
+     * Removes a node from the doubly linked list.
+     * This method ensures that the pointers of neighboring nodes are properly updated.
+     *
+     * @param node The node to be removed from the list.
+     */
+    private void removeNode(Node node) {
+<span class="fc bfc" id="L173" title="All 2 branches covered.">        if (node.previous != null) {</span>
+<span class="fc" id="L174">            node.previous.next = node.next;</span>
+        } else {
+<span class="fc" id="L176">            this.head = node.next;</span>
+        }
+
+<span class="fc bfc" id="L179" title="All 2 branches covered.">        if (node.next != null) {</span>
+<span class="fc" id="L180">            node.next.previous = node.previous;</span>
+        } else {
+<span class="fc" id="L182">            this.tail = node.previous;</span>
+        }
+<span class="fc" id="L184">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

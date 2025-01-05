@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GenericRoot.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.maths</a> &gt; <span class="el_source">GenericRoot.java</span></div><h1>GenericRoot.java</h1><pre class="source lang-java linenums">package com.thealgorithms.maths;
+
+/*
+ * Algorithm explanation:
+ * https://technotip.com/6774/c-program-to-find-generic-root-of-a-number/#:~:text=Generic%20Root%3A%20of%20a%20number,get%20a%20single%2Ddigit%20output.&amp;text=For%20Example%3A%20If%20user%20input,%2B%204%20%2B%205%20%3D%2015.
+ */
+public final class GenericRoot {
+    private GenericRoot() {
+    }
+
+<span class="fc" id="L11">    private static int base = 10;</span>
+
+    private static int sumOfDigits(final int n) {
+<span class="pc bpc" id="L14" title="1 of 2 branches missed.">        assert n &gt;= 0;</span>
+<span class="fc bfc" id="L15" title="All 2 branches covered.">        if (n &lt; base) {</span>
+<span class="fc" id="L16">            return n;</span>
+        }
+<span class="fc" id="L18">        return n % base + sumOfDigits(n / base);</span>
+    }
+
+    public static int genericRoot(final int n) {
+<span class="fc bfc" id="L22" title="All 2 branches covered.">        if (n &lt; 0) {</span>
+<span class="fc" id="L23">            return genericRoot(-n);</span>
+        }
+<span class="fc bfc" id="L25" title="All 2 branches covered.">        if (n &gt; base) {</span>
+<span class="fc" id="L26">            return genericRoot(sumOfDigits(n));</span>
+        }
+<span class="fc" id="L28">        return n;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

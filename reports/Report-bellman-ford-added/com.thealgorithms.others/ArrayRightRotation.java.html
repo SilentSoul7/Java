@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ArrayRightRotation.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.others</a> &gt; <span class="el_source">ArrayRightRotation.java</span></div><h1>ArrayRightRotation.java</h1><pre class="source lang-java linenums">package com.thealgorithms.others;
+
+/**
+ * Provides a method to perform a right rotation on an array.
+ * A left rotation operation shifts each element of the array
+ * by a specified number of positions to the right.
+ *
+ * https://en.wikipedia.org/wiki/Right_rotation *
+ */
+public final class ArrayRightRotation {
+    private ArrayRightRotation() {
+    }
+
+    /**
+     * Performs a right rotation on the given array by the specified number of positions.
+     *
+     * @param arr the array to be rotated
+     * @param k the number of positions to rotate the array to the left
+     * @return a new array containing the elements of the input array rotated to the left
+     */
+    public static int[] rotateRight(int[] arr, int k) {
+<span class="pc bpc" id="L22" title="3 of 6 branches missed.">        if (arr == null || arr.length == 0 || k &lt; 0) {</span>
+<span class="nc" id="L23">            throw new IllegalArgumentException(&quot;Invalid input&quot;);</span>
+        }
+
+<span class="fc" id="L26">        int n = arr.length;</span>
+<span class="fc" id="L27">        k = k % n; // Handle cases where k is larger than the array length</span>
+
+<span class="fc" id="L29">        reverseArray(arr, 0, n - 1);</span>
+<span class="fc" id="L30">        reverseArray(arr, 0, k - 1);</span>
+<span class="fc" id="L31">        reverseArray(arr, k, n - 1);</span>
+
+<span class="fc" id="L33">        return arr;</span>
+    }
+
+    /**
+     * Performs reversing of a array
+     * @param arr the array to be reversed
+     * @param start starting position
+     * @param end ending position
+     */
+    private static void reverseArray(int[] arr, int start, int end) {
+<span class="fc bfc" id="L43" title="All 2 branches covered.">        while (start &lt; end) {</span>
+<span class="fc" id="L44">            int temp = arr[start];</span>
+<span class="fc" id="L45">            arr[start] = arr[end];</span>
+<span class="fc" id="L46">            arr[end] = temp;</span>
+<span class="fc" id="L47">            start++;</span>
+<span class="fc" id="L48">            end--;</span>
+<span class="fc" id="L49">        }</span>
+<span class="fc" id="L50">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

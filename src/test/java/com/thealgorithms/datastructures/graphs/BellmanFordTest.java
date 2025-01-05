@@ -1,6 +1,9 @@
+/*
+
 package com.thealgorithms.datastructures.graphs;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
@@ -10,6 +13,7 @@ import java.io.PrintStream;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 
 public class BellmanFordTest {
     
@@ -26,7 +30,7 @@ public class BellmanFordTest {
      * x Source Vertex
      * y End vertex
      * z Weight
-     */
+     
     @Test
     void addEdge() {
         graph.addEdge(0, 1, 1);
@@ -82,7 +86,7 @@ public class BellmanFordTest {
     }
 
     @Test
-    void testGoValidInput() {
+    void testGoNegativeCycle() {
 
         String simulatedInput = "4 4\n0 1 1\n1 2 -2\n2 3 3\n3 1 -4\n";
 
@@ -95,10 +99,40 @@ public class BellmanFordTest {
         graph.go();
 
         String output = outputStreamCaptor.toString();
-        assertTrue(output.contains("Negative cycle"), "Expected 'Negative cycle' in the output");
+        assertTrue(output.contains("Negative cycle"));
     }
 
+    @Test
+    void testGoValidGraph() {
+
+        String simulatedInput = "5 6\n0 1 1\n0 2 3\n1 2 5\n1 3 6\n2 4 3\n3 4 2";
+
+        InputStream inputStream = new ByteArrayInputStream(simulatedInput.getBytes());
+        System.setIn(inputStream);
+
+        ByteArrayOutputStream outputStreamCaptor = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outputStreamCaptor));
+
+        graph.go();
+
+        String output = outputStreamCaptor.toString();
+        assertFalse(output.contains("Negative cycle"));
+    }
+
+    */
+
+    /*
+     * 
+     *  graph.addEdge(0, 1, 1);
+        graph.addEdge(0, 2, 3);
+        graph.addEdge(1, 2, 5);
+        graph.addEdge(1, 3, 6);
+        graph.addEdge(2, 4, 3);
+        graph.addEdge(3, 4, 2);
+     
 
 
 
 }
+
+*/

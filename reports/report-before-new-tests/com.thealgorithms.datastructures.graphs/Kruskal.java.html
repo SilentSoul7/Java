@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Kruskal.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.graphs</a> &gt; <span class="el_source">Kruskal.java</span></div><h1>Kruskal.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.graphs;
+
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.PriorityQueue;
+
+/**
+ * The Kruskal class implements Kruskal's Algorithm to find the Minimum Spanning Tree (MST)
+ * of a connected, undirected graph. The algorithm constructs the MST by selecting edges
+ * with the least weight, ensuring no cycles are formed, and using union-find to track the
+ * connected components.
+ *
+ * &lt;p&gt;&lt;strong&gt;Key Features:&lt;/strong&gt;&lt;/p&gt;
+ * &lt;ul&gt;
+ *   &lt;li&gt;The graph is represented using an adjacency list, where each node points to a set of edges.&lt;/li&gt;
+ *   &lt;li&gt;Each edge is processed in ascending order of weight using a priority queue.&lt;/li&gt;
+ *   &lt;li&gt;The algorithm stops when all nodes are connected or no more edges are available.&lt;/li&gt;
+ * &lt;/ul&gt;
+ *
+ * &lt;p&gt;&lt;strong&gt;Time Complexity:&lt;/strong&gt; O(E log V), where E is the number of edges and V is the number of vertices.&lt;/p&gt;
+ */
+<span class="fc" id="L22">public class Kruskal {</span>
+
+    /**
+     * Represents an edge in the graph with a source, destination, and weight.
+     */
+    static class Edge {
+
+        int from;
+        int to;
+        int weight;
+
+<span class="fc" id="L33">        Edge(int from, int to, int weight) {</span>
+<span class="fc" id="L34">            this.from = from;</span>
+<span class="fc" id="L35">            this.to = to;</span>
+<span class="fc" id="L36">            this.weight = weight;</span>
+<span class="fc" id="L37">        }</span>
+    }
+
+    /**
+     * Adds an edge to the graph.
+     *
+     * @param graph the adjacency list representing the graph
+     * @param from the source vertex of the edge
+     * @param to the destination vertex of the edge
+     * @param weight the weight of the edge
+     */
+    static void addEdge(HashSet&lt;Edge&gt;[] graph, int from, int to, int weight) {
+<span class="fc" id="L49">        graph[from].add(new Edge(from, to, weight));</span>
+<span class="fc" id="L50">    }</span>
+
+    /**
+     * Kruskal's algorithm to find the Minimum Spanning Tree (MST) of a graph.
+     *
+     * @param graph the adjacency list representing the input graph
+     * @return the adjacency list representing the MST
+     */
+    public HashSet&lt;Edge&gt;[] kruskal(HashSet&lt;Edge&gt;[] graph) {
+<span class="fc" id="L59">        int nodes = graph.length;</span>
+<span class="fc" id="L60">        int[] captain = new int[nodes]; // Stores the &quot;leader&quot; of each node's connected component</span>
+<span class="fc" id="L61">        HashSet&lt;Integer&gt;[] connectedGroups = new HashSet[nodes];</span>
+<span class="fc" id="L62">        HashSet&lt;Edge&gt;[] minGraph = new HashSet[nodes];</span>
+<span class="fc" id="L63">        PriorityQueue&lt;Edge&gt; edges = new PriorityQueue&lt;&gt;(Comparator.comparingInt(edge -&gt; edge.weight));</span>
+<span class="fc bfc" id="L64" title="All 2 branches covered.">        for (int i = 0; i &lt; nodes; i++) {</span>
+<span class="fc" id="L65">            minGraph[i] = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L66">            connectedGroups[i] = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L67">            connectedGroups[i].add(i);</span>
+<span class="fc" id="L68">            captain[i] = i;</span>
+<span class="fc" id="L69">            edges.addAll(graph[i]);</span>
+        }
+<span class="fc" id="L71">        int connectedElements = 0;</span>
+<span class="fc bfc" id="L72" title="All 4 branches covered.">        while (connectedElements != nodes &amp;&amp; !edges.isEmpty()) {</span>
+<span class="fc" id="L73">            Edge edge = edges.poll();</span>
+
+            // Avoid forming cycles by checking if the nodes belong to different connected components
+<span class="pc bpc" id="L76" title="1 of 4 branches missed.">            if (!connectedGroups[captain[edge.from]].contains(edge.to) &amp;&amp; !connectedGroups[captain[edge.to]].contains(edge.from)) {</span>
+                // Merge the two sets of nodes connected by the edge
+<span class="fc" id="L78">                connectedGroups[captain[edge.from]].addAll(connectedGroups[captain[edge.to]]);</span>
+
+                // Update the captain for each merged node
+<span class="fc" id="L81">                connectedGroups[captain[edge.from]].forEach(i -&gt; captain[i] = captain[edge.from]);</span>
+
+                // Add the edge to the resulting MST graph
+<span class="fc" id="L84">                addEdge(minGraph, edge.from, edge.to, edge.weight);</span>
+
+                // Update the count of connected nodes
+<span class="fc" id="L87">                connectedElements = connectedGroups[captain[edge.from]].size();</span>
+            }
+<span class="fc" id="L89">        }</span>
+<span class="fc" id="L90">        return minGraph;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

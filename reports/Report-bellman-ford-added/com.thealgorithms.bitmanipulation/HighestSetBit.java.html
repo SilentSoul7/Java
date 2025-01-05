@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HighestSetBit.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.bitmanipulation</a> &gt; <span class="el_source">HighestSetBit.java</span></div><h1>HighestSetBit.java</h1><pre class="source lang-java linenums">package com.thealgorithms.bitmanipulation;
+
+import java.util.Optional;
+
+/**
+ * Find Highest Set Bit
+ *
+ * This class provides a utility method to calculate the position of the highest
+ * (most significant) bit that is set to 1 in a given non-negative integer.
+ * It is often used in bit manipulation tasks to find the left-most set bit in binary
+ * representation of a number.
+ *
+ * Example:
+ * - For input 18 (binary 10010), the highest set bit is at position 4 (zero-based index).
+ *
+ * @author Bama Charan Chhandogi
+ * @version 1.0
+ * @since 2021-06-23
+ */
+public final class HighestSetBit {
+
+    private HighestSetBit() {
+    }
+
+    /**
+     * Finds the highest (most significant) set bit in the given integer.
+     * The method returns the position (index) of the highest set bit as an {@link Optional}.
+     *
+     * - If the number is 0, no bits are set, and the method returns {@link Optional#empty()}.
+     * - If the number is negative, the method throws {@link IllegalArgumentException}.
+     *
+     * @param num The input integer for which the highest set bit is to be found. It must be non-negative.
+     * @return An {@link Optional} containing the index of the highest set bit (zero-based).
+     *         Returns {@link Optional#empty()} if the number is 0.
+     * @throws IllegalArgumentException if the input number is negative.
+     */
+    public static Optional&lt;Integer&gt; findHighestSetBit(int num) {
+<span class="fc bfc" id="L38" title="All 2 branches covered.">        if (num &lt; 0) {</span>
+<span class="fc" id="L39">            throw new IllegalArgumentException(&quot;Input cannot be negative&quot;);</span>
+        }
+
+<span class="fc bfc" id="L42" title="All 2 branches covered.">        if (num == 0) {</span>
+<span class="fc" id="L43">            return Optional.empty();</span>
+        }
+
+<span class="fc" id="L46">        int position = 0;</span>
+<span class="fc bfc" id="L47" title="All 2 branches covered.">        while (num &gt; 0) {</span>
+<span class="fc" id="L48">            num &gt;&gt;= 1;</span>
+<span class="fc" id="L49">            position++;</span>
+        }
+
+<span class="fc" id="L52">        return Optional.of(position - 1); // Subtract 1 to convert to zero-based index</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

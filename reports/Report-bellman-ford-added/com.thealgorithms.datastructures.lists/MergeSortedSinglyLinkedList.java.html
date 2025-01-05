@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MergeSortedSinglyLinkedList.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.lists</a> &gt; <span class="el_source">MergeSortedSinglyLinkedList.java</span></div><h1>MergeSortedSinglyLinkedList.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.lists;
+
+/**
+ * Utility class for merging two sorted singly linked lists.
+ *
+ * &lt;p&gt;This class extends the {@link SinglyLinkedList} class to support the merging of two sorted linked lists.
+ * It provides a static method, `merge`, that takes two sorted singly linked lists, merges them into a single sorted linked list,
+ * and returns the result.&lt;/p&gt;
+ *
+ * &lt;p&gt;Example usage:&lt;/p&gt;
+ * &lt;pre&gt;
+ * SinglyLinkedList listA = new SinglyLinkedList();
+ * SinglyLinkedList listB = new SinglyLinkedList();
+ * for (int i = 2; i &lt;= 10; i += 2) {
+ *     listA.insert(i);   // listA: 2-&gt;4-&gt;6-&gt;8-&gt;10
+ *     listB.insert(i - 1); // listB: 1-&gt;3-&gt;5-&gt;7-&gt;9
+ * }
+ * SinglyLinkedList mergedList = MergeSortedSinglyLinkedList.merge(listA, listB);
+ * System.out.println(mergedList); // Output: 1-&gt;2-&gt;3-&gt;4-&gt;5-&gt;6-&gt;7-&gt;8-&gt;9-&gt;10
+ * &lt;/pre&gt;
+ *
+ * &lt;p&gt;The `merge` method assumes that both input lists are already sorted in ascending order.
+ * It returns a new singly linked list that contains all elements from both lists in sorted order.&lt;/p&gt;
+ *
+ * @see SinglyLinkedList
+ */
+<span class="nc" id="L27">public class MergeSortedSinglyLinkedList extends SinglyLinkedList {</span>
+
+    /**
+     * Merges two sorted singly linked lists into a single sorted singly linked list.
+     *
+     * &lt;p&gt;This method does not modify the input lists; instead, it creates a new merged linked list
+     * containing all elements from both lists in sorted order.&lt;/p&gt;
+     *
+     * @param listA The first sorted singly linked list.
+     * @param listB The second sorted singly linked list.
+     * @return A new singly linked list containing all elements from both lists in sorted order.
+     * @throws NullPointerException if either input list is null.
+     */
+    public static SinglyLinkedList merge(SinglyLinkedList listA, SinglyLinkedList listB) {
+<span class="fc bfc" id="L41" title="All 4 branches covered.">        if (listA == null || listB == null) {</span>
+<span class="fc" id="L42">            throw new NullPointerException(&quot;Input lists must not be null.&quot;);</span>
+        }
+
+<span class="fc" id="L45">        Node headA = listA.getHead();</span>
+<span class="fc" id="L46">        Node headB = listB.getHead();</span>
+<span class="fc" id="L47">        int size = listA.size() + listB.size();</span>
+
+<span class="fc" id="L49">        Node head = new Node();</span>
+<span class="fc" id="L50">        Node tail = head;</span>
+<span class="fc bfc" id="L51" title="All 4 branches covered.">        while (headA != null &amp;&amp; headB != null) {</span>
+<span class="fc bfc" id="L52" title="All 2 branches covered.">            if (headA.value &lt;= headB.value) {</span>
+<span class="fc" id="L53">                tail.next = headA;</span>
+<span class="fc" id="L54">                headA = headA.next;</span>
+            } else {
+<span class="fc" id="L56">                tail.next = headB;</span>
+<span class="fc" id="L57">                headB = headB.next;</span>
+            }
+<span class="fc" id="L59">            tail = tail.next;</span>
+        }
+
+        // Attach remaining nodes
+<span class="fc bfc" id="L63" title="All 2 branches covered.">        tail.next = (headA == null) ? headB : headA;</span>
+
+<span class="fc" id="L65">        return new SinglyLinkedList(head.next, size);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

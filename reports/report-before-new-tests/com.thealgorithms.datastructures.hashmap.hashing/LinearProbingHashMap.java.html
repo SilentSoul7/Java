@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LinearProbingHashMap.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.hashmap.hashing</a> &gt; <span class="el_source">LinearProbingHashMap.java</span></div><h1>LinearProbingHashMap.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.hashmap.hashing;
+
+import java.util.ArrayList;
+
+/**
+ * This class implements a hash table using linear probing to resolve collisions.
+ * Linear probing is a collision resolution method where each slot in the hash table is checked in a sequential manner
+ * until an empty slot is found.
+ *
+ * &lt;p&gt;
+ * The class allows for storing key-value pairs, where both the key and value are generic types.
+ * The key must be of a type that implements the Comparable interface to ensure that the keys can be compared for sorting.
+ * &lt;/p&gt;
+ *
+ * &lt;p&gt;
+ * This implementation supports basic operations such as:
+ * &lt;ul&gt;
+ *     &lt;li&gt;&lt;b&gt;put(Key key, Value value)&lt;/b&gt;: Adds a key-value pair to the hash table. If the key already exists, its value is updated.&lt;/li&gt;
+ *     &lt;li&gt;&lt;b&gt;get(Key key)&lt;/b&gt;: Retrieves the value associated with the given key.&lt;/li&gt;
+ *     &lt;li&gt;&lt;b&gt;delete(Key key)&lt;/b&gt;: Removes the key and its associated value from the hash table.&lt;/li&gt;
+ *     &lt;li&gt;&lt;b&gt;contains(Key key)&lt;/b&gt;: Checks if the hash table contains a given key.&lt;/li&gt;
+ *     &lt;li&gt;&lt;b&gt;size()&lt;/b&gt;: Returns the number of key-value pairs in the hash table.&lt;/li&gt;
+ *     &lt;li&gt;&lt;b&gt;keys()&lt;/b&gt;: Returns an iterable collection of keys stored in the hash table.&lt;/li&gt;
+ * &lt;/ul&gt;
+ * &lt;/p&gt;
+ *
+ * &lt;p&gt;
+ * The internal size of the hash table is automatically resized when the load factor exceeds 0.5 or falls below 0.125,
+ * ensuring efficient space utilization.
+ * &lt;/p&gt;
+ *
+ * @see &lt;a href=&quot;https://en.wikipedia.org/wiki/Linear_probing&quot;&gt;Linear Probing Hash Table&lt;/a&gt;
+ *
+ * @param &lt;Key&gt; the type of keys maintained by this map
+ * @param &lt;Value&gt; the type of mapped values
+ */
+public class LinearProbingHashMap&lt;Key extends Comparable&lt;Key&gt;, Value&gt; extends Map&lt;Key, Value&gt; {
+    private int hsize; // size of the hash table
+    private Key[] keys; // array to store keys
+    private Value[] values; // array to store values
+    private int size; // number of elements in the hash table
+
+    // Default constructor initializes the table with a default size of 16
+    public LinearProbingHashMap() {
+<span class="fc" id="L45">        this(16);</span>
+<span class="fc" id="L46">    }</span>
+
+    @SuppressWarnings(&quot;unchecked&quot;)
+    // Constructor to initialize the hash table with a specified size
+<span class="fc" id="L50">    public LinearProbingHashMap(int size) {</span>
+<span class="fc" id="L51">        this.hsize = size;</span>
+<span class="fc" id="L52">        keys = (Key[]) new Comparable[size];</span>
+<span class="fc" id="L53">        values = (Value[]) new Object[size];</span>
+<span class="fc" id="L54">    }</span>
+
+    @Override
+    public boolean put(Key key, Value value) {
+<span class="fc bfc" id="L58" title="All 2 branches covered.">        if (key == null) {</span>
+<span class="fc" id="L59">            return false;</span>
+        }
+
+<span class="fc bfc" id="L62" title="All 2 branches covered.">        if (size &gt; hsize / 2) {</span>
+<span class="fc" id="L63">            resize(2 * hsize);</span>
+        }
+
+<span class="fc" id="L66">        int keyIndex = hash(key, hsize);</span>
+<span class="pc bfc" id="L67" title="All 2 branches covered.">        for (; keys[keyIndex] != null; keyIndex = increment(keyIndex)) {</span>
+<span class="pc bpc" id="L68" title="1 of 2 branches missed.">            if (key.equals(keys[keyIndex])) {</span>
+<span class="fc" id="L69">                values[keyIndex] = value;</span>
+<span class="fc" id="L70">                return true;</span>
+            }
+        }
+
+<span class="fc" id="L74">        keys[keyIndex] = key;</span>
+<span class="fc" id="L75">        values[keyIndex] = value;</span>
+<span class="fc" id="L76">        size++;</span>
+<span class="fc" id="L77">        return true;</span>
+    }
+
+    @Override
+    public Value get(Key key) {
+<span class="fc bfc" id="L82" title="All 2 branches covered.">        if (key == null) {</span>
+<span class="fc" id="L83">            return null;</span>
+        }
+
+<span class="pc bfc" id="L86" title="All 2 branches covered.">        for (int i = hash(key, hsize); keys[i] != null; i = increment(i)) {</span>
+<span class="pc bpc" id="L87" title="1 of 2 branches missed.">            if (key.equals(keys[i])) {</span>
+<span class="fc" id="L88">                return values[i];</span>
+            }
+        }
+
+<span class="fc" id="L92">        return null;</span>
+    }
+
+    @Override
+    public boolean delete(Key key) {
+<span class="fc bfc" id="L97" title="All 4 branches covered.">        if (key == null || !contains(key)) {</span>
+<span class="fc" id="L98">            return false;</span>
+        }
+
+<span class="fc" id="L101">        int i = hash(key, hsize);</span>
+<span class="pc bpc" id="L102" title="1 of 2 branches missed.">        while (!key.equals(keys[i])) {</span>
+<span class="nc" id="L103">            i = increment(i);</span>
+        }
+
+<span class="fc" id="L106">        keys[i] = null;</span>
+<span class="fc" id="L107">        values[i] = null;</span>
+
+<span class="fc" id="L109">        i = increment(i);</span>
+<span class="fc bfc" id="L110" title="All 2 branches covered.">        while (keys[i] != null) {</span>
+            // Save the key and value for rehashing
+<span class="fc" id="L112">            Key keyToRehash = keys[i];</span>
+<span class="fc" id="L113">            Value valToRehash = values[i];</span>
+<span class="fc" id="L114">            keys[i] = null;</span>
+<span class="fc" id="L115">            values[i] = null;</span>
+<span class="fc" id="L116">            size--;</span>
+<span class="fc" id="L117">            put(keyToRehash, valToRehash);</span>
+<span class="fc" id="L118">            i = increment(i);</span>
+<span class="fc" id="L119">        }</span>
+
+<span class="fc" id="L121">        size--;</span>
+<span class="fc bfc" id="L122" title="All 4 branches covered.">        if (size &gt; 0 &amp;&amp; size &lt;= hsize / 8) {</span>
+<span class="fc" id="L123">            resize(hsize / 2);</span>
+        }
+
+<span class="fc" id="L126">        return true;</span>
+    }
+
+    @Override
+    public boolean contains(Key key) {
+<span class="fc bfc" id="L131" title="All 2 branches covered.">        return get(key) != null;</span>
+    }
+
+    @Override
+    int size() {
+<span class="fc" id="L136">        return size;</span>
+    }
+
+    @Override
+    Iterable&lt;Key&gt; keys() {
+<span class="fc" id="L141">        ArrayList&lt;Key&gt; listOfKeys = new ArrayList&lt;&gt;(size);</span>
+<span class="fc bfc" id="L142" title="All 2 branches covered.">        for (int i = 0; i &lt; hsize; i++) {</span>
+<span class="fc bfc" id="L143" title="All 2 branches covered.">            if (keys[i] != null) {</span>
+<span class="fc" id="L144">                listOfKeys.add(keys[i]);</span>
+            }
+        }
+
+<span class="fc" id="L148">        listOfKeys.sort(Comparable::compareTo);</span>
+<span class="fc" id="L149">        return listOfKeys;</span>
+    }
+
+    private int increment(int i) {
+<span class="fc" id="L153">        return (i + 1) % hsize;</span>
+    }
+
+    private void resize(int newSize) {
+<span class="fc" id="L157">        LinearProbingHashMap&lt;Key, Value&gt; tmp = new LinearProbingHashMap&lt;&gt;(newSize);</span>
+<span class="fc bfc" id="L158" title="All 2 branches covered.">        for (int i = 0; i &lt; hsize; i++) {</span>
+<span class="fc bfc" id="L159" title="All 2 branches covered.">            if (keys[i] != null) {</span>
+<span class="fc" id="L160">                tmp.put(keys[i], values[i]);</span>
+            }
+        }
+
+<span class="fc" id="L164">        this.keys = tmp.keys;</span>
+<span class="fc" id="L165">        this.values = tmp.values;</span>
+<span class="fc" id="L166">        this.hsize = newSize;</span>
+<span class="fc" id="L167">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LinearSearch.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.searches</a> &gt; <span class="el_source">LinearSearch.java</span></div><h1>LinearSearch.java</h1><pre class="source lang-java linenums">package com.thealgorithms.searches;
+
+import com.thealgorithms.devutils.searches.SearchAlgorithm;
+
+/**
+ * Linear search is the easiest search algorithm It works with sorted and
+ * unsorted arrays (an binary search works only with sorted array) This
+ * algorithm just compares all elements of an array to find a value
+ *
+ * &lt;p&gt;
+ * Worst-case performance O(n) Best-case performance O(1) Average performance
+ * O(n) Worst-case space complexity
+ *
+ * @author Varun Upadhyay (https://github.com/varunu28)
+ * @author Podshivalov Nikita (https://github.com/nikitap492)
+ * @see BinarySearch
+ * @see SearchAlgorithm
+ */
+<span class="fc" id="L19">public class LinearSearch implements SearchAlgorithm {</span>
+
+    /**
+     * Generic Linear search method
+     *
+     * @param array List to be searched
+     * @param value Key being searched for
+     * @return Location of the key
+     */
+    @Override
+    public &lt;T extends Comparable&lt;T&gt;&gt; int find(T[] array, T value) {
+<span class="fc bfc" id="L30" title="All 2 branches covered.">        for (int i = 0; i &lt; array.length; i++) {</span>
+<span class="fc bfc" id="L31" title="All 2 branches covered.">            if (array[i].compareTo(value) == 0) {</span>
+<span class="fc" id="L32">                return i;</span>
+            }
+        }
+<span class="fc" id="L35">        return -1;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

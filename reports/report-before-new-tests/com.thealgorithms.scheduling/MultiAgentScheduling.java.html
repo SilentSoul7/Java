@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MultiAgentScheduling.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.scheduling</a> &gt; <span class="el_source">MultiAgentScheduling.java</span></div><h1>MultiAgentScheduling.java</h1><pre class="source lang-java linenums">package com.thealgorithms.scheduling;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * MultiAgentScheduling assigns tasks to different autonomous agents
+ * who independently decide the execution order of their assigned tasks.
+ * The focus is on collaboration between agents to optimize the overall schedule.
+ *
+ * Use Case: Distributed scheduling in decentralized systems like IoT networks.
+ *
+ * @author Hardvan
+ */
+public class MultiAgentScheduling {
+
+    static class Agent {
+        String name;
+        List&lt;String&gt; tasks;
+
+<span class="fc" id="L23">        Agent(String name) {</span>
+<span class="fc" id="L24">            this.name = name;</span>
+<span class="fc" id="L25">            this.tasks = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L26">        }</span>
+
+        void addTask(String task) {
+<span class="fc" id="L29">            tasks.add(task);</span>
+<span class="fc" id="L30">        }</span>
+
+        List&lt;String&gt; getTasks() {
+<span class="fc" id="L33">            return tasks;</span>
+        }
+    }
+
+    private final Map&lt;String, Agent&gt; agents;
+
+<span class="fc" id="L39">    public MultiAgentScheduling() {</span>
+<span class="fc" id="L40">        agents = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L41">    }</span>
+
+    public void addAgent(String agentName) {
+<span class="fc" id="L44">        agents.putIfAbsent(agentName, new Agent(agentName));</span>
+<span class="fc" id="L45">    }</span>
+
+    /**
+     * Assign a task to a specific agent.
+     *
+     * @param agentName the name of the agent
+     * @param task      the task to be assigned
+     */
+    public void assignTask(String agentName, String task) {
+<span class="fc" id="L54">        Agent agent = agents.get(agentName);</span>
+<span class="pc bpc" id="L55" title="1 of 2 branches missed.">        if (agent != null) {</span>
+<span class="fc" id="L56">            agent.addTask(task);</span>
+        }
+<span class="fc" id="L58">    }</span>
+
+    /**
+     * Get the scheduled tasks for each agent.
+     *
+     * @return a map of agent names to their scheduled tasks
+     */
+    public Map&lt;String, List&lt;String&gt;&gt; getScheduledTasks() {
+<span class="fc" id="L66">        Map&lt;String, List&lt;String&gt;&gt; schedule = new HashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L67" title="All 2 branches covered.">        for (Agent agent : agents.values()) {</span>
+<span class="fc" id="L68">            schedule.put(agent.name, agent.getTasks());</span>
+<span class="fc" id="L69">        }</span>
+<span class="fc" id="L70">        return schedule;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

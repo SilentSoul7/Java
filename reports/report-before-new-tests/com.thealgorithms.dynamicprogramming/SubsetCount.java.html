@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SubsetCount.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.dynamicprogramming</a> &gt; <span class="el_source">SubsetCount.java</span></div><h1>SubsetCount.java</h1><pre class="source lang-java linenums">package com.thealgorithms.dynamicprogramming;
+
+/**
+ * Find the number of subsets present in the given array with a sum equal to target.
+ * Based on Solution discussed on
+ * &lt;a href=&quot;https://stackoverflow.com/questions/22891076/count-number-of-subsets-with-sum-equal-to-k&quot;&gt;StackOverflow&lt;/a&gt;
+ * @author &lt;a href=&quot;https://github.com/samratpodder&quot;&gt;Samrat Podder&lt;/a&gt;
+ */
+public final class SubsetCount {
+    private SubsetCount() {
+    }
+
+    /**
+     * Dynamic Programming Implementation.
+     * Method to find out the number of subsets present in the given array with a sum equal to
+     * target. Time Complexity is O(n*target) and Space Complexity is O(n*target)
+     * @param arr is the input array on which subsets are  to searched
+     * @param target is the sum of each element of the subset taken together
+     *
+     */
+    public static int getCount(int[] arr, int target) {
+        /*
+         * Base Cases - If target becomes zero, we have reached the required sum for the subset
+         * If we reach the end of the array arr then, either if target==arr[end], then we add one to
+         * the final count Otherwise we add 0 to the final count
+         */
+<span class="fc" id="L27">        int n = arr.length;</span>
+<span class="fc" id="L28">        int[][] dp = new int[n][target + 1];</span>
+<span class="fc bfc" id="L29" title="All 2 branches covered.">        for (int i = 0; i &lt; n; i++) {</span>
+<span class="fc" id="L30">            dp[i][0] = 1;</span>
+        }
+<span class="pc bpc" id="L32" title="1 of 2 branches missed.">        if (arr[0] &lt;= target) {</span>
+<span class="fc" id="L33">            dp[0][arr[0]] = 1;</span>
+        }
+<span class="fc bfc" id="L35" title="All 2 branches covered.">        for (int t = 1; t &lt;= target; t++) {</span>
+<span class="fc bfc" id="L36" title="All 2 branches covered.">            for (int idx = 1; idx &lt; n; idx++) {</span>
+<span class="fc" id="L37">                int notpick = dp[idx - 1][t];</span>
+<span class="fc" id="L38">                int pick = 0;</span>
+<span class="fc bfc" id="L39" title="All 2 branches covered.">                if (arr[idx] &lt;= t) {</span>
+<span class="fc" id="L40">                    pick += dp[idx - 1][target - t];</span>
+                }
+<span class="fc" id="L42">                dp[idx][target] = pick + notpick;</span>
+            }
+        }
+<span class="fc" id="L45">        return dp[n - 1][target];</span>
+    }
+
+    /**
+     * This Method is a Space Optimized version of the getCount(int[], int) method and solves the
+     * same problem This approach is a bit better in terms of Space Used Time Complexity is
+     * O(n*target) and Space Complexity is O(target)
+     * @param arr is the input array on which subsets are  to searched
+     * @param target is the sum of each element of the subset taken together
+     */
+    public static int getCountSO(int[] arr, int target) {
+<span class="fc" id="L56">        int n = arr.length;</span>
+<span class="fc" id="L57">        int[] prev = new int[target + 1];</span>
+<span class="fc" id="L58">        prev[0] = 1;</span>
+<span class="pc bpc" id="L59" title="1 of 2 branches missed.">        if (arr[0] &lt;= target) {</span>
+<span class="fc" id="L60">            prev[arr[0]] = 1;</span>
+        }
+<span class="fc bfc" id="L62" title="All 2 branches covered.">        for (int ind = 1; ind &lt; n; ind++) {</span>
+<span class="fc" id="L63">            int[] cur = new int[target + 1];</span>
+<span class="fc" id="L64">            cur[0] = 1;</span>
+<span class="fc bfc" id="L65" title="All 2 branches covered.">            for (int t = 1; t &lt;= target; t++) {</span>
+<span class="fc" id="L66">                int notTaken = prev[t];</span>
+<span class="fc" id="L67">                int taken = 0;</span>
+<span class="fc bfc" id="L68" title="All 2 branches covered.">                if (arr[ind] &lt;= t) {</span>
+<span class="fc" id="L69">                    taken = prev[t - arr[ind]];</span>
+                }
+<span class="fc" id="L71">                cur[t] = notTaken + taken;</span>
+            }
+<span class="fc" id="L73">            prev = cur;</span>
+        }
+<span class="fc" id="L75">        return prev[target];</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

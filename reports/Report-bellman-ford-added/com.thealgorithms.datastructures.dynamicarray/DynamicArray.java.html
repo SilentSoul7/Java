@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DynamicArray.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.dynamicarray</a> &gt; <span class="el_source">DynamicArray.java</span></div><h1>DynamicArray.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.dynamicarray;
+
+import java.util.Arrays;
+import java.util.ConcurrentModificationException;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.function.Consumer;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
+
+/**
+ * This class implements a dynamic array, which can grow or shrink in size
+ * as elements are added or removed. It provides an array-like interface
+ * with methods to add, remove, and access elements, along with iterators
+ * to traverse the elements.
+ *
+ * @param &lt;E&gt; the type of elements that this array can hold
+ */
+public class DynamicArray&lt;E&gt; implements Iterable&lt;E&gt; {
+
+    private static final int DEFAULT_CAPACITY = 16;
+    private int size;
+    private int modCount; // Tracks structural modifications for iterator integrity
+    private Object[] elements;
+
+    /**
+     * Constructs a new DynamicArray with the specified initial capacity.
+     *
+     * @param capacity the initial capacity of the array
+     * @throws IllegalArgumentException if the specified capacity is negative
+     */
+<span class="fc" id="L33">    public DynamicArray(final int capacity) {</span>
+<span class="pc bpc" id="L34" title="1 of 2 branches missed.">        if (capacity &lt; 0) {</span>
+<span class="nc" id="L35">            throw new IllegalArgumentException(&quot;Capacity cannot be negative.&quot;);</span>
+        }
+<span class="fc" id="L37">        this.size = 0;</span>
+<span class="fc" id="L38">        this.modCount = 0;</span>
+<span class="fc" id="L39">        this.elements = new Object[capacity];</span>
+<span class="fc" id="L40">    }</span>
+
+    /**
+     * Constructs a new DynamicArray with a default initial capacity.
+     */
+    public DynamicArray() {
+<span class="fc" id="L46">        this(DEFAULT_CAPACITY);</span>
+<span class="fc" id="L47">    }</span>
+
+    /**
+     * Adds an element to the end of the array. If the array is full, it
+     * creates a new array with double the size to accommodate the new element.
+     *
+     * @param element the element to be added to the array
+     */
+    public void add(final E element) {
+<span class="fc" id="L56">        ensureCapacity(size + 1);</span>
+<span class="fc" id="L57">        elements[size++] = element;</span>
+<span class="fc" id="L58">        modCount++; // Increment modification count</span>
+<span class="fc" id="L59">    }</span>
+
+    /**
+     * Places an element at the specified index, expanding capacity if necessary.
+     *
+     * @param index   the index at which the element is to be placed
+     * @param element the element to be inserted at the specified index
+     * @throws IndexOutOfBoundsException if index is less than 0 or greater than or equal to the number of elements
+     */
+    public void put(final int index, E element) {
+<span class="fc bfc" id="L69" title="All 2 branches covered.">        if (index &lt; 0) {</span>
+<span class="fc" id="L70">            throw new IndexOutOfBoundsException(&quot;Index cannot be negative.&quot;);</span>
+        }
+<span class="fc" id="L72">        ensureCapacity(index + 1);</span>
+<span class="fc" id="L73">        elements[index] = element;</span>
+<span class="pc bpc" id="L74" title="1 of 2 branches missed.">        if (index &gt;= size) {</span>
+<span class="fc" id="L75">            size = index + 1;</span>
+        }
+<span class="fc" id="L77">        modCount++; // Increment modification count</span>
+<span class="fc" id="L78">    }</span>
+
+    /**
+     * Retrieves the element at the specified index.
+     *
+     * @param index the index of the element to retrieve
+     * @return the element at the specified index
+     * @throws IndexOutOfBoundsException if index is less than 0 or greater than or equal to the current size
+     */
+    @SuppressWarnings(&quot;unchecked&quot;)
+    public E get(final int index) {
+<span class="fc bfc" id="L89" title="All 4 branches covered.">        if (index &lt; 0 || index &gt;= size) {</span>
+<span class="fc" id="L90">            throw new IndexOutOfBoundsException(&quot;Index: &quot; + index + &quot;, Size: &quot; + size);</span>
+        }
+<span class="fc" id="L92">        return (E) elements[index];</span>
+    }
+
+    /**
+     * Removes and returns the element at the specified index.
+     *
+     * @param index the index of the element to be removed
+     * @return the element that was removed from the array
+     * @throws IndexOutOfBoundsException if index is less than 0 or greater than or equal to the current size
+     */
+    public E remove(final int index) {
+<span class="fc bfc" id="L103" title="All 4 branches covered.">        if (index &lt; 0 || index &gt;= size) {</span>
+<span class="fc" id="L104">            throw new IndexOutOfBoundsException(&quot;Index: &quot; + index + &quot;, Size: &quot; + size);</span>
+        }
+<span class="fc" id="L106">        @SuppressWarnings(&quot;unchecked&quot;) E oldElement = (E) elements[index];</span>
+<span class="fc" id="L107">        fastRemove(index);</span>
+<span class="fc" id="L108">        modCount++; // Increment modification count</span>
+<span class="fc" id="L109">        return oldElement;</span>
+    }
+
+    /**
+     * Returns the current number of elements in the array.
+     *
+     * @return the number of elements in the array
+     */
+    public int getSize() {
+<span class="fc" id="L118">        return size;</span>
+    }
+
+    /**
+     * Checks whether the array is empty.
+     *
+     * @return true if the array contains no elements, false otherwise
+     */
+    public boolean isEmpty() {
+<span class="fc bfc" id="L127" title="All 2 branches covered.">        return size == 0;</span>
+    }
+
+    /**
+     * Returns a sequential stream with this collection as its source.
+     *
+     * @return a stream of the elements in the array
+     */
+    public Stream&lt;E&gt; stream() {
+<span class="fc" id="L136">        return StreamSupport.stream(spliterator(), false);</span>
+    }
+
+    /**
+     * Ensures that the array has enough capacity to hold the specified number of elements.
+     *
+     * @param minCapacity the minimum capacity required
+     */
+    private void ensureCapacity(int minCapacity) {
+<span class="fc bfc" id="L145" title="All 2 branches covered.">        if (minCapacity &gt; elements.length) {</span>
+<span class="fc" id="L146">            int newCapacity = Math.max(elements.length * 2, minCapacity);</span>
+<span class="fc" id="L147">            elements = Arrays.copyOf(elements, newCapacity);</span>
+        }
+<span class="fc" id="L149">    }</span>
+
+    /**
+     * Removes the element at the specified index without resizing the array.
+     * This method shifts any subsequent elements to the left and clears the last element.
+     *
+     * @param index the index of the element to remove
+     */
+    private void fastRemove(int index) {
+<span class="fc" id="L158">        int numMoved = size - index - 1;</span>
+<span class="fc bfc" id="L159" title="All 2 branches covered.">        if (numMoved &gt; 0) {</span>
+<span class="fc" id="L160">            System.arraycopy(elements, index + 1, elements, index, numMoved);</span>
+        }
+<span class="fc" id="L162">        elements[--size] = null; // Clear to let GC do its work</span>
+<span class="fc" id="L163">    }</span>
+
+    /**
+     * Returns a string representation of the array, including only the elements that are currently stored.
+     *
+     * @return a string containing the elements in the array
+     */
+    @Override
+    public String toString() {
+<span class="fc" id="L172">        return Arrays.toString(Arrays.copyOf(elements, size));</span>
+    }
+
+    /**
+     * Returns an iterator over the elements in this array in proper sequence.
+     *
+     * @return an Iterator over the elements in the array
+     */
+    @Override
+    public Iterator&lt;E&gt; iterator() {
+<span class="fc" id="L182">        return new DynamicArrayIterator();</span>
+    }
+
+    /**
+     * Private iterator class for the DynamicArray.
+     */
+    private final class DynamicArrayIterator implements Iterator&lt;E&gt; {
+
+        private int cursor;
+        private int expectedModCount;
+
+        /**
+         * Constructs a new iterator for the dynamic array.
+         */
+<span class="fc" id="L196">        DynamicArrayIterator() {</span>
+<span class="fc" id="L197">            this.expectedModCount = modCount;</span>
+<span class="fc" id="L198">        }</span>
+
+        /**
+         * Checks if there are more elements in the iteration.
+         *
+         * @return true if there are more elements, false otherwise
+         */
+        @Override
+        public boolean hasNext() {
+<span class="fc" id="L207">            checkForComodification();</span>
+<span class="fc bfc" id="L208" title="All 2 branches covered.">            return cursor &lt; size;</span>
+        }
+
+        /**
+         * Returns the next element in the iteration.
+         *
+         * @return the next element in the iteration
+         * @throws NoSuchElementException if the iteration has no more elements
+         */
+        @Override
+        @SuppressWarnings(&quot;unchecked&quot;)
+        public E next() {
+<span class="fc" id="L220">            checkForComodification();</span>
+<span class="pc bpc" id="L221" title="1 of 2 branches missed.">            if (cursor &gt;= size) {</span>
+<span class="nc" id="L222">                throw new NoSuchElementException();</span>
+            }
+<span class="fc" id="L224">            return (E) elements[cursor++];</span>
+        }
+
+        /**
+         * Removes the last element returned by this iterator.
+         *
+         * @throws IllegalStateException if the next method has not yet been called, or the remove method has already been called after the last call to the next method
+         */
+        @Override
+        public void remove() {
+<span class="pc bpc" id="L234" title="1 of 2 branches missed.">            if (cursor &lt;= 0) {</span>
+<span class="nc" id="L235">                throw new IllegalStateException(&quot;Cannot remove element before calling next()&quot;);</span>
+            }
+<span class="fc" id="L237">            checkForComodification();</span>
+<span class="fc" id="L238">            DynamicArray.this.remove(--cursor);</span>
+<span class="fc" id="L239">            expectedModCount = modCount;</span>
+<span class="fc" id="L240">        }</span>
+
+        /**
+         * Checks for concurrent modifications to the array during iteration.
+         *
+         * @throws ConcurrentModificationException if the array has been modified structurally
+         */
+        private void checkForComodification() {
+<span class="fc bfc" id="L248" title="All 2 branches covered.">            if (modCount != expectedModCount) {</span>
+<span class="fc" id="L249">                throw new ConcurrentModificationException();</span>
+            }
+<span class="fc" id="L251">        }</span>
+
+        /**
+         * Performs the given action for each remaining element in the iterator until all elements have been processed.
+         *
+         * @param action the action to be performed for each element
+         * @throws NullPointerException if the specified action is null
+         */
+        @Override
+        public void forEachRemaining(Consumer&lt;? super E&gt; action) {
+<span class="fc" id="L261">            Objects.requireNonNull(action);</span>
+<span class="fc bfc" id="L262" title="All 2 branches covered.">            while (hasNext()) {</span>
+<span class="fc" id="L263">                action.accept(next());</span>
+            }
+<span class="fc" id="L265">        }</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

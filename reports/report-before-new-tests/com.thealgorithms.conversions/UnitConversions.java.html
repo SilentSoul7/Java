@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UnitConversions.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.conversions</a> &gt; <span class="el_source">UnitConversions.java</span></div><h1>UnitConversions.java</h1><pre class="source lang-java linenums">package com.thealgorithms.conversions;
+
+import static java.util.Map.entry;
+
+import java.util.Map;
+import org.apache.commons.lang3.tuple.Pair;
+
+/**
+ * A utility class to perform unit conversions between different measurement systems.
+ *
+ * &lt;p&gt;Currently, the class supports temperature conversions between several scales:
+ * Celsius, Fahrenheit, Kelvin, Réaumur, Delisle, and Rankine.
+ *
+ * &lt;h2&gt;Example Usage&lt;/h2&gt;
+ * &lt;pre&gt;
+ *   double result = UnitConversions.TEMPERATURE.convert(&quot;Celsius&quot;, &quot;Fahrenheit&quot;, 100.0);
+ *   // Output: 212.0 (Celsius to Fahrenheit conversion of 100°C)
+ * &lt;/pre&gt;
+ *
+ * &lt;p&gt;This class makes use of an {@link UnitsConverter} that handles the conversion logic
+ * based on predefined affine transformations. These transformations include scaling factors
+ * and offsets for temperature conversions.
+ *
+ * &lt;h2&gt;Temperature Scales Supported&lt;/h2&gt;
+ * &lt;ul&gt;
+ *   &lt;li&gt;Celsius&lt;/li&gt;
+ *   &lt;li&gt;Fahrenheit&lt;/li&gt;
+ *   &lt;li&gt;Kelvin&lt;/li&gt;
+ *   &lt;li&gt;Réaumur&lt;/li&gt;
+ *   &lt;li&gt;Delisle&lt;/li&gt;
+ *   &lt;li&gt;Rankine&lt;/li&gt;
+ * &lt;/ul&gt;
+ */
+public final class UnitConversions {
+    private UnitConversions() {
+    }
+
+    /**
+     * A preconfigured instance of {@link UnitsConverter} for temperature conversions.
+     * The converter handles conversions between the following temperature units:
+     * &lt;ul&gt;
+     *   &lt;li&gt;Kelvin to Celsius&lt;/li&gt;
+     *   &lt;li&gt;Celsius to Fahrenheit&lt;/li&gt;
+     *   &lt;li&gt;Réaumur to Celsius&lt;/li&gt;
+     *   &lt;li&gt;Delisle to Celsius&lt;/li&gt;
+     *   &lt;li&gt;Rankine to Kelvin&lt;/li&gt;
+     * &lt;/ul&gt;
+     */
+<span class="fc" id="L49">    public static final UnitsConverter TEMPERATURE = new UnitsConverter(Map.ofEntries(entry(Pair.of(&quot;Kelvin&quot;, &quot;Celsius&quot;), new AffineConverter(1.0, -273.15)), entry(Pair.of(&quot;Celsius&quot;, &quot;Fahrenheit&quot;), new AffineConverter(9.0 / 5.0, 32.0)),</span>
+<span class="fc" id="L50">        entry(Pair.of(&quot;Réaumur&quot;, &quot;Celsius&quot;), new AffineConverter(5.0 / 4.0, 0.0)), entry(Pair.of(&quot;Delisle&quot;, &quot;Celsius&quot;), new AffineConverter(-2.0 / 3.0, 100.0)), entry(Pair.of(&quot;Rankine&quot;, &quot;Kelvin&quot;), new AffineConverter(5.0 / 9.0, 0.0))));</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

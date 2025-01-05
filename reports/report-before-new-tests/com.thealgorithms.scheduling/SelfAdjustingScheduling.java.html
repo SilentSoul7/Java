@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SelfAdjustingScheduling.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.scheduling</a> &gt; <span class="el_source">SelfAdjustingScheduling.java</span></div><h1>SelfAdjustingScheduling.java</h1><pre class="source lang-java linenums">package com.thealgorithms.scheduling;
+
+import java.util.PriorityQueue;
+
+/**
+ * SelfAdjustingScheduling is an algorithm where tasks dynamically adjust
+ * their priority based on real-time feedback, such as wait time and CPU usage.
+ * Tasks that wait longer will automatically increase their priority,
+ * allowing for better responsiveness and fairness in task handling.
+ *
+ * Use Case: Real-time systems that require dynamic prioritization
+ * of tasks to maintain system responsiveness and fairness.
+ *
+ * @author Hardvan
+ */
+public final class SelfAdjustingScheduling {
+
+    private static class Task implements Comparable&lt;Task&gt; {
+        String name;
+        int waitTime;
+        int priority;
+
+<span class="fc" id="L23">        Task(String name, int priority) {</span>
+<span class="fc" id="L24">            this.name = name;</span>
+<span class="fc" id="L25">            this.waitTime = 0;</span>
+<span class="fc" id="L26">            this.priority = priority;</span>
+<span class="fc" id="L27">        }</span>
+
+        void incrementWaitTime() {
+<span class="fc" id="L30">            waitTime++;</span>
+<span class="fc" id="L31">            priority = priority + waitTime;</span>
+<span class="fc" id="L32">        }</span>
+
+        @Override
+        public int compareTo(Task other) {
+<span class="fc" id="L36">            return Integer.compare(this.priority, other.priority);</span>
+        }
+    }
+
+    private final PriorityQueue&lt;Task&gt; taskQueue;
+
+<span class="fc" id="L42">    public SelfAdjustingScheduling() {</span>
+<span class="fc" id="L43">        taskQueue = new PriorityQueue&lt;&gt;();</span>
+<span class="fc" id="L44">    }</span>
+
+    public void addTask(String name, int priority) {
+<span class="fc" id="L47">        taskQueue.offer(new Task(name, priority));</span>
+<span class="fc" id="L48">    }</span>
+
+    public String scheduleNext() {
+<span class="fc bfc" id="L51" title="All 2 branches covered.">        if (taskQueue.isEmpty()) {</span>
+<span class="fc" id="L52">            return null;</span>
+        }
+<span class="fc" id="L54">        Task nextTask = taskQueue.poll();</span>
+<span class="fc" id="L55">        nextTask.incrementWaitTime();</span>
+<span class="fc" id="L56">        taskQueue.offer(nextTask);</span>
+<span class="fc" id="L57">        return nextTask.name;</span>
+    }
+
+    public boolean isEmpty() {
+<span class="nc" id="L61">        return taskQueue.isEmpty();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

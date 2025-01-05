@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MorseCodeConverter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.conversions</a> &gt; <span class="el_source">MorseCodeConverter.java</span></div><h1>MorseCodeConverter.java</h1><pre class="source lang-java linenums">package com.thealgorithms.conversions;
+
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * Converts text to Morse code and vice-versa.
+ * Text to Morse code: Each letter is separated by a space and each word is separated by a pipe (|).
+ * Example: &quot;HELLO WORLD&quot; -&gt; &quot;.... . .-.. .-.. --- | .-- --- .-. .-.. -..&quot;
+ *
+ * Morse code to text: Each letter is separated by a space and each word is separated by a pipe (|).
+ * Example: &quot;.... . .-.. .-.. --- | .-- --- .-. .-.. -..&quot; -&gt; &quot;HELLO WORLD&quot;
+ *
+ * Applications: Used in radio communications and algorithmic challenges.
+ *
+ * @author Hardvan
+ */
+public final class MorseCodeConverter {
+    private MorseCodeConverter() {
+    }
+
+<span class="fc" id="L22">    private static final Map&lt;Character, String&gt; MORSE_MAP = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L23">    private static final Map&lt;String, Character&gt; REVERSE_MAP = new HashMap&lt;&gt;();</span>
+
+    static {
+<span class="fc" id="L26">        MORSE_MAP.put('A', &quot;.-&quot;);</span>
+<span class="fc" id="L27">        MORSE_MAP.put('B', &quot;-...&quot;);</span>
+<span class="fc" id="L28">        MORSE_MAP.put('C', &quot;-.-.&quot;);</span>
+<span class="fc" id="L29">        MORSE_MAP.put('D', &quot;-..&quot;);</span>
+<span class="fc" id="L30">        MORSE_MAP.put('E', &quot;.&quot;);</span>
+<span class="fc" id="L31">        MORSE_MAP.put('F', &quot;..-.&quot;);</span>
+<span class="fc" id="L32">        MORSE_MAP.put('G', &quot;--.&quot;);</span>
+<span class="fc" id="L33">        MORSE_MAP.put('H', &quot;....&quot;);</span>
+<span class="fc" id="L34">        MORSE_MAP.put('I', &quot;..&quot;);</span>
+<span class="fc" id="L35">        MORSE_MAP.put('J', &quot;.---&quot;);</span>
+<span class="fc" id="L36">        MORSE_MAP.put('K', &quot;-.-&quot;);</span>
+<span class="fc" id="L37">        MORSE_MAP.put('L', &quot;.-..&quot;);</span>
+<span class="fc" id="L38">        MORSE_MAP.put('M', &quot;--&quot;);</span>
+<span class="fc" id="L39">        MORSE_MAP.put('N', &quot;-.&quot;);</span>
+<span class="fc" id="L40">        MORSE_MAP.put('O', &quot;---&quot;);</span>
+<span class="fc" id="L41">        MORSE_MAP.put('P', &quot;.--.&quot;);</span>
+<span class="fc" id="L42">        MORSE_MAP.put('Q', &quot;--.-&quot;);</span>
+<span class="fc" id="L43">        MORSE_MAP.put('R', &quot;.-.&quot;);</span>
+<span class="fc" id="L44">        MORSE_MAP.put('S', &quot;...&quot;);</span>
+<span class="fc" id="L45">        MORSE_MAP.put('T', &quot;-&quot;);</span>
+<span class="fc" id="L46">        MORSE_MAP.put('U', &quot;..-&quot;);</span>
+<span class="fc" id="L47">        MORSE_MAP.put('V', &quot;...-&quot;);</span>
+<span class="fc" id="L48">        MORSE_MAP.put('W', &quot;.--&quot;);</span>
+<span class="fc" id="L49">        MORSE_MAP.put('X', &quot;-..-&quot;);</span>
+<span class="fc" id="L50">        MORSE_MAP.put('Y', &quot;-.--&quot;);</span>
+<span class="fc" id="L51">        MORSE_MAP.put('Z', &quot;--..&quot;);</span>
+
+        // Build reverse map for decoding
+<span class="fc" id="L54">        MORSE_MAP.forEach((k, v) -&gt; REVERSE_MAP.put(v, k));</span>
+<span class="fc" id="L55">    }</span>
+
+    /**
+     * Converts text to Morse code.
+     * Each letter is separated by a space and each word is separated by a pipe (|).
+     *
+     * @param text The text to convert to Morse code.
+     * @return The Morse code representation of the text.
+     */
+    public static String textToMorse(String text) {
+<span class="fc" id="L65">        StringBuilder morse = new StringBuilder();</span>
+<span class="fc" id="L66">        String[] words = text.toUpperCase().split(&quot; &quot;);</span>
+<span class="fc bfc" id="L67" title="All 2 branches covered.">        for (int i = 0; i &lt; words.length; i++) {</span>
+<span class="fc bfc" id="L68" title="All 2 branches covered.">            for (char c : words[i].toCharArray()) {</span>
+<span class="fc" id="L69">                morse.append(MORSE_MAP.getOrDefault(c, &quot;&quot;)).append(&quot; &quot;);</span>
+            }
+<span class="fc bfc" id="L71" title="All 2 branches covered.">            if (i &lt; words.length - 1) {</span>
+<span class="fc" id="L72">                morse.append(&quot;| &quot;);</span>
+            }
+        }
+<span class="fc" id="L75">        return morse.toString().trim();</span>
+    }
+
+    /**
+     * Converts Morse code to text.
+     * Each letter is separated by a space and each word is separated by a pipe (|).
+     *
+     * @param morse The Morse code to convert to text.
+     * @return The text representation of the Morse code.
+     */
+    public static String morseToText(String morse) {
+<span class="fc" id="L86">        StringBuilder text = new StringBuilder();</span>
+<span class="fc" id="L87">        String[] words = morse.split(&quot; \\| &quot;);</span>
+<span class="fc bfc" id="L88" title="All 2 branches covered.">        for (int i = 0; i &lt; words.length; i++) {</span>
+<span class="fc bfc" id="L89" title="All 2 branches covered.">            for (String code : words[i].split(&quot; &quot;)) {</span>
+<span class="fc" id="L90">                text.append(REVERSE_MAP.getOrDefault(code, '?'));</span>
+            }
+<span class="pc bpc" id="L92" title="1 of 2 branches missed.">            if (i &lt; words.length - 1) {</span>
+<span class="nc" id="L93">                text.append(&quot; &quot;);</span>
+            }
+        }
+<span class="fc" id="L96">        return text.toString();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

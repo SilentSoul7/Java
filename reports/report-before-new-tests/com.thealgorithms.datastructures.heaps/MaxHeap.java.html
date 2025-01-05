@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MaxHeap.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.heaps</a> &gt; <span class="el_source">MaxHeap.java</span></div><h1>MaxHeap.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.heaps;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * A Max Heap implementation where each node's key is higher than or equal to its children's keys.
+ * This data structure provides O(log n) time complexity for insertion and deletion operations,
+ * and O(1) for retrieving the maximum element.
+ *
+ * Properties:
+ * 1. Complete Binary Tree
+ * 2. Parent node's key ≥ Children nodes' keys
+ * 3. Root contains the maximum element
+ *
+ * Example usage:
+ * &lt;pre&gt;
+ * List&lt;HeapElement&gt; elements = Arrays.asList(
+ *     new HeapElement(5, &quot;Five&quot;),
+ *     new HeapElement(2, &quot;Two&quot;)
+ * );
+ * MaxHeap heap = new MaxHeap(elements);
+ * heap.insertElement(new HeapElement(7, &quot;Seven&quot;));
+ * HeapElement max = heap.getElement(); // Returns and removes the maximum element
+ * &lt;/pre&gt;
+ *
+ * @author Nicolas Renard
+ */
+public class MaxHeap implements Heap {
+
+    /** The internal list that stores heap elements */
+    private final List&lt;HeapElement&gt; maxHeap;
+
+    /**
+     * Constructs a new MaxHeap from a list of elements.
+     * Null elements in the input list are ignored.
+     *
+     * @param listElements List of HeapElement objects to initialize the heap
+     * @throws IllegalArgumentException if the input list is null
+     */
+<span class="fc" id="L41">    public MaxHeap(List&lt;HeapElement&gt; listElements) {</span>
+<span class="fc bfc" id="L42" title="All 2 branches covered.">        if (listElements == null) {</span>
+<span class="fc" id="L43">            throw new IllegalArgumentException(&quot;Input list cannot be null&quot;);</span>
+        }
+
+<span class="fc" id="L46">        maxHeap = new ArrayList&lt;&gt;();</span>
+
+        // Safe initialization: directly add non-null elements first
+<span class="fc bfc" id="L49" title="All 2 branches covered.">        for (HeapElement heapElement : listElements) {</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">            if (heapElement != null) {</span>
+<span class="fc" id="L51">                maxHeap.add(heapElement);</span>
+            }
+<span class="fc" id="L53">        }</span>
+
+        // Heapify the array bottom-up
+<span class="fc bfc" id="L56" title="All 2 branches covered.">        for (int i = maxHeap.size() / 2; i &gt;= 0; i--) {</span>
+<span class="fc" id="L57">            heapifyDown(i + 1); // +1 because heapifyDown expects 1-based index</span>
+        }
+<span class="fc" id="L59">    }</span>
+
+    /**
+     * Maintains heap properties by moving an element down the heap.
+     * Similar to toggleDown but used specifically during initialization.
+     *
+     * @param elementIndex 1-based index of the element to heapify
+     */
+    private void heapifyDown(int elementIndex) {
+<span class="fc" id="L68">        int largest = elementIndex - 1;</span>
+<span class="fc" id="L69">        int leftChild = 2 * elementIndex - 1;</span>
+<span class="fc" id="L70">        int rightChild = 2 * elementIndex;</span>
+
+<span class="fc bfc" id="L72" title="All 4 branches covered.">        if (leftChild &lt; maxHeap.size() &amp;&amp; maxHeap.get(leftChild).getKey() &gt; maxHeap.get(largest).getKey()) {</span>
+<span class="fc" id="L73">            largest = leftChild;</span>
+        }
+
+<span class="fc bfc" id="L76" title="All 4 branches covered.">        if (rightChild &lt; maxHeap.size() &amp;&amp; maxHeap.get(rightChild).getKey() &gt; maxHeap.get(largest).getKey()) {</span>
+<span class="fc" id="L77">            largest = rightChild;</span>
+        }
+
+<span class="fc bfc" id="L80" title="All 2 branches covered.">        if (largest != elementIndex - 1) {</span>
+<span class="fc" id="L81">            HeapElement swap = maxHeap.get(elementIndex - 1);</span>
+<span class="fc" id="L82">            maxHeap.set(elementIndex - 1, maxHeap.get(largest));</span>
+<span class="fc" id="L83">            maxHeap.set(largest, swap);</span>
+
+<span class="fc" id="L85">            heapifyDown(largest + 1);</span>
+        }
+<span class="fc" id="L87">    }</span>
+
+    /**
+     * Retrieves the element at the specified index without removing it.
+     * Note: The index is 1-based for consistency with heap operations.
+     *
+     * @param elementIndex 1-based index of the element to retrieve
+     * @return HeapElement at the specified index
+     * @throws IndexOutOfBoundsException if the index is invalid
+     */
+    public HeapElement getElement(int elementIndex) {
+<span class="fc bfc" id="L98" title="All 4 branches covered.">        if ((elementIndex &lt;= 0) || (elementIndex &gt; maxHeap.size())) {</span>
+<span class="fc" id="L99">            throw new IndexOutOfBoundsException(&quot;Index &quot; + elementIndex + &quot; is out of heap range [1, &quot; + maxHeap.size() + &quot;]&quot;);</span>
+        }
+<span class="fc" id="L101">        return maxHeap.get(elementIndex - 1);</span>
+    }
+
+    /**
+     * Retrieves the key value of an element at the specified index.
+     *
+     * @param elementIndex 1-based index of the element
+     * @return double value representing the key
+     * @throws IndexOutOfBoundsException if the index is invalid
+     */
+    private double getElementKey(int elementIndex) {
+<span class="pc bpc" id="L112" title="2 of 4 branches missed.">        if ((elementIndex &lt;= 0) || (elementIndex &gt; maxHeap.size())) {</span>
+<span class="nc" id="L113">            throw new IndexOutOfBoundsException(&quot;Index &quot; + elementIndex + &quot; is out of heap range [1, &quot; + maxHeap.size() + &quot;]&quot;);</span>
+        }
+<span class="fc" id="L115">        return maxHeap.get(elementIndex - 1).getKey();</span>
+    }
+
+    /**
+     * Swaps two elements in the heap.
+     *
+     * @param index1 1-based index of first element
+     * @param index2 1-based index of second element
+     */
+    private void swap(int index1, int index2) {
+<span class="fc" id="L125">        HeapElement temporaryElement = maxHeap.get(index1 - 1);</span>
+<span class="fc" id="L126">        maxHeap.set(index1 - 1, maxHeap.get(index2 - 1));</span>
+<span class="fc" id="L127">        maxHeap.set(index2 - 1, temporaryElement);</span>
+<span class="fc" id="L128">    }</span>
+
+    /**
+     * Moves an element up the heap until heap properties are satisfied.
+     * This operation is called after insertion to maintain heap properties.
+     *
+     * @param elementIndex 1-based index of the element to move up
+     */
+    private void toggleUp(int elementIndex) {
+<span class="fc" id="L137">        double key = maxHeap.get(elementIndex - 1).getKey();</span>
+<span class="pc bpc" id="L138" title="1 of 4 branches missed.">        while (elementIndex &gt; 1 &amp;&amp; getElementKey((int) Math.floor(elementIndex / 2.0)) &lt; key) {</span>
+<span class="fc" id="L139">            swap(elementIndex, (int) Math.floor(elementIndex / 2.0));</span>
+<span class="fc" id="L140">            elementIndex = (int) Math.floor(elementIndex / 2.0);</span>
+        }
+<span class="fc" id="L142">    }</span>
+
+    /**
+     * Moves an element down the heap until heap properties are satisfied.
+     * This operation is called after deletion to maintain heap properties.
+     *
+     * @param elementIndex 1-based index of the element to move down
+     */
+    private void toggleDown(int elementIndex) {
+<span class="fc" id="L151">        double key = maxHeap.get(elementIndex - 1).getKey();</span>
+<span class="pc bpc" id="L152" title="3 of 8 branches missed.">        boolean wrongOrder = (2 * elementIndex &lt;= maxHeap.size() &amp;&amp; key &lt; getElementKey(elementIndex * 2)) || (2 * elementIndex + 1 &lt;= maxHeap.size() &amp;&amp; key &lt; getElementKey(elementIndex * 2 + 1));</span>
+
+<span class="fc bfc" id="L154" title="All 4 branches covered.">        while (2 * elementIndex &lt;= maxHeap.size() &amp;&amp; wrongOrder) {</span>
+            int largerChildIndex;
+<span class="pc bpc" id="L156" title="1 of 4 branches missed.">            if (2 * elementIndex + 1 &lt;= maxHeap.size() &amp;&amp; getElementKey(elementIndex * 2 + 1) &gt; getElementKey(elementIndex * 2)) {</span>
+<span class="fc" id="L157">                largerChildIndex = 2 * elementIndex + 1;</span>
+            } else {
+<span class="fc" id="L159">                largerChildIndex = 2 * elementIndex;</span>
+            }
+
+<span class="fc" id="L162">            swap(elementIndex, largerChildIndex);</span>
+<span class="fc" id="L163">            elementIndex = largerChildIndex;</span>
+
+<span class="pc bpc" id="L165" title="6 of 8 branches missed.">            wrongOrder = (2 * elementIndex &lt;= maxHeap.size() &amp;&amp; key &lt; getElementKey(elementIndex * 2)) || (2 * elementIndex + 1 &lt;= maxHeap.size() &amp;&amp; key &lt; getElementKey(elementIndex * 2 + 1));</span>
+<span class="fc" id="L166">        }</span>
+<span class="fc" id="L167">    }</span>
+
+    /**
+     * Extracts and returns the maximum element from the heap.
+     *
+     * @return HeapElement with the highest key
+     * @throws EmptyHeapException if the heap is empty
+     */
+    private HeapElement extractMax() throws EmptyHeapException {
+<span class="fc bfc" id="L176" title="All 2 branches covered.">        if (maxHeap.isEmpty()) {</span>
+<span class="fc" id="L177">            throw new EmptyHeapException(&quot;Cannot extract from an empty heap&quot;);</span>
+        }
+<span class="fc" id="L179">        HeapElement result = maxHeap.getFirst();</span>
+<span class="fc" id="L180">        deleteElement(1);</span>
+<span class="fc" id="L181">        return result;</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void insertElement(HeapElement element) {
+<span class="fc bfc" id="L189" title="All 2 branches covered.">        if (element == null) {</span>
+<span class="fc" id="L190">            throw new IllegalArgumentException(&quot;Cannot insert null element&quot;);</span>
+        }
+<span class="fc" id="L192">        maxHeap.add(element);</span>
+<span class="fc" id="L193">        toggleUp(maxHeap.size());</span>
+<span class="fc" id="L194">    }</span>
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void deleteElement(int elementIndex) throws EmptyHeapException {
+<span class="fc bfc" id="L201" title="All 2 branches covered.">        if (maxHeap.isEmpty()) {</span>
+<span class="fc" id="L202">            throw new EmptyHeapException(&quot;Cannot delete from an empty heap&quot;);</span>
+        }
+<span class="fc bfc" id="L204" title="All 4 branches covered.">        if ((elementIndex &gt; maxHeap.size()) || (elementIndex &lt;= 0)) {</span>
+<span class="fc" id="L205">            throw new IndexOutOfBoundsException(&quot;Index &quot; + elementIndex + &quot; is out of heap range [1, &quot; + maxHeap.size() + &quot;]&quot;);</span>
+        }
+
+        // Replace with last element and remove last position
+<span class="fc" id="L209">        maxHeap.set(elementIndex - 1, maxHeap.getLast());</span>
+<span class="fc" id="L210">        maxHeap.removeLast();</span>
+
+        // No need to toggle if we just removed the last element
+<span class="pc bpc" id="L213" title="1 of 4 branches missed.">        if (!maxHeap.isEmpty() &amp;&amp; elementIndex &lt;= maxHeap.size()) {</span>
+            // Determine whether to toggle up or down
+<span class="pc bpc" id="L215" title="3 of 4 branches missed.">            if (elementIndex &gt; 1 &amp;&amp; getElementKey(elementIndex) &gt; getElementKey((int) Math.floor(elementIndex / 2.0))) {</span>
+<span class="nc" id="L216">                toggleUp(elementIndex);</span>
+            } else {
+<span class="fc" id="L218">                toggleDown(elementIndex);</span>
+            }
+        }
+<span class="fc" id="L221">    }</span>
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public HeapElement getElement() throws EmptyHeapException {
+<span class="fc" id="L228">        return extractMax();</span>
+    }
+
+    /**
+     * Returns the current size of the heap.
+     *
+     * @return number of elements in the heap
+     */
+    public int size() {
+<span class="fc" id="L237">        return maxHeap.size();</span>
+    }
+
+    /**
+     * Checks if the heap is empty.
+     *
+     * @return true if the heap contains no elements
+     */
+    public boolean isEmpty() {
+<span class="fc" id="L246">        return maxHeap.isEmpty();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MapReduce.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.misc</a> &gt; <span class="el_source">MapReduce.java</span></div><h1>MapReduce.java</h1><pre class="source lang-java linenums">package com.thealgorithms.misc;
+
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+/*
+* MapReduce is a programming model for processing and generating large data sets with a parallel,
+distributed algorithm on a cluster.
+* It has two main steps: the Map step, where the data is divided into smaller chunks and processed in parallel,
+and the Reduce step, where the results from the Map step are combined to produce the final output.
+* Wikipedia link : https://en.wikipedia.org/wiki/MapReduce
+*/
+
+public final class MapReduce {
+    private MapReduce() {
+    }
+    /*
+     *Counting all the words frequency within a sentence.
+     */
+    public static String mapreduce(String sentence) {
+<span class="fc" id="L25">        List&lt;String&gt; wordList = Arrays.stream(sentence.split(&quot; &quot;)).toList();</span>
+
+        // Map step
+<span class="fc" id="L28">        Map&lt;String, Long&gt; wordCounts = wordList.stream().collect(Collectors.groupingBy(Function.identity(), LinkedHashMap::new, Collectors.counting()));</span>
+
+        // Reduce step
+<span class="fc" id="L31">        StringBuilder result = new StringBuilder();</span>
+<span class="fc" id="L32">        wordCounts.forEach((word, count) -&gt; result.append(word).append(&quot;: &quot;).append(count).append(&quot;,&quot;));</span>
+
+        // Removing the last ',' if it exists
+<span class="pc bpc" id="L35" title="1 of 2 branches missed.">        if (!result.isEmpty()) {</span>
+<span class="fc" id="L36">            result.setLength(result.length() - 1);</span>
+        }
+
+<span class="fc" id="L39">        return result.toString();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

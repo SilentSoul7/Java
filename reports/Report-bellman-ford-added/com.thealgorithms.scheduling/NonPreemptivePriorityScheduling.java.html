@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NonPreemptivePriorityScheduling.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.scheduling</a> &gt; <span class="el_source">NonPreemptivePriorityScheduling.java</span></div><h1>NonPreemptivePriorityScheduling.java</h1><pre class="source lang-java linenums">package com.thealgorithms.scheduling;
+
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.PriorityQueue;
+import java.util.Queue;
+
+/**
+ * This class implements the Non-Preemptive Priority Scheduling algorithm.
+ * Processes are executed in order of their priority. The process with the
+ * highest priority (lower priority number) is executed first,
+ * and once a process starts executing, it cannot be preempted.
+ */
+public final class NonPreemptivePriorityScheduling {
+
+    private NonPreemptivePriorityScheduling() {
+    }
+
+    /**
+     * Represents a process with an ID, burst time, priority, arrival time, and start time.
+     */
+    static class Process implements Comparable&lt;Process&gt; {
+        int id;
+        int arrivalTime;
+        int startTime;
+        int burstTime;
+        int priority;
+
+        /**
+         * Constructs a Process instance with the specified parameters.
+         *
+         * @param id          Unique identifier for the process
+         * @param arrivalTime Time when the process arrives in the system
+         * @param burstTime   Time required for the process execution
+         * @param priority    Priority of the process
+         */
+<span class="fc" id="L37">        Process(int id, int arrivalTime, int burstTime, int priority) {</span>
+<span class="fc" id="L38">            this.id = id;</span>
+<span class="fc" id="L39">            this.arrivalTime = arrivalTime;</span>
+<span class="fc" id="L40">            this.startTime = -1;</span>
+<span class="fc" id="L41">            this.burstTime = burstTime;</span>
+<span class="fc" id="L42">            this.priority = priority;</span>
+<span class="fc" id="L43">        }</span>
+
+        /**
+         * Compare based on priority for scheduling. The process with the lowest
+         * priority is selected first.
+         * If two processes have the same priority, the one that arrives earlier is selected.
+         *
+         * @param other The other process to compare against
+         * @return A negative integer, zero, or a positive integer as this process
+         *         is less than, equal to, or greater than the specified process.
+         */
+        @Override
+        public int compareTo(Process other) {
+<span class="pc bpc" id="L56" title="1 of 2 branches missed.">            if (this.priority == other.priority) {</span>
+<span class="nc" id="L57">                return Integer.compare(this.arrivalTime, other.arrivalTime);</span>
+            }
+<span class="fc" id="L59">            return Integer.compare(this.priority, other.priority);</span>
+        }
+    }
+
+    /**
+     * Schedules processes based on their priority in a non-preemptive manner, considering their arrival times.
+     *
+     * @param processes Array of processes to be scheduled.
+     * @return Array of processes in the order they are executed.
+     */
+    public static Process[] scheduleProcesses(Process[] processes) {
+<span class="fc" id="L70">        PriorityQueue&lt;Process&gt; pq = new PriorityQueue&lt;&gt;();</span>
+<span class="fc" id="L71">        Queue&lt;Process&gt; waitingQueue = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L72">        int currentTime = 0;</span>
+<span class="fc" id="L73">        int index = 0;</span>
+<span class="fc" id="L74">        Process[] executionOrder = new Process[processes.length];</span>
+
+<span class="fc" id="L76">        Collections.addAll(waitingQueue, processes);</span>
+
+<span class="fc bfc" id="L78" title="All 4 branches covered.">        while (!waitingQueue.isEmpty() || !pq.isEmpty()) {</span>
+            // Add processes that have arrived to the priority queue
+<span class="fc bfc" id="L80" title="All 4 branches covered.">            while (!waitingQueue.isEmpty() &amp;&amp; waitingQueue.peek().arrivalTime &lt;= currentTime) {</span>
+<span class="fc" id="L81">                pq.add(waitingQueue.poll());</span>
+            }
+
+<span class="fc bfc" id="L84" title="All 2 branches covered.">            if (!pq.isEmpty()) {</span>
+<span class="fc" id="L85">                Process currentProcess = pq.poll();</span>
+<span class="fc" id="L86">                currentProcess.startTime = currentTime;</span>
+<span class="fc" id="L87">                executionOrder[index++] = currentProcess;</span>
+<span class="fc" id="L88">                currentTime += currentProcess.burstTime;</span>
+<span class="fc" id="L89">            } else {</span>
+                // If no process is ready, move to the next arrival time
+<span class="fc" id="L91">                currentTime = waitingQueue.peek().arrivalTime;</span>
+            }
+        }
+
+<span class="fc" id="L95">        return executionOrder;</span>
+    }
+
+    /**
+     * Calculates the average waiting time of the processes.
+     *
+     * @param processes      Array of processes.
+     * @param executionOrder Array of processes in execution order.
+     * @return Average waiting time.
+     */
+    public static double calculateAverageWaitingTime(Process[] processes, Process[] executionOrder) {
+<span class="fc" id="L106">        int totalWaitingTime = 0;</span>
+
+<span class="fc bfc" id="L108" title="All 2 branches covered.">        for (Process process : executionOrder) {</span>
+<span class="fc" id="L109">            int waitingTime = process.startTime - process.arrivalTime;</span>
+<span class="fc" id="L110">            totalWaitingTime += waitingTime;</span>
+        }
+
+<span class="fc" id="L113">        return (double) totalWaitingTime / processes.length;</span>
+    }
+
+    /**
+     * Calculates the average turn-around time of the processes.
+     *
+     * @param processes      Array of processes.
+     * @param executionOrder Array of processes in execution order.
+     * @return Average turn-around time.
+     */
+    public static double calculateAverageTurnaroundTime(Process[] processes, Process[] executionOrder) {
+<span class="fc" id="L124">        int totalTurnaroundTime = 0;</span>
+
+<span class="fc bfc" id="L126" title="All 2 branches covered.">        for (Process process : executionOrder) {</span>
+<span class="fc" id="L127">            int turnaroundTime = process.startTime + process.burstTime - process.arrivalTime;</span>
+<span class="fc" id="L128">            totalTurnaroundTime += turnaroundTime;</span>
+        }
+
+<span class="fc" id="L131">        return (double) totalTurnaroundTime / processes.length;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

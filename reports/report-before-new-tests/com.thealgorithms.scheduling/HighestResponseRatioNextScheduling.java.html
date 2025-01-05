@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HighestResponseRatioNextScheduling.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.scheduling</a> &gt; <span class="el_source">HighestResponseRatioNextScheduling.java</span></div><h1>HighestResponseRatioNextScheduling.java</h1><pre class="source lang-java linenums">package com.thealgorithms.scheduling;
+
+import java.util.Arrays;
+import java.util.Comparator;
+
+/**
+ * The {@code HighestResponseRatioNextScheduling} class implements the
+ * Highest Response Ratio Next (HRRN) scheduling algorithm.
+ * HRRN is a non-preemptive scheduling algorithm that selects the process with
+ * the highest response ratio for execution.
+ * The response ratio is calculated as:
+ *
+ * &lt;pre&gt;
+ *     Response Ratio = (waiting time + burst time) / burst time
+ * &lt;/pre&gt;
+ *
+ * HRRN is designed to reduce the average waiting time and improve overall
+ * system performance by balancing between short and long processes,
+ * minimizing process starvation.
+ */
+public final class HighestResponseRatioNextScheduling {
+
+    private static final int PROCESS_NOT_FOUND = -1;
+    private static final double INITIAL_MAX_RESPONSE_RATIO = -1.0;
+
+    private HighestResponseRatioNextScheduling() {
+    }
+
+    /**
+     * Represents a process in the scheduling algorithm.
+     */
+    private static class Process {
+        String name;
+        int arrivalTime;
+        int burstTime;
+        int turnAroundTime;
+        boolean finished;
+
+<span class="fc" id="L39">        Process(String name, int arrivalTime, int burstTime) {</span>
+<span class="fc" id="L40">            this.name = name;</span>
+<span class="fc" id="L41">            this.arrivalTime = arrivalTime;</span>
+<span class="fc" id="L42">            this.burstTime = burstTime;</span>
+<span class="fc" id="L43">            this.turnAroundTime = 0;</span>
+<span class="fc" id="L44">            this.finished = false;</span>
+<span class="fc" id="L45">        }</span>
+
+        /**
+         * Calculates the response ratio for this process.
+         *
+         * @param currentTime The current time in the scheduling process.
+         * @return The response ratio for this process.
+         */
+        double calculateResponseRatio(int currentTime) {
+<span class="fc" id="L54">            return (double) (burstTime + currentTime - arrivalTime) / burstTime;</span>
+        }
+    }
+
+    /**
+     * Calculates the Turn Around Time (TAT) for each process.
+     *
+     * &lt;p&gt;Turn Around Time is calculated as the total time a process spends
+     * in the system from arrival to completion. It is the sum of the burst time
+     * and the waiting time.&lt;/p&gt;
+     *
+     * @param processNames Array of process names.
+     * @param arrivalTimes Array of arrival times corresponding to each process.
+     * @param burstTimes Array of burst times for each process.
+     * @param noOfProcesses The number of processes.
+     * @return An array of Turn Around Times for each process.
+     */
+    public static int[] calculateTurnAroundTime(final String[] processNames, final int[] arrivalTimes, final int[] burstTimes, final int noOfProcesses) {
+<span class="fc" id="L72">        int currentTime = 0;</span>
+<span class="fc" id="L73">        int[] turnAroundTime = new int[noOfProcesses];</span>
+<span class="fc" id="L74">        Process[] processes = new Process[noOfProcesses];</span>
+
+<span class="fc bfc" id="L76" title="All 2 branches covered.">        for (int i = 0; i &lt; noOfProcesses; i++) {</span>
+<span class="fc" id="L77">            processes[i] = new Process(processNames[i], arrivalTimes[i], burstTimes[i]);</span>
+        }
+
+<span class="fc" id="L80">        Arrays.sort(processes, Comparator.comparingInt(p -&gt; p.arrivalTime));</span>
+
+<span class="fc" id="L82">        int finishedProcessCount = 0;</span>
+<span class="fc bfc" id="L83" title="All 2 branches covered.">        while (finishedProcessCount &lt; noOfProcesses) {</span>
+<span class="fc" id="L84">            int nextProcessIndex = findNextProcess(processes, currentTime);</span>
+<span class="fc bfc" id="L85" title="All 2 branches covered.">            if (nextProcessIndex == PROCESS_NOT_FOUND) {</span>
+<span class="fc" id="L86">                currentTime++;</span>
+<span class="fc" id="L87">                continue;</span>
+            }
+
+<span class="fc" id="L90">            Process currentProcess = processes[nextProcessIndex];</span>
+<span class="fc" id="L91">            currentTime = Math.max(currentTime, currentProcess.arrivalTime);</span>
+<span class="fc" id="L92">            currentProcess.turnAroundTime = currentTime + currentProcess.burstTime - currentProcess.arrivalTime;</span>
+<span class="fc" id="L93">            currentTime += currentProcess.burstTime;</span>
+<span class="fc" id="L94">            currentProcess.finished = true;</span>
+<span class="fc" id="L95">            finishedProcessCount++;</span>
+<span class="fc" id="L96">        }</span>
+
+<span class="fc bfc" id="L98" title="All 2 branches covered.">        for (int i = 0; i &lt; noOfProcesses; i++) {</span>
+<span class="fc" id="L99">            turnAroundTime[i] = processes[i].turnAroundTime;</span>
+        }
+
+<span class="fc" id="L102">        return turnAroundTime;</span>
+    }
+
+    /**
+     * Calculates the Waiting Time (WT) for each process.
+     *
+     * @param turnAroundTime The Turn Around Times for each process.
+     * @param burstTimes The burst times for each process.
+     * @return An array of Waiting Times for each process.
+     */
+    public static int[] calculateWaitingTime(int[] turnAroundTime, int[] burstTimes) {
+<span class="fc" id="L113">        int[] waitingTime = new int[turnAroundTime.length];</span>
+<span class="fc bfc" id="L114" title="All 2 branches covered.">        for (int i = 0; i &lt; turnAroundTime.length; i++) {</span>
+<span class="fc" id="L115">            waitingTime[i] = turnAroundTime[i] - burstTimes[i];</span>
+        }
+<span class="fc" id="L117">        return waitingTime;</span>
+    }
+
+    /**
+     * Finds the next process to be scheduled based on arrival times and the current time.
+     *
+     * @param processes Array of Process objects.
+     * @param currentTime The current time in the scheduling process.
+     * @return The index of the next process to be scheduled, or PROCESS_NOT_FOUND if no process is ready.
+     */
+    private static int findNextProcess(Process[] processes, int currentTime) {
+<span class="fc" id="L128">        return findHighestResponseRatio(processes, currentTime);</span>
+    }
+
+    /**
+     * Finds the process with the highest response ratio.
+     *
+     * &lt;p&gt;The response ratio is calculated as:
+     * (waiting time + burst time) / burst time
+     * where waiting time = current time - arrival time&lt;/p&gt;
+     *
+     * @param processes Array of Process objects.
+     * @param currentTime The current time in the scheduling process.
+     * @return The index of the process with the highest response ratio, or PROCESS_NOT_FOUND if no process is ready.
+     */
+    private static int findHighestResponseRatio(Process[] processes, int currentTime) {
+<span class="fc" id="L143">        double maxResponseRatio = INITIAL_MAX_RESPONSE_RATIO;</span>
+<span class="fc" id="L144">        int maxIndex = PROCESS_NOT_FOUND;</span>
+
+<span class="fc bfc" id="L146" title="All 2 branches covered.">        for (int i = 0; i &lt; processes.length; i++) {</span>
+<span class="fc" id="L147">            Process process = processes[i];</span>
+<span class="fc bfc" id="L148" title="All 4 branches covered.">            if (!process.finished &amp;&amp; process.arrivalTime &lt;= currentTime) {</span>
+<span class="fc" id="L149">                double responseRatio = process.calculateResponseRatio(currentTime);</span>
+<span class="fc bfc" id="L150" title="All 2 branches covered.">                if (responseRatio &gt; maxResponseRatio) {</span>
+<span class="fc" id="L151">                    maxResponseRatio = responseRatio;</span>
+<span class="fc" id="L152">                    maxIndex = i;</span>
+                }
+            }
+        }
+<span class="fc" id="L156">        return maxIndex;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

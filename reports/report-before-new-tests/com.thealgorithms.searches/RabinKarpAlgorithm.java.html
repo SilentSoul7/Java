@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RabinKarpAlgorithm.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.searches</a> &gt; <span class="el_source">RabinKarpAlgorithm.java</span></div><h1>RabinKarpAlgorithm.java</h1><pre class="source lang-java linenums">package com.thealgorithms.searches;
+
+// Implementation of Rabin Karp Algorithm
+
+public final class RabinKarpAlgorithm {
+    private RabinKarpAlgorithm() {
+    }
+
+    private static final int ALPHABET_SIZE = 256;
+
+    public static int search(String pattern, String text, int primeNumber) {
+
+<span class="fc" id="L13">        int index = -1; // -1 here represents not found</span>
+<span class="fc" id="L14">        int patternLength = pattern.length();</span>
+<span class="fc" id="L15">        int textLength = text.length();</span>
+<span class="fc" id="L16">        int hashForPattern = 0;</span>
+<span class="fc" id="L17">        int hashForText = 0;</span>
+<span class="fc" id="L18">        int h = 1;</span>
+
+        // The value of h would be &quot;pow(d, patternLength-1)%primeNumber&quot;
+<span class="fc bfc" id="L21" title="All 2 branches covered.">        for (int i = 0; i &lt; patternLength - 1; i++) {</span>
+<span class="fc" id="L22">            h = (h * ALPHABET_SIZE) % primeNumber;</span>
+        }
+
+        // Calculate the hash value of pattern and first
+        // window of text
+<span class="fc bfc" id="L27" title="All 2 branches covered.">        for (int i = 0; i &lt; patternLength; i++) {</span>
+<span class="fc" id="L28">            hashForPattern = (ALPHABET_SIZE * hashForPattern + pattern.charAt(i)) % primeNumber;</span>
+<span class="fc" id="L29">            hashForText = (ALPHABET_SIZE * hashForText + text.charAt(i)) % primeNumber;</span>
+        }
+
+        // Slide the pattern over text one by one
+<span class="fc bfc" id="L33" title="All 2 branches covered.">        for (int i = 0; i &lt;= textLength - patternLength; i++) {</span>
+            /* Check the hash values of current window of text
+               and pattern. If the hash values match then only
+               check for characters one by one*/
+
+<span class="fc" id="L38">            int j = 0;</span>
+<span class="fc bfc" id="L39" title="All 2 branches covered.">            if (hashForPattern == hashForText) {</span>
+                /* Check for characters one by one */
+<span class="fc bfc" id="L41" title="All 2 branches covered.">                for (j = 0; j &lt; patternLength; j++) {</span>
+<span class="fc bfc" id="L42" title="All 2 branches covered.">                    if (text.charAt(i + j) != pattern.charAt(j)) {</span>
+<span class="fc" id="L43">                        break;</span>
+                    }
+                }
+
+                // if hashForPattern == hashForText and pattern[0...patternLength-1] = text[i, i+1, ...i+patternLength-1]
+<span class="fc bfc" id="L48" title="All 2 branches covered.">                if (j == patternLength) {</span>
+<span class="fc" id="L49">                    index = i;</span>
+<span class="fc" id="L50">                    return index;</span>
+                }
+            }
+
+            // Calculate hash value for next window of text: Remove
+            // leading digit, add trailing digit
+<span class="fc bfc" id="L56" title="All 2 branches covered.">            if (i &lt; textLength - patternLength) {</span>
+<span class="fc" id="L57">                hashForText = (ALPHABET_SIZE * (hashForText - text.charAt(i) * h) + text.charAt(i + patternLength)) % primeNumber;</span>
+
+                // handling negative hashForText
+<span class="fc bfc" id="L60" title="All 2 branches covered.">                if (hashForText &lt; 0) {</span>
+<span class="fc" id="L61">                    hashForText = (hashForText + primeNumber);</span>
+                }
+            }
+        }
+<span class="fc" id="L65">        return index; // return -1 if pattern does not found</span>
+    }
+}
+// This code is contributed by nuclode
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

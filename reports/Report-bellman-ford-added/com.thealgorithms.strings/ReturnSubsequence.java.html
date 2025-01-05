@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ReturnSubsequence.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.strings</a> &gt; <span class="el_source">ReturnSubsequence.java</span></div><h1>ReturnSubsequence.java</h1><pre class="source lang-java linenums">package com.thealgorithms.strings;
+
+/**
+ * Class for generating all subsequences of a given string.
+ */
+public final class ReturnSubsequence {
+    private ReturnSubsequence() {
+    }
+
+    /**
+     * Generates all subsequences of the given string.
+     *
+     * @param input The input string.
+     * @return An array of subsequences.
+     */
+    public static String[] getSubsequences(String input) {
+<span class="fc bfc" id="L17" title="All 2 branches covered.">        if (input.isEmpty()) {</span>
+<span class="fc" id="L18">            return new String[] {&quot;&quot;}; // Return array with an empty string if input is empty</span>
+        }
+
+        // Recursively find subsequences of the substring (excluding the first character)
+<span class="fc" id="L22">        String[] smallerSubsequences = getSubsequences(input.substring(1));</span>
+
+        // Create an array to hold the final subsequences, double the size of smallerSubsequences
+<span class="fc" id="L25">        String[] result = new String[2 * smallerSubsequences.length];</span>
+
+        // Copy the smaller subsequences directly to the result array
+<span class="fc" id="L28">        System.arraycopy(smallerSubsequences, 0, result, 0, smallerSubsequences.length);</span>
+
+        // Prepend the first character of the input string to each of the smaller subsequences
+<span class="fc bfc" id="L31" title="All 2 branches covered.">        for (int i = 0; i &lt; smallerSubsequences.length; i++) {</span>
+<span class="fc" id="L32">            result[i + smallerSubsequences.length] = input.charAt(0) + smallerSubsequences[i];</span>
+        }
+
+<span class="fc" id="L35">        return result;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

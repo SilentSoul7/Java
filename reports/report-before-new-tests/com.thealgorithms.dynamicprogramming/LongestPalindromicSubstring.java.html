@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LongestPalindromicSubstring.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.dynamicprogramming</a> &gt; <span class="el_source">LongestPalindromicSubstring.java</span></div><h1>LongestPalindromicSubstring.java</h1><pre class="source lang-java linenums">package com.thealgorithms.dynamicprogramming;
+
+/**
+ * Class for finding the longest palindromic substring within a given string.
+ * &lt;p&gt;
+ * A palindromic substring is a sequence of characters that reads the same backward as forward.
+ * This class uses a dynamic programming approach to efficiently find the longest palindromic substring.
+ *
+ */
+public final class LongestPalindromicSubstring {
+    private LongestPalindromicSubstring() {
+    }
+
+    public static String lps(String input) {
+<span class="pc bpc" id="L15" title="1 of 4 branches missed.">        if (input == null || input.isEmpty()) {</span>
+<span class="fc" id="L16">            return input;</span>
+        }
+<span class="fc" id="L18">        boolean[][] arr = new boolean[input.length()][input.length()];</span>
+<span class="fc" id="L19">        int start = 0;</span>
+<span class="fc" id="L20">        int end = 0;</span>
+<span class="fc bfc" id="L21" title="All 2 branches covered.">        for (int g = 0; g &lt; input.length(); g++) {</span>
+<span class="fc bfc" id="L22" title="All 2 branches covered.">            for (int i = 0, j = g; j &lt; input.length(); i++, j++) {</span>
+<span class="fc bfc" id="L23" title="All 2 branches covered.">                if (g == 0) {</span>
+<span class="fc" id="L24">                    arr[i][j] = true;</span>
+<span class="fc bfc" id="L25" title="All 2 branches covered.">                } else if (g == 1) {</span>
+<span class="fc bfc" id="L26" title="All 2 branches covered.">                    arr[i][j] = input.charAt(i) == input.charAt(j);</span>
+                } else {
+<span class="fc bfc" id="L28" title="All 4 branches covered.">                    arr[i][j] = input.charAt(i) == input.charAt(j) &amp;&amp; arr[i + 1][j - 1];</span>
+                }
+
+<span class="fc bfc" id="L31" title="All 2 branches covered.">                if (arr[i][j]) {</span>
+<span class="fc" id="L32">                    start = i;</span>
+<span class="fc" id="L33">                    end = j;</span>
+                }
+            }
+        }
+<span class="fc" id="L37">        return input.substring(start, end + 1);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

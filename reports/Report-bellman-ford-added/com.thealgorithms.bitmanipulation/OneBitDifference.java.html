@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>OneBitDifference.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.bitmanipulation</a> &gt; <span class="el_source">OneBitDifference.java</span></div><h1>OneBitDifference.java</h1><pre class="source lang-java linenums">package com.thealgorithms.bitmanipulation;
+
+/**
+ * This class provides a method to detect if two integers
+ * differ by exactly one bit flip.
+ *
+ * Example:
+ * 1 (0001) and 2 (0010) differ by exactly one bit flip.
+ * 7 (0111) and 3 (0011) differ by exactly one bit flip.
+ *
+ * @author Hardvan
+ */
+public final class OneBitDifference {
+    private OneBitDifference() {
+    }
+
+    /**
+     * Checks if two integers differ by exactly one bit.
+     *
+     * @param x the first integer
+     * @param y the second integer
+     * @return true if x and y differ by exactly one bit, false otherwise
+     */
+    public static boolean differByOneBit(int x, int y) {
+<span class="fc bfc" id="L25" title="All 2 branches covered.">        if (x == y) {</span>
+<span class="fc" id="L26">            return false;</span>
+        }
+
+<span class="fc" id="L29">        int xor = x ^ y;</span>
+<span class="fc bfc" id="L30" title="All 2 branches covered.">        return (xor &amp; (xor - 1)) == 0;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

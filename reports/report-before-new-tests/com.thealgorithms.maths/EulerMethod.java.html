@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EulerMethod.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.maths</a> &gt; <span class="el_source">EulerMethod.java</span></div><h1>EulerMethod.java</h1><pre class="source lang-java linenums">package com.thealgorithms.maths;
+
+import java.util.ArrayList;
+import java.util.function.BiFunction;
+
+/**
+ * In mathematics and computational science, the Euler method (also called
+ * forward Euler method) is a first-order numerical procedure for solving
+ * ordinary differential equations (ODEs) with a given initial value. It is the
+ * most basic explicit method for numerical integration of ordinary differential
+ * equations. The method proceeds in a series of steps. At each step the y-value
+ * is calculated by evaluating the differential equation at the previous step,
+ * multiplying the result with the step-size and adding it to the last y-value:
+ * y_n+1 = y_n + stepSize * f(x_n, y_n). (description adapted from
+ * https://en.wikipedia.org/wiki/Euler_method ) (see also:
+ * https://www.geeksforgeeks.org/euler-method-solving-differential-equation/ )
+ */
+<span class="fc" id="L18">public final class EulerMethod {</span>
+    private EulerMethod() {
+    }
+
+    /**
+     * Illustrates how the algorithm is used in 3 examples and prints the
+     * results to the console.
+     */
+    public static void main(String[] args) {
+<span class="nc" id="L27">        System.out.println(&quot;example 1:&quot;);</span>
+<span class="nc" id="L28">        BiFunction&lt;Double, Double, Double&gt; exampleEquation1 = (x, y) -&gt; x;</span>
+<span class="nc" id="L29">        ArrayList&lt;double[]&gt; points1 = eulerFull(0, 4, 0.1, 0, exampleEquation1);</span>
+<span class="nc bnc" id="L30" title="All 2 branches missed.">        assert points1.get(points1.size() - 1)[1] == 7.800000000000003;</span>
+<span class="nc" id="L31">        points1.forEach(point -&gt; System.out.printf(&quot;x: %1$f; y: %2$f%n&quot;, point[0], point[1]));</span>
+
+        // example from https://en.wikipedia.org/wiki/Euler_method
+<span class="nc" id="L34">        System.out.println(&quot;\n\nexample 2:&quot;);</span>
+<span class="nc" id="L35">        BiFunction&lt;Double, Double, Double&gt; exampleEquation2 = (x, y) -&gt; y;</span>
+<span class="nc" id="L36">        ArrayList&lt;double[]&gt; points2 = eulerFull(0, 4, 0.1, 1, exampleEquation2);</span>
+<span class="nc bnc" id="L37" title="All 2 branches missed.">        assert points2.get(points2.size() - 1)[1] == 45.25925556817596;</span>
+<span class="nc" id="L38">        points2.forEach(point -&gt; System.out.printf(&quot;x: %1$f; y: %2$f%n&quot;, point[0], point[1]));</span>
+
+        // example from https://www.geeksforgeeks.org/euler-method-solving-differential-equation/
+<span class="nc" id="L41">        System.out.println(&quot;\n\nexample 3:&quot;);</span>
+<span class="nc" id="L42">        BiFunction&lt;Double, Double, Double&gt; exampleEquation3 = (x, y) -&gt; x + y + x * y;</span>
+<span class="nc" id="L43">        ArrayList&lt;double[]&gt; points3 = eulerFull(0, 0.1, 0.025, 1, exampleEquation3);</span>
+<span class="nc bnc" id="L44" title="All 2 branches missed.">        assert points3.get(points3.size() - 1)[1] == 1.1116729841674804;</span>
+<span class="nc" id="L45">        points3.forEach(point -&gt; System.out.printf(&quot;x: %1$f; y: %2$f%n&quot;, point[0], point[1]));</span>
+<span class="nc" id="L46">    }</span>
+
+    /**
+     * calculates the next y-value based on the current value of x, y and the
+     * stepSize the console.
+     *
+     * @param xCurrent Current x-value.
+     * @param stepSize Step-size on the x-axis.
+     * @param yCurrent Current y-value.
+     * @param differentialEquation The differential equation to be solved.
+     * @return The next y-value.
+     */
+    public static double eulerStep(double xCurrent, double stepSize, double yCurrent, BiFunction&lt;Double, Double, Double&gt; differentialEquation) {
+<span class="fc bfc" id="L59" title="All 2 branches covered.">        if (stepSize &lt;= 0) {</span>
+<span class="fc" id="L60">            throw new IllegalArgumentException(&quot;stepSize should be greater than zero&quot;);</span>
+        }
+<span class="fc" id="L62">        return yCurrent + stepSize * differentialEquation.apply(xCurrent, yCurrent);</span>
+    }
+
+    /**
+     * Loops through all the steps until xEnd is reached, adds a point for each
+     * step and then returns all the points
+     *
+     * @param xStart First x-value.
+     * @param xEnd Last x-value.
+     * @param stepSize Step-size on the x-axis.
+     * @param yStart First y-value.
+     * @param differentialEquation The differential equation to be solved.
+     * @return The points constituting the solution of the differential
+     * equation.
+     */
+    public static ArrayList&lt;double[]&gt; eulerFull(double xStart, double xEnd, double stepSize, double yStart, BiFunction&lt;Double, Double, Double&gt; differentialEquation) {
+<span class="fc bfc" id="L78" title="All 2 branches covered.">        if (xStart &gt;= xEnd) {</span>
+<span class="fc" id="L79">            throw new IllegalArgumentException(&quot;xEnd should be greater than xStart&quot;);</span>
+        }
+<span class="fc bfc" id="L81" title="All 2 branches covered.">        if (stepSize &lt;= 0) {</span>
+<span class="fc" id="L82">            throw new IllegalArgumentException(&quot;stepSize should be greater than zero&quot;);</span>
+        }
+
+<span class="fc" id="L85">        ArrayList&lt;double[]&gt; points = new ArrayList&lt;double[]&gt;();</span>
+<span class="fc" id="L86">        double[] firstPoint = {xStart, yStart};</span>
+<span class="fc" id="L87">        points.add(firstPoint);</span>
+<span class="fc" id="L88">        double yCurrent = yStart;</span>
+<span class="fc" id="L89">        double xCurrent = xStart;</span>
+
+<span class="fc bfc" id="L91" title="All 2 branches covered.">        while (xCurrent &lt; xEnd) {</span>
+            // Euler's method for next step
+<span class="fc" id="L93">            yCurrent = eulerStep(xCurrent, stepSize, yCurrent, differentialEquation);</span>
+<span class="fc" id="L94">            xCurrent += stepSize;</span>
+<span class="fc" id="L95">            double[] point = {xCurrent, yCurrent};</span>
+<span class="fc" id="L96">            points.add(point);</span>
+<span class="fc" id="L97">        }</span>
+
+<span class="fc" id="L99">        return points;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

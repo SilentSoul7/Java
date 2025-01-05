@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MidpointCircle.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.geometry</a> &gt; <span class="el_source">MidpointCircle.java</span></div><h1>MidpointCircle.java</h1><pre class="source lang-java linenums">package com.thealgorithms.geometry;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+/**
+ * Class to represent the Midpoint Circle Algorithm.
+ * This algorithm calculates points on the circumference of a circle
+ * using integer arithmetic for efficient computation.
+ */
+public final class MidpointCircle {
+
+    private MidpointCircle() {
+        // Private Constructor to prevent instantiation.
+    }
+
+    /**
+     * Generates points on the circumference of a circle using the midpoint circle algorithm.
+     *
+     * @param centerX The x-coordinate of the circle's center.
+     * @param centerY The y-coordinate of the circle's center.
+     * @param radius  The radius of the circle.
+     * @return A list of points on the circle, each represented as an int[] with 2 elements [x, y].
+     */
+    public static List&lt;int[]&gt; generateCirclePoints(int centerX, int centerY, int radius) {
+<span class="fc" id="L27">        List&lt;int[]&gt; points = new ArrayList&lt;&gt;();</span>
+
+        // Special case for radius 0, only the center point should be added.
+<span class="fc bfc" id="L30" title="All 2 branches covered.">        if (radius == 0) {</span>
+<span class="fc" id="L31">            points.add(new int[] {centerX, centerY});</span>
+<span class="fc" id="L32">            return points;</span>
+        }
+
+        // Start at (radius, 0)
+<span class="fc" id="L36">        int x = radius;</span>
+<span class="fc" id="L37">        int y = 0;</span>
+
+        // Decision parameter
+<span class="fc" id="L40">        int p = 1 - radius;</span>
+
+        // Add the initial points in all octants
+<span class="fc" id="L43">        addSymmetricPoints(points, centerX, centerY, x, y);</span>
+
+        // Iterate while x &gt; y
+<span class="fc bfc" id="L46" title="All 2 branches covered.">        while (x &gt; y) {</span>
+<span class="fc" id="L47">            y++;</span>
+
+<span class="fc bfc" id="L49" title="All 2 branches covered.">            if (p &lt;= 0) {</span>
+                // Midpoint is inside or on the circle
+<span class="fc" id="L51">                p = p + 2 * y + 1;</span>
+            } else {
+                // Midpoint is outside the circle
+<span class="fc" id="L54">                x--;</span>
+<span class="fc" id="L55">                p = p + 2 * y - 2 * x + 1;</span>
+            }
+
+            // Add points for this (x, y)
+<span class="fc" id="L59">            addSymmetricPoints(points, centerX, centerY, x, y);</span>
+        }
+
+<span class="fc" id="L62">        return points;</span>
+    }
+
+    /**
+     * Adds the symmetric points in all octants of the circle based on the current x and y values.
+     *
+     * @param points  The list to which symmetric points will be added.
+     * @param centerX The x-coordinate of the circle's center.
+     * @param centerY The y-coordinate of the circle's center.
+     * @param x       The current x-coordinate on the circumference.
+     * @param y       The current y-coordinate on the circumference.
+     */
+    private static void addSymmetricPoints(Collection&lt;int[]&gt; points, int centerX, int centerY, int x, int y) {
+        // Octant symmetry points
+<span class="fc" id="L76">        points.add(new int[] {centerX + x, centerY + y});</span>
+<span class="fc" id="L77">        points.add(new int[] {centerX - x, centerY + y});</span>
+<span class="fc" id="L78">        points.add(new int[] {centerX + x, centerY - y});</span>
+<span class="fc" id="L79">        points.add(new int[] {centerX - x, centerY - y});</span>
+<span class="fc" id="L80">        points.add(new int[] {centerX + y, centerY + x});</span>
+<span class="fc" id="L81">        points.add(new int[] {centerX - y, centerY + x});</span>
+<span class="fc" id="L82">        points.add(new int[] {centerX + y, centerY - x});</span>
+<span class="fc" id="L83">        points.add(new int[] {centerX - y, centerY - x});</span>
+<span class="fc" id="L84">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

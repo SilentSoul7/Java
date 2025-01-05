@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>IPv6Converter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.conversions</a> &gt; <span class="el_source">IPv6Converter.java</span></div><h1>IPv6Converter.java</h1><pre class="source lang-java linenums">package com.thealgorithms.conversions;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.Arrays;
+
+/**
+ * A utility class for converting between IPv6 and IPv4 addresses.
+ *
+ * - Converts IPv4 to IPv6-mapped IPv6 address.
+ * - Extracts IPv4 address from IPv6-mapped IPv6.
+ * - Handles exceptions for invalid inputs.
+ *
+ * @author Hardvan
+ */
+public final class IPv6Converter {
+    private IPv6Converter() {
+    }
+
+    /**
+     * Converts an IPv4 address (e.g., &quot;192.0.2.128&quot;) to an IPv6-mapped IPv6 address.
+     * Example: IPv4 &quot;192.0.2.128&quot; -&gt; IPv6 &quot;::ffff:192.0.2.128&quot;
+     *
+     * @param ipv4Address The IPv4 address in string format.
+     * @return The corresponding IPv6-mapped IPv6 address.
+     * @throws UnknownHostException If the IPv4 address is invalid.
+     * @throws IllegalArgumentException If the IPv6 address is not a mapped IPv4 address.
+     */
+    public static String ipv4ToIpv6(String ipv4Address) throws UnknownHostException {
+<span class="pc bpc" id="L30" title="1 of 4 branches missed.">        if (ipv4Address == null || ipv4Address.isEmpty()) {</span>
+<span class="fc" id="L31">            throw new UnknownHostException(&quot;IPv4 address is empty.&quot;);</span>
+        }
+
+<span class="fc" id="L34">        InetAddress ipv4 = InetAddress.getByName(ipv4Address);</span>
+<span class="fc" id="L35">        byte[] ipv4Bytes = ipv4.getAddress();</span>
+
+        // Create IPv6-mapped IPv6 address (starts with ::ffff:)
+<span class="fc" id="L38">        byte[] ipv6Bytes = new byte[16];</span>
+<span class="fc" id="L39">        ipv6Bytes[10] = (byte) 0xff;</span>
+<span class="fc" id="L40">        ipv6Bytes[11] = (byte) 0xff;</span>
+<span class="fc" id="L41">        System.arraycopy(ipv4Bytes, 0, ipv6Bytes, 12, 4);</span>
+
+        // Manually format to &quot;::ffff:x.x.x.x&quot; format
+<span class="fc" id="L44">        StringBuilder ipv6String = new StringBuilder(&quot;::ffff:&quot;);</span>
+<span class="fc bfc" id="L45" title="All 2 branches covered.">        for (int i = 12; i &lt; 16; i++) {</span>
+<span class="fc" id="L46">            ipv6String.append(ipv6Bytes[i] &amp; 0xFF);</span>
+<span class="fc bfc" id="L47" title="All 2 branches covered.">            if (i &lt; 15) {</span>
+<span class="fc" id="L48">                ipv6String.append('.');</span>
+            }
+        }
+<span class="fc" id="L51">        return ipv6String.toString();</span>
+    }
+
+    /**
+     * Extracts the IPv4 address from an IPv6-mapped IPv6 address.
+     * Example: IPv6 &quot;::ffff:192.0.2.128&quot; -&gt; IPv4 &quot;192.0.2.128&quot;
+     *
+     * @param ipv6Address The IPv6 address in string format.
+     * @return The extracted IPv4 address.
+     * @throws UnknownHostException If the IPv6 address is invalid or not a mapped IPv4 address.
+     */
+    public static String ipv6ToIpv4(String ipv6Address) throws UnknownHostException {
+<span class="fc" id="L63">        InetAddress ipv6 = InetAddress.getByName(ipv6Address);</span>
+<span class="fc" id="L64">        byte[] ipv6Bytes = ipv6.getAddress();</span>
+
+        // Check if the address is an IPv6-mapped IPv4 address
+<span class="pc bpc" id="L67" title="1 of 2 branches missed.">        if (isValidIpv6MappedIpv4(ipv6Bytes)) {</span>
+<span class="nc" id="L68">            byte[] ipv4Bytes = Arrays.copyOfRange(ipv6Bytes, 12, 16);</span>
+<span class="nc" id="L69">            InetAddress ipv4 = InetAddress.getByAddress(ipv4Bytes);</span>
+<span class="nc" id="L70">            return ipv4.getHostAddress();</span>
+        } else {
+<span class="fc" id="L72">            throw new IllegalArgumentException(&quot;Not a valid IPv6-mapped IPv4 address.&quot;);</span>
+        }
+    }
+
+    /**
+     * Helper function to check if the given byte array represents
+     * an IPv6-mapped IPv4 address (prefix 0:0:0:0:0:ffff).
+     *
+     * @param ipv6Bytes Byte array representation of the IPv6 address.
+     * @return True if the address is IPv6-mapped IPv4, otherwise false.
+     */
+    private static boolean isValidIpv6MappedIpv4(byte[] ipv6Bytes) {
+        // IPv6-mapped IPv4 addresses are 16 bytes long, with the first 10 bytes set to 0,
+        // followed by 0xff, 0xff, and the last 4 bytes representing the IPv4 address.
+<span class="fc bfc" id="L86" title="All 2 branches covered.">        if (ipv6Bytes.length != 16) {</span>
+<span class="fc" id="L87">            return false;</span>
+        }
+
+<span class="pc bpc" id="L90" title="1 of 2 branches missed.">        for (int i = 0; i &lt; 10; i++) {</span>
+<span class="pc bpc" id="L91" title="1 of 2 branches missed.">            if (ipv6Bytes[i] != 0) {</span>
+<span class="fc" id="L92">                return false;</span>
+            }
+        }
+
+<span class="nc bnc" id="L96" title="All 4 branches missed.">        return ipv6Bytes[10] == (byte) 0xff &amp;&amp; ipv6Bytes[11] == (byte) 0xff;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

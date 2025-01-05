@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Tribonacci.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.dynamicprogramming</a> &gt; <span class="el_source">Tribonacci.java</span></div><h1>Tribonacci.java</h1><pre class="source lang-java linenums">package com.thealgorithms.dynamicprogramming;
+
+/**
+ * The {@code Tribonacci} class provides a method to compute the n-th number in the Tribonacci sequence.
+ * N-th Tribonacci Number - https://leetcode.com/problems/n-th-tribonacci-number/description/
+ */
+public final class Tribonacci {
+    private Tribonacci() {
+    }
+
+    /**
+     * Computes the n-th Tribonacci number.
+     *
+     * @param n the index of the Tribonacci number to compute
+     * @return the n-th Tribonacci number
+     */
+    public static int compute(int n) {
+<span class="fc bfc" id="L18" title="All 2 branches covered.">        if (n == 0) {</span>
+<span class="fc" id="L19">            return 0;</span>
+        }
+<span class="fc bfc" id="L21" title="All 4 branches covered.">        if (n == 1 || n == 2) {</span>
+<span class="fc" id="L22">            return 1;</span>
+        }
+
+<span class="fc" id="L25">        int first = 0;</span>
+<span class="fc" id="L26">        int second = 1;</span>
+<span class="fc" id="L27">        int third = 1;</span>
+
+<span class="fc bfc" id="L29" title="All 2 branches covered.">        for (int i = 3; i &lt;= n; i++) {</span>
+<span class="fc" id="L30">            int next = first + second + third;</span>
+<span class="fc" id="L31">            first = second;</span>
+<span class="fc" id="L32">            second = third;</span>
+<span class="fc" id="L33">            third = next;</span>
+        }
+
+<span class="fc" id="L36">        return third;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

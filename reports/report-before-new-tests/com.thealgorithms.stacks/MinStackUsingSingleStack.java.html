@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MinStackUsingSingleStack.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.stacks</a> &gt; <span class="el_source">MinStackUsingSingleStack.java</span></div><h1>MinStackUsingSingleStack.java</h1><pre class="source lang-java linenums">package com.thealgorithms.stacks;
+
+import java.util.EmptyStackException;
+import java.util.Stack;
+
+/**
+ * Min-Stack implementation using a single stack.
+ *
+ * This stack supports push, pop, and retrieving the minimum element
+ * in constant time (O(1)) using a modified approach where the stack
+ * stores both the element and the minimum value so far.
+ *
+ * @author Hardvan
+ */
+<span class="fc" id="L15">public class MinStackUsingSingleStack {</span>
+<span class="fc" id="L16">    private final Stack&lt;long[]&gt; stack = new Stack&lt;&gt;();</span>
+
+    /**
+     * Pushes a new value onto the stack.
+     * Each entry stores both the value and the minimum value so far.
+     *
+     * @param value The value to be pushed onto the stack.
+     */
+    public void push(int value) {
+<span class="fc bfc" id="L25" title="All 2 branches covered.">        if (stack.isEmpty()) {</span>
+<span class="fc" id="L26">            stack.push(new long[] {value, value});</span>
+        } else {
+<span class="fc" id="L28">            long minSoFar = Math.min(value, stack.peek()[1]);</span>
+<span class="fc" id="L29">            stack.push(new long[] {value, minSoFar});</span>
+        }
+<span class="fc" id="L31">    }</span>
+
+    /**
+     * Removes the top element from the stack.
+     */
+    public void pop() {
+<span class="pc bpc" id="L37" title="1 of 2 branches missed.">        if (!stack.isEmpty()) {</span>
+<span class="fc" id="L38">            stack.pop();</span>
+        }
+<span class="fc" id="L40">    }</span>
+
+    /**
+     * Retrieves the top element from the stack.
+     *
+     * @return The top element of the stack.
+     */
+    public int top() {
+<span class="fc bfc" id="L48" title="All 2 branches covered.">        if (!stack.isEmpty()) {</span>
+<span class="fc" id="L49">            return (int) stack.peek()[0];</span>
+        }
+<span class="fc" id="L51">        throw new EmptyStackException();</span>
+    }
+
+    /**
+     * Retrieves the minimum element in the stack.
+     *
+     * @return The minimum element so far.
+     */
+    public int getMin() {
+<span class="fc bfc" id="L60" title="All 2 branches covered.">        if (!stack.isEmpty()) {</span>
+<span class="fc" id="L61">            return (int) stack.peek()[1];</span>
+        }
+<span class="fc" id="L63">        throw new EmptyStackException();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

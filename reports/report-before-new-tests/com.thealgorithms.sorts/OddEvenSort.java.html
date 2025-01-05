@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>OddEvenSort.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.sorts</a> &gt; <span class="el_source">OddEvenSort.java</span></div><h1>OddEvenSort.java</h1><pre class="source lang-java linenums">package com.thealgorithms.sorts;
+
+/**
+ * OddEvenSort class implements the SortAlgorithm interface using the odd-even sort technique.
+ * Odd-even sort is a comparison sort related to bubble sort.
+ * It operates by comparing all (odd, even)-indexed pairs of adjacent elements in the list and, if a pair is in the wrong order, swapping them.
+ * The next step repeats this process for (even, odd)-indexed pairs. This process continues until the list is sorted.
+ *
+ */
+<span class="fc" id="L10">public final class OddEvenSort implements SortAlgorithm {</span>
+
+    /**
+     * Sorts the given array using the Odd-Even Sort algorithm.
+     *
+     * @param &lt;T&gt; the type of elements in the array, which must implement the Comparable interface
+     * @param array the array to be sorted
+     * @return the sorted array
+     */
+    @Override
+    public &lt;T extends Comparable&lt;T&gt;&gt; T[] sort(T[] array) {
+<span class="fc" id="L21">        boolean sorted = false;</span>
+<span class="fc bfc" id="L22" title="All 2 branches covered.">        while (!sorted) {</span>
+<span class="fc" id="L23">            sorted = performOddSort(array);</span>
+<span class="fc bfc" id="L24" title="All 4 branches covered.">            sorted = performEvenSort(array) &amp;&amp; sorted;</span>
+        }
+
+<span class="fc" id="L27">        return array;</span>
+    }
+
+    private &lt;T extends Comparable&lt;T&gt;&gt; boolean performOddSort(T[] array) {
+<span class="fc" id="L31">        boolean sorted = true;</span>
+<span class="fc bfc" id="L32" title="All 2 branches covered.">        for (int i = 1; i &lt; array.length - 1; i += 2) {</span>
+<span class="fc bfc" id="L33" title="All 2 branches covered.">            if (array[i].compareTo(array[i + 1]) &gt; 0) {</span>
+<span class="fc" id="L34">                SortUtils.swap(array, i, i + 1);</span>
+<span class="fc" id="L35">                sorted = false;</span>
+            }
+        }
+<span class="fc" id="L38">        return sorted;</span>
+    }
+
+    private &lt;T extends Comparable&lt;T&gt;&gt; boolean performEvenSort(T[] array) {
+<span class="fc" id="L42">        boolean sorted = true;</span>
+<span class="fc bfc" id="L43" title="All 2 branches covered.">        for (int i = 0; i &lt; array.length - 1; i += 2) {</span>
+<span class="fc bfc" id="L44" title="All 2 branches covered.">            if (array[i].compareTo(array[i + 1]) &gt; 0) {</span>
+<span class="fc" id="L45">                SortUtils.swap(array, i, i + 1);</span>
+<span class="fc" id="L46">                sorted = false;</span>
+            }
+        }
+<span class="fc" id="L49">        return sorted;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

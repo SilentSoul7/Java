@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SlackTimeScheduling.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.scheduling</a> &gt; <span class="el_source">SlackTimeScheduling.java</span></div><h1>SlackTimeScheduling.java</h1><pre class="source lang-java linenums">package com.thealgorithms.scheduling;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
+/**
+ * SlackTimeScheduling is an algorithm that prioritizes tasks based on their
+ * slack time, which is defined as the difference between the task's deadline
+ * and the time required to execute it. Tasks with less slack time are prioritized.
+ *
+ * Use Case: Real-time systems with hard deadlines, such as robotics or embedded systems.
+ *
+ * @author Hardvan
+ */
+public class SlackTimeScheduling {
+
+    static class Task {
+        String name;
+        int executionTime;
+        int deadline;
+
+<span class="fc" id="L23">        Task(String name, int executionTime, int deadline) {</span>
+<span class="fc" id="L24">            this.name = name;</span>
+<span class="fc" id="L25">            this.executionTime = executionTime;</span>
+<span class="fc" id="L26">            this.deadline = deadline;</span>
+<span class="fc" id="L27">        }</span>
+
+        int getSlackTime() {
+<span class="fc" id="L30">            return deadline - executionTime;</span>
+        }
+    }
+
+    private final List&lt;Task&gt; tasks;
+
+<span class="fc" id="L36">    public SlackTimeScheduling() {</span>
+<span class="fc" id="L37">        tasks = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L38">    }</span>
+
+    /**
+     * Adds a task to the scheduler.
+     *
+     * @param name          the name of the task
+     * @param executionTime the time required to execute the task
+     * @param deadline      the deadline by which the task must be completed
+     */
+    public void addTask(String name, int executionTime, int deadline) {
+<span class="fc" id="L48">        tasks.add(new Task(name, executionTime, deadline));</span>
+<span class="fc" id="L49">    }</span>
+
+    /**
+     * Schedules the tasks based on their slack time.
+     *
+     * @return the order in which the tasks should be executed
+     */
+    public List&lt;String&gt; scheduleTasks() {
+<span class="fc" id="L57">        tasks.sort(Comparator.comparingInt(Task::getSlackTime));</span>
+<span class="fc" id="L58">        List&lt;String&gt; scheduledOrder = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L59" title="All 2 branches covered.">        for (Task task : tasks) {</span>
+<span class="fc" id="L60">            scheduledOrder.add(task.name);</span>
+<span class="fc" id="L61">        }</span>
+<span class="fc" id="L62">        return scheduledOrder;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

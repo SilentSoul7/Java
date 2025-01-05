@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LetterCombinationsOfPhoneNumber.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.strings</a> &gt; <span class="el_source">LetterCombinationsOfPhoneNumber.java</span></div><h1>LetterCombinationsOfPhoneNumber.java</h1><pre class="source lang-java linenums">package com.thealgorithms.strings;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public final class LetterCombinationsOfPhoneNumber {
+
+    private static final char EMPTY = '\0';
+
+    // Mapping of numbers to corresponding letters on a phone keypad
+<span class="fc" id="L12">    private static final String[] KEYPAD = new String[] {&quot; &quot;, String.valueOf(EMPTY), &quot;abc&quot;, &quot;def&quot;, &quot;ghi&quot;, &quot;jkl&quot;, &quot;mno&quot;, &quot;pqrs&quot;, &quot;tuv&quot;, &quot;wxyz&quot;};</span>
+
+    private LetterCombinationsOfPhoneNumber() {
+    }
+
+    /**
+     * Generates a list of all possible letter combinations that the provided
+     * array of numbers could represent on a phone keypad.
+     *
+     * @param numbers an array of integers representing the phone numbers
+     * @return a list of possible letter combinations
+     */
+    public static List&lt;String&gt; getCombinations(int[] numbers) {
+<span class="fc bfc" id="L25" title="All 2 branches covered.">        if (numbers == null) {</span>
+<span class="fc" id="L26">            return List.of(&quot;&quot;);</span>
+        }
+<span class="fc" id="L28">        return generateCombinations(numbers, 0, new StringBuilder());</span>
+    }
+
+    /**
+     * Recursive method to generate combinations of letters from the phone keypad.
+     *
+     * @param numbers the input array of phone numbers
+     * @param index   the current index in the numbers array being processed
+     * @param current a StringBuilder holding the current combination of letters
+     * @return a list of letter combinations formed from the given numbers
+     */
+    private static List&lt;String&gt; generateCombinations(int[] numbers, int index, StringBuilder current) {
+        // Base case: if we've processed all numbers, return the current combination
+<span class="fc bfc" id="L41" title="All 2 branches covered.">        if (index == numbers.length) {</span>
+<span class="fc" id="L42">            return new ArrayList&lt;&gt;(Collections.singletonList(current.toString()));</span>
+        }
+
+<span class="fc" id="L45">        final var number = numbers[index];</span>
+<span class="fc bfc" id="L46" title="All 4 branches covered.">        if (number &lt; 0 || number &gt; 9) {</span>
+<span class="fc" id="L47">            throw new IllegalArgumentException(&quot;Input numbers must in the range [0, 9]&quot;);</span>
+        }
+
+<span class="fc" id="L50">        List&lt;String&gt; combinations = new ArrayList&lt;&gt;();</span>
+
+        // Iterate over each letter and recurse to generate further combinations
+<span class="fc bfc" id="L53" title="All 2 branches covered.">        for (char letter : KEYPAD[number].toCharArray()) {</span>
+<span class="fc bfc" id="L54" title="All 2 branches covered.">            if (letter != EMPTY) {</span>
+<span class="fc" id="L55">                current.append(letter);</span>
+            }
+<span class="fc" id="L57">            combinations.addAll(generateCombinations(numbers, index + 1, current));</span>
+<span class="fc bfc" id="L58" title="All 2 branches covered.">            if (letter != EMPTY) {</span>
+<span class="fc" id="L59">                current.deleteCharAt(current.length() - 1); // Backtrack by removing the last appended letter</span>
+            }
+        }
+
+<span class="fc" id="L63">        return combinations;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

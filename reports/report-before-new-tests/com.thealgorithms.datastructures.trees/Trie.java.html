@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Trie.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.trees</a> &gt; <span class="el_source">Trie.java</span></div><h1>Trie.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.trees;
+
+import java.util.HashMap;
+
+/**
+ * Represents a Trie Node that stores a character and pointers to its children.
+ * Each node has a hashmap which can point to all possible characters.
+ * Each node also has a boolean value to indicate if it is the end of a word.
+ */
+class TrieNode {
+    char value;
+    HashMap&lt;Character, TrieNode&gt; child;
+    boolean end;
+
+    /**
+     * Constructor to initialize a TrieNode with an empty hashmap
+     * and set end to false.
+     */
+<span class="fc" id="L19">    TrieNode(char value) {</span>
+<span class="fc" id="L20">        this.value = value;</span>
+<span class="fc" id="L21">        this.child = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L22">        this.end = false;</span>
+<span class="fc" id="L23">    }</span>
+}
+
+/**
+ * Trie Data structure implementation without any libraries.
+ * &lt;p&gt;
+ * The Trie (also known as a prefix tree) is a special tree-like data structure
+ * that is used to store a dynamic set or associative array where the keys are
+ * usually strings. It is highly efficient for prefix-based searches.
+ * &lt;p&gt;
+ * This implementation supports basic Trie operations like insertion, search,
+ * and deletion.
+ * &lt;p&gt;
+ * Each node of the Trie represents a character and has child nodes for each
+ * possible character.
+ *
+ * @author &lt;a href=&quot;https://github.com/dheeraj92&quot;&gt;Dheeraj Kumar Barnwal&lt;/a&gt;
+ * @author &lt;a href=&quot;https://github.com/sailok&quot;&gt;Sailok Chinta&lt;/a&gt;
+ */
+
+public class Trie {
+    private static final char ROOT_NODE_VALUE = '*';
+
+    private final TrieNode root;
+
+    /**
+     * Constructor to initialize the Trie.
+     * The root node is created but doesn't represent any character.
+     */
+<span class="fc" id="L52">    public Trie() {</span>
+<span class="fc" id="L53">        root = new TrieNode(ROOT_NODE_VALUE);</span>
+<span class="fc" id="L54">    }</span>
+
+    /**
+     * Inserts a word into the Trie.
+     * &lt;p&gt;
+     * The method traverses the Trie from the root, character by character, and adds
+     * nodes if necessary. It marks the last node of the word as an end node.
+     *
+     * @param word The word to be inserted into the Trie.
+     */
+    public void insert(String word) {
+<span class="fc" id="L65">        TrieNode currentNode = root;</span>
+<span class="fc bfc" id="L66" title="All 2 branches covered.">        for (int i = 0; i &lt; word.length(); i++) {</span>
+<span class="fc" id="L67">            TrieNode node = currentNode.child.getOrDefault(word.charAt(i), null);</span>
+
+<span class="fc bfc" id="L69" title="All 2 branches covered.">            if (node == null) {</span>
+<span class="fc" id="L70">                node = new TrieNode(word.charAt(i));</span>
+<span class="fc" id="L71">                currentNode.child.put(word.charAt(i), node);</span>
+            }
+<span class="fc" id="L73">            currentNode = node;</span>
+        }
+
+<span class="fc" id="L76">        currentNode.end = true;</span>
+<span class="fc" id="L77">    }</span>
+
+    /**
+     * Searches for a word in the Trie.
+     * &lt;p&gt;
+     * This method traverses the Trie based on the input word and checks whether
+     * the word exists. It returns true if the word is found and its end flag is
+     * true.
+     *
+     * @param word The word to search in the Trie.
+     * @return true if the word exists in the Trie, false otherwise.
+     */
+    public boolean search(String word) {
+<span class="fc" id="L90">        TrieNode currentNode = root;</span>
+<span class="fc bfc" id="L91" title="All 2 branches covered.">        for (int i = 0; i &lt; word.length(); i++) {</span>
+<span class="fc" id="L92">            TrieNode node = currentNode.child.getOrDefault(word.charAt(i), null);</span>
+
+<span class="fc bfc" id="L94" title="All 2 branches covered.">            if (node == null) {</span>
+<span class="fc" id="L95">                return false;</span>
+            }
+<span class="fc" id="L97">            currentNode = node;</span>
+        }
+
+<span class="fc" id="L100">        return currentNode.end;</span>
+    }
+
+    /**
+     * Deletes a word from the Trie.
+     * &lt;p&gt;
+     * The method traverses the Trie to find the word and marks its end flag as
+     * false.
+     * It returns true if the word was successfully deleted, false if the word
+     * wasn't found.
+     *
+     * @param word The word to be deleted from the Trie.
+     * @return true if the word was found and deleted, false if it was not found.
+     */
+    public boolean delete(String word) {
+<span class="fc" id="L115">        TrieNode currentNode = root;</span>
+<span class="fc bfc" id="L116" title="All 2 branches covered.">        for (int i = 0; i &lt; word.length(); i++) {</span>
+<span class="fc" id="L117">            TrieNode node = currentNode.child.getOrDefault(word.charAt(i), null);</span>
+<span class="fc bfc" id="L118" title="All 2 branches covered.">            if (node == null) {</span>
+<span class="fc" id="L119">                return false;</span>
+            }
+
+<span class="fc" id="L122">            currentNode = node;</span>
+        }
+
+<span class="pc bpc" id="L125" title="1 of 2 branches missed.">        if (currentNode.end) {</span>
+<span class="fc" id="L126">            currentNode.end = false;</span>
+<span class="fc" id="L127">            return true;</span>
+        }
+
+<span class="nc" id="L130">        return false;</span>
+    }
+
+    /**
+     * Counts the number of words in the trie
+     *&lt;p&gt;
+     * The method traverses the Trie and counts the number of words.
+     *
+     * @return count of words
+     */
+    public int countWords() {
+<span class="fc" id="L141">        return countWords(root);</span>
+    }
+
+    private int countWords(TrieNode node) {
+<span class="pc bpc" id="L145" title="1 of 2 branches missed.">        if (node == null) {</span>
+<span class="nc" id="L146">            return 0;</span>
+        }
+
+<span class="fc" id="L149">        int count = 0;</span>
+<span class="fc bfc" id="L150" title="All 2 branches covered.">        if (node.end) {</span>
+<span class="fc" id="L151">            count++;</span>
+        }
+
+<span class="fc bfc" id="L154" title="All 2 branches covered.">        for (TrieNode child : node.child.values()) {</span>
+<span class="fc" id="L155">            count += countWords(child);</span>
+<span class="fc" id="L156">        }</span>
+
+<span class="fc" id="L158">        return count;</span>
+    }
+
+    /**
+     * Check if the prefix exists in the trie
+     *
+     * @param prefix the prefix to be checked in the Trie
+     * @return true / false depending on the prefix if exists in the Trie
+     */
+    public boolean startsWithPrefix(String prefix) {
+<span class="fc" id="L168">        TrieNode currentNode = root;</span>
+
+<span class="fc bfc" id="L170" title="All 2 branches covered.">        for (int i = 0; i &lt; prefix.length(); i++) {</span>
+<span class="fc" id="L171">            TrieNode node = currentNode.child.getOrDefault(prefix.charAt(i), null);</span>
+<span class="pc bpc" id="L172" title="1 of 2 branches missed.">            if (node == null) {</span>
+<span class="nc" id="L173">                return false;</span>
+            }
+
+<span class="fc" id="L176">            currentNode = node;</span>
+        }
+
+<span class="fc" id="L179">        return true;</span>
+    }
+
+    /**
+     * Count the number of words starting with the given prefix in the trie
+     *
+     * @param prefix the prefix to be checked in the Trie
+     * @return count of words
+     */
+    public int countWordsWithPrefix(String prefix) {
+<span class="fc" id="L189">        TrieNode currentNode = root;</span>
+
+<span class="fc bfc" id="L191" title="All 2 branches covered.">        for (int i = 0; i &lt; prefix.length(); i++) {</span>
+<span class="fc" id="L192">            TrieNode node = currentNode.child.getOrDefault(prefix.charAt(i), null);</span>
+<span class="pc bpc" id="L193" title="1 of 2 branches missed.">            if (node == null) {</span>
+<span class="nc" id="L194">                return 0;</span>
+            }
+
+<span class="fc" id="L197">            currentNode = node;</span>
+        }
+
+<span class="fc" id="L200">        return countWords(currentNode);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

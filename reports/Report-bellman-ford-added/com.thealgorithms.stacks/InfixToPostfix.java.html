@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InfixToPostfix.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.stacks</a> &gt; <span class="el_source">InfixToPostfix.java</span></div><h1>InfixToPostfix.java</h1><pre class="source lang-java linenums">package com.thealgorithms.stacks;
+
+import java.util.Stack;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public final class InfixToPostfix {
+    private InfixToPostfix() {
+    }
+
+    public static String infix2PostFix(String infixExpression) throws Exception {
+<span class="fc bfc" id="L12" title="All 2 branches covered.">        if (!BalancedBrackets.isBalanced(filterBrackets(infixExpression))) {</span>
+<span class="fc" id="L13">            throw new Exception(&quot;invalid expression&quot;);</span>
+        }
+<span class="fc" id="L15">        StringBuilder output = new StringBuilder();</span>
+<span class="fc" id="L16">        Stack&lt;Character&gt; stack = new Stack&lt;&gt;();</span>
+<span class="fc bfc" id="L17" title="All 2 branches covered.">        for (char element : infixExpression.toCharArray()) {</span>
+<span class="fc bfc" id="L18" title="All 2 branches covered.">            if (Character.isLetterOrDigit(element)) {</span>
+<span class="fc" id="L19">                output.append(element);</span>
+<span class="fc bfc" id="L20" title="All 2 branches covered.">            } else if (element == '(') {</span>
+<span class="fc" id="L21">                stack.push(element);</span>
+<span class="fc bfc" id="L22" title="All 2 branches covered.">            } else if (element == ')') {</span>
+<span class="pc bpc" id="L23" title="1 of 4 branches missed.">                while (!stack.isEmpty() &amp;&amp; stack.peek() != '(') {</span>
+<span class="fc" id="L24">                    output.append(stack.pop());</span>
+                }
+<span class="fc" id="L26">                stack.pop();</span>
+            } else {
+<span class="fc bfc" id="L28" title="All 4 branches covered.">                while (!stack.isEmpty() &amp;&amp; precedence(element) &lt;= precedence(stack.peek())) {</span>
+<span class="fc" id="L29">                    output.append(stack.pop());</span>
+                }
+<span class="fc" id="L31">                stack.push(element);</span>
+            }
+        }
+<span class="fc bfc" id="L34" title="All 2 branches covered.">        while (!stack.isEmpty()) {</span>
+<span class="fc" id="L35">            output.append(stack.pop());</span>
+        }
+<span class="fc" id="L37">        return output.toString();</span>
+    }
+
+    private static int precedence(char operator) {
+<span class="pc bpc" id="L41" title="1 of 4 branches missed.">        switch (operator) {</span>
+        case '+':
+        case '-':
+<span class="fc" id="L44">            return 0;</span>
+        case '*':
+        case '/':
+<span class="fc" id="L47">            return 1;</span>
+        case '^':
+<span class="nc" id="L49">            return 2;</span>
+        default:
+<span class="fc" id="L51">            return -1;</span>
+        }
+    }
+
+    private static String filterBrackets(String input) {
+<span class="fc" id="L56">        Pattern pattern = Pattern.compile(&quot;[^(){}\\[\\]&lt;&gt;]&quot;);</span>
+<span class="fc" id="L57">        Matcher matcher = pattern.matcher(input);</span>
+<span class="fc" id="L58">        return matcher.replaceAll(&quot;&quot;);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

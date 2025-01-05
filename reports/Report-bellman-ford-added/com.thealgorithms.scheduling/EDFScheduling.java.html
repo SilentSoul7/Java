@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EDFScheduling.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.scheduling</a> &gt; <span class="el_source">EDFScheduling.java</span></div><h1>EDFScheduling.java</h1><pre class="source lang-java linenums">package com.thealgorithms.scheduling;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
+/**
+ * The Earliest Deadline First (EDF) Scheduling class implements a dynamic scheduling algorithm.
+ * It assigns the CPU to processes with the earliest deadlines, ensuring that deadlines are met if possible.
+ * This scheduling algorithm is ideal for real-time systems where meeting deadlines is critical.
+ */
+public final class EDFScheduling {
+    private EDFScheduling() {
+    }
+
+    private List&lt;Process&gt; processes;
+
+    /**
+     * Constructs an EDFScheduling object with a list of processes.
+     *
+     * @param processes List of processes to be scheduled.
+     */
+<span class="fc" id="L23">    public EDFScheduling(final List&lt;Process&gt; processes) {</span>
+<span class="fc" id="L24">        this.processes = processes;</span>
+<span class="fc" id="L25">    }</span>
+
+    /**
+     * Schedules the processes using Earliest Deadline First (EDF) scheduling.
+     * Processes are sorted by their deadlines, and the method simulates their execution.
+     * It calculates the waiting time and turnaround time for each process.
+     *
+     * @return List of processes after they have been executed in order of earliest deadline first.
+     */
+    public List&lt;Process&gt; scheduleProcesses() {
+<span class="fc" id="L35">        processes.sort(Comparator.comparingInt(Process::getDeadline));</span>
+
+<span class="fc" id="L37">        int currentTime = 0;</span>
+<span class="fc" id="L38">        List&lt;Process&gt; executedProcesses = new ArrayList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L40" title="All 2 branches covered.">        for (Process process : processes) {</span>
+<span class="fc" id="L41">            process.setWaitingTime(currentTime);</span>
+<span class="fc" id="L42">            currentTime += process.getBurstTime();</span>
+<span class="fc" id="L43">            process.setTurnAroundTime(process.getWaitingTime() + process.getBurstTime());</span>
+
+<span class="pc bpc" id="L45" title="1 of 2 branches missed.">            if (currentTime &gt; process.getDeadline()) {</span>
+<span class="nc" id="L46">                System.out.println(&quot;Warning: Process &quot; + process.getProcessId() + &quot; missed its deadline.&quot;);</span>
+            }
+
+<span class="fc" id="L49">            executedProcesses.add(process);</span>
+<span class="fc" id="L50">        }</span>
+
+<span class="fc" id="L52">        return executedProcesses;</span>
+    }
+
+    /**
+     * The Process class represents a process with an ID, burst time, deadline, waiting time, and turnaround time.
+     */
+    public static class Process {
+        private String processId;
+        private int burstTime;
+        private int deadline;
+        private int waitingTime;
+        private int turnAroundTime;
+
+<span class="fc" id="L65">        public Process(String processId, int burstTime, int deadline) {</span>
+<span class="fc" id="L66">            this.processId = processId;</span>
+<span class="fc" id="L67">            this.burstTime = burstTime;</span>
+<span class="fc" id="L68">            this.deadline = deadline;</span>
+<span class="fc" id="L69">        }</span>
+
+        public String getProcessId() {
+<span class="fc" id="L72">            return processId;</span>
+        }
+
+        public int getBurstTime() {
+<span class="fc" id="L76">            return burstTime;</span>
+        }
+
+        public int getDeadline() {
+<span class="fc" id="L80">            return deadline;</span>
+        }
+
+        public int getWaitingTime() {
+<span class="fc" id="L84">            return waitingTime;</span>
+        }
+
+        public void setWaitingTime(int waitingTime) {
+<span class="fc" id="L88">            this.waitingTime = waitingTime;</span>
+<span class="fc" id="L89">        }</span>
+
+        public int getTurnAroundTime() {
+<span class="fc" id="L92">            return turnAroundTime;</span>
+        }
+
+        public void setTurnAroundTime(int turnAroundTime) {
+<span class="fc" id="L96">            this.turnAroundTime = turnAroundTime;</span>
+<span class="fc" id="L97">        }</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

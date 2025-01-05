@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MidpointEllipse.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.geometry</a> &gt; <span class="el_source">MidpointEllipse.java</span></div><h1>MidpointEllipse.java</h1><pre class="source lang-java linenums">package com.thealgorithms.geometry;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+/**
+ * The MidpointEllipse class implements the Midpoint Ellipse Drawing Algorithm.
+ * This algorithm efficiently computes the points on an ellipse by dividing it into two regions
+ * and using decision parameters to determine the next point to plot.
+ */
+public final class MidpointEllipse {
+
+    private MidpointEllipse() {
+        // Private constructor to prevent instantiation
+    }
+
+    /**
+     * Draws an ellipse using the Midpoint Ellipse Algorithm.
+     *
+     * @param centerX the x-coordinate of the center of the ellipse
+     * @param centerY the y-coordinate of the center of the ellipse
+     * @param a the length of the semi-major axis (horizontal radius)
+     * @param b the length of the semi-minor axis (vertical radius)
+     * @return a list of points (represented as int arrays) that form the ellipse
+     */
+    public static List&lt;int[]&gt; drawEllipse(int centerX, int centerY, int a, int b) {
+<span class="fc" id="L28">        List&lt;int[]&gt; points = new ArrayList&lt;&gt;();</span>
+
+        // Handle degenerate cases with early returns
+<span class="fc bfc" id="L31" title="All 4 branches covered.">        if (a == 0 &amp;&amp; b == 0) {</span>
+<span class="fc" id="L32">            points.add(new int[] {centerX, centerY}); // Only the center point</span>
+<span class="fc" id="L33">            return points;</span>
+        }
+
+<span class="fc bfc" id="L36" title="All 2 branches covered.">        if (a == 0) {</span>
+            // Semi-major axis is zero, create a vertical line
+<span class="fc bfc" id="L38" title="All 2 branches covered.">            for (int y = centerY - b; y &lt;= centerY + b; y++) {</span>
+<span class="fc" id="L39">                points.add(new int[] {centerX, y});</span>
+            }
+<span class="fc" id="L41">            return points; // Early return</span>
+        }
+
+<span class="fc bfc" id="L44" title="All 2 branches covered.">        if (b == 0) {</span>
+            // Semi-minor axis is zero, create a horizontal line
+<span class="fc bfc" id="L46" title="All 2 branches covered.">            for (int x = centerX - a; x &lt;= centerX + a; x++) {</span>
+<span class="fc" id="L47">                points.add(new int[] {x, centerY});</span>
+            }
+<span class="fc" id="L49">            return points; // Early return</span>
+        }
+
+        // Normal case: Non-degenerate ellipse
+<span class="fc" id="L53">        computeEllipsePoints(points, centerX, centerY, a, b);</span>
+
+<span class="fc" id="L55">        return points; // Return all calculated points of the ellipse</span>
+    }
+
+    /**
+     * Computes points of a non-degenerate ellipse using the Midpoint Ellipse Algorithm.
+     *
+     * @param points    the list to which points will be added
+     * @param centerX  the x-coordinate of the center of the ellipse
+     * @param centerY  the y-coordinate of the center of the ellipse
+     * @param a        the length of the semi-major axis (horizontal radius)
+     * @param b        the length of the semi-minor axis (vertical radius)
+     */
+    private static void computeEllipsePoints(Collection&lt;int[]&gt; points, int centerX, int centerY, int a, int b) {
+<span class="fc" id="L68">        int x = 0; // Initial x-coordinate</span>
+<span class="fc" id="L69">        int y = b; // Initial y-coordinate</span>
+
+        // Region 1: Initial decision parameter
+<span class="fc" id="L72">        double d1 = (b * b) - (a * a * b) + (0.25 * a * a); // Decision variable for region 1</span>
+<span class="fc" id="L73">        double dx = 2.0 * b * b * x; // Change in x</span>
+<span class="fc" id="L74">        double dy = 2.0 * a * a * y; // Change in y</span>
+
+        // Region 1: When the slope is less than 1
+<span class="fc bfc" id="L77" title="All 2 branches covered.">        while (dx &lt; dy) {</span>
+<span class="fc" id="L78">            addEllipsePoints(points, centerX, centerY, x, y);</span>
+
+            // Update decision parameter and variables
+<span class="fc bfc" id="L81" title="All 2 branches covered.">            if (d1 &lt; 0) {</span>
+<span class="fc" id="L82">                x++;</span>
+<span class="fc" id="L83">                dx += (2 * b * b); // Update x change</span>
+<span class="fc" id="L84">                d1 += dx + (b * b); // Update decision parameter</span>
+            } else {
+<span class="fc" id="L86">                x++;</span>
+<span class="fc" id="L87">                y--;</span>
+<span class="fc" id="L88">                dx += (2 * b * b); // Update x change</span>
+<span class="fc" id="L89">                dy -= (2 * a * a); // Update y change</span>
+<span class="fc" id="L90">                d1 += dx - dy + (b * b); // Update decision parameter</span>
+            }
+        }
+
+        // Region 2: Initial decision parameter for the second region
+<span class="fc" id="L95">        double d2 = b * b * (x + 0.5) * (x + 0.5) + a * a * (y - 1) * (y - 1) - a * a * b * b;</span>
+
+        // Region 2: When the slope is greater than or equal to 1
+<span class="fc bfc" id="L98" title="All 2 branches covered.">        while (y &gt;= 0) {</span>
+<span class="fc" id="L99">            addEllipsePoints(points, centerX, centerY, x, y);</span>
+
+            // Update decision parameter and variables
+<span class="fc bfc" id="L102" title="All 2 branches covered.">            if (d2 &gt; 0) {</span>
+<span class="fc" id="L103">                y--;</span>
+<span class="fc" id="L104">                dy -= (2 * a * a); // Update y change</span>
+<span class="fc" id="L105">                d2 += (a * a) - dy; // Update decision parameter</span>
+            } else {
+<span class="fc" id="L107">                y--;</span>
+<span class="fc" id="L108">                x++;</span>
+<span class="fc" id="L109">                dx += (2 * b * b); // Update x change</span>
+<span class="fc" id="L110">                dy -= (2 * a * a); // Update y change</span>
+<span class="fc" id="L111">                d2 += dx - dy + (a * a); // Update decision parameter</span>
+            }
+        }
+<span class="fc" id="L114">    }</span>
+
+    /**
+     * Adds points for all four quadrants of the ellipse based on symmetry.
+     *
+     * @param points    the list to which points will be added
+     * @param centerX  the x-coordinate of the center of the ellipse
+     * @param centerY  the y-coordinate of the center of the ellipse
+     * @param x        the x-coordinate relative to the center
+     * @param y        the y-coordinate relative to the center
+     */
+    private static void addEllipsePoints(Collection&lt;int[]&gt; points, int centerX, int centerY, int x, int y) {
+<span class="fc" id="L126">        points.add(new int[] {centerX + x, centerY + y});</span>
+<span class="fc" id="L127">        points.add(new int[] {centerX - x, centerY + y});</span>
+<span class="fc" id="L128">        points.add(new int[] {centerX + x, centerY - y});</span>
+<span class="fc" id="L129">        points.add(new int[] {centerX - x, centerY - y});</span>
+<span class="fc" id="L130">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MedianOfTwoSortedArrays.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.divideandconquer</a> &gt; <span class="el_source">MedianOfTwoSortedArrays.java</span></div><h1>MedianOfTwoSortedArrays.java</h1><pre class="source lang-java linenums">package com.thealgorithms.divideandconquer;
+
+public final class MedianOfTwoSortedArrays {
+
+    private MedianOfTwoSortedArrays() {
+    }
+
+    /**
+     * Finds the median of two sorted arrays in logarithmic time.
+     *
+     * @param nums1 the first sorted array
+     * @param nums2 the second sorted array
+     * @return the median of the combined sorted array
+     * @throws IllegalArgumentException if the input arrays are not sorted
+     */
+    public static double findMedianSortedArrays(int[] nums1, int[] nums2) {
+<span class="fc bfc" id="L17" title="All 2 branches covered.">        if (nums1.length &gt; nums2.length) {</span>
+<span class="fc" id="L18">            return findMedianSortedArrays(nums2, nums1); // Ensure nums1 is the smaller array</span>
+        }
+
+<span class="fc" id="L21">        int m = nums1.length;</span>
+<span class="fc" id="L22">        int n = nums2.length;</span>
+<span class="fc" id="L23">        int low = 0;</span>
+<span class="fc" id="L24">        int high = m;</span>
+<span class="pc bpc" id="L25" title="1 of 2 branches missed.">        while (low &lt;= high) {</span>
+<span class="fc" id="L26">            int partition1 = (low + high) / 2; // Partition in the first array</span>
+<span class="fc" id="L27">            int partition2 = (m + n + 1) / 2 - partition1; // Partition in the second array</span>
+
+<span class="fc bfc" id="L29" title="All 2 branches covered.">            int maxLeft1 = (partition1 == 0) ? Integer.MIN_VALUE : nums1[partition1 - 1];</span>
+<span class="fc bfc" id="L30" title="All 2 branches covered.">            int minRight1 = (partition1 == m) ? Integer.MAX_VALUE : nums1[partition1];</span>
+<span class="fc bfc" id="L31" title="All 2 branches covered.">            int maxLeft2 = (partition2 == 0) ? Integer.MIN_VALUE : nums2[partition2 - 1];</span>
+<span class="fc bfc" id="L32" title="All 2 branches covered.">            int minRight2 = (partition2 == n) ? Integer.MAX_VALUE : nums2[partition2];</span>
+
+            // Check if partition is valid
+<span class="pc bpc" id="L35" title="1 of 4 branches missed.">            if (maxLeft1 &lt;= minRight2 &amp;&amp; maxLeft2 &lt;= minRight1) {</span>
+                // If combined array length is odd
+<span class="fc bfc" id="L37" title="All 2 branches covered.">                if (((m + n) &amp; 1) == 1) {</span>
+<span class="fc" id="L38">                    return Math.max(maxLeft1, maxLeft2);</span>
+                }
+                // If combined array length is even
+                else {
+<span class="fc" id="L42">                    return (Math.max(maxLeft1, maxLeft2) + Math.min(minRight1, minRight2)) / 2.0;</span>
+                }
+<span class="pc bpc" id="L44" title="1 of 2 branches missed.">            } else if (maxLeft1 &gt; minRight2) {</span>
+<span class="nc" id="L45">                high = partition1 - 1;</span>
+            } else {
+<span class="fc" id="L47">                low = partition1 + 1;</span>
+            }
+<span class="fc" id="L49">        }</span>
+
+<span class="nc" id="L51">        throw new IllegalArgumentException(&quot;Input arrays are not sorted&quot;);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SplayTree.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.trees</a> &gt; <span class="el_source">SplayTree.java</span></div><h1>SplayTree.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.trees;
+
+import java.util.LinkedList;
+import java.util.List;
+
+/**
+ * Implementation of a Splay Tree data structure.
+ *
+ * A splay tree is a self-adjusting binary search tree with the additional
+ * property
+ * that recently accessed elements are quick to access again. It performs basic
+ * operations such as insertion, deletion, and searching in O(log n) amortized
+ * time,
+ * where n is the number of elements in the tree.
+ *
+ * The key feature of splay trees is the splay operation, which moves a node
+ * closer
+ * to the root of the tree when it is accessed. This operation helps to maintain
+ * good balance and improves the overall performance of the tree. After
+ * performing
+ * a splay operation, the accessed node becomes the new root of the tree.
+ *
+ * Splay trees have applications in various areas, including caching, network
+ * routing,
+ * and dynamic optimality analysis.
+ */
+<span class="fc" id="L27">public class SplayTree {</span>
+<span class="fc" id="L28">    public static final TreeTraversal PRE_ORDER = new PreOrderTraversal();</span>
+<span class="fc" id="L29">    public static final TreeTraversal IN_ORDER = new InOrderTraversal();</span>
+<span class="fc" id="L30">    public static final TreeTraversal POST_ORDER = new PostOrderTraversal();</span>
+
+    private Node root;
+
+    /**
+     * Checks if the tree is empty.
+     *
+     * @return True if the tree is empty, otherwise false.
+     */
+    public boolean isEmpty() {
+<span class="fc bfc" id="L40" title="All 2 branches covered.">        return root == null;</span>
+    }
+
+    /**
+     * Insert a key into the SplayTree.
+     *
+     * @param key The key to insert.
+     */
+    public void insert(final int key) {
+<span class="fc" id="L49">        root = insertRec(root, key);</span>
+<span class="fc" id="L50">        root = splay(root, key);</span>
+<span class="fc" id="L51">    }</span>
+
+    /**
+     * Search for a key in the SplayTree.
+     *
+     * @param key The key to search for.
+     * @return True if the key is found, otherwise false.
+     */
+    public boolean search(int key) {
+<span class="fc" id="L60">        root = splay(root, key);</span>
+<span class="fc bfc" id="L61" title="All 4 branches covered.">        return root != null &amp;&amp; root.key == key;</span>
+    }
+
+    /**
+     * Deletes a key from the SplayTree.
+     *
+     * @param key The key to delete.
+     * @throws IllegalArgumentException If the tree is empty.
+     */
+    public void delete(final int key) {
+<span class="fc bfc" id="L71" title="All 2 branches covered.">        if (isEmpty()) {</span>
+<span class="fc" id="L72">            throw new EmptyTreeException(&quot;Cannot delete from an empty tree&quot;);</span>
+        }
+
+<span class="fc" id="L75">        root = splay(root, key);</span>
+
+<span class="fc bfc" id="L77" title="All 2 branches covered.">        if (root.key != key) {</span>
+<span class="fc" id="L78">            return;</span>
+        }
+
+<span class="fc bfc" id="L81" title="All 2 branches covered.">        if (root.left == null) {</span>
+<span class="fc" id="L82">            root = root.right;</span>
+        } else {
+<span class="fc" id="L84">            Node temp = root;</span>
+<span class="fc" id="L85">            root = splay(root.left, findMax(root.left).key);</span>
+<span class="fc" id="L86">            root.right = temp.right;</span>
+        }
+<span class="fc" id="L88">    }</span>
+
+    /**
+     * Perform a traversal of the SplayTree.
+     *
+     * @param traversal The type of traversal method.
+     * @return A list containing the keys in the specified traversal order.
+     */
+    public List&lt;Integer&gt; traverse(TreeTraversal traversal) {
+<span class="fc" id="L97">        List&lt;Integer&gt; result = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L98">        traversal.traverse(root, result);</span>
+<span class="fc" id="L99">        return result;</span>
+    }
+
+    /**
+     * Finds the node with the maximum key in a given subtree.
+     *
+     * &lt;p&gt;
+     * This method traverses the right children of the subtree until it finds the
+     * rightmost node, which contains the maximum key.
+     * &lt;/p&gt;
+     *
+     * @param root The root node of the subtree.
+     * @return The node with the maximum key in the subtree.
+     */
+    private Node findMax(Node root) {
+<span class="fc bfc" id="L114" title="All 2 branches covered.">        while (root.right != null) {</span>
+<span class="fc" id="L115">            root = root.right;</span>
+        }
+<span class="fc" id="L117">        return root;</span>
+    }
+
+    /**
+     * Zig operation.
+     *
+     * &lt;p&gt;
+     * The zig operation is used to perform a single rotation on a node to move it
+     * closer to
+     * the root of the tree. It is typically applied when the node is a left child
+     * of its parent
+     * and needs to be rotated to the right.
+     * &lt;/p&gt;
+     *
+     * @param x The node to perform the zig operation on.
+     * @return The new root node after the operation.
+     */
+    private Node rotateRight(Node x) {
+<span class="fc" id="L135">        Node y = x.left;</span>
+<span class="fc" id="L136">        x.left = y.right;</span>
+<span class="fc" id="L137">        y.right = x;</span>
+<span class="fc" id="L138">        return y;</span>
+    }
+
+    /**
+     * Zag operation.
+     *
+     * &lt;p&gt;
+     * The zag operation is used to perform a single rotation on a node to move it
+     * closer to
+     * the root of the tree. It is typically applied when the node is a right child
+     * of its parent
+     * and needs to be rotated to the left.
+     * &lt;/p&gt;
+     *
+     * @param x The node to perform the zag operation on.
+     * @return The new root node after the operation.
+     */
+    private Node rotateLeft(Node x) {
+<span class="fc" id="L156">        Node y = x.right;</span>
+<span class="fc" id="L157">        x.right = y.left;</span>
+<span class="fc" id="L158">        y.left = x;</span>
+<span class="fc" id="L159">        return y;</span>
+    }
+
+    /**
+     * Splay operation.
+     *
+     * &lt;p&gt;
+     * The splay operation is the core operation of a splay tree. It moves a
+     * specified node
+     * closer to the root of the tree by performing a series of rotations. The goal
+     * of the splay
+     * operation is to improve the access time for frequently accessed nodes by
+     * bringing them
+     * closer to the root.
+     * &lt;/p&gt;
+     *
+     * &lt;p&gt;
+     * The splay operation consists of three main cases:
+     * &lt;ul&gt;
+     * &lt;li&gt;Zig-Zig case: Perform two consecutive rotations.&lt;/li&gt;
+     * &lt;li&gt;Zig-Zag case: Perform two consecutive rotations in opposite
+     * directions.&lt;/li&gt;
+     * &lt;li&gt;Zag-Zag case: Perform two consecutive rotations.&lt;/li&gt;
+     * &lt;/ul&gt;
+     * &lt;/p&gt;
+     *
+     * &lt;p&gt;
+     * After performing the splay operation, the accessed node becomes the new root
+     * of the tree.
+     * &lt;/p&gt;
+     *
+     * @param root The root of the subtree to splay.
+     * @param key  The key to splay around.
+     * @return The new root of the splayed subtree.
+     */
+    private Node splay(Node root, final int key) {
+<span class="fc bfc" id="L195" title="All 4 branches covered.">        if (root == null || root.key == key) {</span>
+<span class="fc" id="L196">            return root;</span>
+        }
+
+<span class="fc bfc" id="L199" title="All 2 branches covered.">        if (root.key &gt; key) {</span>
+<span class="fc bfc" id="L200" title="All 2 branches covered.">            if (root.left == null) {</span>
+<span class="fc" id="L201">                return root;</span>
+            }
+            // Zig-Zig case
+<span class="fc bfc" id="L204" title="All 2 branches covered.">            if (root.left.key &gt; key) {</span>
+<span class="fc" id="L205">                root.left.left = splay(root.left.left, key);</span>
+<span class="fc" id="L206">                root = rotateRight(root);</span>
+<span class="fc bfc" id="L207" title="All 2 branches covered.">            } else if (root.left.key &lt; key) {</span>
+<span class="fc" id="L208">                root.left.right = splay(root.left.right, key);</span>
+<span class="pc bpc" id="L209" title="1 of 2 branches missed.">                if (root.left.right != null) {</span>
+<span class="fc" id="L210">                    root.left = rotateLeft(root.left);</span>
+                }
+            }
+<span class="fc bfc" id="L213" title="All 2 branches covered.">            return (root.left == null) ? root : rotateRight(root);</span>
+        } else {
+<span class="fc bfc" id="L215" title="All 2 branches covered.">            if (root.right == null) {</span>
+<span class="fc" id="L216">                return root;</span>
+            }
+            // Zag-Zag case
+<span class="fc bfc" id="L219" title="All 2 branches covered.">            if (root.right.key &gt; key) {</span>
+<span class="fc" id="L220">                root.right.left = splay(root.right.left, key);</span>
+<span class="fc bfc" id="L221" title="All 2 branches covered.">                if (root.right.left != null) {</span>
+<span class="fc" id="L222">                    root.right = rotateRight(root.right);</span>
+                }
+<span class="fc bfc" id="L224" title="All 2 branches covered.">            } else if (root.right.key &lt; key) {</span>
+<span class="fc" id="L225">                root.right.right = splay(root.right.right, key);</span>
+<span class="fc" id="L226">                root = rotateLeft(root);</span>
+            }
+<span class="fc bfc" id="L228" title="All 2 branches covered.">            return (root.right == null) ? root : rotateLeft(root);</span>
+        }
+    }
+
+    private Node insertRec(Node root, final int key) {
+<span class="fc bfc" id="L233" title="All 2 branches covered.">        if (root == null) {</span>
+<span class="fc" id="L234">            return new Node(key);</span>
+        }
+
+<span class="fc bfc" id="L237" title="All 2 branches covered.">        if (key &lt; root.key) {</span>
+<span class="fc" id="L238">            root.left = insertRec(root.left, key);</span>
+<span class="fc bfc" id="L239" title="All 2 branches covered.">        } else if (key &gt; root.key) {</span>
+<span class="fc" id="L240">            root.right = insertRec(root.right, key);</span>
+        } else {
+<span class="fc" id="L242">            throw new DuplicateKeyException(&quot;Duplicate key: &quot; + key);</span>
+        }
+
+<span class="fc" id="L245">        return root;</span>
+    }
+
+    public static class EmptyTreeException extends RuntimeException {
+        private static final long serialVersionUID = 1L;
+
+        public EmptyTreeException(String message) {
+<span class="fc" id="L252">            super(message);</span>
+<span class="fc" id="L253">        }</span>
+    }
+
+    public static class DuplicateKeyException extends RuntimeException {
+        private static final long serialVersionUID = 1L;
+
+        public DuplicateKeyException(String message) {
+<span class="fc" id="L260">            super(message);</span>
+<span class="fc" id="L261">        }</span>
+    }
+
+    private static class Node {
+        final int key;
+        Node left;
+        Node right;
+
+<span class="fc" id="L269">        Node(int key) {</span>
+<span class="fc" id="L270">            this.key = key;</span>
+<span class="fc" id="L271">            left = null;</span>
+<span class="fc" id="L272">            right = null;</span>
+<span class="fc" id="L273">        }</span>
+    }
+
+    public interface TreeTraversal {
+        /**
+         * Recursive function for a specific order traversal.
+         *
+         * @param root   The root of the subtree to traverse.
+         * @param result The list to store the traversal result.
+         */
+        void traverse(Node root, List&lt;Integer&gt; result);
+    }
+
+    private static final class InOrderTraversal implements TreeTraversal {
+        private InOrderTraversal() {
+        }
+
+        public void traverse(Node root, List&lt;Integer&gt; result) {
+<span class="fc bfc" id="L291" title="All 2 branches covered.">            if (root != null) {</span>
+<span class="fc" id="L292">                traverse(root.left, result);</span>
+<span class="fc" id="L293">                result.add(root.key);</span>
+<span class="fc" id="L294">                traverse(root.right, result);</span>
+            }
+<span class="fc" id="L296">        }</span>
+    }
+
+    private static final class PreOrderTraversal implements TreeTraversal {
+        private PreOrderTraversal() {
+        }
+
+        public void traverse(Node root, List&lt;Integer&gt; result) {
+<span class="fc bfc" id="L304" title="All 2 branches covered.">            if (root != null) {</span>
+<span class="fc" id="L305">                result.add(root.key);</span>
+<span class="fc" id="L306">                traverse(root.left, result);</span>
+<span class="fc" id="L307">                traverse(root.right, result);</span>
+            }
+<span class="fc" id="L309">        }</span>
+    }
+
+    private static final class PostOrderTraversal implements TreeTraversal {
+        private PostOrderTraversal() {
+        }
+
+        public void traverse(Node root, List&lt;Integer&gt; result) {
+<span class="fc bfc" id="L317" title="All 2 branches covered.">            if (root != null) {</span>
+<span class="fc" id="L318">                traverse(root.left, result);</span>
+<span class="fc" id="L319">                traverse(root.right, result);</span>
+<span class="fc" id="L320">                result.add(root.key);</span>
+            }
+<span class="fc" id="L322">        }</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

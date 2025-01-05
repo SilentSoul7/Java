@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JobSchedulingWithDeadline.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.scheduling</a> &gt; <span class="el_source">JobSchedulingWithDeadline.java</span></div><h1>JobSchedulingWithDeadline.java</h1><pre class="source lang-java linenums">package com.thealgorithms.scheduling;
+
+import java.util.Arrays;
+import java.util.Comparator;
+
+/**
+ * A class that implements a job scheduling algorithm to maximize profit
+ * while adhering to job deadlines and arrival times.
+ *
+ * This class provides functionality to schedule jobs based on their profit,
+ * arrival time, and deadlines to ensure that the maximum number of jobs is completed
+ * within the given timeframe. It sorts the jobs in decreasing order of profit
+ * and attempts to assign them to the latest possible time slots.
+ */
+public final class JobSchedulingWithDeadline {
+    private JobSchedulingWithDeadline() {
+    }
+
+    /**
+     * Represents a job with an ID, arrival time, deadline, and profit.
+     *
+     * Each job has a unique identifier, an arrival time (when it becomes available for scheduling),
+     * a deadline by which it must be completed, and a profit associated with completing the job.
+     */
+    static class Job {
+        int jobId;
+        int arrivalTime;
+        int deadline;
+        int profit;
+
+        /**
+         * Constructs a Job instance with the specified job ID, arrival time, deadline, and profit.
+         *
+         * @param jobId      Unique identifier for the job
+         * @param arrivalTime Time when the job becomes available for scheduling
+         * @param deadline   Deadline for completing the job
+         * @param profit     Profit earned upon completing the job
+         */
+<span class="fc" id="L39">        Job(int jobId, int arrivalTime, int deadline, int profit) {</span>
+<span class="fc" id="L40">            this.jobId = jobId;</span>
+<span class="fc" id="L41">            this.arrivalTime = arrivalTime;</span>
+<span class="fc" id="L42">            this.deadline = deadline;</span>
+<span class="fc" id="L43">            this.profit = profit;</span>
+<span class="fc" id="L44">        }</span>
+    }
+
+    /**
+     * Schedules jobs to maximize profit while respecting their deadlines and arrival times.
+     *
+     * This method sorts the jobs in descending order of profit and attempts
+     * to allocate them to time slots that are before or on their deadlines,
+     * provided they have arrived. The function returns an array where the first element
+     * is the total number of jobs scheduled and the second element is the total profit earned.
+     *
+     * @param jobs An array of Job objects, each representing a job with an ID, arrival time,
+     *             deadline, and profit.
+     * @return An array of two integers: the first element is the count of jobs
+     *         that were successfully scheduled, and the second element is the
+     *         total profit earned from those jobs.
+     */
+    public static int[] jobSequencingWithDeadlines(Job[] jobs) {
+<span class="fc" id="L62">        Arrays.sort(jobs, Comparator.comparingInt(job -&gt; - job.profit));</span>
+
+<span class="fc" id="L64">        int maxDeadline = Arrays.stream(jobs).mapToInt(job -&gt; job.deadline).max().orElse(0);</span>
+
+<span class="fc" id="L66">        int[] timeSlots = new int[maxDeadline];</span>
+<span class="fc" id="L67">        Arrays.fill(timeSlots, -1);</span>
+
+<span class="fc" id="L69">        int count = 0;</span>
+<span class="fc" id="L70">        int maxProfit = 0;</span>
+
+        // Schedule the jobs
+<span class="fc bfc" id="L73" title="All 2 branches covered.">        for (Job job : jobs) {</span>
+<span class="pc bpc" id="L74" title="1 of 2 branches missed.">            if (job.arrivalTime &lt;= job.deadline) {</span>
+<span class="fc bfc" id="L75" title="All 2 branches covered.">                for (int i = Math.min(job.deadline - 1, maxDeadline - 1); i &gt;= job.arrivalTime - 1; i--) {</span>
+<span class="fc bfc" id="L76" title="All 2 branches covered.">                    if (timeSlots[i] == -1) {</span>
+<span class="fc" id="L77">                        timeSlots[i] = job.jobId;</span>
+<span class="fc" id="L78">                        count++;</span>
+<span class="fc" id="L79">                        maxProfit += job.profit;</span>
+<span class="fc" id="L80">                        break;</span>
+                    }
+                }
+            }
+        }
+
+<span class="fc" id="L86">        return new int[] {count, maxProfit};</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

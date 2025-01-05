@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WordSearch.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.backtracking</a> &gt; <span class="el_source">WordSearch.java</span></div><h1>WordSearch.java</h1><pre class="source lang-java linenums">package com.thealgorithms.backtracking;
+
+/**
+ * Word Search Problem
+ *
+ * This class solves the word search problem where given an m x n grid of characters (board)
+ * and a target word, the task is to check if the word exists in the grid.
+ * The word can be constructed from sequentially adjacent cells (horizontally or vertically),
+ * and the same cell may not be used more than once in constructing the word.
+ *
+ * Example:
+ * - For board =
+ *     [
+ *       ['A','B','C','E'],
+ *       ['S','F','C','S'],
+ *       ['A','D','E','E']
+ *     ]
+ *   and word = &quot;ABCCED&quot;, -&gt; returns true
+ *   and word = &quot;SEE&quot;,    -&gt; returns true
+ *   and word = &quot;ABCB&quot;,   -&gt; returns false
+ *
+ * Solution:
+ * - Depth First Search (DFS) with backtracking is used to explore possible paths from any cell
+ *   matching the first letter of the word. DFS ensures that we search all valid paths, while
+ *   backtracking helps in reverting decisions when a path fails to lead to a solution.
+ *
+ * Time Complexity: O(m * n * 3^L)
+ *  - m = number of rows in the board
+ *  - n = number of columns in the board
+ *  - L = length of the word
+ *  - For each cell, we look at 3 possible directions (since we exclude the previously visited direction),
+ *    and we do this for L letters.
+ *
+ * Space Complexity: O(L)
+ *  - Stack space for the recursive DFS function, where L is the maximum depth of recursion (length of the word).
+ */
+<span class="fc" id="L37">public class WordSearch {</span>
+<span class="fc" id="L38">    private final int[] dx = {0, 0, 1, -1};</span>
+<span class="fc" id="L39">    private final int[] dy = {1, -1, 0, 0};</span>
+    private boolean[][] visited;
+    private char[][] board;
+    private String word;
+
+    /**
+     * Checks if the given (x, y) coordinates are valid positions in the board.
+     *
+     * @param x The row index.
+     * @param y The column index.
+     * @return True if the coordinates are within the bounds of the board; false otherwise.
+     */
+    private boolean isValid(int x, int y) {
+<span class="fc bfc" id="L52" title="All 8 branches covered.">        return x &gt;= 0 &amp;&amp; x &lt; board.length &amp;&amp; y &gt;= 0 &amp;&amp; y &lt; board[0].length;</span>
+    }
+
+    /**
+     * Performs Depth First Search (DFS) from the cell (x, y)
+     * to search for the next character in the word.
+     *
+     * @param x       The current row index.
+     * @param y       The current column index.
+     * @param nextIdx The index of the next character in the word to be matched.
+     * @return True if a valid path is found to match the remaining characters of the word; false otherwise.
+     */
+    private boolean doDFS(int x, int y, int nextIdx) {
+<span class="fc" id="L65">        visited[x][y] = true;</span>
+<span class="fc bfc" id="L66" title="All 2 branches covered.">        if (nextIdx == word.length()) {</span>
+<span class="fc" id="L67">            return true;</span>
+        }
+
+<span class="fc bfc" id="L70" title="All 2 branches covered.">        for (int i = 0; i &lt; 4; ++i) {</span>
+<span class="fc" id="L71">            int xi = x + dx[i];</span>
+<span class="fc" id="L72">            int yi = y + dy[i];</span>
+<span class="fc bfc" id="L73" title="All 6 branches covered.">            if (isValid(xi, yi) &amp;&amp; board[xi][yi] == word.charAt(nextIdx) &amp;&amp; !visited[xi][yi]) {</span>
+<span class="fc" id="L74">                boolean exists = doDFS(xi, yi, nextIdx + 1);</span>
+<span class="fc bfc" id="L75" title="All 2 branches covered.">                if (exists) {</span>
+<span class="fc" id="L76">                    return true;</span>
+                }
+            }
+        }
+
+<span class="fc" id="L81">        visited[x][y] = false; // Backtrack</span>
+<span class="fc" id="L82">        return false;</span>
+    }
+
+    /**
+     * Main function to check if the word exists in the board. It initiates DFS from any
+     * cell that matches the first character of the word.
+     *
+     * @param board The 2D grid of characters (the board).
+     * @param word  The target word to search for in the board.
+     * @return True if the word exists in the board; false otherwise.
+     */
+    public boolean exist(char[][] board, String word) {
+<span class="fc" id="L94">        this.board = board;</span>
+<span class="fc" id="L95">        this.word = word;</span>
+<span class="fc bfc" id="L96" title="All 2 branches covered.">        for (int i = 0; i &lt; board.length; ++i) {</span>
+<span class="fc bfc" id="L97" title="All 2 branches covered.">            for (int j = 0; j &lt; board[0].length; ++j) {</span>
+<span class="fc bfc" id="L98" title="All 2 branches covered.">                if (board[i][j] == word.charAt(0)) {</span>
+<span class="fc" id="L99">                    visited = new boolean[board.length][board[0].length];</span>
+<span class="fc" id="L100">                    boolean exists = doDFS(i, j, 1);</span>
+<span class="fc bfc" id="L101" title="All 2 branches covered.">                    if (exists) {</span>
+<span class="fc" id="L102">                        return true;</span>
+                    }
+                }
+            }
+        }
+<span class="fc" id="L107">        return false;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>OptimalFileMerging.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.greedyalgorithms</a> &gt; <span class="el_source">OptimalFileMerging.java</span></div><h1>OptimalFileMerging.java</h1><pre class="source lang-java linenums">package com.thealgorithms.greedyalgorithms;
+
+import java.util.PriorityQueue;
+
+/**
+ * Class to solve the Optimal File Merging Problem.
+ * The goal is to minimize the cost of merging files, where the cost of merging two files is the sum of their sizes.
+ * The cost of merging all files is the sum of the costs of merging each pair of files.
+ * Example:
+ * files = [4, 3, 2, 6]
+ * The minimum cost to merge all files is 29.
+ * Steps:
+ * 1. Merge files 2 and 3 (cost = 2 + 3 = 5). New files = [4, 5, 6]
+ * 2. Merge files 4 and 5 (cost = 4 + 5 = 9). New files = [6, 9]
+ * 3. Merge files 6 and 9 (cost = 6 + 9 = 15). New files = [15]
+ * Total cost = 5 + 9 + 15 = 29
+ *
+ * @author Hardvan
+ */
+public final class OptimalFileMerging {
+    private OptimalFileMerging() {
+    }
+
+    /**
+     * Calculates the minimum cost to merge all files.
+     * Steps:
+     * 1. Add all files to a min heap.
+     * 2. Remove the two smallest files from the heap, merge them, and add the result back to the heap.
+     * 3. Repeat step 2 until there is only one file left in the heap.
+     * 4. The total cost is the sum of all the costs of merging the files.
+     *
+     * @param files array of file sizes
+     * @return the minimum cost to merge the files
+     */
+    public static int minMergeCost(int[] files) {
+<span class="fc" id="L36">        PriorityQueue&lt;Integer&gt; minHeap = new PriorityQueue&lt;&gt;();</span>
+<span class="fc bfc" id="L37" title="All 2 branches covered.">        for (int file : files) {</span>
+<span class="fc" id="L38">            minHeap.add(file);</span>
+        }
+
+<span class="fc" id="L41">        int totalCost = 0;</span>
+<span class="fc bfc" id="L42" title="All 2 branches covered.">        while (minHeap.size() &gt; 1) {</span>
+<span class="fc" id="L43">            int first = minHeap.poll();</span>
+<span class="fc" id="L44">            int second = minHeap.poll();</span>
+<span class="fc" id="L45">            int cost = first + second;</span>
+<span class="fc" id="L46">            totalCost += cost;</span>
+
+<span class="fc" id="L48">            minHeap.add(cost);</span>
+<span class="fc" id="L49">        }</span>
+<span class="fc" id="L50">        return totalCost;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

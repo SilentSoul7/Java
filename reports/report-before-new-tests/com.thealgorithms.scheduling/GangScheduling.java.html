@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GangScheduling.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.scheduling</a> &gt; <span class="el_source">GangScheduling.java</span></div><h1>GangScheduling.java</h1><pre class="source lang-java linenums">package com.thealgorithms.scheduling;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * GangScheduling groups related tasks (gangs) to run simultaneously on multiple processors.
+ * All tasks in a gang are executed together or not at all.
+ *
+ * Use Case: Parallel computing environments where multiple threads of a program
+ * need to run concurrently for optimal performance.
+ *
+ * @author Hardvan
+ */
+public final class GangScheduling {
+
+    static class Gang {
+        String name;
+        List&lt;String&gt; tasks;
+
+<span class="fc" id="L23">        Gang(String name) {</span>
+<span class="fc" id="L24">            this.name = name;</span>
+<span class="fc" id="L25">            this.tasks = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L26">        }</span>
+
+        void addTask(String task) {
+<span class="fc" id="L29">            tasks.add(task);</span>
+<span class="fc" id="L30">        }</span>
+
+        List&lt;String&gt; getTasks() {
+<span class="fc" id="L33">            return tasks;</span>
+        }
+    }
+
+    private final Map&lt;String, Gang&gt; gangs;
+
+<span class="fc" id="L39">    public GangScheduling() {</span>
+<span class="fc" id="L40">        gangs = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L41">    }</span>
+
+    public void addGang(String gangName) {
+<span class="fc" id="L44">        gangs.putIfAbsent(gangName, new Gang(gangName));</span>
+<span class="fc" id="L45">    }</span>
+
+    public void addTaskToGang(String gangName, String task) {
+<span class="fc" id="L48">        Gang gang = gangs.get(gangName);</span>
+<span class="pc bpc" id="L49" title="1 of 2 branches missed.">        if (gang != null) {</span>
+<span class="fc" id="L50">            gang.addTask(task);</span>
+        }
+<span class="fc" id="L52">    }</span>
+
+    public Map&lt;String, List&lt;String&gt;&gt; getGangSchedules() {
+<span class="fc" id="L55">        Map&lt;String, List&lt;String&gt;&gt; schedules = new HashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">        for (Gang gang : gangs.values()) {</span>
+<span class="fc" id="L57">            schedules.put(gang.name, gang.getTasks());</span>
+<span class="fc" id="L58">        }</span>
+<span class="fc" id="L59">        return schedules;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

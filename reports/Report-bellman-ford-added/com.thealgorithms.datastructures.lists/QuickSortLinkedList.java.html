@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>QuickSortLinkedList.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.lists</a> &gt; <span class="el_source">QuickSortLinkedList.java</span></div><h1>QuickSortLinkedList.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.lists;
+/*
+ *
+ * @aurthor - Prabhat-Kumar-42
+ * @github - https://github.com/Prabhat-Kumar-42
+ *
+ * Problem :
+ *    QuickSort on Linked List
+ *
+ * Note: Taking head as pivot in current implementation.
+ *        N represents NULL node
+ *    Example:
+ *
+ *      -&gt; Given Linked List :
+ *            5 -&gt; 3 -&gt; 8 -&gt; 1 -&gt; 10 -&gt; 2 -&gt; 7 -&gt; 4 -&gt; 9 -&gt; 6
+ *
+ *      -&gt; How Sorting will work according to the QuickSort Algo written below
+ *
+ *      current pivot : 5
+ *      List lessThanPivot : 3 -&gt; 1 -&gt; 2 -&gt; 4
+ *      List greaterThanPivot : 5 -&gt; 8 -&gt; 10 -&gt; 7 -&gt; 9 -&gt; 6
+ *
+ *      -&gt; reccur for lessThanPivot and greaterThanPivot
+ *
+ *            lessThanPivot :
+ *                current pivot : 3
+ *                lessThanPivot : 1 -&gt; 2
+ *                greaterThanPivot : 4
+ *
+ *             greaterThanPivot:
+ *                 current pivot : 5
+ *                 lessThanPivot : null
+ *                 greaterThanPivot : 8 -&gt; 10 -&gt; 7 -&gt; 9 -&gt; 6
+ *
+ *        By following the above pattern, reccuring tree will form like below :
+ *
+ *        List-&gt; 5 -&gt; 3 -&gt; 8 -&gt; 1 -&gt; 10 -&gt; 2 -&gt; 7 -&gt; 4 -&gt; 9 -&gt; 6
+ *
+ *        Pivot :                  5
+ *                                /\
+ *                               /  \
+ *                              /    \
+ *                             /      \
+ *                            /        \
+ *        List: (3 -&gt; 1 -&gt; 2 -&gt; 4)   (5 -&gt; 8 -&gt; 10 -&gt; 7 -&gt; 9 -&gt; 6)
+ *        Pivot :          3               5
+ *                        /\              /\
+ *                       /  \            /  \
+ *                      /    \          /    \
+ *                     /      \        /      \
+ *         List:   (1 -&gt; 2)   (4)   (N)   (8 -&gt; 10 -&gt; 7 -&gt; 9 -&gt; 6)
+ *         Pivot:     1        4                8
+ *                   /\       /\               /\
+ *                  /  \     /  \             /  \
+ *                 /    \   /    \           /    \
+ *         List:  (N)  (2) (N)   (N)   (6 -&gt; 7)   (9 -&gt; 10)
+ *         Pivot:       2                  6         9
+ *                     /\                 /\        /\
+ *                    /  \               /  \      /  \
+ *                   /    \             /    \    /    \
+ *         List:   (N)   (N)          (N)   (7) (N)   (10)
+ *         Pivot:                            7          10
+ *                                          /\          /\
+ *                                         /  \        /  \
+ *                                        /    \      /    \
+ *                                       (N)   (N)   (N)   (N)
+ *
+ *
+ *      -&gt; After this the tree will reccur back (or backtrack)
+ *         and the returning list from left and right subtree will attach
+ *         themselves around pivot.
+ *         i.e. ,
+ *                  (listFromLeftSubTree) -&gt; (Pivot) -&gt; (listFromRightSubtree)
+ *
+ *         This will continue until whole list is merged back
+ *
+ *          eg :
+ *             Megring the above Tree back we get :
+ *
+ *          List: (1 -&gt; 2)        (4)           (6 -&gt; 7)         (9 -&gt; 10)
+ *                  \             /                  \             /
+ *                   \           /                    \           /
+ *                    \         /                      \         /
+ *                     \       /                        \       /
+ *                      \     /                          \     /
+ *                       \   /                            \   /
+ *                        \ /                              \ /
+ *          Pivot:         3                                8
+ *          List:   (1 -&gt; 2 -&gt; 3 -&gt; 4)            (6 -&gt; 7 -&gt; 8 -&gt; 9 -&gt; 10)
+ *                                  \              /
+ *                                   \            /
+ *                                    \          /
+ *                                     \        /
+ *                                      \      /
+ *                                       \    /
+ *                                        \  /
+ *                                         \/
+ *          Pivot:                          5
+ *          List:      (1 -&gt; 2 -&gt; 3 -&gt; 4 -&gt; 5 -&gt; 6 -&gt; 7 -&gt; 8 -&gt; 9 -&gt; 10)
+ *
+ *
+ *      -&gt; This will result in a sorted Linked List
+ */
+
+public class QuickSortLinkedList {
+
+    private final SinglyLinkedList list; // The linked list to be sorted
+    private Node head; // Head of the list
+
+    /**
+     * Constructor that initializes the QuickSortLinkedList with a given linked list.
+     *
+     * @param list The singly linked list to be sorted
+     */
+<span class="fc" id="L115">    public QuickSortLinkedList(SinglyLinkedList list) {</span>
+<span class="fc" id="L116">        this.list = list;</span>
+<span class="fc" id="L117">        this.head = list.getHead();</span>
+<span class="fc" id="L118">    }</span>
+
+    /**
+     * Sorts the linked list using the QuickSort algorithm.
+     * The sorted list replaces the original list within the SinglyLinkedList instance.
+     */
+    public void sortList() {
+<span class="fc" id="L125">        head = sortList(head);</span>
+<span class="fc" id="L126">        list.setHead(head);</span>
+<span class="fc" id="L127">    }</span>
+
+    /**
+     * Recursively sorts a linked list by partitioning it around a pivot element.
+     *
+     * &lt;p&gt;Each recursive call selects a pivot, partitions the list into elements less
+     * than the pivot and elements greater than or equal to the pivot, then combines
+     * the sorted sublists around the pivot.&lt;/p&gt;
+     *
+     * @param head The head node of the list to sort
+     * @return The head node of the sorted linked list
+     */
+    private Node sortList(Node head) {
+<span class="fc bfc" id="L140" title="All 4 branches covered.">        if (head == null || head.next == null) {</span>
+<span class="fc" id="L141">            return head;</span>
+        }
+
+<span class="fc" id="L144">        Node pivot = head;</span>
+<span class="fc" id="L145">        head = head.next;</span>
+<span class="fc" id="L146">        pivot.next = null;</span>
+
+<span class="fc" id="L148">        Node lessHead = new Node();</span>
+<span class="fc" id="L149">        Node lessTail = lessHead;</span>
+<span class="fc" id="L150">        Node greaterHead = new Node();</span>
+<span class="fc" id="L151">        Node greaterTail = greaterHead;</span>
+
+<span class="fc bfc" id="L153" title="All 2 branches covered.">        while (head != null) {</span>
+<span class="fc bfc" id="L154" title="All 2 branches covered.">            if (head.value &lt; pivot.value) {</span>
+<span class="fc" id="L155">                lessTail.next = head;</span>
+<span class="fc" id="L156">                lessTail = lessTail.next;</span>
+            } else {
+<span class="fc" id="L158">                greaterTail.next = head;</span>
+<span class="fc" id="L159">                greaterTail = greaterTail.next;</span>
+            }
+<span class="fc" id="L161">            head = head.next;</span>
+        }
+
+<span class="fc" id="L164">        lessTail.next = null;</span>
+<span class="fc" id="L165">        greaterTail.next = null;</span>
+
+<span class="fc" id="L167">        Node sortedLess = sortList(lessHead.next);</span>
+<span class="fc" id="L168">        Node sortedGreater = sortList(greaterHead.next);</span>
+
+<span class="fc bfc" id="L170" title="All 2 branches covered.">        if (sortedLess == null) {</span>
+<span class="fc" id="L171">            pivot.next = sortedGreater;</span>
+<span class="fc" id="L172">            return pivot;</span>
+        } else {
+<span class="fc" id="L174">            Node current = sortedLess;</span>
+<span class="fc bfc" id="L175" title="All 2 branches covered.">            while (current.next != null) {</span>
+<span class="fc" id="L176">                current = current.next;</span>
+            }
+<span class="fc" id="L178">            current.next = pivot;</span>
+<span class="fc" id="L179">            pivot.next = sortedGreater;</span>
+<span class="fc" id="L180">            return sortedLess;</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

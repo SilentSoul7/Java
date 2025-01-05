@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CombSort.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.sorts</a> &gt; <span class="el_source">CombSort.java</span></div><h1>CombSort.java</h1><pre class="source lang-java linenums">package com.thealgorithms.sorts;
+
+/**
+ * Comb Sort algorithm implementation
+ *
+ * &lt;p&gt;
+ * Best-case performance O(n * log(n)) Worst-case performance O(n ^ 2)
+ * Worst-case space complexity O(1)
+ *
+ * &lt;p&gt;
+ * Comb sort improves on bubble sort.
+ *
+ * @author Sandeep Roy (https://github.com/sandeeproy99)
+ * @author Podshivalov Nikita (https://github.com/nikitap492)
+ * @see BubbleSort
+ * @see SortAlgorithm
+ */
+<span class="fc" id="L18">class CombSort implements SortAlgorithm {</span>
+    private static final double SHRINK_FACTOR = 1.3;
+
+    /**
+     * Method to find the next gap
+     *
+     * @param gap the current gap
+     * @return the next gap value
+     */
+    private int getNextGap(int gap) {
+<span class="fc" id="L28">        gap = (int) (gap / SHRINK_FACTOR);</span>
+<span class="fc" id="L29">        return Math.max(gap, 1);</span>
+    }
+
+    /**
+     * Method to sort the array using CombSort
+     *
+     * @param arr the array to be sorted
+     * @param &lt;T&gt; the type of elements in the array
+     * @return the sorted array
+     */
+    @Override
+    public &lt;T extends Comparable&lt;T&gt;&gt; T[] sort(T[] arr) {
+<span class="fc" id="L41">        int gap = arr.length;</span>
+<span class="fc" id="L42">        boolean swapped = true;</span>
+
+<span class="fc bfc" id="L44" title="All 4 branches covered.">        while (gap != 1 || swapped) {</span>
+<span class="fc" id="L45">            gap = getNextGap(gap);</span>
+<span class="fc" id="L46">            swapped = performSwaps(arr, gap);</span>
+        }
+
+<span class="fc" id="L49">        return arr;</span>
+    }
+
+    /**
+     * Method to perform the swapping of elements in the array based on the current gap
+     *
+     * @param arr the array to be sorted
+     * @param gap the current gap
+     * @param &lt;T&gt; the type of elements in the array
+     * @return true if a swap occurred, false otherwise
+     */
+    private &lt;T extends Comparable&lt;T&gt;&gt; boolean performSwaps(final T[] arr, final int gap) {
+<span class="fc" id="L61">        boolean swapped = false;</span>
+
+<span class="fc bfc" id="L63" title="All 2 branches covered.">        for (int i = 0; i &lt; arr.length - gap; i++) {</span>
+<span class="fc bfc" id="L64" title="All 2 branches covered.">            if (SortUtils.less(arr[i + gap], arr[i])) {</span>
+<span class="fc" id="L65">                SortUtils.swap(arr, i, i + gap);</span>
+<span class="fc" id="L66">                swapped = true;</span>
+            }
+        }
+
+<span class="fc" id="L70">        return swapped;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

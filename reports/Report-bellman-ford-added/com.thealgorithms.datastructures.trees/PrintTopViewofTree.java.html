@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PrintTopViewofTree.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.trees</a> &gt; <span class="el_source">PrintTopViewofTree.java</span></div><h1>PrintTopViewofTree.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.trees; // Java program to print top view of Binary tree
+
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Queue;
+
+// Class for a tree node
+class TreeNode {
+
+    // Members
+
+    int key;
+    TreeNode left;
+    TreeNode right;
+
+    // Constructor
+<span class="nc" id="L17">    TreeNode(int key) {</span>
+<span class="nc" id="L18">        this.key = key;</span>
+<span class="nc" id="L19">        left = null;</span>
+<span class="nc" id="L20">        right = null;</span>
+<span class="nc" id="L21">    }</span>
+}
+
+// A class to represent a queue item. The queue is used to do Level
+// order traversal. Every Queue item contains node and horizontal
+// distance of node from root
+class QItem {
+
+    TreeNode node;
+    int hd;
+
+<span class="nc" id="L32">    QItem(TreeNode n, int h) {</span>
+<span class="nc" id="L33">        node = n;</span>
+<span class="nc" id="L34">        hd = h;</span>
+<span class="nc" id="L35">    }</span>
+}
+
+// Class for a Binary Tree
+class Tree {
+
+    TreeNode root;
+
+    // Constructors
+<span class="nc" id="L44">    Tree() {</span>
+<span class="nc" id="L45">        root = null;</span>
+<span class="nc" id="L46">    }</span>
+
+<span class="nc" id="L48">    Tree(TreeNode n) {</span>
+<span class="nc" id="L49">        root = n;</span>
+<span class="nc" id="L50">    }</span>
+
+    // This method prints nodes in top view of binary tree
+    public void printTopView() {
+        // base case
+<span class="nc bnc" id="L55" title="All 2 branches missed.">        if (root == null) {</span>
+<span class="nc" id="L56">            return;</span>
+        }
+
+        // Creates an empty hashset
+<span class="nc" id="L60">        HashSet&lt;Integer&gt; set = new HashSet&lt;&gt;();</span>
+
+        // Create a queue and add root to it
+<span class="nc" id="L63">        Queue&lt;QItem&gt; queue = new LinkedList&lt;QItem&gt;();</span>
+<span class="nc" id="L64">        queue.add(new QItem(root, 0)); // Horizontal distance of root is 0</span>
+
+        // Standard BFS or level order traversal loop
+<span class="nc bnc" id="L67" title="All 2 branches missed.">        while (!queue.isEmpty()) {</span>
+            // Remove the front item and get its details
+<span class="nc" id="L69">            QItem qi = queue.remove();</span>
+<span class="nc" id="L70">            int hd = qi.hd;</span>
+<span class="nc" id="L71">            TreeNode n = qi.node;</span>
+
+            // If this is the first node at its horizontal distance,
+            // then this node is in top view
+<span class="nc bnc" id="L75" title="All 2 branches missed.">            if (!set.contains(hd)) {</span>
+<span class="nc" id="L76">                set.add(hd);</span>
+<span class="nc" id="L77">                System.out.print(n.key + &quot; &quot;);</span>
+            }
+
+            // Enqueue left and right children of current node
+<span class="nc bnc" id="L81" title="All 2 branches missed.">            if (n.left != null) {</span>
+<span class="nc" id="L82">                queue.add(new QItem(n.left, hd - 1));</span>
+            }
+<span class="nc bnc" id="L84" title="All 2 branches missed.">            if (n.right != null) {</span>
+<span class="nc" id="L85">                queue.add(new QItem(n.right, hd + 1));</span>
+            }
+<span class="nc" id="L87">        }</span>
+<span class="nc" id="L88">    }</span>
+}
+
+// Driver class to test above methods
+public final class PrintTopViewofTree {
+    private PrintTopViewofTree() {
+    }
+
+    public static void main(String[] args) {
+        /* Create following Binary Tree
+       1
+     /  \
+    2    3
+     \
+      4
+       \
+        5
+         \
+          6*/
+<span class="nc" id="L107">        TreeNode root = new TreeNode(1);</span>
+<span class="nc" id="L108">        root.left = new TreeNode(2);</span>
+<span class="nc" id="L109">        root.right = new TreeNode(3);</span>
+<span class="nc" id="L110">        root.left.right = new TreeNode(4);</span>
+<span class="nc" id="L111">        root.left.right.right = new TreeNode(5);</span>
+<span class="nc" id="L112">        root.left.right.right.right = new TreeNode(6);</span>
+<span class="nc" id="L113">        Tree t = new Tree(root);</span>
+<span class="nc" id="L114">        System.out.println(&quot;Following are nodes in top view of Binary Tree&quot;);</span>
+<span class="nc" id="L115">        t.printTopView();</span>
+<span class="nc" id="L116">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

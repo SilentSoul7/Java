@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WordLadder.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.strings</a> &gt; <span class="el_source">WordLadder.java</span></div><h1>WordLadder.java</h1><pre class="source lang-java linenums">package com.thealgorithms.strings;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Set;
+
+/**
+ * Class to find the shortest transformation sequence from a beginWord to an endWord using a dictionary of words.
+ * A transformation sequence is a sequence of words where each adjacent pair differs by exactly one letter.
+ */
+public final class WordLadder {
+    private WordLadder() {
+    }
+
+    /**
+     * Finds the shortest transformation sequence from beginWord to endWord.
+     *
+     * @param beginWord the starting word of the transformation sequence
+     * @param endWord the target word of the transformation sequence
+     * @param wordList a list of words that can be used in the transformation sequence
+     * @return the number of words in the shortest transformation sequence, or 0 if no such sequence exists
+     */
+    public static int ladderLength(String beginWord, String endWord, Collection&lt;String&gt; wordList) {
+<span class="fc" id="L26">        Set&lt;String&gt; wordSet = new HashSet&lt;&gt;(wordList);</span>
+
+<span class="fc bfc" id="L28" title="All 2 branches covered.">        if (!wordSet.contains(endWord)) {</span>
+<span class="fc" id="L29">            return 0;</span>
+        }
+
+<span class="fc" id="L32">        Queue&lt;String&gt; queue = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L33">        queue.offer(beginWord);</span>
+<span class="fc" id="L34">        int level = 1;</span>
+
+<span class="fc bfc" id="L36" title="All 2 branches covered.">        while (!queue.isEmpty()) {</span>
+<span class="fc" id="L37">            int size = queue.size();</span>
+<span class="fc bfc" id="L38" title="All 2 branches covered.">            for (int i = 0; i &lt; size; i++) {</span>
+<span class="fc" id="L39">                String currentWord = queue.poll();</span>
+<span class="fc" id="L40">                char[] currentWordChars = currentWord.toCharArray();</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">                for (int j = 0; j &lt; currentWordChars.length; j++) {</span>
+<span class="fc" id="L42">                    char originalChar = currentWordChars[j];</span>
+<span class="fc bfc" id="L43" title="All 2 branches covered.">                    for (char c = 'a'; c &lt;= 'z'; c++) {</span>
+<span class="fc bfc" id="L44" title="All 2 branches covered.">                        if (currentWordChars[j] == c) {</span>
+<span class="fc" id="L45">                            continue;</span>
+                        }
+<span class="fc" id="L47">                        currentWordChars[j] = c;</span>
+<span class="fc" id="L48">                        String newWord = new String(currentWordChars);</span>
+
+<span class="fc bfc" id="L50" title="All 2 branches covered.">                        if (newWord.equals(endWord)) {</span>
+<span class="fc" id="L51">                            return level + 1;</span>
+                        }
+<span class="fc bfc" id="L53" title="All 2 branches covered.">                        if (wordSet.remove(newWord)) {</span>
+<span class="fc" id="L54">                            queue.offer(newWord);</span>
+                        }
+                    }
+<span class="fc" id="L57">                    currentWordChars[j] = originalChar;</span>
+                }
+            }
+<span class="fc" id="L60">            level++;</span>
+<span class="fc" id="L61">        }</span>
+<span class="fc" id="L62">        return 0;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

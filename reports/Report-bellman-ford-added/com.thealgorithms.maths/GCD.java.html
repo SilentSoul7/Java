@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GCD.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.maths</a> &gt; <span class="el_source">GCD.java</span></div><h1>GCD.java</h1><pre class="source lang-java linenums">package com.thealgorithms.maths;
+
+/**
+ *  This class provides methods to compute the Greatest Common Divisor (GCD) of two or more integers.
+ *
+ * The Greatest Common Divisor (GCD) of two or more integers is the largest positive integer that divides each of the integers without leaving a remainder.
+ *
+ * The GCD can be computed using the Euclidean algorithm, which is based on the principle that the GCD of two numbers also divides their difference.
+ *
+ * For more information, refer to the
+ * &lt;a href=&quot;https://en.wikipedia.org/wiki/Greatest_common_divisor&quot;&gt;Greatest Common Divisor&lt;/a&gt; Wikipedia page.
+ *
+ * &lt;b&gt;Example usage:&lt;/b&gt;
+ * &lt;pre&gt;
+ * int result1 = GCD.gcd(48, 18);
+ * System.out.println(&quot;GCD of 48 and 18: &quot; + result1); // Output: 6
+ *
+ * int result2 = GCD.gcd(48, 18, 30);
+ * System.out.println(&quot;GCD of 48, 18, and 30: &quot; + result2); // Output: 6
+ * &lt;/pre&gt;
+ * @author Oskar Enmalm 3/10/17
+ */
+public final class GCD {
+    private GCD() {
+    }
+
+    /**
+     * get the greatest common divisor
+     *
+     * @param num1 the first number
+     * @param num2 the second number
+     * @return gcd
+     */
+    public static int gcd(int num1, int num2) {
+<span class="fc bfc" id="L35" title="All 4 branches covered.">        if (num1 &lt; 0 || num2 &lt; 0) {</span>
+<span class="fc" id="L36">            throw new ArithmeticException();</span>
+        }
+
+<span class="fc bfc" id="L39" title="All 4 branches covered.">        if (num1 == 0 || num2 == 0) {</span>
+<span class="fc" id="L40">            return Math.abs(num1 - num2);</span>
+        }
+
+<span class="fc bfc" id="L43" title="All 2 branches covered.">        while (num1 % num2 != 0) {</span>
+<span class="fc" id="L44">            int remainder = num1 % num2;</span>
+<span class="fc" id="L45">            num1 = num2;</span>
+<span class="fc" id="L46">            num2 = remainder;</span>
+<span class="fc" id="L47">        }</span>
+<span class="fc" id="L48">        return num2;</span>
+    }
+
+    /**
+     * @brief computes gcd of an array of numbers
+     *
+     * @param numbers the input array
+     * @return gcd of all of the numbers in the input array
+     */
+    public static int gcd(int... numbers) {
+<span class="fc" id="L58">        int result = 0;</span>
+<span class="fc bfc" id="L59" title="All 2 branches covered.">        for (final var number : numbers) {</span>
+<span class="fc" id="L60">            result = gcd(result, number);</span>
+        }
+
+<span class="fc" id="L63">        return result;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

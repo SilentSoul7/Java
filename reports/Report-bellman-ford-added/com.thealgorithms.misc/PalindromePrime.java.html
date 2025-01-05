@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PalindromePrime.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.misc</a> &gt; <span class="el_source">PalindromePrime.java</span></div><h1>PalindromePrime.java</h1><pre class="source lang-java linenums">package com.thealgorithms.misc;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public final class PalindromePrime {
+    private PalindromePrime() {
+    }
+
+    public static boolean prime(int num) {
+<span class="fc bfc" id="L11" title="All 2 branches covered.">        if (num &lt; 2) {</span>
+<span class="fc" id="L12">            return false; // Handle edge case for numbers &lt; 2</span>
+        }
+<span class="fc bfc" id="L14" title="All 2 branches covered.">        if (num == 2) {</span>
+<span class="fc" id="L15">            return true; // 2 is prime</span>
+        }
+<span class="fc bfc" id="L17" title="All 2 branches covered.">        if (num % 2 == 0) {</span>
+<span class="fc" id="L18">            return false; // Even numbers &gt; 2 are not prime</span>
+        }
+
+<span class="fc bfc" id="L21" title="All 2 branches covered.">        for (int divisor = 3; divisor &lt;= Math.sqrt(num); divisor += 2) {</span>
+<span class="fc bfc" id="L22" title="All 2 branches covered.">            if (num % divisor == 0) {</span>
+<span class="fc" id="L23">                return false;</span>
+            }
+        }
+<span class="fc" id="L26">        return true;</span>
+    }
+
+    public static int reverse(int n) {
+<span class="fc" id="L30">        int reverse = 0;</span>
+<span class="fc bfc" id="L31" title="All 2 branches covered.">        while (n != 0) {</span>
+<span class="fc" id="L32">            reverse = reverse * 10 + (n % 10);</span>
+<span class="fc" id="L33">            n /= 10;</span>
+        }
+<span class="fc" id="L35">        return reverse;</span>
+    }
+
+    public static List&lt;Integer&gt; generatePalindromePrimes(int n) {
+<span class="fc" id="L39">        List&lt;Integer&gt; palindromicPrimes = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L40" title="All 2 branches covered.">        if (n &lt;= 0) {</span>
+<span class="fc" id="L41">            return palindromicPrimes; // Handle case for 0 or negative input</span>
+        }
+
+<span class="fc" id="L44">        palindromicPrimes.add(2); // 2 is the first palindromic prime</span>
+<span class="fc" id="L45">        int count = 1;</span>
+<span class="fc" id="L46">        int num = 3;</span>
+
+<span class="fc bfc" id="L48" title="All 2 branches covered.">        while (count &lt; n) {</span>
+<span class="pc bpc" id="L49" title="1 of 4 branches missed.">            if (num == reverse(num) &amp;&amp; prime(num)) {</span>
+<span class="fc" id="L50">                palindromicPrimes.add(num);</span>
+<span class="fc" id="L51">                count++;</span>
+            }
+<span class="fc" id="L53">            num += 2; // Skip even numbers</span>
+        }
+<span class="fc" id="L55">        return palindromicPrimes;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

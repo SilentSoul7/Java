@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ArrayCombination.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.backtracking</a> &gt; <span class="el_source">ArrayCombination.java</span></div><h1>ArrayCombination.java</h1><pre class="source lang-java linenums">package com.thealgorithms.backtracking;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * This class provides methods to find all combinations of integers from 0 to n-1
+ * of a specified length k using backtracking.
+ */
+public final class ArrayCombination {
+    private ArrayCombination() {
+    }
+
+    /**
+     * Generates all possible combinations of length k from the integers 0 to n-1.
+     *
+     * @param n The total number of elements (0 to n-1).
+     * @param k The desired length of each combination.
+     * @return A list containing all combinations of length k.
+     * @throws IllegalArgumentException if n or k are negative, or if k is greater than n.
+     */
+    public static List&lt;List&lt;Integer&gt;&gt; combination(int n, int k) {
+<span class="fc bfc" id="L23" title="All 6 branches covered.">        if (n &lt; 0 || k &lt; 0 || k &gt; n) {</span>
+<span class="fc" id="L24">            throw new IllegalArgumentException(&quot;Invalid input: n must be non-negative, k must be non-negative and less than or equal to n.&quot;);</span>
+        }
+
+<span class="fc" id="L27">        List&lt;List&lt;Integer&gt;&gt; combinations = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L28">        combine(combinations, new ArrayList&lt;&gt;(), 0, n, k);</span>
+<span class="fc" id="L29">        return combinations;</span>
+    }
+
+    /**
+     * A helper method that uses backtracking to find combinations.
+     *
+     * @param combinations The list to store all valid combinations found.
+     * @param current The current combination being built.
+     * @param start The starting index for the current recursion.
+     * @param n The total number of elements (0 to n-1).
+     * @param k The desired length of each combination.
+     */
+    private static void combine(List&lt;List&lt;Integer&gt;&gt; combinations, List&lt;Integer&gt; current, int start, int n, int k) {
+        // Base case: combination found
+<span class="fc bfc" id="L43" title="All 2 branches covered.">        if (current.size() == k) {</span>
+<span class="fc" id="L44">            combinations.add(new ArrayList&lt;&gt;(current));</span>
+<span class="fc" id="L45">            return;</span>
+        }
+
+<span class="fc bfc" id="L48" title="All 2 branches covered.">        for (int i = start; i &lt; n; i++) {</span>
+<span class="fc" id="L49">            current.add(i);</span>
+<span class="fc" id="L50">            combine(combinations, current, i + 1, n, k);</span>
+<span class="fc" id="L51">            current.removeLast(); // Backtrack</span>
+        }
+<span class="fc" id="L53">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

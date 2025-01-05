@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TokenBucket.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.queues</a> &gt; <span class="el_source">TokenBucket.java</span></div><h1>TokenBucket.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.queues;
+
+import java.util.concurrent.TimeUnit;
+
+/**
+ * TokenBucket implements a token bucket rate limiter algorithm.
+ * This class is used to control the rate of requests in a distributed system.
+ * It allows a certain number of requests (tokens) to be processed in a time frame,
+ * based on the defined refill rate.
+ *
+ * Applications: Computer networks, API rate limiting, distributed systems, etc.
+ *
+ * @author Hardvan
+ */
+public final class TokenBucket {
+    private final int maxTokens;
+    private final int refillRate; // tokens per second
+    private int tokens;
+    private long lastRefill; // Timestamp in nanoseconds
+
+    /**
+     * Constructs a TokenBucket instance.
+     *
+     * @param maxTokens  Maximum number of tokens the bucket can hold.
+     * @param refillRate The rate at which tokens are refilled (tokens per second).
+     */
+<span class="fc" id="L27">    public TokenBucket(int maxTokens, int refillRate) {</span>
+<span class="fc" id="L28">        this.maxTokens = maxTokens;</span>
+<span class="fc" id="L29">        this.refillRate = refillRate;</span>
+<span class="fc" id="L30">        this.tokens = maxTokens;</span>
+<span class="fc" id="L31">        this.lastRefill = System.nanoTime();</span>
+<span class="fc" id="L32">    }</span>
+
+    /**
+     * Attempts to allow a request based on the available tokens.
+     * If a token is available, it decrements the token count and allows the request.
+     * Otherwise, the request is denied.
+     *
+     * @return true if the request is allowed, false if the request is denied.
+     */
+    public synchronized boolean allowRequest() {
+<span class="fc" id="L42">        refillTokens();</span>
+<span class="fc bfc" id="L43" title="All 2 branches covered.">        if (tokens &gt; 0) {</span>
+<span class="fc" id="L44">            tokens--;</span>
+<span class="fc" id="L45">            return true;</span>
+        }
+<span class="fc" id="L47">        return false;</span>
+    }
+
+    /**
+     * Refills the tokens based on the time elapsed since the last refill.
+     * The number of tokens to be added is calculated based on the elapsed time
+     * and the refill rate, ensuring the total does not exceed maxTokens.
+     */
+    private void refillTokens() {
+<span class="fc" id="L56">        long now = System.nanoTime();</span>
+<span class="fc" id="L57">        long tokensToAdd = (now - lastRefill) / TimeUnit.SECONDS.toNanos(1) * refillRate;</span>
+<span class="fc" id="L58">        tokens = Math.min(maxTokens, tokens + (int) tokensToAdd);</span>
+<span class="fc" id="L59">        lastRefill = now;</span>
+<span class="fc" id="L60">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

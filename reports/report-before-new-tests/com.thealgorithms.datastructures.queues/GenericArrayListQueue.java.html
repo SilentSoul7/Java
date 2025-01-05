@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GenericArrayListQueue.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.queues</a> &gt; <span class="el_source">GenericArrayListQueue.java</span></div><h1>GenericArrayListQueue.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.queues;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * This class implements a GenericArrayListQueue, a queue data structure that
+ * holds elements of any type specified at runtime, allowing flexibility in the type
+ * of elements it stores.
+ *
+ * &lt;p&gt;The GenericArrayListQueue operates on a First-In-First-Out (FIFO) basis, where
+ * elements added first are the first to be removed. New elements are added to the back
+ * (or rear) of the queue, while removal of elements occurs from the front.
+ *
+ * @param &lt;T&gt; The type of elements held in this queue.
+ */
+<span class="fc" id="L17">public class GenericArrayListQueue&lt;T&gt; {</span>
+
+    /**
+     * A list that stores the queue's elements in insertion order.
+     */
+<span class="fc" id="L22">    private final List&lt;T&gt; elementList = new ArrayList&lt;&gt;();</span>
+
+    /**
+     * Checks if the queue is empty.
+     *
+     * @return {@code true} if the queue has no elements; {@code false} otherwise.
+     */
+    public boolean isEmpty() {
+<span class="fc" id="L30">        return elementList.isEmpty();</span>
+    }
+
+    /**
+     * Retrieves, but does not remove, the element at the front of the queue.
+     *
+     * @return The element at the front of the queue, or {@code null} if the queue is empty.
+     */
+    public T peek() {
+<span class="fc bfc" id="L39" title="All 2 branches covered.">        return isEmpty() ? null : elementList.getFirst();</span>
+    }
+
+    /**
+     * Inserts an element at the back of the queue.
+     *
+     * @param element The element to be added to the queue.
+     * @return {@code true} if the element was successfully added.
+     */
+    public boolean add(T element) {
+<span class="fc" id="L49">        return elementList.add(element);</span>
+    }
+
+    /**
+     * Retrieves and removes the element at the front of the queue.
+     *
+     * @return The element removed from the front of the queue, or {@code null} if the queue is empty.
+     */
+    public T poll() {
+<span class="fc bfc" id="L58" title="All 2 branches covered.">        return isEmpty() ? null : elementList.removeFirst();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

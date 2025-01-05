@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ShellSort.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.sorts</a> &gt; <span class="el_source">ShellSort.java</span></div><h1>ShellSort.java</h1><pre class="source lang-java linenums">package com.thealgorithms.sorts;
+
+<span class="fc" id="L3">public class ShellSort implements SortAlgorithm {</span>
+
+    /**
+     * Implements generic shell sort.
+     *
+     * @param array the array to be sorted.
+     * @param &lt;T&gt; the type of elements in the array.
+     * @return the sorted array.
+     */
+    @Override
+    public &lt;T extends Comparable&lt;T&gt;&gt; T[] sort(T[] array) {
+<span class="fc bfc" id="L14" title="All 2 branches covered.">        if (array.length == 0) {</span>
+<span class="fc" id="L15">            return array;</span>
+        }
+
+<span class="fc" id="L18">        int gap = calculateInitialGap(array.length);</span>
+
+<span class="fc bfc" id="L20" title="All 2 branches covered.">        while (gap &gt; 0) {</span>
+<span class="fc" id="L21">            performGapInsertionSort(array, gap);</span>
+<span class="fc" id="L22">            gap = calculateNextGap(gap);</span>
+        }
+
+<span class="fc" id="L25">        return array;</span>
+    }
+
+    /**
+     * Calculates the initial gap value using the Knuth sequence.
+     *
+     * @param length the length of the array.
+     * @return the initial gap value.
+     */
+    private int calculateInitialGap(final int length) {
+<span class="fc" id="L35">        int gap = 1;</span>
+<span class="fc bfc" id="L36" title="All 2 branches covered.">        while (gap &lt; length / 3) {</span>
+<span class="fc" id="L37">            gap = 3 * gap + 1;</span>
+        }
+<span class="fc" id="L39">        return gap;</span>
+    }
+
+    /**
+     * Calculates the next gap value.
+     *
+     * @param currentGap the current gap value.
+     * @return the next gap value.
+     */
+    private int calculateNextGap(final int currentGap) {
+<span class="fc" id="L49">        return currentGap / 3;</span>
+    }
+
+    /**
+     * Performs an insertion sort for the specified gap value.
+     *
+     * @param array the array to be sorted.
+     * @param gap the current gap value.
+     * @param &lt;T&gt; the type of elements in the array.
+     */
+    private &lt;T extends Comparable&lt;T&gt;&gt; void performGapInsertionSort(final T[] array, final int gap) {
+<span class="fc bfc" id="L60" title="All 2 branches covered.">        for (int i = gap; i &lt; array.length; i++) {</span>
+<span class="fc" id="L61">            T temp = array[i];</span>
+            int j;
+<span class="fc bfc" id="L63" title="All 4 branches covered.">            for (j = i; j &gt;= gap &amp;&amp; SortUtils.less(temp, array[j - gap]); j -= gap) {</span>
+<span class="fc" id="L64">                array[j] = array[j - gap];</span>
+            }
+<span class="fc" id="L66">            array[j] = temp;</span>
+        }
+<span class="fc" id="L68">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

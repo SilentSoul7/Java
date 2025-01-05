@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BoardPath.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.dynamicprogramming</a> &gt; <span class="el_source">BoardPath.java</span></div><h1>BoardPath.java</h1><pre class="source lang-java linenums">package com.thealgorithms.dynamicprogramming;
+
+public final class BoardPath {
+    private BoardPath() {
+    }
+
+    /**
+     * Recursive solution without memoization
+     *
+     * @param start - the current position
+     * @param end   - the target position
+     * @return the number of ways to reach the end from the start
+     */
+    public static int bpR(int start, int end) {
+<span class="fc bfc" id="L15" title="All 2 branches covered.">        if (start == end) {</span>
+<span class="fc" id="L16">            return 1;</span>
+<span class="fc bfc" id="L17" title="All 2 branches covered.">        } else if (start &gt; end) {</span>
+<span class="fc" id="L18">            return 0;</span>
+        }
+<span class="fc" id="L20">        int count = 0;</span>
+<span class="fc bfc" id="L21" title="All 2 branches covered.">        for (int dice = 1; dice &lt;= 6; dice++) {</span>
+<span class="fc" id="L22">            count += bpR(start + dice, end);</span>
+        }
+<span class="fc" id="L24">        return count;</span>
+    }
+
+    /**
+     * Recursive solution with memoization
+     *
+     * @param curr - the current position
+     * @param end  - the target position
+     * @param strg - memoization array
+     * @return the number of ways to reach the end from the start
+     */
+    public static int bpRS(int curr, int end, int[] strg) {
+<span class="fc bfc" id="L36" title="All 2 branches covered.">        if (curr == end) {</span>
+<span class="fc" id="L37">            return 1;</span>
+<span class="fc bfc" id="L38" title="All 2 branches covered.">        } else if (curr &gt; end) {</span>
+<span class="fc" id="L39">            return 0;</span>
+        }
+<span class="fc bfc" id="L41" title="All 2 branches covered.">        if (strg[curr] != 0) {</span>
+<span class="fc" id="L42">            return strg[curr];</span>
+        }
+<span class="fc" id="L44">        int count = 0;</span>
+<span class="fc bfc" id="L45" title="All 2 branches covered.">        for (int dice = 1; dice &lt;= 6; dice++) {</span>
+<span class="fc" id="L46">            count += bpRS(curr + dice, end, strg);</span>
+        }
+<span class="fc" id="L48">        strg[curr] = count;</span>
+<span class="fc" id="L49">        return count;</span>
+    }
+
+    /**
+     * Iterative solution with tabulation
+     *
+     * @param curr - the current position (always starts from 0)
+     * @param end  - the target position
+     * @param strg - memoization array
+     * @return the number of ways to reach the end from the start
+     */
+    public static int bpIS(int curr, int end, int[] strg) {
+<span class="fc" id="L61">        strg[end] = 1;</span>
+<span class="fc bfc" id="L62" title="All 2 branches covered.">        for (int i = end - 1; i &gt;= 0; i--) {</span>
+<span class="fc" id="L63">            int count = 0;</span>
+<span class="fc bfc" id="L64" title="All 4 branches covered.">            for (int dice = 1; dice &lt;= 6 &amp;&amp; dice + i &lt;= end; dice++) {</span>
+<span class="fc" id="L65">                count += strg[i + dice];</span>
+            }
+<span class="fc" id="L67">            strg[i] = count;</span>
+        }
+<span class="fc" id="L69">        return strg[curr];</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

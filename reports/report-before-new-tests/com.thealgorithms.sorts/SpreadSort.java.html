@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SpreadSort.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.sorts</a> &gt; <span class="el_source">SpreadSort.java</span></div><h1>SpreadSort.java</h1><pre class="source lang-java linenums">package com.thealgorithms.sorts;
+import java.util.Arrays;
+
+/**
+ * SpreadSort is a highly efficient sorting algorithm suitable for large datasets.
+ * It distributes elements into buckets and recursively sorts these buckets.
+ * This implementation is generic and can sort any array of elements that extend Comparable.
+ */
+public class SpreadSort implements SortAlgorithm {
+    private static final int MAX_INSERTION_SORT_THRESHOLD = 1000;
+    private static final int MAX_INITIAL_BUCKET_CAPACITY = 1000;
+    private static final int MAX_MIN_BUCKETS = 100;
+
+    private final int insertionSortThreshold;
+    private final int initialBucketCapacity;
+    private final int minBuckets;
+
+    /**
+     * Constructor to initialize the SpreadSort algorithm with custom parameters.
+     *
+     * @param insertionSortThreshold the threshold for using insertion sort for small segments (1-1000)
+     * @param initialBucketCapacity  the initial capacity for each bucket (1-1000)
+     * @param minBuckets             the minimum number of buckets to use (1-100)
+     */
+<span class="fc" id="L25">    public SpreadSort(int insertionSortThreshold, int initialBucketCapacity, int minBuckets) {</span>
+<span class="fc bfc" id="L26" title="All 4 branches covered.">        if (insertionSortThreshold &lt; 1 || insertionSortThreshold &gt; MAX_INSERTION_SORT_THRESHOLD) {</span>
+<span class="fc" id="L27">            throw new IllegalArgumentException(&quot;Insertion sort threshold must be between 1 and &quot; + MAX_INSERTION_SORT_THRESHOLD);</span>
+        }
+<span class="fc bfc" id="L29" title="All 4 branches covered.">        if (initialBucketCapacity &lt; 1 || initialBucketCapacity &gt; MAX_INITIAL_BUCKET_CAPACITY) {</span>
+<span class="fc" id="L30">            throw new IllegalArgumentException(&quot;Initial bucket capacity must be between 1 and &quot; + MAX_INITIAL_BUCKET_CAPACITY);</span>
+        }
+<span class="fc bfc" id="L32" title="All 4 branches covered.">        if (minBuckets &lt; 1 || minBuckets &gt; MAX_MIN_BUCKETS) {</span>
+<span class="fc" id="L33">            throw new IllegalArgumentException(&quot;Minimum number of buckets must be between 1 and &quot; + MAX_MIN_BUCKETS);</span>
+        }
+
+<span class="fc" id="L36">        this.insertionSortThreshold = insertionSortThreshold;</span>
+<span class="fc" id="L37">        this.initialBucketCapacity = initialBucketCapacity;</span>
+<span class="fc" id="L38">        this.minBuckets = minBuckets;</span>
+<span class="fc" id="L39">    }</span>
+
+    /**
+     * Default constructor with predefined values.
+     */
+    public SpreadSort() {
+<span class="fc" id="L45">        this(16, 16, 2);</span>
+<span class="fc" id="L46">    }</span>
+
+    /**
+     * Sorts an array using the SpreadSort algorithm.
+     *
+     * @param array the array to be sorted
+     * @param &lt;T&gt;   the type of elements in the array
+     * @return the sorted array
+     */
+    @Override
+    public &lt;T extends Comparable&lt;T&gt;&gt; T[] sort(T[] array) {
+<span class="fc bfc" id="L57" title="All 2 branches covered.">        if (array.length == 0) {</span>
+<span class="fc" id="L58">            return array;</span>
+        }
+<span class="fc" id="L60">        spreadSort(array, 0, array.length - 1);</span>
+<span class="fc" id="L61">        return array;</span>
+    }
+
+    /**
+     * Internal method to sort an array segment using the SpreadSort algorithm.
+     *
+     * @param array the array to be sorted
+     * @param left  the left boundary of the segment
+     * @param right the right boundary of the segment
+     * @param &lt;T&gt;   the type of elements in the array
+     */
+    private &lt;T extends Comparable&lt;T&gt;&gt; void spreadSort(final T[] array, final int left, final int right) {
+<span class="fc bfc" id="L73" title="All 2 branches covered.">        if (left &gt;= right) {</span>
+<span class="fc" id="L74">            return;</span>
+        }
+
+        // Base case for small segments
+<span class="fc bfc" id="L78" title="All 2 branches covered.">        if (right - left &lt; insertionSortThreshold) {</span>
+<span class="fc" id="L79">            insertionSort(array, left, right);</span>
+<span class="fc" id="L80">            return;</span>
+        }
+
+<span class="fc" id="L83">        T min = findMin(array, left, right);</span>
+<span class="fc" id="L84">        T max = findMax(array, left, right);</span>
+
+<span class="pc bpc" id="L86" title="1 of 2 branches missed.">        if (min.equals(max)) {</span>
+<span class="nc" id="L87">            return; // All elements are the same</span>
+        }
+
+<span class="fc" id="L90">        int numBuckets = calculateNumBuckets(right - left + 1);</span>
+<span class="fc" id="L91">        final Bucket&lt;T&gt;[] buckets = createBuckets(numBuckets);</span>
+
+<span class="fc" id="L93">        distributeElements(array, left, right, min, max, numBuckets, buckets);</span>
+<span class="fc" id="L94">        collectElements(array, left, buckets);</span>
+<span class="fc" id="L95">    }</span>
+
+    /**
+     * Finds the minimum element in the specified segment of the array.
+     *
+     * @param array the array to search
+     * @param left  the left boundary of the segment
+     * @param right the right boundary of the segment
+     * @param &lt;T&gt;   the type of elements in the array
+     * @return the minimum element
+     */
+    private &lt;T extends Comparable&lt;T&gt;&gt; T findMin(final T[] array, final int left, final int right) {
+<span class="fc" id="L107">        T min = array[left];</span>
+<span class="fc bfc" id="L108" title="All 2 branches covered.">        for (int i = left + 1; i &lt;= right; i++) {</span>
+<span class="fc bfc" id="L109" title="All 2 branches covered.">            if (SortUtils.less(array[i], min)) {</span>
+<span class="fc" id="L110">                min = array[i];</span>
+            }
+        }
+<span class="fc" id="L113">        return min;</span>
+    }
+
+    /**
+     * Finds the maximum element in the specified segment of the array.
+     *
+     * @param array the array to search
+     * @param left  the left boundary of the segment
+     * @param right the right boundary of the segment
+     * @param &lt;T&gt;   the type of elements in the array
+     * @return the maximum element
+     */
+    private &lt;T extends Comparable&lt;T&gt;&gt; T findMax(final T[] array, final int left, final int right) {
+<span class="fc" id="L126">        T max = array[left];</span>
+<span class="fc bfc" id="L127" title="All 2 branches covered.">        for (int i = left + 1; i &lt;= right; i++) {</span>
+<span class="fc bfc" id="L128" title="All 2 branches covered.">            if (SortUtils.greater(array[i], max)) {</span>
+<span class="fc" id="L129">                max = array[i];</span>
+            }
+        }
+<span class="fc" id="L132">        return max;</span>
+    }
+
+    /**
+     * Calculates the number of buckets needed based on the size of the segment.
+     *
+     * @param segmentSize the size of the segment
+     * @return the number of buckets
+     */
+    private int calculateNumBuckets(final int segmentSize) {
+<span class="fc" id="L142">        int numBuckets = segmentSize / insertionSortThreshold;</span>
+<span class="fc" id="L143">        return Math.max(numBuckets, minBuckets);</span>
+    }
+
+    /**
+     * Creates an array of buckets.
+     *
+     * @param numBuckets the number of buckets to create
+     * @param &lt;T&gt;        the type of elements in the buckets
+     * @return an array of buckets
+     */
+    @SuppressWarnings(&quot;unchecked&quot;)
+    private &lt;T extends Comparable&lt;T&gt;&gt; Bucket&lt;T&gt;[] createBuckets(final int numBuckets) {
+<span class="fc" id="L155">        final Bucket&lt;T&gt;[] buckets = new Bucket[numBuckets];</span>
+<span class="fc bfc" id="L156" title="All 2 branches covered.">        for (int i = 0; i &lt; numBuckets; i++) {</span>
+<span class="fc" id="L157">            buckets[i] = new Bucket&lt;&gt;(initialBucketCapacity);</span>
+        }
+<span class="fc" id="L159">        return buckets;</span>
+    }
+
+    /**
+     * Distributes elements of the array segment into buckets.
+     *
+     * @param array      the array to be sorted
+     * @param left       the left boundary of the segment
+     * @param right      the right boundary of the segment
+     * @param min        the minimum element in the segment
+     * @param max        the maximum element in the segment
+     * @param numBuckets the number of buckets
+     * @param buckets    the array of buckets
+     * @param &lt;T&gt;        the type of elements in the array
+     */
+    private &lt;T extends Comparable&lt;T&gt;&gt; void distributeElements(final T[] array, final int left, final int right, final T min, final T max, final int numBuckets, final Bucket&lt;T&gt;[] buckets) {
+<span class="fc" id="L175">        final double range = max.compareTo(min);</span>
+<span class="fc bfc" id="L176" title="All 2 branches covered.">        for (int i = left; i &lt;= right; i++) {</span>
+<span class="fc" id="L177">            final int scaleRangeDifference = array[i].compareTo(min) * numBuckets;</span>
+<span class="fc" id="L178">            int bucketIndex = (int) (scaleRangeDifference / (range + 1));</span>
+<span class="fc" id="L179">            buckets[bucketIndex].add(array[i]);</span>
+        }
+<span class="fc" id="L181">    }</span>
+
+    /**
+     * Collects elements from the buckets back into the array.
+     *
+     * @param array   the array to be sorted
+     * @param left    the left boundary of the segment
+     * @param buckets the array of buckets
+     * @param &lt;T&gt;     the type of elements in the array
+     */
+    private &lt;T extends Comparable&lt;T&gt;&gt; void collectElements(final T[] array, final int left, final Bucket&lt;T&gt;[] buckets) {
+<span class="fc" id="L192">        int index = left;</span>
+<span class="fc bfc" id="L193" title="All 2 branches covered.">        for (Bucket&lt;T&gt; bucket : buckets) {</span>
+<span class="fc bfc" id="L194" title="All 2 branches covered.">            if (bucket.size() &gt; 0) {</span>
+<span class="fc" id="L195">                T[] bucketArray = bucket.toArray();</span>
+<span class="fc" id="L196">                spreadSort(bucketArray, 0, bucketArray.length - 1);</span>
+<span class="fc bfc" id="L197" title="All 2 branches covered.">                for (T element : bucketArray) {</span>
+<span class="fc" id="L198">                    array[index++] = element;</span>
+                }
+            }
+        }
+<span class="fc" id="L202">    }</span>
+
+    /**
+     * Insertion sort implementation for small segments.
+     *
+     * @param array the array to be sorted
+     * @param left  the left boundary of the segment
+     * @param right the right boundary of the segment
+     * @param &lt;T&gt;   the type of elements in the array
+     */
+    private &lt;T extends Comparable&lt;T&gt;&gt; void insertionSort(final T[] array, final int left, final int right) {
+<span class="fc bfc" id="L213" title="All 2 branches covered.">        for (int i = left + 1; i &lt;= right; i++) {</span>
+<span class="fc" id="L214">            T key = array[i];</span>
+<span class="fc" id="L215">            int j = i - 1;</span>
+<span class="fc bfc" id="L216" title="All 4 branches covered.">            while (j &gt;= left &amp;&amp; SortUtils.greater(array[j], key)) {</span>
+<span class="fc" id="L217">                array[j + 1] = array[j];</span>
+<span class="fc" id="L218">                j--;</span>
+            }
+<span class="fc" id="L220">            array[j + 1] = key;</span>
+        }
+<span class="fc" id="L222">    }</span>
+
+    /**
+     * Bucket class to hold elements during sorting.
+     *
+     * @param &lt;T&gt; the type of elements in the bucket
+     */
+    private static class Bucket&lt;T extends Comparable&lt;T&gt;&gt; {
+        private T[] elements;
+        private int size;
+
+        /**
+         * Constructs a new bucket with initial capacity.
+         */
+        @SuppressWarnings(&quot;unchecked&quot;)
+<span class="fc" id="L237">        Bucket(int initialBucketCapacity) {</span>
+<span class="fc" id="L238">            elements = (T[]) new Comparable[initialBucketCapacity];</span>
+<span class="fc" id="L239">            size = 0;</span>
+<span class="fc" id="L240">        }</span>
+
+        /**
+         * Adds an element to the bucket.
+         *
+         * @param element the element to add
+         */
+        void add(T element) {
+<span class="fc bfc" id="L248" title="All 2 branches covered.">            if (size == elements.length) {</span>
+<span class="fc" id="L249">                elements = Arrays.copyOf(elements, size * 2);</span>
+            }
+<span class="fc" id="L251">            elements[size++] = element;</span>
+<span class="fc" id="L252">        }</span>
+
+        /**
+         * Returns the number of elements in the bucket.
+         *
+         * @return the size of the bucket
+         */
+        int size() {
+<span class="fc" id="L260">            return size;</span>
+        }
+
+        /**
+         * Returns an array containing all elements in the bucket.
+         *
+         * @return an array containing all elements in the bucket
+         */
+        @SuppressWarnings(&quot;unchecked&quot;)
+        T[] toArray() {
+<span class="fc" id="L270">            return Arrays.copyOf(elements, size);</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

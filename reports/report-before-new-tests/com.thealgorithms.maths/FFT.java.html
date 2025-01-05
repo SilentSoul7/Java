@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FFT.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.maths</a> &gt; <span class="el_source">FFT.java</span></div><h1>FFT.java</h1><pre class="source lang-java linenums">package com.thealgorithms.maths;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+
+/**
+ * Class for calculating the Fast Fourier Transform (FFT) of a discrete signal
+ * using the Cooley-Tukey algorithm.
+ *
+ * @author Ioannis Karavitsis
+ * @version 1.0
+ */
+public final class FFT {
+    private FFT() {
+    }
+
+    /**
+     * This class represents a complex number and has methods for basic
+     * operations.
+     *
+     * &lt;p&gt;
+     * More info:
+     * https://introcs.cs.princeton.edu/java/32class/Complex.java.html
+     */
+    static class Complex {
+
+        private double real;
+        private double img;
+
+        /**
+         * Default Constructor. Creates the complex number 0.
+         */
+<span class="fc" id="L34">        Complex() {</span>
+<span class="fc" id="L35">            real = 0;</span>
+<span class="fc" id="L36">            img = 0;</span>
+<span class="fc" id="L37">        }</span>
+
+        /**
+         * Constructor. Creates a complex number.
+         *
+         * @param r The real part of the number.
+         * @param i The imaginary part of the number.
+         */
+<span class="fc" id="L45">        Complex(double r, double i) {</span>
+<span class="fc" id="L46">            real = r;</span>
+<span class="fc" id="L47">            img = i;</span>
+<span class="fc" id="L48">        }</span>
+
+        /**
+         * Returns the real part of the complex number.
+         *
+         * @return The real part of the complex number.
+         */
+        public double getReal() {
+<span class="fc" id="L56">            return real;</span>
+        }
+
+        /**
+         * Returns the imaginary part of the complex number.
+         *
+         * @return The imaginary part of the complex number.
+         */
+        public double getImaginary() {
+<span class="fc" id="L65">            return img;</span>
+        }
+
+        /**
+         * Adds this complex number to another.
+         *
+         * @param z The number to be added.
+         * @return The sum.
+         */
+        public Complex add(Complex z) {
+<span class="fc" id="L75">            Complex temp = new Complex();</span>
+<span class="fc" id="L76">            temp.real = this.real + z.real;</span>
+<span class="fc" id="L77">            temp.img = this.img + z.img;</span>
+<span class="fc" id="L78">            return temp;</span>
+        }
+
+        /**
+         * Subtracts a number from this complex number.
+         *
+         * @param z The number to be subtracted.
+         * @return The difference.
+         */
+        public Complex subtract(Complex z) {
+<span class="fc" id="L88">            Complex temp = new Complex();</span>
+<span class="fc" id="L89">            temp.real = this.real - z.real;</span>
+<span class="fc" id="L90">            temp.img = this.img - z.img;</span>
+<span class="fc" id="L91">            return temp;</span>
+        }
+
+        /**
+         * Multiplies this complex number by another.
+         *
+         * @param z The number to be multiplied.
+         * @return The product.
+         */
+        public Complex multiply(Complex z) {
+<span class="fc" id="L101">            Complex temp = new Complex();</span>
+<span class="fc" id="L102">            temp.real = this.real * z.real - this.img * z.img;</span>
+<span class="fc" id="L103">            temp.img = this.real * z.img + this.img * z.real;</span>
+<span class="fc" id="L104">            return temp;</span>
+        }
+
+        /**
+         * Multiplies this complex number by a scalar.
+         *
+         * @param n The real number to be multiplied.
+         * @return The product.
+         */
+        public Complex multiply(double n) {
+<span class="fc" id="L114">            Complex temp = new Complex();</span>
+<span class="fc" id="L115">            temp.real = this.real * n;</span>
+<span class="fc" id="L116">            temp.img = this.img * n;</span>
+<span class="fc" id="L117">            return temp;</span>
+        }
+
+        /**
+         * Finds the conjugate of this complex number.
+         *
+         * @return The conjugate.
+         */
+        public Complex conjugate() {
+<span class="fc" id="L126">            Complex temp = new Complex();</span>
+<span class="fc" id="L127">            temp.real = this.real;</span>
+<span class="fc" id="L128">            temp.img = -this.img;</span>
+<span class="fc" id="L129">            return temp;</span>
+        }
+
+        /**
+         * Finds the magnitude of the complex number.
+         *
+         * @return The magnitude.
+         */
+        public double abs() {
+<span class="fc" id="L138">            return Math.hypot(this.real, this.img);</span>
+        }
+
+        /**
+         * Divides this complex number by another.
+         *
+         * @param z The divisor.
+         * @return The quotient.
+         */
+        public Complex divide(Complex z) {
+<span class="fc" id="L148">            Complex temp = new Complex();</span>
+<span class="fc" id="L149">            double d = z.abs() * z.abs();</span>
+<span class="fc" id="L150">            d = (double) Math.round(d * 1000000000d) / 1000000000d;</span>
+<span class="fc" id="L151">            temp.real = (this.real * z.real + this.img * z.img) / (d);</span>
+<span class="fc" id="L152">            temp.img = (this.img * z.real - this.real * z.img) / (d);</span>
+<span class="fc" id="L153">            return temp;</span>
+        }
+
+        /**
+         * Divides this complex number by a scalar.
+         *
+         * @param n The divisor which is a real number.
+         * @return The quotient.
+         */
+        public Complex divide(double n) {
+<span class="fc" id="L163">            Complex temp = new Complex();</span>
+<span class="fc" id="L164">            temp.real = this.real / n;</span>
+<span class="fc" id="L165">            temp.img = this.img / n;</span>
+<span class="fc" id="L166">            return temp;</span>
+        }
+
+        public double real() {
+<span class="fc" id="L170">            return real;</span>
+        }
+
+        public double imaginary() {
+<span class="fc" id="L174">            return img;</span>
+        }
+    }
+
+    /**
+     * Iterative In-Place Radix-2 Cooley-Tukey Fast Fourier Transform Algorithm
+     * with Bit-Reversal. The size of the input signal must be a power of 2. If
+     * it isn't then it is padded with zeros and the output FFT will be bigger
+     * than the input signal.
+     *
+     * &lt;p&gt;
+     * More info:
+     * https://www.algorithm-archive.org/contents/cooley_tukey/cooley_tukey.html
+     * https://www.geeksforgeeks.org/iterative-fast-fourier-transformation-polynomial-multiplication/
+     * https://en.wikipedia.org/wiki/Cooley%E2%80%93Tukey_FFT_algorithm
+     * https://cp-algorithms.com/algebra/fft.html
+     *  @param x The discrete signal which is then converted to the FFT or the
+     * IFFT of signal x.
+     * @param inverse True if you want to find the inverse FFT.
+     * @return
+     */
+    public static ArrayList&lt;Complex&gt; fft(ArrayList&lt;Complex&gt; x, boolean inverse) {
+        /* Pad the signal with zeros if necessary */
+<span class="fc" id="L197">        paddingPowerOfTwo(x);</span>
+<span class="fc" id="L198">        int n = x.size();</span>
+<span class="fc" id="L199">        int log2n = findLog2(n);</span>
+<span class="fc" id="L200">        x = fftBitReversal(n, log2n, x);</span>
+<span class="fc bfc" id="L201" title="All 2 branches covered.">        int direction = inverse ? -1 : 1;</span>
+
+        /* Main loop of the algorithm */
+<span class="fc bfc" id="L204" title="All 2 branches covered.">        for (int len = 2; len &lt;= n; len *= 2) {</span>
+<span class="fc" id="L205">            double angle = -2 * Math.PI / len * direction;</span>
+<span class="fc" id="L206">            Complex wlen = new Complex(Math.cos(angle), Math.sin(angle));</span>
+<span class="fc bfc" id="L207" title="All 2 branches covered.">            for (int i = 0; i &lt; n; i += len) {</span>
+<span class="fc" id="L208">                Complex w = new Complex(1, 0);</span>
+<span class="fc bfc" id="L209" title="All 2 branches covered.">                for (int j = 0; j &lt; len / 2; j++) {</span>
+<span class="fc" id="L210">                    Complex u = x.get(i + j);</span>
+<span class="fc" id="L211">                    Complex v = w.multiply(x.get(i + j + len / 2));</span>
+<span class="fc" id="L212">                    x.set(i + j, u.add(v));</span>
+<span class="fc" id="L213">                    x.set(i + j + len / 2, u.subtract(v));</span>
+<span class="fc" id="L214">                    w = w.multiply(wlen);</span>
+                }
+            }
+        }
+<span class="fc" id="L218">        x = inverseFFT(n, inverse, x);</span>
+<span class="fc" id="L219">        return x;</span>
+    }
+
+    /* Find the log2(n) */
+    public static int findLog2(int n) {
+<span class="fc" id="L224">        int log2n = 0;</span>
+<span class="fc bfc" id="L225" title="All 2 branches covered.">        while ((1 &lt;&lt; log2n) &lt; n) {</span>
+<span class="fc" id="L226">            log2n++;</span>
+        }
+<span class="fc" id="L228">        return log2n;</span>
+    }
+
+    /* Swap the values of the signal with bit-reversal method */
+    public static ArrayList&lt;Complex&gt; fftBitReversal(int n, int log2n, ArrayList&lt;Complex&gt; x) {
+        int reverse;
+<span class="fc bfc" id="L234" title="All 2 branches covered.">        for (int i = 0; i &lt; n; i++) {</span>
+<span class="fc" id="L235">            reverse = reverseBits(i, log2n);</span>
+<span class="fc bfc" id="L236" title="All 2 branches covered.">            if (i &lt; reverse) {</span>
+<span class="fc" id="L237">                Collections.swap(x, i, reverse);</span>
+            }
+        }
+<span class="fc" id="L240">        return x;</span>
+    }
+
+    /* Divide by n if we want the inverse FFT */
+    public static ArrayList&lt;Complex&gt; inverseFFT(int n, boolean inverse, ArrayList&lt;Complex&gt; x) {
+<span class="fc bfc" id="L245" title="All 2 branches covered.">        if (inverse) {</span>
+<span class="fc bfc" id="L246" title="All 2 branches covered.">            for (int i = 0; i &lt; x.size(); i++) {</span>
+<span class="fc" id="L247">                Complex z = x.get(i);</span>
+<span class="fc" id="L248">                x.set(i, z.divide(n));</span>
+            }
+        }
+<span class="fc" id="L251">        return x;</span>
+    }
+
+    /**
+     * This function reverses the bits of a number. It is used in Cooley-Tukey
+     * FFT algorithm.
+     *
+     * &lt;p&gt;
+     * E.g. num = 13 = 00001101 in binary log2n = 8 Then reversed = 176 =
+     * 10110000 in binary
+     *
+     * &lt;p&gt;
+     * More info: https://cp-algorithms.com/algebra/fft.html
+     * https://www.geeksforgeeks.org/write-an-efficient-c-program-to-reverse-bits-of-a-number/
+     *
+     * @param num The integer you want to reverse its bits.
+     * @param log2n The number of bits you want to reverse.
+     * @return The reversed number
+     */
+    private static int reverseBits(int num, int log2n) {
+<span class="fc" id="L271">        int reversed = 0;</span>
+<span class="fc bfc" id="L272" title="All 2 branches covered.">        for (int i = 0; i &lt; log2n; i++) {</span>
+<span class="fc bfc" id="L273" title="All 2 branches covered.">            if ((num &amp; (1 &lt;&lt; i)) != 0) {</span>
+<span class="fc" id="L274">                reversed |= 1 &lt;&lt; (log2n - 1 - i);</span>
+            }
+        }
+<span class="fc" id="L277">        return reversed;</span>
+    }
+
+    /**
+     * This method pads an ArrayList with zeros in order to have a size equal to
+     * the next power of two of the previous size.
+     *
+     * @param x The ArrayList to be padded.
+     */
+    private static void paddingPowerOfTwo(Collection&lt;Complex&gt; x) {
+<span class="fc" id="L287">        int n = 1;</span>
+<span class="fc" id="L288">        int oldSize = x.size();</span>
+<span class="fc bfc" id="L289" title="All 2 branches covered.">        while (n &lt; oldSize) {</span>
+<span class="fc" id="L290">            n *= 2;</span>
+        }
+<span class="fc bfc" id="L292" title="All 2 branches covered.">        for (int i = 0; i &lt; n - oldSize; i++) {</span>
+<span class="fc" id="L293">            x.add(new Complex());</span>
+        }
+<span class="fc" id="L295">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

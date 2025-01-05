@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ORSet.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.crdt</a> &gt; <span class="el_source">ORSet.java</span></div><h1>ORSet.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.crdt;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
+/**
+ * ORSet (Observed-Removed Set) is a state-based CRDT (Conflict-free Replicated Data Type)
+ * that supports both addition and removal of elements. This particular implementation follows
+ * the Add-Wins strategy, meaning that in case of conflicting add and remove operations,
+ * the add operation takes precedence. The merge operation of two OR-Sets ensures that
+ * elements added at any replica are eventually observed at all replicas. Removed elements,
+ * once observed, are never reintroduced.
+ * This OR-Set implementation provides methods for adding elements, removing elements,
+ * checking for element existence, retrieving the set of elements, comparing with other OR-Sets,
+ * and merging with another OR-Set to create a new OR-Set containing all unique elements
+ * from both sets.
+ *
+ * @author itakurah (Niklas Hoefflin) (https://github.com/itakurah)
+ * @see &lt;a href=&quot;https://en.wikipedia.org/wiki/Conflict-free_replicated_data_type&quot;&gt;Conflict-free_replicated_data_type&lt;/a&gt;
+ * @see &lt;a href=&quot;https://github.com/itakurah&quot;&gt;itakurah (Niklas Hoefflin)&lt;/a&gt;
+ */
+
+public class ORSet&lt;T&gt; {
+
+    private final Set&lt;Pair&lt;T&gt;&gt; elements;
+    private final Set&lt;Pair&lt;T&gt;&gt; tombstones;
+
+    /**
+     * Constructs an empty OR-Set.
+     */
+<span class="fc" id="L32">    public ORSet() {</span>
+<span class="fc" id="L33">        this.elements = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L34">        this.tombstones = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L35">    }</span>
+
+    /**
+     * Checks if the set contains the specified element.
+     *
+     * @param element the element to check for
+     * @return true if the set contains the element, false otherwise
+     */
+    public boolean contains(T element) {
+<span class="fc" id="L44">        return elements.stream().anyMatch(pair -&gt; pair.getElement().equals(element));</span>
+    }
+
+    /**
+     * Retrieves the elements in the set.
+     *
+     * @return a set containing the elements
+     */
+    public Set&lt;T&gt; elements() {
+<span class="fc" id="L53">        Set&lt;T&gt; result = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L54">        elements.forEach(pair -&gt; result.add(pair.getElement()));</span>
+<span class="fc" id="L55">        return result;</span>
+    }
+
+    /**
+     * Adds the specified element to the set.
+     *
+     * @param element the element to add
+     */
+    public void add(T element) {
+<span class="fc" id="L64">        String n = prepare();</span>
+<span class="fc" id="L65">        effect(element, n);</span>
+<span class="fc" id="L66">    }</span>
+
+    /**
+     * Removes the specified element from the set.
+     *
+     * @param element the element to remove
+     */
+    public void remove(T element) {
+<span class="fc" id="L74">        Set&lt;Pair&lt;T&gt;&gt; pairsToRemove = prepare(element);</span>
+<span class="fc" id="L75">        effect(pairsToRemove);</span>
+<span class="fc" id="L76">    }</span>
+
+    /**
+     * Collect all pairs with the specified element.
+     *
+     * @param element the element to collect pairs for
+     * @return a set of pairs with the specified element to be removed
+     */
+    private Set&lt;Pair&lt;T&gt;&gt; prepare(T element) {
+<span class="fc" id="L85">        Set&lt;Pair&lt;T&gt;&gt; pairsToRemove = new HashSet&lt;&gt;();</span>
+<span class="fc bfc" id="L86" title="All 2 branches covered.">        for (Pair&lt;T&gt; pair : elements) {</span>
+<span class="fc bfc" id="L87" title="All 2 branches covered.">            if (pair.getElement().equals(element)) {</span>
+<span class="fc" id="L88">                pairsToRemove.add(pair);</span>
+            }
+<span class="fc" id="L90">        }</span>
+<span class="fc" id="L91">        return pairsToRemove;</span>
+    }
+
+    /**
+     * Generates a unique tag for the element.
+     *
+     * @return the unique tag
+     */
+    private String prepare() {
+<span class="fc" id="L100">        return generateUniqueTag();</span>
+    }
+
+    /**
+     * Adds the element with the specified unique tag to the set.
+     *
+     * @param element the element to add
+     * @param n       the unique tag associated with the element
+     */
+    private void effect(T element, String n) {
+<span class="fc" id="L110">        Pair&lt;T&gt; pair = new Pair&lt;&gt;(element, n);</span>
+<span class="fc" id="L111">        elements.add(pair);</span>
+<span class="fc" id="L112">        elements.removeAll(tombstones);</span>
+<span class="fc" id="L113">    }</span>
+
+    /**
+     * Removes the specified pairs from the set.
+     *
+     * @param pairsToRemove the pairs to remove
+     */
+    private void effect(Set&lt;Pair&lt;T&gt;&gt; pairsToRemove) {
+<span class="fc" id="L121">        elements.removeAll(pairsToRemove);</span>
+<span class="fc" id="L122">        tombstones.addAll(pairsToRemove);</span>
+<span class="fc" id="L123">    }</span>
+
+    /**
+     * Generates a unique tag.
+     *
+     * @return the unique tag
+     */
+    private String generateUniqueTag() {
+<span class="fc" id="L131">        return UUID.randomUUID().toString();</span>
+    }
+
+    /**
+     * Compares this Add-Wins OR-Set with another OR-Set to check if elements and tombstones are a subset.
+     *
+     * @param other the other OR-Set to compare
+     * @return true if the sets are subset, false otherwise
+     */
+    public boolean compare(ORSet&lt;T&gt; other) {
+<span class="fc" id="L141">        Set&lt;Pair&lt;T&gt;&gt; union = new HashSet&lt;&gt;(elements);</span>
+<span class="fc" id="L142">        union.addAll(tombstones);</span>
+
+<span class="fc" id="L144">        Set&lt;Pair&lt;T&gt;&gt; otherUnion = new HashSet&lt;&gt;(other.elements);</span>
+<span class="fc" id="L145">        otherUnion.addAll(other.tombstones);</span>
+
+<span class="pc bpc" id="L147" title="1 of 4 branches missed.">        return otherUnion.containsAll(union) &amp;&amp; other.tombstones.containsAll(tombstones);</span>
+    }
+
+    /**
+     * Merges this Add-Wins OR-Set with another OR-Set.
+     *
+     * @param other the other OR-Set to merge
+     */
+    public void merge(ORSet&lt;T&gt; other) {
+<span class="fc" id="L156">        elements.removeAll(other.tombstones);</span>
+<span class="fc" id="L157">        other.elements.removeAll(tombstones);</span>
+<span class="fc" id="L158">        elements.addAll(other.elements);</span>
+<span class="fc" id="L159">        tombstones.addAll(other.tombstones);</span>
+<span class="fc" id="L160">    }</span>
+
+    /**
+     * Represents a pair containing an element and a unique tag.
+     *
+     * @param &lt;T&gt; the type of the element in the pair
+     */
+    public static class Pair&lt;T&gt; {
+        private final T element;
+        private final String uniqueTag;
+
+        /**
+         * Constructs a pair with the specified element and unique tag.
+         *
+         * @param element   the element in the pair
+         * @param uniqueTag the unique tag associated with the element
+         */
+<span class="fc" id="L177">        public Pair(T element, String uniqueTag) {</span>
+<span class="fc" id="L178">            this.element = element;</span>
+<span class="fc" id="L179">            this.uniqueTag = uniqueTag;</span>
+<span class="fc" id="L180">        }</span>
+
+        /**
+         * Gets the element from the pair.
+         *
+         * @return the element
+         */
+        public T getElement() {
+<span class="fc" id="L188">            return element;</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

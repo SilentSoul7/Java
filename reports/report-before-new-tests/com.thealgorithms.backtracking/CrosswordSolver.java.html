@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CrosswordSolver.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.backtracking</a> &gt; <span class="el_source">CrosswordSolver.java</span></div><h1>CrosswordSolver.java</h1><pre class="source lang-java linenums">package com.thealgorithms.backtracking;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+/**
+ * A class to solve a crossword puzzle using backtracking.
+ * Example:
+ * Input:
+ *  puzzle = {
+ *      {' ', ' ', ' '},
+ *      {' ', ' ', ' '},
+ *      {' ', ' ', ' '}
+ *  }
+ *  words = List.of(&quot;cat&quot;, &quot;dog&quot;)
+ *
+ * Output:
+ *  {
+ *      {'c', 'a', 't'},
+ *      {' ', ' ', ' '},
+ *      {'d', 'o', 'g'}
+ *  }
+ */
+public final class CrosswordSolver {
+    private CrosswordSolver() {
+    }
+
+    /**
+     * Checks if a word can be placed at the specified position in the crossword.
+     *
+     * @param puzzle   The crossword puzzle represented as a 2D char array.
+     * @param word     The word to be placed.
+     * @param row      The row index where the word might be placed.
+     * @param col      The column index where the word might be placed.
+     * @param vertical If true, the word is placed vertically; otherwise, horizontally.
+     * @return true if the word can be placed, false otherwise.
+     */
+    public static boolean isValid(char[][] puzzle, String word, int row, int col, boolean vertical) {
+<span class="fc bfc" id="L40" title="All 2 branches covered.">        for (int i = 0; i &lt; word.length(); i++) {</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">            if (vertical) {</span>
+<span class="pc bpc" id="L42" title="1 of 4 branches missed.">                if (row + i &gt;= puzzle.length || puzzle[row + i][col] != ' ') {</span>
+<span class="fc" id="L43">                    return false;</span>
+                }
+            } else {
+<span class="pc bpc" id="L46" title="1 of 4 branches missed.">                if (col + i &gt;= puzzle[0].length || puzzle[row][col + i] != ' ') {</span>
+<span class="fc" id="L47">                    return false;</span>
+                }
+            }
+        }
+<span class="fc" id="L51">        return true;</span>
+    }
+
+    /**
+     * Places a word at the specified position in the crossword.
+     *
+     * @param puzzle   The crossword puzzle represented as a 2D char array.
+     * @param word     The word to be placed.
+     * @param row      The row index where the word will be placed.
+     * @param col      The column index where the word will be placed.
+     * @param vertical If true, the word is placed vertically; otherwise, horizontally.
+     */
+    public static void placeWord(char[][] puzzle, String word, int row, int col, boolean vertical) {
+<span class="fc bfc" id="L64" title="All 2 branches covered.">        for (int i = 0; i &lt; word.length(); i++) {</span>
+<span class="fc bfc" id="L65" title="All 2 branches covered.">            if (vertical) {</span>
+<span class="fc" id="L66">                puzzle[row + i][col] = word.charAt(i);</span>
+            } else {
+<span class="fc" id="L68">                puzzle[row][col + i] = word.charAt(i);</span>
+            }
+        }
+<span class="fc" id="L71">    }</span>
+
+    /**
+     * Removes a word from the specified position in the crossword.
+     *
+     * @param puzzle   The crossword puzzle represented as a 2D char array.
+     * @param word     The word to be removed.
+     * @param row      The row index where the word is placed.
+     * @param col      The column index where the word is placed.
+     * @param vertical If true, the word was placed vertically; otherwise, horizontally.
+     */
+    public static void removeWord(char[][] puzzle, String word, int row, int col, boolean vertical) {
+<span class="fc bfc" id="L83" title="All 2 branches covered.">        for (int i = 0; i &lt; word.length(); i++) {</span>
+<span class="fc bfc" id="L84" title="All 2 branches covered.">            if (vertical) {</span>
+<span class="fc" id="L85">                puzzle[row + i][col] = ' ';</span>
+            } else {
+<span class="fc" id="L87">                puzzle[row][col + i] = ' ';</span>
+            }
+        }
+<span class="fc" id="L90">    }</span>
+
+    /**
+     * Solves the crossword puzzle using backtracking.
+     *
+     * @param puzzle The crossword puzzle represented as a 2D char array.
+     * @param words  The list of words to be placed.
+     * @return true if the crossword is solved, false otherwise.
+     */
+    public static boolean solveCrossword(char[][] puzzle, Collection&lt;String&gt; words) {
+        // Create a mutable copy of the words list
+<span class="fc" id="L101">        List&lt;String&gt; remainingWords = new ArrayList&lt;&gt;(words);</span>
+
+<span class="fc bfc" id="L103" title="All 2 branches covered.">        for (int row = 0; row &lt; puzzle.length; row++) {</span>
+<span class="fc bfc" id="L104" title="All 2 branches covered.">            for (int col = 0; col &lt; puzzle[0].length; col++) {</span>
+<span class="fc bfc" id="L105" title="All 2 branches covered.">                if (puzzle[row][col] == ' ') {</span>
+<span class="fc bfc" id="L106" title="All 2 branches covered.">                    for (String word : new ArrayList&lt;&gt;(remainingWords)) {</span>
+<span class="fc bfc" id="L107" title="All 2 branches covered.">                        for (boolean vertical : new boolean[] {true, false}) {</span>
+<span class="fc bfc" id="L108" title="All 2 branches covered.">                            if (isValid(puzzle, word, row, col, vertical)) {</span>
+<span class="fc" id="L109">                                placeWord(puzzle, word, row, col, vertical);</span>
+<span class="fc" id="L110">                                remainingWords.remove(word);</span>
+<span class="fc bfc" id="L111" title="All 2 branches covered.">                                if (solveCrossword(puzzle, remainingWords)) {</span>
+<span class="fc" id="L112">                                    return true;</span>
+                                }
+<span class="fc" id="L114">                                remainingWords.add(word);</span>
+<span class="fc" id="L115">                                removeWord(puzzle, word, row, col, vertical);</span>
+                            }
+                        }
+<span class="fc" id="L118">                    }</span>
+<span class="fc" id="L119">                    return false;</span>
+                }
+            }
+        }
+<span class="fc" id="L123">        return true;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

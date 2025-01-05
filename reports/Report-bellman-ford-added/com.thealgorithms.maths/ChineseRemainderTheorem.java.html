@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ChineseRemainderTheorem.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.maths</a> &gt; <span class="el_source">ChineseRemainderTheorem.java</span></div><h1>ChineseRemainderTheorem.java</h1><pre class="source lang-java linenums">package com.thealgorithms.maths;
+
+import java.util.List;
+
+/**
+ * @brief Implementation of the Chinese Remainder Theorem (CRT) algorithm
+ * @details
+ * The Chinese Remainder Theorem (CRT) is used to solve systems of
+ * simultaneous congruences. Given several pairwise coprime moduli
+ * and corresponding remainders, the algorithm finds the smallest
+ * positive solution.
+ */
+public final class ChineseRemainderTheorem {
+    private ChineseRemainderTheorem() {
+    }
+
+    /**
+     * @brief Solves the Chinese Remainder Theorem problem.
+     * @param remainders The list of remainders.
+     * @param moduli The list of pairwise coprime moduli.
+     * @return The smallest positive solution that satisfies all the given congruences.
+     */
+    public static int solveCRT(List&lt;Integer&gt; remainders, List&lt;Integer&gt; moduli) {
+<span class="fc" id="L24">        int product = 1;</span>
+<span class="fc" id="L25">        int result = 0;</span>
+
+        // Calculate the product of all moduli
+<span class="fc bfc" id="L28" title="All 2 branches covered.">        for (int mod : moduli) {</span>
+<span class="fc" id="L29">            product *= mod;</span>
+<span class="fc" id="L30">        }</span>
+
+        // Apply the formula for each congruence
+<span class="fc bfc" id="L33" title="All 2 branches covered.">        for (int i = 0; i &lt; moduli.size(); i++) {</span>
+<span class="fc" id="L34">            int partialProduct = product / moduli.get(i);</span>
+<span class="fc" id="L35">            int inverse = modInverse(partialProduct, moduli.get(i));</span>
+<span class="fc" id="L36">            result += remainders.get(i) * partialProduct * inverse;</span>
+        }
+
+        // Adjust result to be the smallest positive solution
+<span class="fc" id="L40">        result = result % product;</span>
+<span class="pc bpc" id="L41" title="1 of 2 branches missed.">        if (result &lt; 0) {</span>
+<span class="nc" id="L42">            result += product;</span>
+        }
+
+<span class="fc" id="L45">        return result;</span>
+    }
+
+    /**
+     * @brief Computes the modular inverse of a number with respect to a modulus using
+     * the Extended Euclidean Algorithm.
+     * @param a The number for which to find the inverse.
+     * @param m The modulus.
+     * @return The modular inverse of a modulo m.
+     */
+    private static int modInverse(int a, int m) {
+<span class="fc" id="L56">        int m0 = m;</span>
+<span class="fc" id="L57">        int x0 = 0;</span>
+<span class="fc" id="L58">        int x1 = 1;</span>
+
+<span class="pc bpc" id="L60" title="1 of 2 branches missed.">        if (m == 1) {</span>
+<span class="nc" id="L61">            return 0;</span>
+        }
+
+<span class="fc bfc" id="L64" title="All 2 branches covered.">        while (a &gt; 1) {</span>
+<span class="fc" id="L65">            int q = a / m;</span>
+<span class="fc" id="L66">            int t = m;</span>
+
+            // m is remainder now, process same as Euclid's algorithm
+<span class="fc" id="L69">            m = a % m;</span>
+<span class="fc" id="L70">            a = t;</span>
+<span class="fc" id="L71">            t = x0;</span>
+
+<span class="fc" id="L73">            x0 = x1 - q * x0;</span>
+<span class="fc" id="L74">            x1 = t;</span>
+<span class="fc" id="L75">        }</span>
+
+        // Make x1 positive
+<span class="fc bfc" id="L78" title="All 2 branches covered.">        if (x1 &lt; 0) {</span>
+<span class="fc" id="L79">            x1 += m0;</span>
+        }
+
+<span class="fc" id="L82">        return x1;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

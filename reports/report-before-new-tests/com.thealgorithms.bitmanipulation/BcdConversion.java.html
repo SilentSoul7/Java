@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BcdConversion.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.bitmanipulation</a> &gt; <span class="el_source">BcdConversion.java</span></div><h1>BcdConversion.java</h1><pre class="source lang-java linenums">package com.thealgorithms.bitmanipulation;
+
+/**
+ * This class provides methods to convert between BCD (Binary-Coded Decimal) and decimal numbers.
+ *
+ * BCD is a class of binary encodings of decimal numbers where each decimal digit is represented by a fixed number of binary digits, usually four or eight.
+ *
+ * For more information, refer to the
+ * &lt;a href=&quot;https://en.wikipedia.org/wiki/Binary-coded_decimal&quot;&gt;Binary-Coded Decimal&lt;/a&gt; Wikipedia page.
+ *
+ * &lt;b&gt;Example usage:&lt;/b&gt;
+ * &lt;pre&gt;
+ * int decimal = BcdConversion.bcdToDecimal(0x1234);
+ * System.out.println(&quot;BCD 0x1234 to decimal: &quot; + decimal); // Output: 1234
+ *
+ * int bcd = BcdConversion.decimalToBcd(1234);
+ * System.out.println(&quot;Decimal 1234 to BCD: &quot; + Integer.toHexString(bcd)); // Output: 0x1234
+ * &lt;/pre&gt;
+ */
+public final class BcdConversion {
+    private BcdConversion() {
+    }
+
+    /**
+     * Converts a BCD (Binary-Coded Decimal) number to a decimal number.
+     * &lt;p&gt;Steps:
+     * &lt;p&gt;1. Validate the BCD number to ensure all digits are between 0 and 9.
+     * &lt;p&gt;2. Extract the last 4 bits (one BCD digit) from the BCD number.
+     * &lt;p&gt;3. Multiply the extracted digit by the corresponding power of 10 and add it to the decimal number.
+     * &lt;p&gt;4. Shift the BCD number right by 4 bits to process the next BCD digit.
+     * &lt;p&gt;5. Repeat steps 1-4 until the BCD number is zero.
+     *
+     * @param bcd The BCD number.
+     * @return The corresponding decimal number.
+     * @throws IllegalArgumentException if the BCD number contains invalid digits.
+     */
+    public static int bcdToDecimal(int bcd) {
+<span class="fc" id="L38">        int decimal = 0;</span>
+<span class="fc" id="L39">        int multiplier = 1;</span>
+
+        // Validate BCD digits
+<span class="fc bfc" id="L42" title="All 2 branches covered.">        while (bcd &gt; 0) {</span>
+<span class="fc" id="L43">            int digit = bcd &amp; 0xF;</span>
+<span class="fc bfc" id="L44" title="All 2 branches covered.">            if (digit &gt; 9) {</span>
+<span class="fc" id="L45">                throw new IllegalArgumentException(&quot;Invalid BCD digit: &quot; + digit);</span>
+            }
+<span class="fc" id="L47">            decimal += digit * multiplier;</span>
+<span class="fc" id="L48">            multiplier *= 10;</span>
+<span class="fc" id="L49">            bcd &gt;&gt;= 4;</span>
+<span class="fc" id="L50">        }</span>
+<span class="fc" id="L51">        return decimal;</span>
+    }
+
+    /**
+     * Converts a decimal number to BCD (Binary-Coded Decimal).
+     * &lt;p&gt;Steps:
+     * &lt;p&gt;1. Check if the decimal number is within the valid range for BCD (0 to 9999).
+     * &lt;p&gt;2. Extract the last decimal digit from the decimal number.
+     * &lt;p&gt;3. Shift the digit to the correct BCD position and add it to the BCD number.
+     * &lt;p&gt;4. Remove the last decimal digit from the decimal number.
+     * &lt;p&gt;5. Repeat steps 2-4 until the decimal number is zero.
+     *
+     * @param decimal The decimal number.
+     * @return The corresponding BCD number.
+     * @throws IllegalArgumentException if the decimal number is greater than 9999.
+     */
+    public static int decimalToBcd(int decimal) {
+<span class="pc bpc" id="L68" title="1 of 4 branches missed.">        if (decimal &lt; 0 || decimal &gt; 9999) {</span>
+<span class="fc" id="L69">            throw new IllegalArgumentException(&quot;Value out of bounds for BCD representation: &quot; + decimal);</span>
+        }
+
+<span class="fc" id="L72">        int bcd = 0;</span>
+<span class="fc" id="L73">        int shift = 0;</span>
+<span class="fc bfc" id="L74" title="All 2 branches covered.">        while (decimal &gt; 0) {</span>
+<span class="fc" id="L75">            int digit = decimal % 10;</span>
+<span class="fc" id="L76">            bcd |= (digit &lt;&lt; (shift * 4));</span>
+<span class="fc" id="L77">            decimal /= 10;</span>
+<span class="fc" id="L78">            shift++;</span>
+<span class="fc" id="L79">        }</span>
+<span class="fc" id="L80">        return bcd;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

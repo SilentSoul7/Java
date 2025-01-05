@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CocktailShakerSort.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.sorts</a> &gt; <span class="el_source">CocktailShakerSort.java</span></div><h1>CocktailShakerSort.java</h1><pre class="source lang-java linenums">package com.thealgorithms.sorts;
+
+/**
+ * CocktailShakerSort class implements the Cocktail Shaker Sort algorithm,
+ * which is a bidirectional bubble sort. It sorts the array by passing
+ * through it back and forth, progressively moving the largest elements
+ * to the end and the smallest elements to the beginning.
+ *
+ * @author Mateus Bizzo (https://github.com/MattBizzo)
+ * @author Podshivalov Nikita (https://github.com/nikitap492)
+ */
+<span class="fc" id="L12">class CocktailShakerSort implements SortAlgorithm {</span>
+
+    /**
+     * Sorts the given array using the Cocktail Shaker Sort algorithm.
+     *
+     * @param &lt;T&gt; The type of elements in the array, which must be comparable
+     * @param array The array to be sorted
+     * @return The sorted array
+     */
+    @Override
+    public &lt;T extends Comparable&lt;T&gt;&gt; T[] sort(final T[] array) {
+<span class="fc bfc" id="L23" title="All 2 branches covered.">        if (array.length == 0) {</span>
+<span class="fc" id="L24">            return array;</span>
+        }
+
+<span class="fc" id="L27">        int left = 0;</span>
+<span class="fc" id="L28">        int right = array.length - 1;</span>
+
+<span class="fc bfc" id="L30" title="All 2 branches covered.">        while (left &lt; right) {</span>
+<span class="fc" id="L31">            right = performForwardPass(array, left, right);</span>
+<span class="fc" id="L32">            left = performBackwardPass(array, left, right);</span>
+        }
+
+<span class="fc" id="L35">        return array;</span>
+    }
+
+    /**
+     * Performs a forward pass through the array, moving larger elements to the end.
+     *
+     * @param &lt;T&gt;   The type of elements in the array, which must be comparable
+     * @param array The array being sorted
+     * @param left  The current left boundary of the sorting area
+     * @param right The current right boundary of the sorting area
+     * @return The index of the last swapped element during this pass
+     */
+    private &lt;T extends Comparable&lt;T&gt;&gt; int performForwardPass(final T[] array, final int left, final int right) {
+<span class="fc" id="L48">        int lastSwappedIndex = left;</span>
+
+<span class="fc bfc" id="L50" title="All 2 branches covered.">        for (int i = left; i &lt; right; i++) {</span>
+<span class="fc bfc" id="L51" title="All 2 branches covered.">            if (SortUtils.less(array[i + 1], array[i])) {</span>
+<span class="fc" id="L52">                SortUtils.swap(array, i, i + 1);</span>
+<span class="fc" id="L53">                lastSwappedIndex = i;</span>
+            }
+        }
+
+<span class="fc" id="L57">        return lastSwappedIndex;</span>
+    }
+
+    /**
+     * Performs a backward pass through the array, moving smaller elements to the beginning.
+     *
+     * @param &lt;T&gt;   The type of elements in the array, which must be comparable
+     * @param array The array being sorted
+     * @param left  The current left boundary of the sorting area
+     * @param right The current right boundary of the sorting area
+     * @return The index of the last swapped element during this pass
+     */
+    private &lt;T extends Comparable&lt;T&gt;&gt; int performBackwardPass(final T[] array, final int left, final int right) {
+<span class="fc" id="L70">        int lastSwappedIndex = right;</span>
+
+<span class="fc bfc" id="L72" title="All 2 branches covered.">        for (int i = right; i &gt; left; i--) {</span>
+<span class="fc bfc" id="L73" title="All 2 branches covered.">            if (SortUtils.less(array[i], array[i - 1])) {</span>
+<span class="fc" id="L74">                SortUtils.swap(array, i - 1, i);</span>
+<span class="fc" id="L75">                lastSwappedIndex = i;</span>
+            }
+        }
+
+<span class="fc" id="L79">        return lastSwappedIndex;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

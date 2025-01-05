@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>StackArray.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.stacks</a> &gt; <span class="el_source">StackArray.java</span></div><h1>StackArray.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.stacks;
+
+/**
+ * Implements a generic stack using an array.
+ *
+ * &lt;p&gt;This stack automatically resizes when necessary, growing to accommodate additional elements and
+ * shrinking to conserve memory when its size significantly decreases.
+ *
+ * &lt;p&gt;Elements are pushed and popped in LIFO (last-in, first-out) order, where the last element added
+ * is the first to be removed.
+ *
+ * @param &lt;T&gt; the type of elements in this stack
+ */
+public class StackArray&lt;T&gt; implements Stack&lt;T&gt; {
+
+    private static final int DEFAULT_CAPACITY = 10;
+
+    private int maxSize;
+    private T[] stackArray;
+    private int top;
+
+    /**
+     * Creates a stack with a default capacity.
+     */
+    @SuppressWarnings(&quot;unchecked&quot;)
+    public StackArray() {
+<span class="fc" id="L27">        this(DEFAULT_CAPACITY);</span>
+<span class="fc" id="L28">    }</span>
+
+    /**
+     * Creates a stack with a specified initial capacity.
+     *
+     * @param size the initial capacity of the stack, must be greater than 0
+     * @throws IllegalArgumentException if size is less than or equal to 0
+     */
+    @SuppressWarnings(&quot;unchecked&quot;)
+<span class="fc" id="L37">    public StackArray(int size) {</span>
+<span class="fc bfc" id="L38" title="All 2 branches covered.">        if (size &lt;= 0) {</span>
+<span class="fc" id="L39">            throw new IllegalArgumentException(&quot;Stack size must be greater than 0&quot;);</span>
+        }
+<span class="fc" id="L41">        this.maxSize = size;</span>
+<span class="fc" id="L42">        this.stackArray = (T[]) new Object[size];</span>
+<span class="fc" id="L43">        this.top = -1;</span>
+<span class="fc" id="L44">    }</span>
+
+    /**
+     * Pushes an element onto the top of the stack. Resizes the stack if it is full.
+     *
+     * @param value the element to push
+     */
+    @Override
+    public void push(T value) {
+<span class="fc bfc" id="L53" title="All 2 branches covered.">        if (isFull()) {</span>
+<span class="fc" id="L54">            resize(maxSize * 2);</span>
+        }
+<span class="fc" id="L56">        stackArray[++top] = value;</span>
+<span class="fc" id="L57">    }</span>
+
+    /**
+     * Removes and returns the element from the top of the stack. Shrinks the stack if
+     * its size is below a quarter of its capacity, but not below the default capacity.
+     *
+     * @return the element removed from the top of the stack
+     * @throws IllegalStateException if the stack is empty
+     */
+    @Override
+    public T pop() {
+<span class="fc bfc" id="L68" title="All 2 branches covered.">        if (isEmpty()) {</span>
+<span class="fc" id="L69">            throw new IllegalStateException(&quot;Stack is empty, cannot pop element&quot;);</span>
+        }
+<span class="fc" id="L71">        T value = stackArray[top--];</span>
+<span class="pc bpc" id="L72" title="1 of 4 branches missed.">        if (top + 1 &lt; maxSize / 4 &amp;&amp; maxSize &gt; DEFAULT_CAPACITY) {</span>
+<span class="nc" id="L73">            resize(maxSize / 2);</span>
+        }
+<span class="fc" id="L75">        return value;</span>
+    }
+
+    /**
+     * Returns the element at the top of the stack without removing it.
+     *
+     * @return the top element of the stack
+     * @throws IllegalStateException if the stack is empty
+     */
+    @Override
+    public T peek() {
+<span class="fc bfc" id="L86" title="All 2 branches covered.">        if (isEmpty()) {</span>
+<span class="fc" id="L87">            throw new IllegalStateException(&quot;Stack is empty, cannot peek element&quot;);</span>
+        }
+<span class="fc" id="L89">        return stackArray[top];</span>
+    }
+
+    /**
+     * Resizes the internal array to a new capacity.
+     *
+     * @param newSize the new size of the stack array
+     */
+    private void resize(int newSize) {
+<span class="fc" id="L98">        @SuppressWarnings(&quot;unchecked&quot;) T[] newArray = (T[]) new Object[newSize];</span>
+<span class="fc" id="L99">        System.arraycopy(stackArray, 0, newArray, 0, top + 1);</span>
+<span class="fc" id="L100">        stackArray = newArray;</span>
+<span class="fc" id="L101">        maxSize = newSize;</span>
+<span class="fc" id="L102">    }</span>
+
+    /**
+     * Checks if the stack is full.
+     *
+     * @return true if the stack is full, false otherwise
+     */
+    public boolean isFull() {
+<span class="fc bfc" id="L110" title="All 2 branches covered.">        return top + 1 == maxSize;</span>
+    }
+
+    /**
+     * Checks if the stack is empty.
+     *
+     * @return true if the stack is empty, false otherwise
+     */
+    @Override
+    public boolean isEmpty() {
+<span class="fc bfc" id="L120" title="All 2 branches covered.">        return top == -1;</span>
+    }
+
+    /**
+     * Empties the stack, marking it as empty without deleting elements. Elements are
+     * overwritten on subsequent pushes.
+     */
+    @Override
+    public void makeEmpty() {
+<span class="fc" id="L129">        top = -1;</span>
+<span class="fc" id="L130">    }</span>
+
+    /**
+     * Returns the number of elements currently in the stack.
+     *
+     * @return the size of the stack
+     */
+    @Override
+    public int size() {
+<span class="fc" id="L139">        return top + 1;</span>
+    }
+
+    /**
+     * Returns a string representation of the stack.
+     *
+     * @return a string representation of the stack
+     */
+    @Override
+    public String toString() {
+<span class="fc" id="L149">        StringBuilder sb = new StringBuilder();</span>
+<span class="fc" id="L150">        sb.append(&quot;StackArray [&quot;);</span>
+<span class="fc bfc" id="L151" title="All 2 branches covered.">        for (int i = 0; i &lt;= top; i++) {</span>
+<span class="fc" id="L152">            sb.append(stackArray[i]);</span>
+<span class="fc bfc" id="L153" title="All 2 branches covered.">            if (i &lt; top) {</span>
+<span class="fc" id="L154">                sb.append(&quot;, &quot;);</span>
+            }
+        }
+<span class="fc" id="L157">        sb.append(&quot;]&quot;);</span>
+<span class="fc" id="L158">        return sb.toString();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

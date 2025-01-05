@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PrintAMatrixInSpiralOrder.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.others</a> &gt; <span class="el_source">PrintAMatrixInSpiralOrder.java</span></div><h1>PrintAMatrixInSpiralOrder.java</h1><pre class="source lang-java linenums">package com.thealgorithms.others;
+
+import java.util.ArrayList;
+import java.util.List;
+
+<span class="fc" id="L6">public class PrintAMatrixInSpiralOrder {</span>
+    /**
+     * Search a key in row and column wise sorted matrix
+     *
+     * @param matrix matrix to be searched
+     * @param row    number of rows matrix has
+     * @param col    number of columns matrix has
+     * @author Sadiul Hakim : https://github.com/sadiul-hakim
+     */
+
+    public List&lt;Integer&gt; print(int[][] matrix, int row, int col) {
+
+        // r traverses matrix row wise from first
+<span class="fc" id="L19">        int r = 0;</span>
+        // c traverses matrix column wise from first
+<span class="fc" id="L21">        int c = 0;</span>
+        int i;
+
+<span class="fc" id="L24">        List&lt;Integer&gt; result = new ArrayList&lt;&gt;();</span>
+
+<span class="pc bpc" id="L26" title="1 of 4 branches missed.">        while (r &lt; row &amp;&amp; c &lt; col) {</span>
+            // print first row of matrix
+<span class="fc bfc" id="L28" title="All 2 branches covered.">            for (i = c; i &lt; col; i++) {</span>
+<span class="fc" id="L29">                result.add(matrix[r][i]);</span>
+            }
+
+            // increase r by one because first row printed
+<span class="fc" id="L33">            r++;</span>
+
+            // print last column
+<span class="fc bfc" id="L36" title="All 2 branches covered.">            for (i = r; i &lt; row; i++) {</span>
+<span class="fc" id="L37">                result.add(matrix[i][col - 1]);</span>
+            }
+
+            // decrease col by one because last column has been printed
+<span class="fc" id="L41">            col--;</span>
+
+            // print rows from last except printed elements
+<span class="fc bfc" id="L44" title="All 2 branches covered.">            if (r &lt; row) {</span>
+<span class="fc bfc" id="L45" title="All 2 branches covered.">                for (i = col - 1; i &gt;= c; i--) {</span>
+<span class="fc" id="L46">                    result.add(matrix[row - 1][i]);</span>
+                }
+
+<span class="fc" id="L49">                row--;</span>
+            }
+
+            // print columns from first except printed elements
+<span class="fc bfc" id="L53" title="All 2 branches covered.">            if (c &lt; col) {</span>
+<span class="fc bfc" id="L54" title="All 2 branches covered.">                for (i = row - 1; i &gt;= r; i--) {</span>
+<span class="fc" id="L55">                    result.add(matrix[i][c]);</span>
+                }
+<span class="fc" id="L57">                c++;</span>
+            }
+        }
+<span class="fc" id="L60">        return result;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

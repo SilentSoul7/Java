@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BeadSort.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.sorts</a> &gt; <span class="el_source">BeadSort.java</span></div><h1>BeadSort.java</h1><pre class="source lang-java linenums">package com.thealgorithms.sorts;
+
+import java.util.Arrays;
+
+<span class="fc" id="L5">public class BeadSort {</span>
+<span class="fc" id="L6">    private enum BeadState { BEAD, EMPTY }</span>
+
+    /**
+     * Sorts the given array using the BeadSort algorithm.
+     *
+     * @param array The array of non-negative integers to be sorted.
+     * @return The sorted array.
+     * @throws IllegalArgumentException If the array contains negative numbers.
+     */
+    public int[] sort(int[] array) {
+<span class="fc" id="L16">        allInputsMustBeNonNegative(array);</span>
+<span class="fc" id="L17">        return extractSortedFromGrid(fillGrid(array));</span>
+    }
+
+    private void allInputsMustBeNonNegative(final int[] array) {
+<span class="fc bfc" id="L21" title="All 4 branches covered.">        if (Arrays.stream(array).anyMatch(s -&gt; s &lt; 0)) {</span>
+<span class="fc" id="L22">            throw new IllegalArgumentException(&quot;BeadSort cannot sort negative numbers.&quot;);</span>
+        }
+<span class="fc" id="L24">    }</span>
+
+    private BeadState[][] fillGrid(final int[] array) {
+<span class="fc" id="L27">        final var maxValue = Arrays.stream(array).max().orElse(0);</span>
+<span class="fc" id="L28">        var grid = getEmptyGrid(array.length, maxValue);</span>
+
+<span class="fc" id="L30">        int[] count = new int[maxValue];</span>
+<span class="fc bfc" id="L31" title="All 2 branches covered.">        for (int i = 0, arrayLength = array.length; i &lt; arrayLength; i++) {</span>
+<span class="fc" id="L32">            int k = 0;</span>
+<span class="fc bfc" id="L33" title="All 2 branches covered.">            for (int j = 0; j &lt; array[i]; j++) {</span>
+<span class="fc" id="L34">                grid[count[maxValue - k - 1]++][k] = BeadState.BEAD;</span>
+<span class="fc" id="L35">                k++;</span>
+            }
+        }
+<span class="fc" id="L38">        return grid;</span>
+    }
+
+    private BeadState[][] getEmptyGrid(final int arrayLength, final int maxValue) {
+<span class="fc" id="L42">        BeadState[][] grid = new BeadState[arrayLength][maxValue];</span>
+<span class="fc bfc" id="L43" title="All 2 branches covered.">        for (int i = 0; i &lt; arrayLength; i++) {</span>
+<span class="fc bfc" id="L44" title="All 2 branches covered.">            for (int j = 0; j &lt; maxValue; j++) {</span>
+<span class="fc" id="L45">                grid[i][j] = BeadState.EMPTY;</span>
+            }
+        }
+
+<span class="fc" id="L49">        return grid;</span>
+    }
+
+    private int[] extractSortedFromGrid(final BeadState[][] grid) {
+<span class="fc" id="L53">        int[] sorted = new int[grid.length];</span>
+<span class="fc bfc" id="L54" title="All 2 branches covered.">        for (int i = 0; i &lt; grid.length; i++) {</span>
+<span class="fc" id="L55">            int k = 0;</span>
+<span class="fc bfc" id="L56" title="All 4 branches covered.">            for (int j = 0; j &lt; grid[grid.length - 1 - i].length &amp;&amp; grid[grid.length - 1 - i][j] == BeadState.BEAD; j++) {</span>
+<span class="fc" id="L57">                k++;</span>
+            }
+<span class="fc" id="L59">            sorted[i] = k;</span>
+        }
+<span class="fc" id="L61">        return sorted;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

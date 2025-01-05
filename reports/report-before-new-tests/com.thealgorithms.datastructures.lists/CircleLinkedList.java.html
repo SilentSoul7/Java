@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CircleLinkedList.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.lists</a> &gt; <span class="el_source">CircleLinkedList.java</span></div><h1>CircleLinkedList.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.lists;
+
+/**
+ * This class is a circular singly linked list implementation. In a circular linked list,
+ * the last node points back to the first node, creating a circular chain.
+ *
+ * &lt;p&gt;This implementation includes basic operations such as appending elements
+ * to the end, removing elements from a specified position, and converting
+ * the list to a string representation.
+ *
+ * @param &lt;E&gt; the type of elements held in this list
+ */
+public class CircleLinkedList&lt;E&gt; {
+
+    /**
+     * A static nested class representing a node in the circular linked list.
+     *
+     * @param &lt;E&gt; the type of element stored in the node
+     */
+    static final class Node&lt;E&gt; {
+
+        Node&lt;E&gt; next;
+        E value;
+
+<span class="fc" id="L25">        private Node(E value, Node&lt;E&gt; next) {</span>
+<span class="fc" id="L26">            this.value = value;</span>
+<span class="fc" id="L27">            this.next = next;</span>
+<span class="fc" id="L28">        }</span>
+    }
+
+    private int size;
+<span class="fc" id="L32">    Node&lt;E&gt; head = null;</span>
+    private Node&lt;E&gt; tail;
+
+    /**
+     * Initializes a new circular linked list. A dummy head node is used for simplicity,
+     * pointing initially to itself to ensure the list is never empty.
+     */
+<span class="fc" id="L39">    public CircleLinkedList() {</span>
+<span class="fc" id="L40">        head = new Node&lt;&gt;(null, head);</span>
+<span class="fc" id="L41">        tail = head;</span>
+<span class="fc" id="L42">        size = 0;</span>
+<span class="fc" id="L43">    }</span>
+
+    /**
+     * Returns the current size of the list.
+     *
+     * @return the number of elements in the list
+     */
+    public int getSize() {
+<span class="fc" id="L51">        return size;</span>
+    }
+
+    /**
+     * Appends a new element to the end of the list. Throws a NullPointerException if
+     * a null value is provided.
+     *
+     * @param value the value to append to the list
+     * @throws NullPointerException if the value is null
+     */
+    public void append(E value) {
+<span class="fc bfc" id="L62" title="All 2 branches covered.">        if (value == null) {</span>
+<span class="fc" id="L63">            throw new NullPointerException(&quot;Cannot add null element to the list&quot;);</span>
+        }
+<span class="pc bpc" id="L65" title="1 of 2 branches missed.">        if (tail == null) {</span>
+<span class="nc" id="L66">            tail = new Node&lt;&gt;(value, head);</span>
+<span class="nc" id="L67">            head.next = tail;</span>
+        } else {
+<span class="fc" id="L69">            tail.next = new Node&lt;&gt;(value, head);</span>
+<span class="fc" id="L70">            tail = tail.next;</span>
+        }
+<span class="fc" id="L72">        size++;</span>
+<span class="fc" id="L73">    }</span>
+
+    /**
+     * Returns a string representation of the list in the format &quot;[ element1, element2, ... ]&quot;.
+     * An empty list is represented as &quot;[]&quot;.
+     *
+     * @return the string representation of the list
+     */
+    public String toString() {
+<span class="fc bfc" id="L82" title="All 2 branches covered.">        if (size == 0) {</span>
+<span class="fc" id="L83">            return &quot;[]&quot;;</span>
+        }
+<span class="fc" id="L85">        StringBuilder sb = new StringBuilder(&quot;[ &quot;);</span>
+<span class="fc" id="L86">        Node&lt;E&gt; current = head.next;</span>
+<span class="fc bfc" id="L87" title="All 2 branches covered.">        while (current != head) {</span>
+<span class="fc" id="L88">            sb.append(current.value);</span>
+<span class="fc bfc" id="L89" title="All 2 branches covered.">            if (current.next != head) {</span>
+<span class="fc" id="L90">                sb.append(&quot;, &quot;);</span>
+            }
+<span class="fc" id="L92">            current = current.next;</span>
+        }
+<span class="fc" id="L94">        sb.append(&quot; ]&quot;);</span>
+<span class="fc" id="L95">        return sb.toString();</span>
+    }
+
+    /**
+     * Removes and returns the element at the specified position in the list.
+     * Throws an IndexOutOfBoundsException if the position is invalid.
+     *
+     * @param pos the position of the element to remove
+     * @return the value of the removed element
+     * @throws IndexOutOfBoundsException if the position is out of range
+     */
+    public E remove(int pos) {
+<span class="fc bfc" id="L107" title="All 4 branches covered.">        if (pos &gt;= size || pos &lt; 0) {</span>
+<span class="fc" id="L108">            throw new IndexOutOfBoundsException(&quot;Position out of bounds&quot;);</span>
+        }
+
+<span class="fc" id="L111">        Node&lt;E&gt; before = head;</span>
+<span class="fc bfc" id="L112" title="All 2 branches covered.">        for (int i = 1; i &lt;= pos; i++) {</span>
+<span class="fc" id="L113">            before = before.next;</span>
+        }
+<span class="fc" id="L115">        Node&lt;E&gt; destroy = before.next;</span>
+<span class="fc" id="L116">        E saved = destroy.value;</span>
+<span class="fc" id="L117">        before.next = destroy.next;</span>
+
+<span class="fc bfc" id="L119" title="All 2 branches covered.">        if (destroy == tail) {</span>
+<span class="fc" id="L120">            tail = before;</span>
+        }
+<span class="fc" id="L122">        destroy = null;</span>
+<span class="fc" id="L123">        size--;</span>
+<span class="fc" id="L124">        return saved;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

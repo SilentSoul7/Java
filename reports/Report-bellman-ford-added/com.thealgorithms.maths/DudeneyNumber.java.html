@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DudeneyNumber.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.maths</a> &gt; <span class="el_source">DudeneyNumber.java</span></div><h1>DudeneyNumber.java</h1><pre class="source lang-java linenums">/**
+ * A number is said to be Dudeney if the sum of the digits, is the cube root of the entered number.
+ * Example- Let the number be 512, its sum of digits is 5+1+2=8. The cube root of 512 is also 8.
+ *          Since, the sum of the digits is equal to the cube root of the entered number;
+ *          it is a Dudeney Number.
+ */
+package com.thealgorithms.maths;
+
+public final class DudeneyNumber {
+    private DudeneyNumber() {
+    }
+
+    // returns True if the number is a Dudeney number and False if it is not a Dudeney number.
+    public static boolean isDudeney(final int n) {
+<span class="fc bfc" id="L15" title="All 2 branches covered.">        if (n &lt;= 0) {</span>
+<span class="fc" id="L16">            throw new IllegalArgumentException(&quot;Input must me positive.&quot;);</span>
+        }
+        // Calculating Cube Root
+<span class="fc" id="L19">        final int cubeRoot = (int) Math.round(Math.pow(n, 1.0 / 3.0));</span>
+        // If the number is not a perfect cube the method returns false.
+<span class="fc bfc" id="L21" title="All 2 branches covered.">        if (cubeRoot * cubeRoot * cubeRoot != n) {</span>
+<span class="fc" id="L22">            return false;</span>
+        }
+
+        // If the cube root of the number is not equal to the sum of its digits, we return false.
+<span class="fc bfc" id="L26" title="All 2 branches covered.">        return cubeRoot == SumOfDigits.sumOfDigits(n);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

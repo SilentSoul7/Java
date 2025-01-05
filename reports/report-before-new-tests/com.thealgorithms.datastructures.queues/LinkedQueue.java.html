@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LinkedQueue.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.queues</a> &gt; <span class="el_source">LinkedQueue.java</span></div><h1>LinkedQueue.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.queues;
+
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
+public class LinkedQueue&lt;T&gt; implements Iterable&lt;T&gt; {
+
+    /**
+     * Node class representing each element in the queue.
+     */
+    private static class Node&lt;T&gt; {
+        T data;
+        Node&lt;T&gt; next;
+
+<span class="fc" id="L15">        Node(T data) {</span>
+<span class="fc" id="L16">            this.data = data;</span>
+<span class="fc" id="L17">            this.next = null;</span>
+<span class="fc" id="L18">        }</span>
+    }
+
+    private Node&lt;T&gt; front; // Front of the queue
+    private Node&lt;T&gt; rear; // Rear of the queue
+    private int size; // Size of the queue
+
+    /**
+     * Initializes an empty LinkedQueue.
+     */
+<span class="fc" id="L28">    public LinkedQueue() {</span>
+<span class="fc" id="L29">        front = null;</span>
+<span class="fc" id="L30">        rear = null;</span>
+<span class="fc" id="L31">        size = 0;</span>
+<span class="fc" id="L32">    }</span>
+
+    /**
+     * Checks if the queue is empty.
+     *
+     * @return true if the queue is empty, otherwise false.
+     */
+    public boolean isEmpty() {
+<span class="fc bfc" id="L40" title="All 2 branches covered.">        return size == 0;</span>
+    }
+
+    /**
+     * Adds an element to the rear of the queue.
+     *
+     * @param data the element to insert.
+     * @throws IllegalArgumentException if data is null.
+     */
+    public void enqueue(T data) {
+<span class="fc bfc" id="L50" title="All 2 branches covered.">        if (data == null) {</span>
+<span class="fc" id="L51">            throw new IllegalArgumentException(&quot;Cannot enqueue null data&quot;);</span>
+        }
+
+<span class="fc" id="L54">        Node&lt;T&gt; newNode = new Node&lt;&gt;(data);</span>
+
+<span class="fc bfc" id="L56" title="All 2 branches covered.">        if (isEmpty()) {</span>
+<span class="fc" id="L57">            front = newNode;</span>
+        } else {
+<span class="fc" id="L59">            rear.next = newNode;</span>
+        }
+<span class="fc" id="L61">        rear = newNode;</span>
+<span class="fc" id="L62">        size++;</span>
+<span class="fc" id="L63">    }</span>
+
+    /**
+     * Removes and returns the element at the front of the queue.
+     *
+     * @return the element at the front of the queue.
+     * @throws NoSuchElementException if the queue is empty.
+     */
+    public T dequeue() {
+<span class="fc bfc" id="L72" title="All 2 branches covered.">        if (isEmpty()) {</span>
+<span class="fc" id="L73">            throw new NoSuchElementException(&quot;Queue is empty&quot;);</span>
+        }
+
+<span class="fc" id="L76">        T retValue = front.data;</span>
+<span class="fc" id="L77">        front = front.next;</span>
+<span class="fc" id="L78">        size--;</span>
+
+<span class="fc bfc" id="L80" title="All 2 branches covered.">        if (isEmpty()) {</span>
+<span class="fc" id="L81">            rear = null;</span>
+        }
+
+<span class="fc" id="L84">        return retValue;</span>
+    }
+
+    /**
+     * Returns the element at the front of the queue without removing it.
+     *
+     * @return the element at the front of the queue.
+     * @throws NoSuchElementException if the queue is empty.
+     */
+    public T peekFront() {
+<span class="fc bfc" id="L94" title="All 2 branches covered.">        if (isEmpty()) {</span>
+<span class="fc" id="L95">            throw new NoSuchElementException(&quot;Queue is empty&quot;);</span>
+        }
+<span class="fc" id="L97">        return front.data;</span>
+    }
+
+    /**
+     * Returns the element at the rear of the queue without removing it.
+     *
+     * @return the element at the rear of the queue.
+     * @throws NoSuchElementException if the queue is empty.
+     */
+    public T peekRear() {
+<span class="fc bfc" id="L107" title="All 2 branches covered.">        if (isEmpty()) {</span>
+<span class="fc" id="L108">            throw new NoSuchElementException(&quot;Queue is empty&quot;);</span>
+        }
+<span class="fc" id="L110">        return rear.data;</span>
+    }
+
+    /**
+     * Returns the element at the specified position (1-based index).
+     *
+     * @param pos the position to peek at (1-based index).
+     * @return the element at the specified position.
+     * @throws IndexOutOfBoundsException if the position is out of range.
+     */
+    public T peek(int pos) {
+<span class="fc bfc" id="L121" title="All 4 branches covered.">        if (pos &lt; 1 || pos &gt; size) {</span>
+<span class="fc" id="L122">            throw new IndexOutOfBoundsException(&quot;Position &quot; + pos + &quot; out of range!&quot;);</span>
+        }
+
+<span class="fc" id="L125">        Node&lt;T&gt; node = front;</span>
+<span class="fc bfc" id="L126" title="All 2 branches covered.">        for (int i = 1; i &lt; pos; i++) {</span>
+<span class="fc" id="L127">            node = node.next;</span>
+        }
+<span class="fc" id="L129">        return node.data;</span>
+    }
+
+    /**
+     * Returns an iterator over the elements in the queue.
+     *
+     * @return an iterator over the elements in the queue.
+     */
+    @Override
+    public Iterator&lt;T&gt; iterator() {
+<span class="fc" id="L139">        return new Iterator&lt;&gt;() {</span>
+<span class="fc" id="L140">            private Node&lt;T&gt; current = front;</span>
+
+            @Override
+            public boolean hasNext() {
+<span class="fc bfc" id="L144" title="All 2 branches covered.">                return current != null;</span>
+            }
+
+            @Override
+            public T next() {
+<span class="fc bfc" id="L149" title="All 2 branches covered.">                if (!hasNext()) {</span>
+<span class="fc" id="L150">                    throw new NoSuchElementException();</span>
+                }
+
+<span class="fc" id="L153">                T data = current.data;</span>
+<span class="fc" id="L154">                current = current.next;</span>
+<span class="fc" id="L155">                return data;</span>
+            }
+        };
+    }
+
+    /**
+     * Returns the size of the queue.
+     *
+     * @return the size of the queue.
+     */
+    public int size() {
+<span class="fc" id="L166">        return size;</span>
+    }
+
+    /**
+     * Clears all elements from the queue.
+     */
+    public void clear() {
+<span class="fc" id="L173">        front = null;</span>
+<span class="fc" id="L174">        rear = null;</span>
+<span class="fc" id="L175">        size = 0;</span>
+<span class="fc" id="L176">    }</span>
+
+    /**
+     * Returns a string representation of the queue.
+     *
+     * @return a string representation of the queue.
+     */
+    @Override
+    public String toString() {
+<span class="fc bfc" id="L185" title="All 2 branches covered.">        if (isEmpty()) {</span>
+<span class="fc" id="L186">            return &quot;[]&quot;;</span>
+        }
+
+<span class="fc" id="L189">        StringBuilder sb = new StringBuilder(&quot;[&quot;);</span>
+<span class="fc" id="L190">        Node&lt;T&gt; current = front;</span>
+<span class="fc bfc" id="L191" title="All 2 branches covered.">        while (current != null) {</span>
+<span class="fc" id="L192">            sb.append(current.data);</span>
+<span class="fc bfc" id="L193" title="All 2 branches covered.">            if (current.next != null) {</span>
+<span class="fc" id="L194">                sb.append(&quot;, &quot;);</span>
+            }
+<span class="fc" id="L196">            current = current.next;</span>
+        }
+<span class="fc" id="L198">        sb.append(']');</span>
+<span class="fc" id="L199">        return sb.toString();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

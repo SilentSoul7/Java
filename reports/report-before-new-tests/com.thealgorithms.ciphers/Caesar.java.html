@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Caesar.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.ciphers</a> &gt; <span class="el_source">Caesar.java</span></div><h1>Caesar.java</h1><pre class="source lang-java linenums">package com.thealgorithms.ciphers;
+
+/**
+ * A Java implementation of Caesar Cipher. /It is a type of substitution cipher
+ * in which each letter in the plaintext is replaced by a letter some fixed
+ * number of positions down the alphabet. /
+ *
+ * @author FAHRI YARDIMCI
+ * @author khalil2535
+ */
+<span class="fc" id="L11">public class Caesar {</span>
+
+    /**
+     * Encrypt text by shifting every Latin char by add number shift for ASCII
+     * Example : A + 1 -&gt; B
+     *
+     * @return Encrypted message
+     */
+    public String encode(String message, int shift) {
+<span class="fc" id="L20">        StringBuilder encoded = new StringBuilder();</span>
+
+<span class="fc" id="L22">        shift %= 26;</span>
+
+<span class="fc" id="L24">        final int length = message.length();</span>
+<span class="fc bfc" id="L25" title="All 2 branches covered.">        for (int i = 0; i &lt; length; i++) {</span>
+            //            int current = message.charAt(i); //using char to shift characters because
+            //            ascii
+            // is in-order latin alphabet
+<span class="fc" id="L29">            char current = message.charAt(i); // Java law : char + int = char</span>
+
+<span class="fc bfc" id="L31" title="All 2 branches covered.">            if (isCapitalLatinLetter(current)) {</span>
+<span class="fc" id="L32">                current += shift;</span>
+<span class="pc bpc" id="L33" title="1 of 2 branches missed.">                encoded.append((char) (current &gt; 'Z' ? current - 26 : current)); // 26 = number of latin letters</span>
+<span class="fc bfc" id="L34" title="All 2 branches covered.">            } else if (isSmallLatinLetter(current)) {</span>
+<span class="fc" id="L35">                current += shift;</span>
+<span class="fc bfc" id="L36" title="All 2 branches covered.">                encoded.append((char) (current &gt; 'z' ? current - 26 : current)); // 26 = number of latin letters</span>
+            } else {
+<span class="fc" id="L38">                encoded.append(current);</span>
+            }
+        }
+<span class="fc" id="L41">        return encoded.toString();</span>
+    }
+
+    /**
+     * Decrypt message by shifting back every Latin char to previous the ASCII
+     * Example : B - 1 -&gt; A
+     *
+     * @return message
+     */
+    public String decode(String encryptedMessage, int shift) {
+<span class="fc" id="L51">        StringBuilder decoded = new StringBuilder();</span>
+
+<span class="fc" id="L53">        shift %= 26;</span>
+
+<span class="fc" id="L55">        final int length = encryptedMessage.length();</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">        for (int i = 0; i &lt; length; i++) {</span>
+<span class="fc" id="L57">            char current = encryptedMessage.charAt(i);</span>
+<span class="fc bfc" id="L58" title="All 2 branches covered.">            if (isCapitalLatinLetter(current)) {</span>
+<span class="fc" id="L59">                current -= shift;</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">                decoded.append((char) (current &lt; 'A' ? current + 26 : current)); // 26 = number of latin letters</span>
+<span class="fc bfc" id="L61" title="All 2 branches covered.">            } else if (isSmallLatinLetter(current)) {</span>
+<span class="fc" id="L62">                current -= shift;</span>
+<span class="fc bfc" id="L63" title="All 2 branches covered.">                decoded.append((char) (current &lt; 'a' ? current + 26 : current)); // 26 = number of latin letters</span>
+            } else {
+<span class="fc" id="L65">                decoded.append(current);</span>
+            }
+        }
+<span class="fc" id="L68">        return decoded.toString();</span>
+    }
+
+    /**
+     * @return true if character is capital Latin letter or false for others
+     */
+    private static boolean isCapitalLatinLetter(char c) {
+<span class="fc bfc" id="L75" title="All 4 branches covered.">        return c &gt;= 'A' &amp;&amp; c &lt;= 'Z';</span>
+    }
+
+    /**
+     * @return true if character is small Latin letter or false for others
+     */
+    private static boolean isSmallLatinLetter(char c) {
+<span class="pc bpc" id="L82" title="1 of 4 branches missed.">        return c &gt;= 'a' &amp;&amp; c &lt;= 'z';</span>
+    }
+
+    /**
+     *  @return string array which contains all the possible decoded combination.
+     */
+    public String[] bruteforce(String encryptedMessage) {
+<span class="fc" id="L89">        String[] listOfAllTheAnswers = new String[27];</span>
+<span class="fc bfc" id="L90" title="All 2 branches covered.">        for (int i = 0; i &lt;= 26; i++) {</span>
+<span class="fc" id="L91">            listOfAllTheAnswers[i] = decode(encryptedMessage, i);</span>
+        }
+
+<span class="fc" id="L94">        return listOfAllTheAnswers;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

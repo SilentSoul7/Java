@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TopologicalSort.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.sorts</a> &gt; <span class="el_source">TopologicalSort.java</span></div><h1>TopologicalSort.java</h1><pre class="source lang-java linenums">package com.thealgorithms.sorts;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+
+/**
+ * The Topological Sorting algorithm linearly orders a DAG or Directed Acyclic Graph into
+ * a linked list. A Directed Graph is proven to be acyclic when a DFS or Depth First Search is
+ * performed, yielding no back-edges.
+ *
+ * https://en.wikipedia.org/wiki/Topological_sorting
+ *
+ * @author Jonathan Taylor (https://github.com/Jtmonument)
+ * Based on Introduction to Algorithms 3rd Edition
+ */
+public final class TopologicalSort {
+    private TopologicalSort() {
+    }
+
+    /*
+     * Enum to represent the colors for the depth first search
+     * */
+<span class="fc" id="L26">    private enum Color {</span>
+<span class="fc" id="L27">        WHITE,</span>
+<span class="fc" id="L28">        GRAY,</span>
+<span class="fc" id="L29">        BLACK,</span>
+    }
+
+    /*
+     * Class to represent vertices
+     * */
+    private static class Vertex {
+
+        /*
+         * Name of vertex
+         * */
+        public final String label;
+
+        /*
+         * Represents the category of visit in DFS
+         * */
+<span class="fc" id="L45">        public Color color = Color.WHITE;</span>
+
+        /*
+         * The array of names of descendant vertices
+         * */
+<span class="fc" id="L50">        public final ArrayList&lt;String&gt; next = new ArrayList&lt;&gt;();</span>
+
+<span class="fc" id="L52">        Vertex(String label) {</span>
+<span class="fc" id="L53">            this.label = label;</span>
+<span class="fc" id="L54">        }</span>
+    }
+
+    /*
+     * Graph class uses the adjacency list representation
+     * */
+<span class="fc" id="L60">    static class Graph {</span>
+
+        /*
+         * Adjacency list representation
+         * */
+<span class="fc" id="L65">        private final HashMap&lt;String, Vertex&gt; adj = new LinkedHashMap&lt;&gt;();</span>
+
+        /*
+         * Function to add an edge to the graph
+         * */
+        public void addEdge(String label, String... next) {
+<span class="fc" id="L71">            adj.put(label, new Vertex(label));</span>
+<span class="fc bfc" id="L72" title="All 2 branches covered.">            if (!next[0].isEmpty()) {</span>
+<span class="fc" id="L73">                Collections.addAll(adj.get(label).next, next);</span>
+            }
+<span class="fc" id="L75">        }</span>
+    }
+
+    /*
+     * Depth First Search
+     *
+     * DFS(G)
+     *   for each vertex u ∈ G.V
+     *       u.color = WHITE
+     *       u.π = NIL
+     *   time = 0
+     *   for each vertex u ∈ G.V
+     *   if u.color == WHITE
+     *       DFS-VISIT(G, u)
+     *
+     * Performed in Θ(V + E) time
+     * */
+    public static LinkedList&lt;String&gt; sort(Graph graph) {
+<span class="fc" id="L93">        LinkedList&lt;String&gt; list = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L94">        graph.adj.forEach((name, vertex) -&gt; {</span>
+<span class="fc bfc" id="L95" title="All 2 branches covered.">            if (vertex.color == Color.WHITE) {</span>
+<span class="fc" id="L96">                list.addFirst(sort(graph, vertex, list));</span>
+            }
+<span class="fc" id="L98">        });</span>
+<span class="fc" id="L99">        return list;</span>
+    }
+
+    /*
+     * Depth First Search Visit
+     *
+     * DFS-Visit(G, u)
+     *   time = time + 1
+     *   u.d = time
+     *   u.color = GRAY
+     *   for each v ∈ G.Adj[u]
+     *       if v.color == WHITE
+     *           v.π = u
+     *           DFS-Visit(G, u)
+     *   u.color = BLACK
+     *   time = time + 1
+     *   u.f = time
+     * */
+    private static String sort(Graph graph, Vertex u, LinkedList&lt;String&gt; list) {
+<span class="fc" id="L118">        u.color = Color.GRAY;</span>
+<span class="fc" id="L119">        graph.adj.get(u.label).next.forEach(label -&gt; {</span>
+<span class="fc bfc" id="L120" title="All 2 branches covered.">            if (graph.adj.get(label).color == Color.WHITE) {</span>
+<span class="fc" id="L121">                list.addFirst(sort(graph, graph.adj.get(label), list));</span>
+<span class="fc bfc" id="L122" title="All 2 branches covered.">            } else if (graph.adj.get(label).color == Color.GRAY) {</span>
+                /*
+                 * A back edge exists if an edge (u, v) connects a vertex u to its ancestor vertex v
+                 * in a depth first tree. If v.d ≤ u.d &lt; u.f ≤ v.f
+                 *
+                 * In many cases, we will not know u.f, but v.color denotes the type of edge
+                 * */
+<span class="fc" id="L129">                throw new RuntimeException(&quot;This graph contains a cycle. No linear ordering is possible. Back edge: &quot; + u.label + &quot; -&gt; &quot; + label);</span>
+            }
+<span class="fc" id="L131">        });</span>
+<span class="fc" id="L132">        u.color = Color.BLACK;</span>
+<span class="fc" id="L133">        return u.label;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

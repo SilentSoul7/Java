@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>IntegerToRoman.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.conversions</a> &gt; <span class="el_source">IntegerToRoman.java</span></div><h1>IntegerToRoman.java</h1><pre class="source lang-java linenums">package com.thealgorithms.conversions;
+
+/**
+ * A utility class to convert integers into Roman numerals.
+ *
+ * &lt;p&gt;Roman numerals follow these rules:
+ * &lt;ul&gt;
+ *   &lt;li&gt;I = 1&lt;/li&gt;
+ *   &lt;li&gt;IV = 4&lt;/li&gt;
+ *   &lt;li&gt;V = 5&lt;/li&gt;
+ *   &lt;li&gt;IX = 9&lt;/li&gt;
+ *   &lt;li&gt;X = 10&lt;/li&gt;
+ *   &lt;li&gt;XL = 40&lt;/li&gt;
+ *   &lt;li&gt;L = 50&lt;/li&gt;
+ *   &lt;li&gt;XC = 90&lt;/li&gt;
+ *   &lt;li&gt;C = 100&lt;/li&gt;
+ *   &lt;li&gt;D = 500&lt;/li&gt;
+ *   &lt;li&gt;M = 1000&lt;/li&gt;
+ * &lt;/ul&gt;
+ *
+ * &lt;p&gt;Conversion is based on repeatedly subtracting the largest possible Roman numeral value
+ * from the input number until it reaches zero. For example, 1994 is converted as:
+ * &lt;pre&gt;
+ *   1994 -&gt; MCMXCIV (1000 + 900 + 90 + 4)
+ * &lt;/pre&gt;
+ */
+public final class IntegerToRoman {
+
+    // Array of Roman numeral values in descending order
+<span class="fc" id="L30">    private static final int[] ALL_ROMAN_NUMBERS_IN_ARABIC = {1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1};</span>
+
+    // Corresponding Roman numeral symbols
+<span class="fc" id="L33">    private static final String[] ALL_ROMAN_NUMBERS = {&quot;M&quot;, &quot;CM&quot;, &quot;D&quot;, &quot;CD&quot;, &quot;C&quot;, &quot;XC&quot;, &quot;L&quot;, &quot;XL&quot;, &quot;X&quot;, &quot;IX&quot;, &quot;V&quot;, &quot;IV&quot;, &quot;I&quot;};</span>
+
+    private IntegerToRoman() {
+    }
+
+    /**
+     * Converts an integer to its Roman numeral representation.
+     * Steps:
+     * &lt;ol&gt;
+     *     &lt;li&gt;Iterate over the Roman numeral values in descending order&lt;/li&gt;
+     *     &lt;li&gt;Calculate how many times a numeral fits&lt;/li&gt;
+     *     &lt;li&gt;Append the corresponding symbol&lt;/li&gt;
+     *     &lt;li&gt;Subtract the value from the number&lt;/li&gt;
+     *     &lt;li&gt;Repeat until the number is zero&lt;/li&gt;
+     *     &lt;li&gt;Return the Roman numeral representation&lt;/li&gt;
+     * &lt;/ol&gt;
+     *
+     * @param num the integer value to convert (must be greater than 0)
+     * @return the Roman numeral representation of the input integer
+     *         or an empty string if the input is non-positive
+     */
+    public static String integerToRoman(int num) {
+<span class="fc bfc" id="L55" title="All 2 branches covered.">        if (num &lt;= 0) {</span>
+<span class="fc" id="L56">            return &quot;&quot;;</span>
+        }
+
+<span class="fc" id="L59">        StringBuilder builder = new StringBuilder();</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">        for (int i = 0; i &lt; ALL_ROMAN_NUMBERS_IN_ARABIC.length; i++) {</span>
+<span class="fc" id="L61">            int times = num / ALL_ROMAN_NUMBERS_IN_ARABIC[i];</span>
+<span class="fc" id="L62">            builder.append(ALL_ROMAN_NUMBERS[i].repeat(Math.max(0, times)));</span>
+<span class="fc" id="L63">            num -= times * ALL_ROMAN_NUMBERS_IN_ARABIC[i];</span>
+        }
+
+<span class="fc" id="L66">        return builder.toString();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

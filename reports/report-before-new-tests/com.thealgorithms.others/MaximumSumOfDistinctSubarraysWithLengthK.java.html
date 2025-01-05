@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MaximumSumOfDistinctSubarraysWithLengthK.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.others</a> &gt; <span class="el_source">MaximumSumOfDistinctSubarraysWithLengthK.java</span></div><h1>MaximumSumOfDistinctSubarraysWithLengthK.java</h1><pre class="source lang-java linenums">package com.thealgorithms.others;
+
+import java.util.HashSet;
+import java.util.Set;
+
+/**
+ * References: https://en.wikipedia.org/wiki/Streaming_algorithm
+ *
+ * This model involves computing the maximum sum of subarrays of a fixed size \( K \) from a stream of integers.
+ * As the stream progresses, elements from the end of the window are removed, and new elements from the stream are added.
+ *
+ * @author Swarga-codes (https://github.com/Swarga-codes)
+ */
+public final class MaximumSumOfDistinctSubarraysWithLengthK {
+    private MaximumSumOfDistinctSubarraysWithLengthK() {
+    }
+
+    /**
+     * Finds the maximum sum of a subarray of size K consisting of distinct elements.
+     *
+     * @param k The size of the subarray.
+     * @param nums The array from which subarrays will be considered.
+     *
+     * @return The maximum sum of any distinct-element subarray of size K. If no such subarray exists, returns 0.
+     */
+    public static long maximumSubarraySum(int k, int... nums) {
+<span class="fc bfc" id="L27" title="All 2 branches covered.">        if (nums.length &lt; k) {</span>
+<span class="fc" id="L28">            return 0;</span>
+        }
+<span class="fc" id="L30">        long masSum = 0; // Variable to store the maximum sum of distinct subarrays</span>
+<span class="fc" id="L31">        long currentSum = 0; // Variable to store the sum of the current subarray</span>
+<span class="fc" id="L32">        Set&lt;Integer&gt; currentSet = new HashSet&lt;&gt;(); // Set to track distinct elements in the current subarray</span>
+
+        // Initialize the first window
+<span class="fc bfc" id="L35" title="All 2 branches covered.">        for (int i = 0; i &lt; k; i++) {</span>
+<span class="fc" id="L36">            currentSum += nums[i];</span>
+<span class="fc" id="L37">            currentSet.add(nums[i]);</span>
+        }
+        // If the first window contains distinct elements, update maxSum
+<span class="fc bfc" id="L40" title="All 2 branches covered.">        if (currentSet.size() == k) {</span>
+<span class="fc" id="L41">            masSum = currentSum;</span>
+        }
+        // Slide the window across the array
+<span class="fc bfc" id="L44" title="All 2 branches covered.">        for (int i = 1; i &lt; nums.length - k + 1; i++) {</span>
+            // Update the sum by removing the element that is sliding out and adding the new element
+<span class="fc" id="L46">            currentSum = currentSum - nums[i - 1];</span>
+<span class="fc" id="L47">            currentSum = currentSum + nums[i + k - 1];</span>
+<span class="fc" id="L48">            int j = i;</span>
+<span class="fc" id="L49">            boolean flag = false; // flag value which says that the subarray contains distinct elements</span>
+<span class="fc bfc" id="L50" title="All 4 branches covered.">            while (j &lt; i + k &amp;&amp; currentSet.size() &lt; k) {</span>
+<span class="fc bfc" id="L51" title="All 2 branches covered.">                if (nums[i - 1] == nums[j]) {</span>
+<span class="fc" id="L52">                    flag = true;</span>
+<span class="fc" id="L53">                    break;</span>
+                } else {
+<span class="fc" id="L55">                    j++;</span>
+                }
+            }
+<span class="fc bfc" id="L58" title="All 2 branches covered.">            if (!flag) {</span>
+<span class="fc" id="L59">                currentSet.remove(nums[i - 1]);</span>
+            }
+<span class="fc" id="L61">            currentSet.add(nums[i + k - 1]);</span>
+            // If the current window has distinct elements, compare and possibly update maxSum
+<span class="fc bfc" id="L63" title="All 4 branches covered.">            if (currentSet.size() == k &amp;&amp; masSum &lt; currentSum) {</span>
+<span class="fc" id="L64">                masSum = currentSum;</span>
+            }
+        }
+<span class="fc" id="L67">        return masSum; // the final maximum sum</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

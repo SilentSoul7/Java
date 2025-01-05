@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WordBoggle.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.misc</a> &gt; <span class="el_source">WordBoggle.java</span></div><h1>WordBoggle.java</h1><pre class="source lang-java linenums">package com.thealgorithms.misc;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+public final class WordBoggle {
+    private WordBoggle() {
+    }
+
+    /**
+     * O(nm * 8^s + ws) time where n = width of boggle board, m = height of
+     * boggle board, s = length of longest word in string array, w = length of
+     * string array, 8 is due to 8 explorable neighbours O(nm + ws) space.
+     */
+    public static List&lt;String&gt; boggleBoard(char[][] board, String[] words) {
+<span class="fc" id="L20">        Trie trie = new Trie();</span>
+<span class="fc bfc" id="L21" title="All 2 branches covered.">        for (String word : words) {</span>
+<span class="fc" id="L22">            trie.add(word);</span>
+        }
+<span class="fc" id="L24">        Set&lt;String&gt; finalWords = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L25">        boolean[][] visited = new boolean[board.length][board.length];</span>
+<span class="fc bfc" id="L26" title="All 2 branches covered.">        for (int i = 0; i &lt; board.length; i++) {</span>
+<span class="fc bfc" id="L27" title="All 2 branches covered.">            for (int j = 0; j &lt; board[i].length; j++) {</span>
+<span class="fc" id="L28">                explore(i, j, board, trie.root, visited, finalWords);</span>
+            }
+        }
+<span class="fc" id="L31">        return new ArrayList&lt;&gt;(finalWords);</span>
+    }
+
+    public static void explore(int i, int j, char[][] board, TrieNode trieNode, boolean[][] visited, Set&lt;String&gt; finalWords) {
+<span class="fc bfc" id="L35" title="All 2 branches covered.">        if (visited[i][j]) {</span>
+<span class="fc" id="L36">            return;</span>
+        }
+
+<span class="fc" id="L39">        char letter = board[i][j];</span>
+<span class="fc bfc" id="L40" title="All 2 branches covered.">        if (!trieNode.children.containsKey(letter)) {</span>
+<span class="fc" id="L41">            return;</span>
+        }
+<span class="fc" id="L43">        visited[i][j] = true;</span>
+<span class="fc" id="L44">        trieNode = trieNode.children.get(letter);</span>
+<span class="fc bfc" id="L45" title="All 2 branches covered.">        if (trieNode.children.containsKey('*')) {</span>
+<span class="fc" id="L46">            finalWords.add(trieNode.word);</span>
+        }
+
+<span class="fc" id="L49">        List&lt;Integer[]&gt; neighbors = getNeighbors(i, j, board);</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">        for (Integer[] neighbor : neighbors) {</span>
+<span class="fc" id="L51">            explore(neighbor[0], neighbor[1], board, trieNode, visited, finalWords);</span>
+<span class="fc" id="L52">        }</span>
+
+<span class="fc" id="L54">        visited[i][j] = false;</span>
+<span class="fc" id="L55">    }</span>
+
+    public static List&lt;Integer[]&gt; getNeighbors(int i, int j, char[][] board) {
+<span class="fc" id="L58">        List&lt;Integer[]&gt; neighbors = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L59" title="All 4 branches covered.">        if (i &gt; 0 &amp;&amp; j &gt; 0) {</span>
+<span class="fc" id="L60">            neighbors.add(new Integer[] {i - 1, j - 1});</span>
+        }
+
+<span class="fc bfc" id="L63" title="All 4 branches covered.">        if (i &gt; 0 &amp;&amp; j &lt; board[0].length - 1) {</span>
+<span class="fc" id="L64">            neighbors.add(new Integer[] {i - 1, j + 1});</span>
+        }
+
+<span class="fc bfc" id="L67" title="All 4 branches covered.">        if (i &lt; board.length - 1 &amp;&amp; j &lt; board[0].length - 1) {</span>
+<span class="fc" id="L68">            neighbors.add(new Integer[] {i + 1, j + 1});</span>
+        }
+
+<span class="fc bfc" id="L71" title="All 4 branches covered.">        if (i &lt; board.length - 1 &amp;&amp; j &gt; 0) {</span>
+<span class="fc" id="L72">            neighbors.add(new Integer[] {i + 1, j - 1});</span>
+        }
+
+<span class="fc bfc" id="L75" title="All 2 branches covered.">        if (i &gt; 0) {</span>
+<span class="fc" id="L76">            neighbors.add(new Integer[] {i - 1, j});</span>
+        }
+
+<span class="fc bfc" id="L79" title="All 2 branches covered.">        if (i &lt; board.length - 1) {</span>
+<span class="fc" id="L80">            neighbors.add(new Integer[] {i + 1, j});</span>
+        }
+
+<span class="fc bfc" id="L83" title="All 2 branches covered.">        if (j &gt; 0) {</span>
+<span class="fc" id="L84">            neighbors.add(new Integer[] {i, j - 1});</span>
+        }
+
+<span class="fc bfc" id="L87" title="All 2 branches covered.">        if (j &lt; board[0].length - 1) {</span>
+<span class="fc" id="L88">            neighbors.add(new Integer[] {i, j + 1});</span>
+        }
+
+<span class="fc" id="L91">        return neighbors;</span>
+    }
+}
+
+// Trie used to optimize string search
+<span class="fc" id="L96">class TrieNode {</span>
+
+<span class="fc" id="L98">    Map&lt;Character, TrieNode&gt; children = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L99">    String word = &quot;&quot;;</span>
+}
+
+class Trie {
+
+    TrieNode root;
+    char endSymbol;
+
+<span class="fc" id="L107">    Trie() {</span>
+<span class="fc" id="L108">        this.root = new TrieNode();</span>
+<span class="fc" id="L109">        this.endSymbol = '*';</span>
+<span class="fc" id="L110">    }</span>
+
+    public void add(String str) {
+<span class="fc" id="L113">        TrieNode node = this.root;</span>
+<span class="fc bfc" id="L114" title="All 2 branches covered.">        for (int i = 0; i &lt; str.length(); i++) {</span>
+<span class="fc" id="L115">            char letter = str.charAt(i);</span>
+<span class="fc bfc" id="L116" title="All 2 branches covered.">            if (!node.children.containsKey(letter)) {</span>
+<span class="fc" id="L117">                TrieNode newNode = new TrieNode();</span>
+<span class="fc" id="L118">                node.children.put(letter, newNode);</span>
+            }
+<span class="fc" id="L120">            node = node.children.get(letter);</span>
+        }
+<span class="fc" id="L122">        node.children.put(this.endSymbol, null);</span>
+<span class="fc" id="L123">        node.word = str;</span>
+<span class="fc" id="L124">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

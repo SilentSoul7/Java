@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RgbHsvConversion.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.conversions</a> &gt; <span class="el_source">RgbHsvConversion.java</span></div><h1>RgbHsvConversion.java</h1><pre class="source lang-java linenums">package com.thealgorithms.conversions;
+
+import java.util.Arrays;
+
+/**
+ * The RGB color model is an additive color model in which red, green, and blue
+ * light are added together in various ways to reproduce a broad array of
+ * colors. The name of the model comes from the initials of the three additive
+ * primary colors, red, green, and blue. Meanwhile, the HSV representation
+ * models how colors appear under light. In it, colors are represented using
+ * three components: hue, saturation and (brightness-)value. This class provides
+ * methods for converting colors from one representation to the other.
+ * (description adapted from &lt;a href=&quot;https://en.wikipedia.org/wiki/RGB_color_model&quot;&gt;[1]&lt;/a&gt; and
+ * &lt;a href=&quot;https://en.wikipedia.org/wiki/HSL_and_HSV&quot;&gt;[2]&lt;/a&gt;).
+ */
+<span class="nc" id="L16">public final class RgbHsvConversion {</span>
+    private RgbHsvConversion() {
+    }
+
+    public static void main(String[] args) {
+        // Expected RGB-values taken from https://www.rapidtables.com/convert/color/hsv-to-rgb.html
+
+        // Test hsvToRgb-method
+<span class="nc bnc" id="L24" title="All 2 branches missed.">        assert Arrays.equals(hsvToRgb(0, 0, 0), new int[] {0, 0, 0});</span>
+<span class="nc bnc" id="L25" title="All 2 branches missed.">        assert Arrays.equals(hsvToRgb(0, 0, 1), new int[] {255, 255, 255});</span>
+<span class="nc bnc" id="L26" title="All 2 branches missed.">        assert Arrays.equals(hsvToRgb(0, 1, 1), new int[] {255, 0, 0});</span>
+<span class="nc bnc" id="L27" title="All 2 branches missed.">        assert Arrays.equals(hsvToRgb(60, 1, 1), new int[] {255, 255, 0});</span>
+<span class="nc bnc" id="L28" title="All 2 branches missed.">        assert Arrays.equals(hsvToRgb(120, 1, 1), new int[] {0, 255, 0});</span>
+<span class="nc bnc" id="L29" title="All 2 branches missed.">        assert Arrays.equals(hsvToRgb(240, 1, 1), new int[] {0, 0, 255});</span>
+<span class="nc bnc" id="L30" title="All 2 branches missed.">        assert Arrays.equals(hsvToRgb(300, 1, 1), new int[] {255, 0, 255});</span>
+<span class="nc bnc" id="L31" title="All 2 branches missed.">        assert Arrays.equals(hsvToRgb(180, 0.5, 0.5), new int[] {64, 128, 128});</span>
+<span class="nc bnc" id="L32" title="All 2 branches missed.">        assert Arrays.equals(hsvToRgb(234, 0.14, 0.88), new int[] {193, 196, 224});</span>
+<span class="nc bnc" id="L33" title="All 2 branches missed.">        assert Arrays.equals(hsvToRgb(330, 0.75, 0.5), new int[] {128, 32, 80});</span>
+
+        // Test rgbToHsv-method
+        // approximate-assertions needed because of small deviations due to converting between
+        // int-values and double-values.
+<span class="nc bnc" id="L38" title="All 2 branches missed.">        assert approximatelyEqualHsv(rgbToHsv(0, 0, 0), new double[] {0, 0, 0});</span>
+<span class="nc bnc" id="L39" title="All 2 branches missed.">        assert approximatelyEqualHsv(rgbToHsv(255, 255, 255), new double[] {0, 0, 1});</span>
+<span class="nc bnc" id="L40" title="All 2 branches missed.">        assert approximatelyEqualHsv(rgbToHsv(255, 0, 0), new double[] {0, 1, 1});</span>
+<span class="nc bnc" id="L41" title="All 2 branches missed.">        assert approximatelyEqualHsv(rgbToHsv(255, 255, 0), new double[] {60, 1, 1});</span>
+<span class="nc bnc" id="L42" title="All 2 branches missed.">        assert approximatelyEqualHsv(rgbToHsv(0, 255, 0), new double[] {120, 1, 1});</span>
+<span class="nc bnc" id="L43" title="All 2 branches missed.">        assert approximatelyEqualHsv(rgbToHsv(0, 0, 255), new double[] {240, 1, 1});</span>
+<span class="nc bnc" id="L44" title="All 2 branches missed.">        assert approximatelyEqualHsv(rgbToHsv(255, 0, 255), new double[] {300, 1, 1});</span>
+<span class="nc bnc" id="L45" title="All 2 branches missed.">        assert approximatelyEqualHsv(rgbToHsv(64, 128, 128), new double[] {180, 0.5, 0.5});</span>
+<span class="nc bnc" id="L46" title="All 2 branches missed.">        assert approximatelyEqualHsv(rgbToHsv(193, 196, 224), new double[] {234, 0.14, 0.88});</span>
+<span class="nc bnc" id="L47" title="All 2 branches missed.">        assert approximatelyEqualHsv(rgbToHsv(128, 32, 80), new double[] {330, 0.75, 0.5});</span>
+<span class="nc" id="L48">    }</span>
+
+    /**
+     * Conversion from the HSV-representation to the RGB-representation.
+     *
+     * @param hue Hue of the color.
+     * @param saturation Saturation of the color.
+     * @param value Brightness-value of the color.
+     * @return The tuple of RGB-components.
+     */
+    public static int[] hsvToRgb(double hue, double saturation, double value) {
+<span class="nc bnc" id="L59" title="All 4 branches missed.">        if (hue &lt; 0 || hue &gt; 360) {</span>
+<span class="nc" id="L60">            throw new IllegalArgumentException(&quot;hue should be between 0 and 360&quot;);</span>
+        }
+
+<span class="nc bnc" id="L63" title="All 4 branches missed.">        if (saturation &lt; 0 || saturation &gt; 1) {</span>
+<span class="nc" id="L64">            throw new IllegalArgumentException(&quot;saturation should be between 0 and 1&quot;);</span>
+        }
+
+<span class="nc bnc" id="L67" title="All 4 branches missed.">        if (value &lt; 0 || value &gt; 1) {</span>
+<span class="nc" id="L68">            throw new IllegalArgumentException(&quot;value should be between 0 and 1&quot;);</span>
+        }
+
+<span class="nc" id="L71">        double chroma = value * saturation;</span>
+<span class="nc" id="L72">        double hueSection = hue / 60;</span>
+<span class="nc" id="L73">        double secondLargestComponent = chroma * (1 - Math.abs(hueSection % 2 - 1));</span>
+<span class="nc" id="L74">        double matchValue = value - chroma;</span>
+
+<span class="nc" id="L76">        return getRgbBySection(hueSection, chroma, matchValue, secondLargestComponent);</span>
+    }
+
+    /**
+     * Conversion from the RGB-representation to the HSV-representation.
+     *
+     * @param red Red-component of the color.
+     * @param green Green-component of the color.
+     * @param blue Blue-component of the color.
+     * @return The tuple of HSV-components.
+     */
+    public static double[] rgbToHsv(int red, int green, int blue) {
+<span class="nc bnc" id="L88" title="All 4 branches missed.">        if (red &lt; 0 || red &gt; 255) {</span>
+<span class="nc" id="L89">            throw new IllegalArgumentException(&quot;red should be between 0 and 255&quot;);</span>
+        }
+
+<span class="nc bnc" id="L92" title="All 4 branches missed.">        if (green &lt; 0 || green &gt; 255) {</span>
+<span class="nc" id="L93">            throw new IllegalArgumentException(&quot;green should be between 0 and 255&quot;);</span>
+        }
+
+<span class="nc bnc" id="L96" title="All 4 branches missed.">        if (blue &lt; 0 || blue &gt; 255) {</span>
+<span class="nc" id="L97">            throw new IllegalArgumentException(&quot;blue should be between 0 and 255&quot;);</span>
+        }
+
+<span class="nc" id="L100">        double dRed = (double) red / 255;</span>
+<span class="nc" id="L101">        double dGreen = (double) green / 255;</span>
+<span class="nc" id="L102">        double dBlue = (double) blue / 255;</span>
+<span class="nc" id="L103">        double value = Math.max(Math.max(dRed, dGreen), dBlue);</span>
+<span class="nc" id="L104">        double chroma = value - Math.min(Math.min(dRed, dGreen), dBlue);</span>
+<span class="nc bnc" id="L105" title="All 2 branches missed.">        double saturation = value == 0 ? 0 : chroma / value;</span>
+        double hue;
+
+<span class="nc bnc" id="L108" title="All 2 branches missed.">        if (chroma == 0) {</span>
+<span class="nc" id="L109">            hue = 0;</span>
+<span class="nc bnc" id="L110" title="All 2 branches missed.">        } else if (value == dRed) {</span>
+<span class="nc" id="L111">            hue = 60 * (0 + (dGreen - dBlue) / chroma);</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">        } else if (value == dGreen) {</span>
+<span class="nc" id="L113">            hue = 60 * (2 + (dBlue - dRed) / chroma);</span>
+        } else {
+<span class="nc" id="L115">            hue = 60 * (4 + (dRed - dGreen) / chroma);</span>
+        }
+
+<span class="nc" id="L118">        hue = (hue + 360) % 360;</span>
+
+<span class="nc" id="L120">        return new double[] {hue, saturation, value};</span>
+    }
+
+    private static boolean approximatelyEqualHsv(double[] hsv1, double[] hsv2) {
+<span class="nc bnc" id="L124" title="All 2 branches missed.">        boolean bHue = Math.abs(hsv1[0] - hsv2[0]) &lt; 0.2;</span>
+<span class="nc bnc" id="L125" title="All 2 branches missed.">        boolean bSaturation = Math.abs(hsv1[1] - hsv2[1]) &lt; 0.002;</span>
+<span class="nc bnc" id="L126" title="All 2 branches missed.">        boolean bValue = Math.abs(hsv1[2] - hsv2[2]) &lt; 0.002;</span>
+
+<span class="nc bnc" id="L128" title="All 6 branches missed.">        return bHue &amp;&amp; bSaturation &amp;&amp; bValue;</span>
+    }
+
+    private static int[] getRgbBySection(double hueSection, double chroma, double matchValue, double secondLargestComponent) {
+        int red;
+        int green;
+        int blue;
+
+<span class="nc bnc" id="L136" title="All 4 branches missed.">        if (hueSection &gt;= 0 &amp;&amp; hueSection &lt;= 1) {</span>
+<span class="nc" id="L137">            red = convertToInt(chroma + matchValue);</span>
+<span class="nc" id="L138">            green = convertToInt(secondLargestComponent + matchValue);</span>
+<span class="nc" id="L139">            blue = convertToInt(matchValue);</span>
+<span class="nc bnc" id="L140" title="All 4 branches missed.">        } else if (hueSection &gt; 1 &amp;&amp; hueSection &lt;= 2) {</span>
+<span class="nc" id="L141">            red = convertToInt(secondLargestComponent + matchValue);</span>
+<span class="nc" id="L142">            green = convertToInt(chroma + matchValue);</span>
+<span class="nc" id="L143">            blue = convertToInt(matchValue);</span>
+<span class="nc bnc" id="L144" title="All 4 branches missed.">        } else if (hueSection &gt; 2 &amp;&amp; hueSection &lt;= 3) {</span>
+<span class="nc" id="L145">            red = convertToInt(matchValue);</span>
+<span class="nc" id="L146">            green = convertToInt(chroma + matchValue);</span>
+<span class="nc" id="L147">            blue = convertToInt(secondLargestComponent + matchValue);</span>
+<span class="nc bnc" id="L148" title="All 4 branches missed.">        } else if (hueSection &gt; 3 &amp;&amp; hueSection &lt;= 4) {</span>
+<span class="nc" id="L149">            red = convertToInt(matchValue);</span>
+<span class="nc" id="L150">            green = convertToInt(secondLargestComponent + matchValue);</span>
+<span class="nc" id="L151">            blue = convertToInt(chroma + matchValue);</span>
+<span class="nc bnc" id="L152" title="All 4 branches missed.">        } else if (hueSection &gt; 4 &amp;&amp; hueSection &lt;= 5) {</span>
+<span class="nc" id="L153">            red = convertToInt(secondLargestComponent + matchValue);</span>
+<span class="nc" id="L154">            green = convertToInt(matchValue);</span>
+<span class="nc" id="L155">            blue = convertToInt(chroma + matchValue);</span>
+        } else {
+<span class="nc" id="L157">            red = convertToInt(chroma + matchValue);</span>
+<span class="nc" id="L158">            green = convertToInt(matchValue);</span>
+<span class="nc" id="L159">            blue = convertToInt(secondLargestComponent + matchValue);</span>
+        }
+
+<span class="nc" id="L162">        return new int[] {red, green, blue};</span>
+    }
+
+    private static int convertToInt(double input) {
+<span class="nc" id="L166">        return (int) Math.round(255 * input);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

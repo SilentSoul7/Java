@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BandwidthAllocation.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.greedyalgorithms</a> &gt; <span class="el_source">BandwidthAllocation.java</span></div><h1>BandwidthAllocation.java</h1><pre class="source lang-java linenums">package com.thealgorithms.greedyalgorithms;
+
+import java.util.Arrays;
+
+/**
+ * Class to solve the Bandwidth Allocation Problem.
+ * The goal is to maximize the value gained by allocating bandwidth to users.
+ * Example:
+ * Bandwidth = 10
+ * Users = [3, 5, 7]
+ * Values = [10, 20, 30]
+ * The maximum value achievable is 40 by allocating 3 units to user 0 and 7 units to user 2.
+ *
+ * @author Hardvan
+ */
+public final class BandwidthAllocation {
+    private BandwidthAllocation() {
+    }
+
+    /**
+     * Allocates bandwidth to maximize value.
+     * Steps:
+     * 1. Calculate the ratio of value/demand for each user.
+     * 2. Sort the users in descending order of the ratio.
+     * 3. Allocate bandwidth to users in order of the sorted list.
+     * 4. If the bandwidth is not enough to allocate the full demand of a user, allocate a fraction of the demand.
+     * 5. Return the maximum value achievable.
+     *
+     * @param bandwidth total available bandwidth to allocate
+     * @param users     array of user demands
+     * @param values    array of values associated with each user's demand
+     * @return the maximum value achievable
+     */
+    public static int maxValue(int bandwidth, int[] users, int[] values) {
+<span class="fc" id="L35">        int n = users.length;</span>
+<span class="fc" id="L36">        double[][] ratio = new double[n][2]; // {index, ratio}</span>
+
+<span class="fc bfc" id="L38" title="All 2 branches covered.">        for (int i = 0; i &lt; n; i++) {</span>
+<span class="fc" id="L39">            ratio[i][0] = i;</span>
+<span class="fc" id="L40">            ratio[i][1] = (double) values[i] / users[i];</span>
+        }
+
+<span class="fc" id="L43">        Arrays.sort(ratio, (a, b) -&gt; Double.compare(b[1], a[1]));</span>
+
+<span class="fc" id="L45">        int maxValue = 0;</span>
+<span class="pc bpc" id="L46" title="1 of 2 branches missed.">        for (int i = 0; i &lt; n; i++) {</span>
+<span class="fc" id="L47">            int index = (int) ratio[i][0];</span>
+<span class="fc bfc" id="L48" title="All 2 branches covered.">            if (bandwidth &gt;= users[index]) {</span>
+<span class="fc" id="L49">                maxValue += values[index];</span>
+<span class="fc" id="L50">                bandwidth -= users[index];</span>
+            } else {
+<span class="fc" id="L52">                maxValue += (int) (ratio[i][1] * bandwidth);</span>
+<span class="fc" id="L53">                break;</span>
+            }
+        }
+<span class="fc" id="L56">        return maxValue;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

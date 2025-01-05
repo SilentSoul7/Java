@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Pow.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.maths</a> &gt; <span class="el_source">Pow.java</span></div><h1>Pow.java</h1><pre class="source lang-java linenums">package com.thealgorithms.maths;
+
+/**
+ * A utility class for computing exponentiation (power) of integers.
+ * &lt;p&gt;
+ * This class provides a method to calculate the value of a base raised to a given exponent using a simple iterative approach.
+ * For example, given a base {@code a} and an exponent {@code b}, the class computes {@code a}&lt;sup&gt;{@code b}&lt;/sup&gt;.
+ * &lt;/p&gt;
+ */
+public final class Pow {
+    private Pow() {
+    }
+
+    /**
+     * Computes the value of the base raised to the power of the exponent.
+     * &lt;p&gt;
+     * The method calculates {@code a}&lt;sup&gt;{@code b}&lt;/sup&gt; by iteratively multiplying the base {@code a} with itself {@code b} times.
+     * If the exponent {@code b} is negative, an {@code IllegalArgumentException} is thrown.
+     * &lt;/p&gt;
+     *
+     * @param a the base of the exponentiation. Must be a non-negative integer.
+     * @param b the exponent to which the base {@code a} is raised. Must be a non-negative integer.
+     * @return the result of {@code a}&lt;sup&gt;{@code b}&lt;/sup&gt; as a {@code long}.
+     * @throws IllegalArgumentException if {@code b} is negative.
+     */
+    public static long pow(int a, int b) {
+<span class="fc bfc" id="L27" title="All 2 branches covered.">        if (b &lt; 0) {</span>
+<span class="fc" id="L28">            throw new IllegalArgumentException(&quot;Exponent must be non-negative.&quot;);</span>
+        }
+<span class="fc" id="L30">        long result = 1;</span>
+<span class="fc bfc" id="L31" title="All 2 branches covered.">        for (int i = 1; i &lt;= b; i++) {</span>
+<span class="fc" id="L32">            result *= a;</span>
+        }
+<span class="fc" id="L34">        return result;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

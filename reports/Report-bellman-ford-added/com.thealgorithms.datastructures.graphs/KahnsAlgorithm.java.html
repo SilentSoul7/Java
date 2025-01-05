@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>KahnsAlgorithm.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.graphs</a> &gt; <span class="el_source">KahnsAlgorithm.java</span></div><h1>KahnsAlgorithm.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.graphs;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
+
+/**
+ * A class representing the adjacency list of a directed graph. The adjacency list
+ * maintains a mapping of vertices to their adjacent vertices.
+ *
+ * @param &lt;E&gt; the type of vertices, extending Comparable to ensure that vertices
+ * can be compared
+ */
+class AdjacencyList&lt;E extends Comparable&lt;E&gt;&gt; {
+
+    Map&lt;E, ArrayList&lt;E&gt;&gt; adj;
+
+    /**
+     * Constructor to initialize the adjacency list.
+     */
+<span class="fc" id="L25">    AdjacencyList() {</span>
+<span class="fc" id="L26">        adj = new LinkedHashMap&lt;&gt;();</span>
+<span class="fc" id="L27">    }</span>
+
+    /**
+     * Adds a directed edge from one vertex to another in the adjacency list.
+     * If the vertex does not exist, it will be added to the list.
+     *
+     * @param from the starting vertex of the directed edge
+     * @param to   the destination vertex of the directed edge
+     */
+    void addEdge(E from, E to) {
+<span class="fc bfc" id="L37" title="All 2 branches covered.">        if (!adj.containsKey(from)) {</span>
+<span class="fc" id="L38">            adj.put(from, new ArrayList&lt;&gt;());</span>
+        }
+<span class="fc" id="L40">        adj.get(from).add(to);</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">        if (!adj.containsKey(to)) {</span>
+<span class="fc" id="L42">            adj.put(to, new ArrayList&lt;&gt;());</span>
+        }
+<span class="fc" id="L44">    }</span>
+
+    /**
+     * Retrieves the list of adjacent vertices for a given vertex.
+     *
+     * @param v the vertex whose adjacent vertices are to be fetched
+     * @return an ArrayList of adjacent vertices for vertex v
+     */
+    ArrayList&lt;E&gt; getAdjacents(E v) {
+<span class="fc" id="L53">        return adj.get(v);</span>
+    }
+
+    /**
+     * Retrieves the set of all vertices present in the graph.
+     *
+     * @return a set containing all vertices in the graph
+     */
+    Set&lt;E&gt; getVertices() {
+<span class="fc" id="L62">        return adj.keySet();</span>
+    }
+}
+
+/**
+ * A class that performs topological sorting on a directed graph using Kahn's algorithm.
+ *
+ * @param &lt;E&gt; the type of vertices, extending Comparable to ensure that vertices
+ * can be compared
+ */
+class TopologicalSort&lt;E extends Comparable&lt;E&gt;&gt; {
+
+    AdjacencyList&lt;E&gt; graph;
+    Map&lt;E, Integer&gt; inDegree;
+
+    /**
+     * Constructor to initialize the topological sorting class with a given graph.
+     *
+     * @param graph the directed graph represented as an adjacency list
+     */
+<span class="fc" id="L82">    TopologicalSort(AdjacencyList&lt;E&gt; graph) {</span>
+<span class="fc" id="L83">        this.graph = graph;</span>
+<span class="fc" id="L84">    }</span>
+
+    /**
+     * Calculates the in-degree of all vertices in the graph. The in-degree is
+     * the number of edges directed into a vertex.
+     */
+    void calculateInDegree() {
+<span class="fc" id="L91">        inDegree = new HashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L92" title="All 2 branches covered.">        for (E vertex : graph.getVertices()) {</span>
+<span class="fc" id="L93">            inDegree.putIfAbsent(vertex, 0);</span>
+<span class="fc bfc" id="L94" title="All 2 branches covered.">            for (E adjacent : graph.getAdjacents(vertex)) {</span>
+<span class="fc" id="L95">                inDegree.put(adjacent, inDegree.getOrDefault(adjacent, 0) + 1);</span>
+<span class="fc" id="L96">            }</span>
+<span class="fc" id="L97">        }</span>
+<span class="fc" id="L98">    }</span>
+
+    /**
+     * Returns an ArrayList containing the vertices of the graph arranged in
+     * topological order. Topological sorting ensures that for any directed edge
+     * (u, v), vertex u appears before vertex v in the ordering.
+     *
+     * @return an ArrayList of vertices in topological order
+     * @throws IllegalStateException if the graph contains a cycle
+     */
+    ArrayList&lt;E&gt; topSortOrder() {
+<span class="fc" id="L109">        calculateInDegree();</span>
+<span class="fc" id="L110">        Queue&lt;E&gt; q = new LinkedList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L112" title="All 2 branches covered.">        for (var entry : inDegree.entrySet()) {</span>
+<span class="fc bfc" id="L113" title="All 2 branches covered.">            if (entry.getValue() == 0) {</span>
+<span class="fc" id="L114">                q.add(entry.getKey());</span>
+            }
+<span class="fc" id="L116">        }</span>
+
+<span class="fc" id="L118">        ArrayList&lt;E&gt; answer = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L119">        int processedVertices = 0;</span>
+
+<span class="fc bfc" id="L121" title="All 2 branches covered.">        while (!q.isEmpty()) {</span>
+<span class="fc" id="L122">            E current = q.poll();</span>
+<span class="fc" id="L123">            answer.add(current);</span>
+<span class="fc" id="L124">            processedVertices++;</span>
+
+<span class="fc bfc" id="L126" title="All 2 branches covered.">            for (E adjacent : graph.getAdjacents(current)) {</span>
+<span class="fc" id="L127">                inDegree.put(adjacent, inDegree.get(adjacent) - 1);</span>
+<span class="fc bfc" id="L128" title="All 2 branches covered.">                if (inDegree.get(adjacent) == 0) {</span>
+<span class="fc" id="L129">                    q.add(adjacent);</span>
+                }
+<span class="fc" id="L131">            }</span>
+<span class="fc" id="L132">        }</span>
+
+<span class="fc bfc" id="L134" title="All 2 branches covered.">        if (processedVertices != graph.getVertices().size()) {</span>
+<span class="fc" id="L135">            throw new IllegalStateException(&quot;Graph contains a cycle, topological sort not possible&quot;);</span>
+        }
+
+<span class="fc" id="L138">        return answer;</span>
+    }
+}
+
+/**
+ * A driver class that sorts a given graph in topological order using Kahn's algorithm.
+ */
+public final class KahnsAlgorithm {
+    private KahnsAlgorithm() {
+    }
+
+    public static void main(String[] args) {
+        // Graph definition and initialization
+<span class="nc" id="L151">        AdjacencyList&lt;String&gt; graph = new AdjacencyList&lt;&gt;();</span>
+<span class="nc" id="L152">        graph.addEdge(&quot;a&quot;, &quot;b&quot;);</span>
+<span class="nc" id="L153">        graph.addEdge(&quot;c&quot;, &quot;a&quot;);</span>
+<span class="nc" id="L154">        graph.addEdge(&quot;a&quot;, &quot;d&quot;);</span>
+<span class="nc" id="L155">        graph.addEdge(&quot;b&quot;, &quot;d&quot;);</span>
+<span class="nc" id="L156">        graph.addEdge(&quot;c&quot;, &quot;u&quot;);</span>
+<span class="nc" id="L157">        graph.addEdge(&quot;u&quot;, &quot;b&quot;);</span>
+
+<span class="nc" id="L159">        TopologicalSort&lt;String&gt; topSort = new TopologicalSort&lt;&gt;(graph);</span>
+
+        // Printing the topological order
+<span class="nc bnc" id="L162" title="All 2 branches missed.">        for (String s : topSort.topSortOrder()) {</span>
+<span class="nc" id="L163">            System.out.print(s + &quot; &quot;);</span>
+<span class="nc" id="L164">        }</span>
+<span class="nc" id="L165">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

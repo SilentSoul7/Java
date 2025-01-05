@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BellmanFord.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.graphs</a> &gt; <span class="el_source">BellmanFord.java</span></div><h1>BellmanFord.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.graphs;
+
+import java.util.Scanner;
+
+class BellmanFord /*
+                   * Implementation of Bellman ford to detect negative cycles. Graph accepts
+                   * inputs
+                   * in form of edges which have start vertex, end vertex and weights. Vertices
+                   * should be labelled with a
+                   * number between 0 and total number of vertices-1,both inclusive
+                   */
+{
+
+    int vertex;
+    int edge;
+    private Edge[] edges;
+<span class="fc" id="L17">    private int index = 0;</span>
+
+<span class="fc" id="L19">    BellmanFord(int v, int e) {</span>
+<span class="fc" id="L20">        vertex = v;</span>
+<span class="fc" id="L21">        edge = e;</span>
+<span class="fc" id="L22">        edges = new Edge[e];</span>
+<span class="fc" id="L23">    }</span>
+
+    class Edge {
+
+        int u;
+        int v;
+        int w;
+
+        /**
+         * @param u Source Vertex
+         * @param v End vertex
+         * @param c Weight
+         */
+<span class="fc" id="L36">        Edge(int a, int b, int c) {</span>
+<span class="fc" id="L37">            u = a;</span>
+<span class="fc" id="L38">            v = b;</span>
+<span class="fc" id="L39">            w = c;</span>
+<span class="fc" id="L40">        }</span>
+    }
+
+    /**
+     * @param p[] Parent array which shows updates in edges
+     * @param i   Current vertex under consideration
+     */
+    void printPath(int[] p, int i) {
+<span class="fc bfc" id="L48" title="All 2 branches covered.">        if (p[i] == -1) { // Found the path back to parent</span>
+<span class="fc" id="L49">            return;</span>
+        }
+<span class="fc" id="L51">        printPath(p, p[i]);</span>
+<span class="fc" id="L52">        System.out.print(i + &quot; &quot;);</span>
+<span class="fc" id="L53">    }</span>
+
+    public static void main(String[] args) {
+<span class="nc" id="L56">        BellmanFord obj = new BellmanFord(0, 0); // Dummy object to call nonstatic variables</span>
+<span class="nc" id="L57">        obj.go();</span>
+<span class="nc" id="L58">    }</span>
+
+    public void go() {
+        // shows distance to all vertices
+        // Interactive run for understanding the
+        // class first time. Assumes source vertex is 0 and
+<span class="fc" id="L64">        try (Scanner sc = new Scanner(System.in)) {</span>
+            int i;
+            int v;
+            int e;
+            int u;
+            int ve;
+            int w;
+            int j;
+<span class="fc" id="L72">            int neg = 0;</span>
+<span class="fc" id="L73">            System.out.println(&quot;Enter no. of vertices and edges please&quot;);</span>
+<span class="fc" id="L74">            v = sc.nextInt();</span>
+<span class="fc" id="L75">            e = sc.nextInt();</span>
+<span class="fc" id="L76">            Edge[] arr = new Edge[e]; // Array of edges</span>
+<span class="fc" id="L77">            System.out.println(&quot;Input edges&quot;);</span>
+<span class="fc bfc" id="L78" title="All 2 branches covered.">            for (i = 0; i &lt; e; i++) {</span>
+<span class="fc" id="L79">                u = sc.nextInt();</span>
+<span class="fc" id="L80">                ve = sc.nextInt();</span>
+<span class="fc" id="L81">                w = sc.nextInt();</span>
+<span class="fc" id="L82">                arr[i] = new Edge(u, ve, w);</span>
+            }
+<span class="fc" id="L84">            int[] dist = new int[v]; // Distance array for holding the finalized shortest path distance</span>
+                                     // between source
+            // and all vertices
+<span class="fc" id="L87">            int[] p = new int[v]; // Parent array for holding the paths</span>
+<span class="fc bfc" id="L88" title="All 2 branches covered.">            for (i = 0; i &lt; v; i++) {</span>
+<span class="fc" id="L89">                dist[i] = Integer.MAX_VALUE; // Initializing distance values</span>
+            }
+<span class="fc" id="L91">            dist[0] = 0;</span>
+<span class="fc" id="L92">            p[0] = -1;</span>
+<span class="fc bfc" id="L93" title="All 2 branches covered.">            for (i = 0; i &lt; v - 1; i++) {</span>
+<span class="fc bfc" id="L94" title="All 2 branches covered.">                for (j = 0; j &lt; e; j++) {</span>
+<span class="pc bpc" id="L95" title="1 of 4 branches missed.">                    if (dist[arr[j].u] != Integer.MAX_VALUE &amp;&amp; dist[arr[j].v] &gt; dist[arr[j].u] + arr[j].w) {</span>
+<span class="fc" id="L96">                        dist[arr[j].v] = dist[arr[j].u] + arr[j].w; // Update</span>
+<span class="fc" id="L97">                        p[arr[j].v] = arr[j].u;</span>
+                    }
+                }
+            }
+            // Final cycle for negative checking
+<span class="fc bfc" id="L102" title="All 2 branches covered.">            for (j = 0; j &lt; e; j++) {</span>
+<span class="pc bpc" id="L103" title="1 of 4 branches missed.">                if (dist[arr[j].u] != Integer.MAX_VALUE &amp;&amp; dist[arr[j].v] &gt; dist[arr[j].u] + arr[j].w) {</span>
+<span class="fc" id="L104">                    neg = 1;</span>
+<span class="fc" id="L105">                    System.out.println(&quot;Negative cycle&quot;);</span>
+<span class="fc" id="L106">                    break;</span>
+                }
+            }
+<span class="fc bfc" id="L109" title="All 2 branches covered.">            if (neg == 0) { // Go ahead and show results of computation</span>
+<span class="fc" id="L110">                System.out.println(&quot;Distances are: &quot;);</span>
+<span class="fc bfc" id="L111" title="All 2 branches covered.">                for (i = 0; i &lt; v; i++) {</span>
+<span class="fc" id="L112">                    System.out.println(i + &quot; &quot; + dist[i]);</span>
+                }
+<span class="fc" id="L114">                System.out.println(&quot;Path followed:&quot;);</span>
+<span class="fc bfc" id="L115" title="All 2 branches covered.">                for (i = 0; i &lt; v; i++) {</span>
+<span class="fc" id="L116">                    System.out.print(&quot;0 &quot;);</span>
+<span class="fc" id="L117">                    printPath(p, i);</span>
+<span class="fc" id="L118">                    System.out.println();</span>
+                }
+            }
+        }
+<span class="fc" id="L122">    }</span>
+
+    /**
+     * @param source Starting vertex
+     * @param end    Ending vertex
+     * @param Edge   Array of edges
+     */
+    public void show(int source, int end,
+        Edge[] arr) { // be created by using addEdge() method and passed by calling getEdgeArray()
+                      // method // Just shows results of computation, if graph is passed to it. The
+                      // graph should
+        int i;
+        int j;
+<span class="fc" id="L135">        int v = vertex;</span>
+<span class="fc" id="L136">        int e = edge;</span>
+<span class="fc" id="L137">        int neg = 0;</span>
+<span class="fc" id="L138">        double[] dist = new double[v]; // Distance array for holding the finalized shortest path</span>
+                                       // distance between source
+        // and all vertices
+<span class="fc" id="L141">        int[] p = new int[v]; // Parent array for holding the paths</span>
+<span class="fc bfc" id="L142" title="All 2 branches covered.">        for (i = 0; i &lt; v; i++) {</span>
+<span class="fc" id="L143">            dist[i] = Integer.MAX_VALUE; // Initializing distance values</span>
+        }
+<span class="fc" id="L145">        dist[source] = 0;</span>
+<span class="fc" id="L146">        p[source] = -1;</span>
+<span class="fc bfc" id="L147" title="All 2 branches covered.">        for (i = 0; i &lt; v - 1; i++) {</span>
+<span class="fc bfc" id="L148" title="All 2 branches covered.">            for (j = 0; j &lt; e; j++) {</span>
+<span class="pc bpc" id="L149" title="1 of 4 branches missed.">                if ((int) dist[arr[j].u] != Integer.MAX_VALUE &amp;&amp; dist[arr[j].v] &gt; dist[arr[j].u] + arr[j].w) {</span>
+<span class="fc" id="L150">                    dist[arr[j].v] = dist[arr[j].u] + arr[j].w; // Update</span>
+<span class="fc" id="L151">                    p[arr[j].v] = arr[j].u;</span>
+                }
+            }
+        }
+        // Final cycle for negative checking
+<span class="fc bfc" id="L156" title="All 2 branches covered.">        for (j = 0; j &lt; e; j++) {</span>
+<span class="pc bpc" id="L157" title="1 of 4 branches missed.">            if ((int) dist[arr[j].u] != Integer.MAX_VALUE &amp;&amp; dist[arr[j].v] &gt; dist[arr[j].u] + arr[j].w) {</span>
+<span class="fc" id="L158">                neg = 1;</span>
+<span class="fc" id="L159">                System.out.println(&quot;Negative cycle&quot;);</span>
+<span class="fc" id="L160">                break;</span>
+            }
+        }
+<span class="fc bfc" id="L163" title="All 2 branches covered.">        if (neg == 0) { // Go ahead and show results of computaion</span>
+<span class="fc" id="L164">            System.out.println(&quot;Distance is: &quot; + dist[end]);</span>
+<span class="fc" id="L165">            System.out.println(&quot;Path followed:&quot;);</span>
+<span class="fc" id="L166">            System.out.print(source + &quot; &quot;);</span>
+<span class="fc" id="L167">            printPath(p, end);</span>
+<span class="fc" id="L168">            System.out.println();</span>
+        }
+<span class="fc" id="L170">    }</span>
+
+    /**
+     * @param x Source Vertex
+     * @param y End vertex
+     * @param z Weight
+     */
+    public void addEdge(int x, int y, int z) { // Adds unidirectional edge
+<span class="fc" id="L178">        edges[index++] = new Edge(x, y, z);</span>
+<span class="fc" id="L179">    }</span>
+
+    public Edge[] getEdgeArray() {
+<span class="fc" id="L182">        return edges;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

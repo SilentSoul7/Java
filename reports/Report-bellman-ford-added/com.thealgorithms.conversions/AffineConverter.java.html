@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AffineConverter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.conversions</a> &gt; <span class="el_source">AffineConverter.java</span></div><h1>AffineConverter.java</h1><pre class="source lang-java linenums">package com.thealgorithms.conversions;
+
+/**
+ * A utility class to perform affine transformations of the form:
+ * y = slope * x + intercept.
+ *
+ * This class supports inversion and composition of affine transformations.
+ * It is immutable, meaning each instance represents a fixed transformation.
+ */
+<span class="fc" id="L10">public final class AffineConverter {</span>
+    private final double slope;
+    private final double intercept;
+
+    /**
+     * Constructs an AffineConverter with the given slope and intercept.
+     *
+     * @param inSlope The slope of the affine transformation.
+     * @param inIntercept The intercept (constant term) of the affine transformation.
+     * @throws IllegalArgumentException if either parameter is NaN.
+     */
+<span class="fc" id="L21">    public AffineConverter(final double inSlope, final double inIntercept) {</span>
+<span class="pc bpc" id="L22" title="1 of 4 branches missed.">        if (Double.isNaN(inSlope) || Double.isNaN(inIntercept)) {</span>
+<span class="fc" id="L23">            throw new IllegalArgumentException(&quot;Slope and intercept must be valid numbers.&quot;);</span>
+        }
+<span class="fc" id="L25">        slope = inSlope;</span>
+<span class="fc" id="L26">        intercept = inIntercept;</span>
+<span class="fc" id="L27">    }</span>
+
+    /**
+     * Converts the given input value using the affine transformation:
+     * result = slope * inValue + intercept.
+     *
+     * @param inValue The input value to convert.
+     * @return The transformed value.
+     */
+    public double convert(final double inValue) {
+<span class="fc" id="L37">        return slope * inValue + intercept;</span>
+    }
+
+    /**
+     * Returns a new AffineConverter representing the inverse of the current transformation.
+     * The inverse of y = slope * x + intercept is x = (y - intercept) / slope.
+     *
+     * @return A new AffineConverter representing the inverse transformation.
+     * @throws AssertionError if the slope is zero, as the inverse would be undefined.
+     */
+    public AffineConverter invert() {
+<span class="fc bfc" id="L48" title="All 2 branches covered.">        assert slope != 0.0 : &quot;Slope cannot be zero for inversion.&quot;;</span>
+<span class="fc" id="L49">        return new AffineConverter(1.0 / slope, -intercept / slope);</span>
+    }
+
+    /**
+     * Composes this affine transformation with another, returning a new AffineConverter.
+     * If this transformation is f(x) and the other is g(x), the result is f(g(x)).
+     *
+     * @param other Another AffineConverter to compose with.
+     * @return A new AffineConverter representing the composition of the two transformations.
+     */
+    public AffineConverter compose(final AffineConverter other) {
+<span class="fc" id="L60">        double newSlope = slope * other.slope;</span>
+<span class="fc" id="L61">        double newIntercept = slope * other.intercept + intercept;</span>
+<span class="fc" id="L62">        return new AffineConverter(newSlope, newIntercept);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

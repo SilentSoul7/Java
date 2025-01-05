@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RailFenceCipher.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.ciphers</a> &gt; <span class="el_source">RailFenceCipher.java</span></div><h1>RailFenceCipher.java</h1><pre class="source lang-java linenums">package com.thealgorithms.ciphers;
+
+import java.util.Arrays;
+
+/**
+ * The rail fence cipher (also called a zigzag cipher) is a classical type of transposition cipher.
+ * It derives its name from the manner in which encryption is performed, in analogy to a fence built with horizontal rails.
+ * https://en.wikipedia.org/wiki/Rail_fence_cipher
+ * @author https://github.com/Krounosity
+ */
+
+<span class="fc" id="L12">public class RailFenceCipher {</span>
+
+    // Encrypts the input string using the rail fence cipher method with the given number of rails.
+    public String encrypt(String str, int rails) {
+
+        // Base case of single rail or rails are more than the number of characters in the string
+<span class="fc bfc" id="L18" title="All 4 branches covered.">        if (rails == 1 || rails &gt;= str.length()) {</span>
+<span class="fc" id="L19">            return str;</span>
+        }
+
+        // Boolean flag to determine if the movement is downward or upward in the rail matrix.
+<span class="fc" id="L23">        boolean down = true;</span>
+        // Create a 2D array to represent the rails (rows) and the length of the string (columns).
+<span class="fc" id="L25">        char[][] strRail = new char[rails][str.length()];</span>
+
+        // Initialize all positions in the rail matrix with a placeholder character ('\n').
+<span class="fc bfc" id="L28" title="All 2 branches covered.">        for (int i = 0; i &lt; rails; i++) {</span>
+<span class="fc" id="L29">            Arrays.fill(strRail[i], '\n');</span>
+        }
+
+<span class="fc" id="L32">        int row = 0; // Start at the first row</span>
+<span class="fc" id="L33">        int col = 0; // Start at the first column</span>
+
+<span class="fc" id="L35">        int i = 0;</span>
+
+        // Fill the rail matrix with characters from the string based on the rail pattern.
+<span class="fc bfc" id="L38" title="All 2 branches covered.">        while (col &lt; str.length()) {</span>
+            // Change direction to down when at the first row.
+<span class="fc bfc" id="L40" title="All 2 branches covered.">            if (row == 0) {</span>
+<span class="fc" id="L41">                down = true;</span>
+            }
+            // Change direction to up when at the last row.
+<span class="fc bfc" id="L44" title="All 2 branches covered.">            else if (row == rails - 1) {</span>
+<span class="fc" id="L45">                down = false;</span>
+            }
+
+            // Place the character in the current position of the rail matrix.
+<span class="fc" id="L49">            strRail[row][col] = str.charAt(i);</span>
+<span class="fc" id="L50">            col++; // Move to the next column.</span>
+            // Move to the next row based on the direction.
+<span class="fc bfc" id="L52" title="All 2 branches covered.">            if (down) {</span>
+<span class="fc" id="L53">                row++;</span>
+            } else {
+<span class="fc" id="L55">                row--;</span>
+            }
+
+<span class="fc" id="L58">            i++;</span>
+        }
+
+        // Construct the encrypted string by reading characters row by row.
+<span class="fc" id="L62">        StringBuilder encryptedString = new StringBuilder();</span>
+<span class="fc bfc" id="L63" title="All 2 branches covered.">        for (char[] chRow : strRail) {</span>
+<span class="fc bfc" id="L64" title="All 2 branches covered.">            for (char ch : chRow) {</span>
+<span class="fc bfc" id="L65" title="All 2 branches covered.">                if (ch != '\n') {</span>
+<span class="fc" id="L66">                    encryptedString.append(ch);</span>
+                }
+            }
+        }
+<span class="fc" id="L70">        return encryptedString.toString();</span>
+    }
+    // Decrypts the input string using the rail fence cipher method with the given number of rails.
+    public String decrypt(String str, int rails) {
+
+        // Base case of single rail or rails are more than the number of characters in the string
+<span class="fc bfc" id="L76" title="All 4 branches covered.">        if (rails == 1 || rails &gt;= str.length()) {</span>
+<span class="fc" id="L77">            return str;</span>
+        }
+        // Boolean flag to determine if the movement is downward or upward in the rail matrix.
+<span class="fc" id="L80">        boolean down = true;</span>
+
+        // Create a 2D array to represent the rails (rows) and the length of the string (columns).
+<span class="fc" id="L83">        char[][] strRail = new char[rails][str.length()];</span>
+
+<span class="fc" id="L85">        int row = 0; // Start at the first row</span>
+<span class="fc" id="L86">        int col = 0; // Start at the first column</span>
+
+        // Mark the pattern on the rail matrix using '*'.
+<span class="fc bfc" id="L89" title="All 2 branches covered.">        while (col &lt; str.length()) {</span>
+            // Change direction to down when at the first row.
+<span class="fc bfc" id="L91" title="All 2 branches covered.">            if (row == 0) {</span>
+<span class="fc" id="L92">                down = true;</span>
+            }
+            // Change direction to up when at the last row.
+<span class="fc bfc" id="L95" title="All 2 branches covered.">            else if (row == rails - 1) {</span>
+<span class="fc" id="L96">                down = false;</span>
+            }
+
+            // Mark the current position in the rail matrix.
+<span class="fc" id="L100">            strRail[row][col] = '*';</span>
+<span class="fc" id="L101">            col++; // Move to the next column.</span>
+            // Move to the next row based on the direction.
+<span class="fc bfc" id="L103" title="All 2 branches covered.">            if (down) {</span>
+<span class="fc" id="L104">                row++;</span>
+            } else {
+<span class="fc" id="L106">                row--;</span>
+            }
+        }
+
+<span class="fc" id="L110">        int index = 0; // Index to track characters from the input string.</span>
+        // Fill the rail matrix with characters from the input string based on the marked pattern.
+<span class="fc bfc" id="L112" title="All 2 branches covered.">        for (int i = 0; i &lt; rails; i++) {</span>
+<span class="fc bfc" id="L113" title="All 2 branches covered.">            for (int j = 0; j &lt; str.length(); j++) {</span>
+<span class="fc bfc" id="L114" title="All 2 branches covered.">                if (strRail[i][j] == '*') {</span>
+<span class="fc" id="L115">                    strRail[i][j] = str.charAt(index++);</span>
+                }
+            }
+        }
+
+        // Construct the decrypted string by following the zigzag pattern.
+<span class="fc" id="L121">        StringBuilder decryptedString = new StringBuilder();</span>
+<span class="fc" id="L122">        row = 0; // Reset to the first row</span>
+<span class="fc" id="L123">        col = 0; // Reset to the first column</span>
+
+<span class="fc bfc" id="L125" title="All 2 branches covered.">        while (col &lt; str.length()) {</span>
+            // Change direction to down when at the first row.
+<span class="fc bfc" id="L127" title="All 2 branches covered.">            if (row == 0) {</span>
+<span class="fc" id="L128">                down = true;</span>
+            }
+            // Change direction to up when at the last row.
+<span class="fc bfc" id="L131" title="All 2 branches covered.">            else if (row == rails - 1) {</span>
+<span class="fc" id="L132">                down = false;</span>
+            }
+            // Append the character from the rail matrix to the decrypted string.
+<span class="fc" id="L135">            decryptedString.append(strRail[row][col]);</span>
+<span class="fc" id="L136">            col++; // Move to the next column.</span>
+            // Move to the next row based on the direction.
+<span class="fc bfc" id="L138" title="All 2 branches covered.">            if (down) {</span>
+<span class="fc" id="L139">                row++;</span>
+            } else {
+<span class="fc" id="L141">                row--;</span>
+            }
+        }
+
+<span class="fc" id="L145">        return decryptedString.toString();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

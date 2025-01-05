@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>StoogeSort.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.sorts</a> &gt; <span class="el_source">StoogeSort.java</span></div><h1>StoogeSort.java</h1><pre class="source lang-java linenums">package com.thealgorithms.sorts;
+
+/**
+ * @author Amir Hassan (https://github.com/ahsNT)
+ * @see SortAlgorithm
+ */
+<span class="fc" id="L7">public class StoogeSort implements SortAlgorithm {</span>
+
+    @Override
+    public &lt;T extends Comparable&lt;T&gt;&gt; T[] sort(T[] array) {
+<span class="fc bfc" id="L11" title="All 2 branches covered.">        if (array.length == 0) {</span>
+<span class="fc" id="L12">            return array;</span>
+        }
+<span class="fc" id="L14">        sort(array, 0, array.length);</span>
+<span class="fc" id="L15">        return array;</span>
+    }
+
+    public &lt;T extends Comparable&lt;T&gt;&gt; T[] sort(final T[] array, final int start, final int end) {
+<span class="fc bfc" id="L19" title="All 2 branches covered.">        if (SortUtils.less(array[end - 1], array[start])) {</span>
+<span class="fc" id="L20">            final T temp = array[start];</span>
+<span class="fc" id="L21">            array[start] = array[end - 1];</span>
+<span class="fc" id="L22">            array[end - 1] = temp;</span>
+        }
+
+<span class="fc" id="L25">        final int length = end - start;</span>
+<span class="fc bfc" id="L26" title="All 2 branches covered.">        if (length &gt; 2) {</span>
+<span class="fc" id="L27">            int third = length / 3;</span>
+<span class="fc" id="L28">            sort(array, start, end - third);</span>
+<span class="fc" id="L29">            sort(array, start + third, end);</span>
+<span class="fc" id="L30">            sort(array, start, end - third);</span>
+        }
+<span class="fc" id="L32">        return array;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AllConstruct.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.dynamicprogramming</a> &gt; <span class="el_source">AllConstruct.java</span></div><h1>AllConstruct.java</h1><pre class="source lang-java linenums">package com.thealgorithms.dynamicprogramming;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * This class provides a solution to the &quot;All Construct&quot; problem.
+ *
+ * The problem is to determine all the ways a target string can be constructed
+ * from a given list of substrings. Each substring in the word bank can be used
+ * multiple times, and the order of substrings matters.
+ *
+ * @author Hardvan
+ */
+public final class AllConstruct {
+    private AllConstruct() {
+    }
+
+    /**
+     * Finds all possible ways to construct the target string using substrings
+     * from the given word bank.
+     * Time Complexity: O(n * m * k), where n = length of the target,
+     * m = number of words in wordBank, and k = average length of a word.
+     *
+     * Space Complexity: O(n * m) due to the size of the table storing combinations.
+     *
+     * @param target   The target string to construct.
+     * @param wordBank An iterable collection of substrings that can be used to construct the target.
+     * @return A list of lists, where each inner list represents one possible
+     *         way of constructing the target string using the given word bank.
+     */
+    public static List&lt;List&lt;String&gt;&gt; allConstruct(String target, Iterable&lt;String&gt; wordBank) {
+<span class="fc" id="L33">        List&lt;List&lt;List&lt;String&gt;&gt;&gt; table = new ArrayList&lt;&gt;(target.length() + 1);</span>
+
+<span class="fc bfc" id="L35" title="All 2 branches covered.">        for (int i = 0; i &lt;= target.length(); i++) {</span>
+<span class="fc" id="L36">            table.add(new ArrayList&lt;&gt;());</span>
+        }
+
+<span class="fc" id="L39">        table.get(0).add(new ArrayList&lt;&gt;());</span>
+
+<span class="fc bfc" id="L41" title="All 2 branches covered.">        for (int i = 0; i &lt;= target.length(); i++) {</span>
+<span class="fc bfc" id="L42" title="All 2 branches covered.">            if (!table.get(i).isEmpty()) {</span>
+<span class="fc bfc" id="L43" title="All 2 branches covered.">                for (String word : wordBank) {</span>
+<span class="fc bfc" id="L44" title="All 4 branches covered.">                    if (i + word.length() &lt;= target.length() &amp;&amp; target.substring(i, i + word.length()).equals(word)) {</span>
+
+<span class="fc" id="L46">                        List&lt;List&lt;String&gt;&gt; newCombinations = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L47" title="All 2 branches covered.">                        for (List&lt;String&gt; combination : table.get(i)) {</span>
+<span class="fc" id="L48">                            List&lt;String&gt; newCombination = new ArrayList&lt;&gt;(combination);</span>
+<span class="fc" id="L49">                            newCombination.add(word);</span>
+<span class="fc" id="L50">                            newCombinations.add(newCombination);</span>
+<span class="fc" id="L51">                        }</span>
+
+<span class="fc" id="L53">                        table.get(i + word.length()).addAll(newCombinations);</span>
+                    }
+<span class="fc" id="L55">                }</span>
+            }
+        }
+
+<span class="fc" id="L59">        return table.get(target.length());</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

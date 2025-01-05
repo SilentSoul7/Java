@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>OctalToDecimal.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.conversions</a> &gt; <span class="el_source">OctalToDecimal.java</span></div><h1>OctalToDecimal.java</h1><pre class="source lang-java linenums">package com.thealgorithms.conversions;
+
+/**
+ * Class for converting an octal number to a decimal number. Octal numbers are based on 8, using digits from 0 to 7.
+ *
+ */
+public final class OctalToDecimal {
+    private static final int OCTAL_BASE = 8;
+
+    private OctalToDecimal() {
+    }
+
+    /**
+     * Converts a given octal number (as a string) to its decimal representation.
+     * If the input is not a valid octal number (i.e., contains characters other than 0-7),
+     * the method throws an IllegalArgumentException.
+     *
+     * @param inputOctal The octal number as a string
+     * @return The decimal equivalent of the octal number
+     * @throws IllegalArgumentException if the input is not a valid octal number
+     */
+    public static int convertOctalToDecimal(String inputOctal) {
+<span class="pc bpc" id="L23" title="1 of 4 branches missed.">        if (inputOctal == null || inputOctal.isEmpty()) {</span>
+<span class="fc" id="L24">            throw new IllegalArgumentException(&quot;Input cannot be null or empty&quot;);</span>
+        }
+
+<span class="fc" id="L27">        int decimalValue = 0;</span>
+
+<span class="fc bfc" id="L29" title="All 2 branches covered.">        for (int i = 0; i &lt; inputOctal.length(); i++) {</span>
+<span class="fc" id="L30">            char currentChar = inputOctal.charAt(i);</span>
+
+<span class="pc bpc" id="L32" title="1 of 4 branches missed.">            if (currentChar &lt; '0' || currentChar &gt; '7') {</span>
+<span class="fc" id="L33">                throw new IllegalArgumentException(&quot;Incorrect input: Expecting an octal number (digits 0-7)&quot;);</span>
+            }
+
+<span class="fc" id="L36">            int currentDigit = currentChar - '0';</span>
+<span class="fc" id="L37">            decimalValue = decimalValue * OCTAL_BASE + currentDigit;</span>
+        }
+
+<span class="fc" id="L40">        return decimalValue;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

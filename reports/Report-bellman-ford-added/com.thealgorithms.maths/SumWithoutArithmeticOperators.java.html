@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SumWithoutArithmeticOperators.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.maths</a> &gt; <span class="el_source">SumWithoutArithmeticOperators.java</span></div><h1>SumWithoutArithmeticOperators.java</h1><pre class="source lang-java linenums">package com.thealgorithms.maths;
+
+<span class="fc" id="L3">public class SumWithoutArithmeticOperators {</span>
+
+    /**
+     * Calculate the sum of two numbers a and b without using any arithmetic operators (+, -, *, /).
+     * All the integers associated are unsigned 32-bit integers
+     *https://stackoverflow.com/questions/365522/what-is-the-best-way-to-add-two-numbers-without-using-the-operator
+     *@param a - It is the first number
+     *@param b - It is the second number
+     *@return returns an integer which is the sum of the first and second number
+     */
+
+    public int getSum(int a, int b) {
+<span class="fc bfc" id="L15" title="All 2 branches covered.">        if (b == 0) {</span>
+<span class="fc" id="L16">            return a;</span>
+        }
+<span class="fc" id="L18">        int sum = a ^ b;</span>
+<span class="fc" id="L19">        int carry = (a &amp; b) &lt;&lt; 1;</span>
+<span class="fc" id="L20">        return getSum(sum, carry);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
