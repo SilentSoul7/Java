@@ -5,7 +5,7 @@ package com.thealgorithms.sorts;
  * @see OddEvenSort
  */
 
-public class OddEvenSortTest extends SortingAlgorithmTest {
+public class OddEvenSortTest extends RandomSortTest {
     private final OddEvenSort oddEvenSort = new OddEvenSort();
 
     @Override
