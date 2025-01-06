@@ -1,4 +1,3 @@
-/*
 
 package com.thealgorithms.datastructures.graphs;
 
@@ -30,7 +29,7 @@ public class BellmanFordTest {
      * x Source Vertex
      * y End vertex
      * z Weight
-     
+     */
     @Test
     void addEdge() {
         graph.addEdge(0, 1, 1);
@@ -119,7 +118,6 @@ public class BellmanFordTest {
         assertFalse(output.contains("Negative cycle"));
     }
 
-    */
 
     /*
      * 
@@ -129,10 +127,10 @@ public class BellmanFordTest {
         graph.addEdge(1, 3, 6);
         graph.addEdge(2, 4, 3);
         graph.addEdge(3, 4, 2);
-     
+     */
 
 
 
 }
 
-*/
+
