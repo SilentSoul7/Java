@@ -2,10 +2,12 @@ package com.thealgorithms;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.lang.reflect.Array;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
+import java.util.Random;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -37,6 +39,18 @@ public class ourTests {
         System.out.println("decrypted key:  " + decryptedKey);
         assertEquals(AESkeyAsString, decryptedKey);
         assertEquals("Hello World!", decryptedData);
-        
     }
+
+    @Test
+    void randomSortTesting(){
+        Random random = new Random();
+        int nrOfElements = random.nextInt(0,101);
+        int arr [] = new int[nrOfElements];
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = random.nextInt(Integer.MIN_VALUE, Integer.MAX_VALUE+1);
+        }
+
+    }
+
+
 }

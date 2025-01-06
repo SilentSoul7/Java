@@ -1,6 +1,6 @@
 package com.thealgorithms.sorts;
 
-class BinaryInsertionSortTest extends SortingAlgorithmTest {
+class BinaryInsertionSortTest extends RandomSortTest {
     private final BinaryInsertionSort binaryInsertionSort = new BinaryInsertionSort();
 
     @Override
