@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AgingScheduling.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.scheduling</a> &gt; <span class="el_source">AgingScheduling.java</span></div><h1>AgingScheduling.java</h1><pre class="source lang-java linenums">package com.thealgorithms.scheduling;
+
+import java.util.LinkedList;
+import java.util.Queue;
+
+/**
+ * AgingScheduling is an algorithm designed to prevent starvation
+ * by gradually increasing the priority of waiting tasks.
+ * The longer a process waits, the higher its priority becomes.
+ *
+ * Use Case: Useful in systems with mixed workloads to avoid
+ * lower-priority tasks being starved by higher-priority tasks.
+ *
+ * @author Hardvan
+ */
+public final class AgingScheduling {
+
+    static class Task {
+        String name;
+        int waitTime;
+        int priority;
+
+<span class="fc" id="L23">        Task(String name, int priority) {</span>
+<span class="fc" id="L24">            this.name = name;</span>
+<span class="fc" id="L25">            this.priority = priority;</span>
+<span class="fc" id="L26">            this.waitTime = 0;</span>
+<span class="fc" id="L27">        }</span>
+    }
+
+    private final Queue&lt;Task&gt; taskQueue;
+
+<span class="fc" id="L32">    public AgingScheduling() {</span>
+<span class="fc" id="L33">        taskQueue = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L34">    }</span>
+
+    /**
+     * Adds a task to the scheduler with a given priority.
+     *
+     * @param name name of the task
+     * @param priority priority of the task
+     */
+    public void addTask(String name, int priority) {
+<span class="fc" id="L43">        taskQueue.offer(new Task(name, priority));</span>
+<span class="fc" id="L44">    }</span>
+
+    /**
+     * Schedules the next task based on the priority and wait time.
+     * The priority of a task increases with the time it spends waiting.
+     *
+     * @return name of the next task to be executed
+     */
+    public String scheduleNext() {
+<span class="fc bfc" id="L53" title="All 2 branches covered.">        if (taskQueue.isEmpty()) {</span>
+<span class="fc" id="L54">            return null;</span>
+        }
+<span class="fc" id="L56">        Task nextTask = taskQueue.poll();</span>
+<span class="fc" id="L57">        nextTask.waitTime++;</span>
+<span class="fc" id="L58">        nextTask.priority += nextTask.waitTime;</span>
+<span class="fc" id="L59">        taskQueue.offer(nextTask);</span>
+<span class="fc" id="L60">        return nextTask.name;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

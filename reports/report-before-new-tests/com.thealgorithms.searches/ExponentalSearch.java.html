@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ExponentalSearch.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.searches</a> &gt; <span class="el_source">ExponentalSearch.java</span></div><h1>ExponentalSearch.java</h1><pre class="source lang-java linenums">package com.thealgorithms.searches;
+
+import com.thealgorithms.devutils.searches.SearchAlgorithm;
+import java.util.Arrays;
+
+/**
+ * ExponentialSearch is an algorithm that efficiently finds the position of a target
+ * value within a sorted array. It works by expanding the range to find the bounds
+ * where the target might exist and then using binary search within that range.
+ *
+ * &lt;p&gt;
+ * Worst-case time complexity: O(log n)
+ * Best-case time complexity: O(1) when the element is found at the first position.
+ * Average time complexity: O(log n)
+ * Worst-case space complexity: O(1)
+ * &lt;/p&gt;
+ *
+ * &lt;p&gt;
+ * Note: This algorithm requires that the input array be sorted.
+ * &lt;/p&gt;
+ */
+<span class="fc" id="L22">class ExponentialSearch implements SearchAlgorithm {</span>
+
+    /**
+     * Finds the index of the specified key in a sorted array using exponential search.
+     *
+     * @param array The sorted array to search.
+     * @param key The element to search for.
+     * @param &lt;T&gt; The type of the elements in the array, which must be comparable.
+     * @return The index of the key if found, otherwise -1.
+     */
+    @Override
+    public &lt;T extends Comparable&lt;T&gt;&gt; int find(T[] array, T key) {
+<span class="fc bfc" id="L34" title="All 2 branches covered.">        if (array.length == 0) {</span>
+<span class="fc" id="L35">            return -1;</span>
+        }
+<span class="fc bfc" id="L37" title="All 2 branches covered.">        if (array[0].equals(key)) {</span>
+<span class="fc" id="L38">            return 0;</span>
+        }
+<span class="fc bfc" id="L40" title="All 2 branches covered.">        if (array[array.length - 1].equals(key)) {</span>
+<span class="fc" id="L41">            return array.length - 1;</span>
+        }
+
+<span class="fc" id="L44">        int range = 1;</span>
+<span class="pc bpc" id="L45" title="1 of 4 branches missed.">        while (range &lt; array.length &amp;&amp; array[range].compareTo(key) &lt; 0) {</span>
+<span class="fc" id="L46">            range = range * 2;</span>
+        }
+
+<span class="fc" id="L49">        return Arrays.binarySearch(array, range / 2, Math.min(range, array.length), key);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

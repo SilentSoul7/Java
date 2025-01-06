@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PerfectBinarySearch.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.searches</a> &gt; <span class="el_source">PerfectBinarySearch.java</span></div><h1>PerfectBinarySearch.java</h1><pre class="source lang-java linenums">package com.thealgorithms.searches;
+
+import com.thealgorithms.devutils.searches.SearchAlgorithm;
+
+/**
+ * Binary search is one of the most popular algorithms The algorithm finds the
+ * position of a target value within a sorted array
+ *
+ * &lt;p&gt;
+ * Worst-case performance O(log n) Best-case performance O(1) Average
+ * performance O(log n) Worst-case space complexity O(1)
+ *
+ * @author D Sunil (https://github.com/sunilnitdgp)
+ * @see SearchAlgorithm
+ */
+
+<span class="fc" id="L17">public class PerfectBinarySearch&lt;T&gt; implements SearchAlgorithm {</span>
+
+    /**
+     * @param array is an array where the element should be found
+     * @param key is an element which should be found
+     * @param &lt;T&gt; is any comparable type
+     * @return index of the element
+     */
+    @Override
+    public &lt;T extends Comparable&lt;T&gt;&gt; int find(T[] array, T key) {
+<span class="fc" id="L27">        return search(array, key, 0, array.length - 1);</span>
+    }
+
+    /**
+     * This method implements the Generic Binary Search iteratively.
+     *
+     * @param array The array to make the binary search
+     * @param key   The number you are looking for
+     * @return the location of the key, or -1 if not found
+     */
+    private static &lt;T extends Comparable&lt;T&gt;&gt; int search(T[] array, T key, int left, int right) {
+<span class="fc bfc" id="L38" title="All 2 branches covered.">        while (left &lt;= right) {</span>
+<span class="fc" id="L39">            int median = (left + right) &gt;&gt;&gt; 1;</span>
+<span class="fc" id="L40">            int comp = key.compareTo(array[median]);</span>
+
+<span class="fc bfc" id="L42" title="All 2 branches covered.">            if (comp == 0) {</span>
+<span class="fc" id="L43">                return median; // Key found</span>
+            }
+
+<span class="fc bfc" id="L46" title="All 2 branches covered.">            if (comp &lt; 0) {</span>
+<span class="fc" id="L47">                right = median - 1; // Adjust the right bound</span>
+            } else {
+<span class="fc" id="L49">                left = median + 1; // Adjust the left bound</span>
+            }
+<span class="fc" id="L51">        }</span>
+<span class="fc" id="L52">        return -1; // Key not found</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

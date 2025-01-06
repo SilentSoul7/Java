@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TreeRandomNode.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.trees</a> &gt; <span class="el_source">TreeRandomNode.java</span></div><h1>TreeRandomNode.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.trees;
+
+/* Author : Suraj Kumar
+  Github : https://github.com/skmodi649
+ */
+
+/* PROBLEM DESCRIPTION :
+  There is a Binary Search Tree given, and we are supposed to find a random node in the given binary
+  tree.
+ */
+
+/* ALGORITHM :
+  Step 1: START
+  Step 2: First create a binary tree using the steps mentioned in the first approach
+  Step 3: Now use a method inOrder() that takes a node as input parameter to traverse through the
+          binary tree in inorder fashion as also store the values in a ArrayList simultaneously.
+  Step 4: Now define a method getRandom() that takes a node as input parameter, in this first call
+          the inOrder() method to store the values in the arraylist, then find the size of the
+  binary tree and now just generate a random number between 0 to n-1. Step 5: After generating the
+  number display the value of the ArrayList at the generated index Step 6: STOP
+ */
+
+import java.util.ArrayList;
+
+// Using auxiliary array to find the random node in a given binary tree
+
+public class TreeRandomNode {
+
+<span class="nc" id="L29">    private final class Node {</span>
+
+        int item;
+        Node left;
+        Node right;
+    }
+
+    // Using an arraylist to store the inorder traversal of the given binary tree
+<span class="nc" id="L37">    static ArrayList&lt;Integer&gt; list = new ArrayList&lt;&gt;();</span>
+    // root of Tree
+    Node root;
+
+<span class="nc" id="L41">    TreeRandomNode() {</span>
+<span class="nc" id="L42">        root = null;</span>
+<span class="nc" id="L43">    }</span>
+
+    // Now lets find the inorder traversal of the given binary tree
+    static void inOrder(Node node) {
+<span class="nc bnc" id="L47" title="All 2 branches missed.">        if (node == null) {</span>
+<span class="nc" id="L48">            return;</span>
+        }
+
+        // traverse the left child
+<span class="nc" id="L52">        inOrder(node.left);</span>
+
+<span class="nc" id="L54">        list.add(node.item);</span>
+        // traverse the right child
+<span class="nc" id="L56">        inOrder(node.right);</span>
+<span class="nc" id="L57">    }</span>
+
+    public void getRandom(Node val) {
+<span class="nc" id="L60">        inOrder(val);</span>
+        // getting the count of node of the binary tree
+<span class="nc" id="L62">        int n = list.size();</span>
+<span class="nc" id="L63">        int min = 0;</span>
+<span class="nc" id="L64">        int max = n - 1;</span>
+        // Generate random int value from 0 to n-1
+<span class="nc" id="L66">        int b = (int) (Math.random() * (max - min + 1) + min);</span>
+        // displaying the value at the generated index
+<span class="nc" id="L68">        int random = list.get(b);</span>
+<span class="nc" id="L69">        System.out.println(&quot;Random Node : &quot; + random);</span>
+<span class="nc" id="L70">    }</span>
+}
+/* Explanation of the Approach :
+  (a) Form the required binary tree
+  (b) Now use the inOrder() method to get the nodes in inOrder fashion and also store them in the
+  given arraylist 'list' (c) Using the getRandom() method generate a random number between 0 to n-1,
+  then get the value at the generated random number from the arraylist using get() method and
+  finally display the result.
+ */
+/* OUTPUT :
+  First output :
+  Random Node : 15
+  Second output :
+  Random Node : 99
+ */
+/* Time Complexity : O(n)
+  Auxiliary Space Complexity : O(1)
+ */
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

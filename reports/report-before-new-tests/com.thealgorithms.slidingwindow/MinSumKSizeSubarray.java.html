@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MinSumKSizeSubarray.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.slidingwindow</a> &gt; <span class="el_source">MinSumKSizeSubarray.java</span></div><h1>MinSumKSizeSubarray.java</h1><pre class="source lang-java linenums">package com.thealgorithms.slidingwindow;
+/**
+ * The Sliding Window algorithm is used to find the minimum sum of a subarray
+ * of a fixed size k within a given array.
+ *
+ * &lt;p&gt;
+ * Worst-case performance O(n)
+ * Best-case performance O(n)
+ * Average performance O(n)
+ * Worst-case space complexity O(1)
+ *
+ * This class provides a static method to find the minimum sum of a subarray
+ * with a specified length k.
+ *
+ * @author Rashi Dashore (https://github.com/rashi07dashore)
+ */
+public final class MinSumKSizeSubarray {
+
+    // Prevent instantiation
+    private MinSumKSizeSubarray() {
+    }
+
+    /**
+     * This method finds the minimum sum of a subarray of a given size k.
+     *
+     * @param arr is the input array where the minimum sum needs to be found
+     * @param k   is the size of the subarray
+     * @return the minimum sum of the subarray of size k
+     */
+    public static int minSumKSizeSubarray(int[] arr, int k) {
+<span class="fc bfc" id="L31" title="All 2 branches covered.">        if (arr.length &lt; k) {</span>
+<span class="fc" id="L32">            return -1; // Edge case: not enough elements</span>
+        }
+
+        int minSum;
+<span class="fc" id="L36">        int windowSum = 0;</span>
+
+        // Calculate the sum of the first window
+<span class="fc bfc" id="L39" title="All 2 branches covered.">        for (int i = 0; i &lt; k; i++) {</span>
+<span class="fc" id="L40">            windowSum += arr[i];</span>
+        }
+<span class="fc" id="L42">        minSum = windowSum;</span>
+
+        // Slide the window across the array
+<span class="fc bfc" id="L45" title="All 2 branches covered.">        for (int i = k; i &lt; arr.length; i++) {</span>
+<span class="fc" id="L46">            windowSum += arr[i] - arr[i - k];</span>
+<span class="fc" id="L47">            minSum = Math.min(minSum, windowSum);</span>
+        }
+<span class="fc" id="L49">        return minSum;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

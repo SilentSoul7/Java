@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FCFSScheduling.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.scheduling</a> &gt; <span class="el_source">FCFSScheduling.java</span></div><h1>FCFSScheduling.java</h1><pre class="source lang-java linenums">package com.thealgorithms.scheduling;
+
+import com.thealgorithms.devutils.entities.ProcessDetails;
+import java.util.List;
+
+/**
+ * Non-pre-emptive First Come First Serve scheduling. This can be understood here -
+ * https://www.scaler.com/topics/first-come-first-serve/
+ */
+public class FCFSScheduling {
+
+    private List&lt;ProcessDetails&gt; processes;
+
+<span class="fc" id="L14">    FCFSScheduling(final List&lt;ProcessDetails&gt; processes) {</span>
+<span class="fc" id="L15">        this.processes = processes;</span>
+<span class="fc" id="L16">    }</span>
+
+    public void scheduleProcesses() {
+<span class="fc" id="L19">        evaluateWaitingTime();</span>
+<span class="fc" id="L20">        evaluateTurnAroundTime();</span>
+<span class="fc" id="L21">    }</span>
+
+    private void evaluateWaitingTime() {
+<span class="fc" id="L24">        int processesNumber = processes.size();</span>
+
+<span class="pc bpc" id="L26" title="1 of 2 branches missed.">        if (processesNumber == 0) {</span>
+<span class="nc" id="L27">            return;</span>
+        }
+
+<span class="fc" id="L30">        int waitingTime = 0;</span>
+<span class="fc" id="L31">        int burstTime = processes.get(0).getBurstTime();</span>
+
+<span class="fc" id="L33">        processes.get(0).setWaitingTime(waitingTime); // for the first process, waiting time will be 0.</span>
+
+<span class="fc bfc" id="L35" title="All 2 branches covered.">        for (int i = 1; i &lt; processesNumber; i++) {</span>
+<span class="fc" id="L36">            processes.get(i).setWaitingTime(waitingTime + burstTime);</span>
+<span class="fc" id="L37">            waitingTime = processes.get(i).getWaitingTime();</span>
+<span class="fc" id="L38">            burstTime = processes.get(i).getBurstTime();</span>
+        }
+<span class="fc" id="L40">    }</span>
+
+    private void evaluateTurnAroundTime() {
+<span class="fc bfc" id="L43" title="All 2 branches covered.">        for (final var process : processes) {</span>
+<span class="fc" id="L44">            process.setTurnAroundTimeTime(process.getBurstTime() + process.getWaitingTime());</span>
+<span class="fc" id="L45">        }</span>
+<span class="fc" id="L46">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

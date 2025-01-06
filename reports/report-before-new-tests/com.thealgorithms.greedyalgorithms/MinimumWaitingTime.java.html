@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MinimumWaitingTime.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.greedyalgorithms</a> &gt; <span class="el_source">MinimumWaitingTime.java</span></div><h1>MinimumWaitingTime.java</h1><pre class="source lang-java linenums">package com.thealgorithms.greedyalgorithms;
+
+import java.util.Arrays;
+
+/**
+ * The MinimumWaitingTime class provides a method to calculate the minimum
+ * waiting time for a list of queries using a greedy algorithm.
+ *
+ * @author Hardvan
+ */
+public final class MinimumWaitingTime {
+    private MinimumWaitingTime() {
+    }
+
+    /**
+     * Calculates the minimum waiting time for a list of queries.
+     * The function sorts the queries in non-decreasing order and then calculates
+     * the waiting time for each query based on its position in the sorted list.
+     *
+     * @param queries an array of integers representing the query times in picoseconds
+     * @return the minimum waiting time in picoseconds
+     */
+    public static int minimumWaitingTime(int[] queries) {
+<span class="fc" id="L24">        int n = queries.length;</span>
+<span class="fc bfc" id="L25" title="All 2 branches covered.">        if (n &lt;= 1) {</span>
+<span class="fc" id="L26">            return 0;</span>
+        }
+
+<span class="fc" id="L29">        Arrays.sort(queries);</span>
+
+<span class="fc" id="L31">        int totalWaitingTime = 0;</span>
+<span class="fc bfc" id="L32" title="All 2 branches covered.">        for (int i = 0; i &lt; n; i++) {</span>
+<span class="fc" id="L33">            totalWaitingTime += queries[i] * (n - i - 1);</span>
+        }
+<span class="fc" id="L35">        return totalWaitingTime;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

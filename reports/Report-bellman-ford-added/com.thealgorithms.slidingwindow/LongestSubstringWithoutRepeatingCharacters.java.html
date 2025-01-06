@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LongestSubstringWithoutRepeatingCharacters.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.slidingwindow</a> &gt; <span class="el_source">LongestSubstringWithoutRepeatingCharacters.java</span></div><h1>LongestSubstringWithoutRepeatingCharacters.java</h1><pre class="source lang-java linenums">package com.thealgorithms.slidingwindow;
+import java.util.HashSet;
+
+/**
+ * The Longest Substring Without Repeating Characters algorithm finds the length of
+ * the longest substring without repeating characters in a given string.
+ *
+ * &lt;p&gt;
+ * Worst-case performance O(n)
+ * Best-case performance O(n)
+ * Average performance O(n)
+ * Worst-case space complexity O(min(n, m)), where n is the length of the string
+ * and m is the size of the character set.
+ *
+ * @author  (https://github.com/Chiefpatwal)
+ */
+public final class LongestSubstringWithoutRepeatingCharacters {
+
+    // Prevent instantiation
+    private LongestSubstringWithoutRepeatingCharacters() {
+    }
+
+    /**
+     * This method finds the length of the longest substring without repeating characters.
+     *
+     * @param s is the input string
+     * @return the length of the longest substring without repeating characters
+     */
+    public static int lengthOfLongestSubstring(String s) {
+<span class="fc" id="L30">        int maxLength = 0;</span>
+<span class="fc" id="L31">        int left = 0;</span>
+<span class="fc" id="L32">        HashSet&lt;Character&gt; charSet = new HashSet&lt;&gt;();</span>
+
+<span class="fc bfc" id="L34" title="All 2 branches covered.">        for (int right = 0; right &lt; s.length(); right++) {</span>
+            // If the character is already in the set, remove characters from the left
+<span class="fc bfc" id="L36" title="All 2 branches covered.">            while (charSet.contains(s.charAt(right))) {</span>
+<span class="fc" id="L37">                charSet.remove(s.charAt(left));</span>
+<span class="fc" id="L38">                left++;</span>
+            }
+<span class="fc" id="L40">            charSet.add(s.charAt(right));</span>
+<span class="fc" id="L41">            maxLength = Math.max(maxLength, right - left + 1);</span>
+        }
+
+<span class="fc" id="L44">        return maxLength;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

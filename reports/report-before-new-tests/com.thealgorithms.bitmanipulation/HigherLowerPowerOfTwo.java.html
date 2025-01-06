@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HigherLowerPowerOfTwo.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.bitmanipulation</a> &gt; <span class="el_source">HigherLowerPowerOfTwo.java</span></div><h1>HigherLowerPowerOfTwo.java</h1><pre class="source lang-java linenums">package com.thealgorithms.bitmanipulation;
+
+/**
+ * HigherLowerPowerOfTwo class has two methods to find the next higher and lower power of two.
+ * &lt;p&gt;
+ *     nextHigherPowerOfTwo method finds the next higher power of two.
+ *     nextLowerPowerOfTwo method finds the next lower power of two.
+ *     Both methods take an integer as input and return the next higher or lower power of two.
+ *     If the input is less than 1, the next higher power of two is 1.
+ *     If the input is less than or equal to 1, the next lower power of two is 0.
+ *     nextHigherPowerOfTwo method uses bitwise operations to find the next higher power of two.
+ *     nextLowerPowerOfTwo method uses Integer.highestOneBit method to find the next lower power of two.
+ *     The time complexity of both methods is O(1).
+ *     The space complexity of both methods is O(1).
+ * &lt;/p&gt;
+ *
+ * @author Hardvan
+ */
+public final class HigherLowerPowerOfTwo {
+    private HigherLowerPowerOfTwo() {
+    }
+
+    /**
+     * Finds the next higher power of two.
+     *
+     * @param x The given number.
+     * @return The next higher power of two.
+     */
+    public static int nextHigherPowerOfTwo(int x) {
+<span class="pc bpc" id="L30" title="1 of 2 branches missed.">        if (x &lt; 1) {</span>
+<span class="nc" id="L31">            return 1;</span>
+        }
+<span class="fc" id="L33">        x--;</span>
+<span class="fc" id="L34">        x |= x &gt;&gt; 1;</span>
+<span class="fc" id="L35">        x |= x &gt;&gt; 2;</span>
+<span class="fc" id="L36">        x |= x &gt;&gt; 4;</span>
+<span class="fc" id="L37">        x |= x &gt;&gt; 8;</span>
+<span class="fc" id="L38">        x |= x &gt;&gt; 16;</span>
+<span class="fc" id="L39">        return x + 1;</span>
+    }
+
+    /**
+     * Finds the next lower power of two.
+     *
+     * @param x The given number.
+     * @return The next lower power of two.
+     */
+    public static int nextLowerPowerOfTwo(int x) {
+<span class="pc bpc" id="L49" title="1 of 2 branches missed.">        if (x &lt; 1) {</span>
+<span class="nc" id="L50">            return 0;</span>
+        }
+<span class="fc" id="L52">        return Integer.highestOneBit(x);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

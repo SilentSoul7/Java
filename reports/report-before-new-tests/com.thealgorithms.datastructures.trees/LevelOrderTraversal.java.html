@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LevelOrderTraversal.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.trees</a> &gt; <span class="el_source">LevelOrderTraversal.java</span></div><h1>LevelOrderTraversal.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.trees;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+
+public final class LevelOrderTraversal {
+    private LevelOrderTraversal() {
+    }
+
+    public static List&lt;List&lt;Integer&gt;&gt; traverse(BinaryTree.Node root) {
+<span class="fc bfc" id="L13" title="All 2 branches covered.">        if (root == null) {</span>
+<span class="fc" id="L14">            return List.of();</span>
+        }
+
+<span class="fc" id="L17">        List&lt;List&lt;Integer&gt;&gt; result = new ArrayList&lt;&gt;();</span>
+
+<span class="fc" id="L19">        Queue&lt;BinaryTree.Node&gt; q = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L20">        q.add(root);</span>
+<span class="fc bfc" id="L21" title="All 2 branches covered.">        while (!q.isEmpty()) {</span>
+<span class="fc" id="L22">            int nodesOnLevel = q.size();</span>
+<span class="fc" id="L23">            List&lt;Integer&gt; level = new LinkedList&lt;&gt;();</span>
+<span class="fc bfc" id="L24" title="All 2 branches covered.">            for (int i = 0; i &lt; nodesOnLevel; i++) {</span>
+<span class="fc" id="L25">                BinaryTree.Node tempNode = q.poll();</span>
+<span class="fc" id="L26">                level.add(tempNode.data);</span>
+
+<span class="fc bfc" id="L28" title="All 2 branches covered.">                if (tempNode.left != null) {</span>
+<span class="fc" id="L29">                    q.add(tempNode.left);</span>
+                }
+
+<span class="fc bfc" id="L32" title="All 2 branches covered.">                if (tempNode.right != null) {</span>
+<span class="fc" id="L33">                    q.add(tempNode.right);</span>
+                }
+            }
+<span class="fc" id="L36">            result.add(level);</span>
+<span class="fc" id="L37">        }</span>
+<span class="fc" id="L38">        return result;</span>
+    }
+
+    /* Print nodes at the given level */
+    public static void printGivenLevel(BinaryTree.Node root, int level) {
+<span class="nc bnc" id="L43" title="All 2 branches missed.">        if (root == null) {</span>
+<span class="nc" id="L44">            System.out.println(&quot;Root node must not be null! Exiting.&quot;);</span>
+<span class="nc" id="L45">            return;</span>
+        }
+<span class="nc bnc" id="L47" title="All 2 branches missed.">        if (level == 1) {</span>
+<span class="nc" id="L48">            System.out.print(root.data + &quot; &quot;);</span>
+<span class="nc bnc" id="L49" title="All 2 branches missed.">        } else if (level &gt; 1) {</span>
+<span class="nc" id="L50">            printGivenLevel(root.left, level - 1);</span>
+<span class="nc" id="L51">            printGivenLevel(root.right, level - 1);</span>
+        }
+<span class="nc" id="L53">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

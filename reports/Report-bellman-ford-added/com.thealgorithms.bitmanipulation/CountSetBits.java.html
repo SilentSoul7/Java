@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CountSetBits.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.bitmanipulation</a> &gt; <span class="el_source">CountSetBits.java</span></div><h1>CountSetBits.java</h1><pre class="source lang-java linenums">package com.thealgorithms.bitmanipulation;
+
+<span class="fc" id="L3">public class CountSetBits {</span>
+
+    /**
+     * The below algorithm is called as Brian Kernighan's algorithm
+     * We can use Brian Kernighan’s algorithm to improve the above naive algorithm’s performance.
+     The idea is to only consider the set bits of an integer by turning off its rightmost set bit
+     (after counting it), so the next iteration of the loop considers the next rightmost bit.
+
+        The expression n &amp; (n-1) can be used to turn off the rightmost set bit of a number n. This
+     works as the expression n-1 flips all the bits after the rightmost set bit of n, including the
+     rightmost set bit itself. Therefore, n &amp; (n-1) results in the last bit flipped of n.
+
+        For example, consider number 52, which is 00110100 in binary, and has a total 3 bits set.
+
+        1st iteration of the loop: n = 52
+
+        00110100    &amp;               (n)
+        00110011                    (n-1)
+        ~~~~~~~~
+        00110000
+
+
+        2nd iteration of the loop: n = 48
+
+        00110000    &amp;               (n)
+        00101111                    (n-1)
+        ~~~~~~~~
+        00100000
+
+
+        3rd iteration of the loop: n = 32
+
+        00100000    &amp;               (n)
+        00011111                    (n-1)
+        ~~~~~~~~
+        00000000                    (n = 0)
+
+     * @param num takes Long number whose number of set bit is to be found
+     * @return the count of set bits in the binary equivalent
+    */
+    public long countSetBits(long num) {
+<span class="fc" id="L44">        long cnt = 0;</span>
+<span class="fc bfc" id="L45" title="All 2 branches covered.">        while (num &gt; 0) {</span>
+<span class="fc" id="L46">            cnt++;</span>
+<span class="fc" id="L47">            num &amp;= (num - 1);</span>
+        }
+<span class="fc" id="L49">        return cnt;</span>
+    }
+
+    /**
+     * This approach takes O(1) running time to count the set bits, but requires a pre-processing.
+     *
+     * So, we divide our 32-bit input into 8-bit chunks, with four chunks. We have 8 bits in each chunk.
+     *
+     * Then the range is from 0-255 (0 to 2^7).
+     * So, we may need to count set bits from 0 to 255 in individual chunks.
+     *
+     * @param num takes a long number
+     * @return the count of set bits in the binary equivalent
+     */
+    public int lookupApproach(int num) {
+<span class="fc" id="L64">        int[] table = new int[256];</span>
+<span class="fc" id="L65">        table[0] = 0;</span>
+
+<span class="fc bfc" id="L67" title="All 2 branches covered.">        for (int i = 1; i &lt; 256; i++) {</span>
+<span class="fc" id="L68">            table[i] = (i &amp; 1) + table[i &gt;&gt; 1]; // i &gt;&gt; 1 equals to i/2</span>
+        }
+
+<span class="fc" id="L71">        int res = 0;</span>
+<span class="fc bfc" id="L72" title="All 2 branches covered.">        for (int i = 0; i &lt; 4; i++) {</span>
+<span class="fc" id="L73">            res += table[num &amp; 0xff];</span>
+<span class="fc" id="L74">            num &gt;&gt;= 8;</span>
+        }
+
+<span class="fc" id="L77">        return res;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

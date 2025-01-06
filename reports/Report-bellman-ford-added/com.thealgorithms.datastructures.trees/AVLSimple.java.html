@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AVLSimple.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.trees</a> &gt; <span class="el_source">AVLSimple.java</span></div><h1>AVLSimple.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.trees;
+
+/*
+* Avl is algo that balance itself while adding new alues to tree
+* by rotating branches of binary tree and make itself Binary seaarch tree
+* there are four cases which has to tackle
+* rotating - left right ,left left,right right,right left
+
+Test Case:
+
+AVLTree tree=new AVLTree();
+                tree.insert(20);
+                tree.insert(25);
+                tree.insert(30);
+                tree.insert(10);
+                tree.insert(5);
+                tree.insert(15);
+                tree.insert(27);
+                tree.insert(19);
+                tree.insert(16);
+
+                tree.display();
+
+
+
+
+*/
+
+<span class="nc" id="L29">public class AVLSimple {</span>
+
+    private class Node {
+
+        int data;
+        int height;
+        Node left;
+        Node right;
+
+<span class="nc" id="L38">        Node(int data) {</span>
+<span class="nc" id="L39">            this.data = data;</span>
+<span class="nc" id="L40">            this.height = 1;</span>
+<span class="nc" id="L41">        }</span>
+    }
+
+    private Node root;
+
+    public void insert(int data) {
+<span class="nc" id="L47">        this.root = insert(this.root, data);</span>
+<span class="nc" id="L48">    }</span>
+
+    private Node insert(Node node, int item) {
+<span class="nc bnc" id="L51" title="All 2 branches missed.">        if (node == null) {</span>
+<span class="nc" id="L52">            return new Node(item);</span>
+        }
+<span class="nc bnc" id="L54" title="All 2 branches missed.">        if (node.data &gt; item) {</span>
+<span class="nc" id="L55">            node.left = insert(node.left, item);</span>
+        }
+<span class="nc bnc" id="L57" title="All 2 branches missed.">        if (node.data &lt; item) {</span>
+<span class="nc" id="L58">            node.right = insert(node.right, item);</span>
+        }
+<span class="nc" id="L60">        node.height = Math.max(height(node.left), height(node.right)) + 1;</span>
+<span class="nc" id="L61">        int bf = bf(node);</span>
+        // LL case
+<span class="nc bnc" id="L63" title="All 4 branches missed.">        if (bf &gt; 1 &amp;&amp; item &lt; node.left.data) {</span>
+<span class="nc" id="L64">            return rightRotate(node);</span>
+        }
+        // RR case
+<span class="nc bnc" id="L67" title="All 4 branches missed.">        if (bf &lt; -1 &amp;&amp; item &gt; node.right.data) {</span>
+<span class="nc" id="L68">            return leftRotate(node);</span>
+        }
+        // RL case
+<span class="nc bnc" id="L71" title="All 4 branches missed.">        if (bf &lt; -1 &amp;&amp; item &lt; node.right.data) {</span>
+<span class="nc" id="L72">            node.right = rightRotate(node.right);</span>
+<span class="nc" id="L73">            return leftRotate(node);</span>
+        }
+        // LR case
+<span class="nc bnc" id="L76" title="All 4 branches missed.">        if (bf &gt; 1 &amp;&amp; item &gt; node.left.data) {</span>
+<span class="nc" id="L77">            node.left = leftRotate(node.left);</span>
+<span class="nc" id="L78">            return rightRotate(node);</span>
+        }
+
+<span class="nc" id="L81">        return node;</span>
+    }
+
+    public void display() {
+<span class="nc" id="L85">        this.display(this.root);</span>
+<span class="nc" id="L86">        System.out.println(this.root.height);</span>
+<span class="nc" id="L87">    }</span>
+
+    private void display(Node node) {
+<span class="nc" id="L90">        String str = &quot;&quot;;</span>
+<span class="nc bnc" id="L91" title="All 2 branches missed.">        if (node.left != null) {</span>
+<span class="nc" id="L92">            str += node.left.data + &quot;=&gt;&quot;;</span>
+        } else {
+<span class="nc" id="L94">            str += &quot;END=&gt;&quot;;</span>
+        }
+<span class="nc" id="L96">        str += node.data + &quot;&quot;;</span>
+<span class="nc bnc" id="L97" title="All 2 branches missed.">        if (node.right != null) {</span>
+<span class="nc" id="L98">            str += &quot;&lt;=&quot; + node.right.data;</span>
+        } else {
+<span class="nc" id="L100">            str += &quot;&lt;=END&quot;;</span>
+        }
+<span class="nc" id="L102">        System.out.println(str);</span>
+<span class="nc bnc" id="L103" title="All 2 branches missed.">        if (node.left != null) {</span>
+<span class="nc" id="L104">            display(node.left);</span>
+        }
+<span class="nc bnc" id="L106" title="All 2 branches missed.">        if (node.right != null) {</span>
+<span class="nc" id="L107">            display(node.right);</span>
+        }
+<span class="nc" id="L109">    }</span>
+
+    private int height(Node node) {
+<span class="nc bnc" id="L112" title="All 2 branches missed.">        if (node == null) {</span>
+<span class="nc" id="L113">            return 0;</span>
+        }
+<span class="nc" id="L115">        return node.height;</span>
+    }
+
+    private int bf(Node node) {
+<span class="nc bnc" id="L119" title="All 2 branches missed.">        if (node == null) {</span>
+<span class="nc" id="L120">            return 0;</span>
+        }
+<span class="nc" id="L122">        return height(node.left) - height(node.right);</span>
+    }
+
+    private Node rightRotate(Node c) {
+<span class="nc" id="L126">        Node b = c.left;</span>
+<span class="nc" id="L127">        Node t3 = b.right;</span>
+
+<span class="nc" id="L129">        b.right = c;</span>
+<span class="nc" id="L130">        c.left = t3;</span>
+<span class="nc" id="L131">        c.height = Math.max(height(c.left), height(c.right)) + 1;</span>
+<span class="nc" id="L132">        b.height = Math.max(height(b.left), height(b.right)) + 1;</span>
+<span class="nc" id="L133">        return b;</span>
+    }
+
+    private Node leftRotate(Node c) {
+<span class="nc" id="L137">        Node b = c.right;</span>
+<span class="nc" id="L138">        Node t3 = b.left;</span>
+
+<span class="nc" id="L140">        b.left = c;</span>
+<span class="nc" id="L141">        c.right = t3;</span>
+<span class="nc" id="L142">        c.height = Math.max(height(c.left), height(c.right)) + 1;</span>
+<span class="nc" id="L143">        b.height = Math.max(height(b.left), height(b.right)) + 1;</span>
+<span class="nc" id="L144">        return b;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BinaryTree.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.trees</a> &gt; <span class="el_source">BinaryTree.java</span></div><h1>BinaryTree.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.trees;
+
+import java.util.LinkedList;
+import java.util.Queue;
+
+/*
+ * This entire class is used to build a Binary Tree data structure. There is the
+ * Node Class and the Tree Class, both explained below.
+ */
+/**
+ * A binary tree is a data structure in which an element has two
+ * successors(children). The left child is usually smaller than the parent, and
+ * the right child is usually bigger.
+ *
+ * @author Unknown
+ */
+public class BinaryTree {
+
+    /**
+     * This class implements the nodes that will go on the Binary Tree. They
+     * consist of the data in them, the node to the left, the node to the right,
+     * and the parent from which they came from.
+     *
+     * @author Unknown
+     */
+    static class Node {
+
+        /**
+         * Data for the node
+         */
+        public int data;
+        /**
+         * The Node to the left of this one
+         */
+        public Node left;
+        /**
+         * The Node to the right of this one
+         */
+        public Node right;
+        /**
+         * The parent of this node
+         */
+        public Node parent;
+
+        /**
+         * Constructor of Node
+         *
+         * @param value Value to put in the node
+         */
+<span class="fc" id="L50">        Node(int value) {</span>
+<span class="fc" id="L51">            data = value;</span>
+<span class="fc" id="L52">            left = null;</span>
+<span class="fc" id="L53">            right = null;</span>
+<span class="fc" id="L54">            parent = null;</span>
+<span class="fc" id="L55">        }</span>
+    }
+
+    /**
+     * The root of the Binary Tree
+     */
+    private Node root;
+
+    /**
+     * Constructor
+     */
+<span class="fc" id="L66">    public BinaryTree() {</span>
+<span class="fc" id="L67">        root = null;</span>
+<span class="fc" id="L68">    }</span>
+
+    /**
+     * Parameterized Constructor
+     */
+<span class="nc" id="L73">    public BinaryTree(Node root) {</span>
+<span class="nc" id="L74">        this.root = root;</span>
+<span class="nc" id="L75">    }</span>
+
+    /**
+     * Method to find a Node with a certain value
+     *
+     * @param key Value being looked for
+     * @return The node if it finds it, otherwise returns the parent
+     */
+    public Node find(int key) {
+<span class="fc" id="L84">        Node current = root;</span>
+<span class="pc bpc" id="L85" title="1 of 2 branches missed.">        while (current != null) {</span>
+<span class="pc bpc" id="L86" title="1 of 2 branches missed.">            if (key &lt; current.data) {</span>
+<span class="nc bnc" id="L87" title="All 2 branches missed.">                if (current.left == null) {</span>
+<span class="nc" id="L88">                    return current; // The key isn't exist, returns the parent</span>
+                }
+<span class="nc" id="L90">                current = current.left;</span>
+<span class="fc bfc" id="L91" title="All 2 branches covered.">            } else if (key &gt; current.data) {</span>
+<span class="fc bfc" id="L92" title="All 2 branches covered.">                if (current.right == null) {</span>
+<span class="fc" id="L93">                    return current;</span>
+                }
+<span class="fc" id="L95">                current = current.right;</span>
+            } else { // If you find the value return it
+<span class="fc" id="L97">                return current;</span>
+            }
+        }
+<span class="nc" id="L100">        return null;</span>
+    }
+
+    /**
+     * Inserts certain value into the Binary Tree
+     *
+     * @param value Value to be inserted
+     */
+    public void put(int value) {
+<span class="fc" id="L109">        Node newNode = new Node(value);</span>
+<span class="fc bfc" id="L110" title="All 2 branches covered.">        if (root == null) {</span>
+<span class="fc" id="L111">            root = newNode;</span>
+        } else {
+            // This will return the soon to be parent of the value you're inserting
+<span class="fc" id="L114">            Node parent = find(value);</span>
+
+            // This if/else assigns the new node to be either the left or right child of the parent
+<span class="pc bpc" id="L117" title="1 of 2 branches missed.">            if (value &lt; parent.data) {</span>
+<span class="nc" id="L118">                parent.left = newNode;</span>
+<span class="nc" id="L119">                parent.left.parent = parent;</span>
+            } else {
+<span class="fc" id="L121">                parent.right = newNode;</span>
+<span class="fc" id="L122">                parent.right.parent = parent;</span>
+            }
+        }
+<span class="fc" id="L125">    }</span>
+
+    /**
+     * Deletes a given value from the Binary Tree
+     *
+     * @param value Value to be deleted
+     * @return If the value was deleted
+     */
+    public boolean remove(int value) {
+        // temp is the node to be deleted
+<span class="fc" id="L135">        Node temp = find(value);</span>
+
+        // If the value doesn't exist
+<span class="fc bfc" id="L138" title="All 2 branches covered.">        if (temp.data != value) {</span>
+<span class="fc" id="L139">            return false;</span>
+        }
+
+        // No children
+<span class="pc bpc" id="L143" title="3 of 4 branches missed.">        if (temp.right == null &amp;&amp; temp.left == null) {</span>
+<span class="nc bnc" id="L144" title="All 2 branches missed.">            if (temp == root) {</span>
+<span class="nc" id="L145">                root = null;</span>
+            } // This if/else assigns the new node to be either the left or right child of the
+            // parent
+<span class="nc bnc" id="L148" title="All 2 branches missed.">            else if (temp.parent.data &lt; temp.data) {</span>
+<span class="nc" id="L149">                temp.parent.right = null;</span>
+            } else {
+<span class="nc" id="L151">                temp.parent.left = null;</span>
+            }
+<span class="nc" id="L153">            return true;</span>
+        } // Two children
+<span class="pc bpc" id="L155" title="3 of 4 branches missed.">        else if (temp.left != null &amp;&amp; temp.right != null) {</span>
+<span class="nc" id="L156">            Node successor = findSuccessor(temp);</span>
+
+            // The left tree of temp is made the left tree of the successor
+<span class="nc" id="L159">            successor.left = temp.left;</span>
+<span class="nc" id="L160">            successor.left.parent = successor;</span>
+
+            // If the successor has a right child, the child's grandparent is it's new parent
+<span class="nc bnc" id="L163" title="All 2 branches missed.">            if (successor.parent != temp) {</span>
+<span class="nc bnc" id="L164" title="All 2 branches missed.">                if (successor.right != null) {</span>
+<span class="nc" id="L165">                    successor.right.parent = successor.parent;</span>
+<span class="nc" id="L166">                    successor.parent.left = successor.right;</span>
+                } else {
+<span class="nc" id="L168">                    successor.parent.left = null;</span>
+                }
+<span class="nc" id="L170">                successor.right = temp.right;</span>
+<span class="nc" id="L171">                successor.right.parent = successor;</span>
+            }
+
+<span class="nc bnc" id="L174" title="All 2 branches missed.">            if (temp == root) {</span>
+<span class="nc" id="L175">                successor.parent = null;</span>
+<span class="nc" id="L176">                root = successor;</span>
+            } // If you're not deleting the root
+            else {
+<span class="nc" id="L179">                successor.parent = temp.parent;</span>
+
+                // This if/else assigns the new node to be either the left or right child of the
+                // parent
+<span class="nc bnc" id="L183" title="All 2 branches missed.">                if (temp.parent.data &lt; temp.data) {</span>
+<span class="nc" id="L184">                    temp.parent.right = successor;</span>
+                } else {
+<span class="nc" id="L186">                    temp.parent.left = successor;</span>
+                }
+            }
+<span class="nc" id="L189">            return true;</span>
+        } // One child
+        else {
+            // If it has a right child
+<span class="pc bpc" id="L193" title="1 of 2 branches missed.">            if (temp.right != null) {</span>
+<span class="fc bfc" id="L194" title="All 2 branches covered.">                if (temp == root) {</span>
+<span class="fc" id="L195">                    root = temp.right;</span>
+<span class="fc" id="L196">                    return true;</span>
+                }
+
+<span class="fc" id="L199">                temp.right.parent = temp.parent;</span>
+
+                // Assigns temp to left or right child
+<span class="pc bpc" id="L202" title="1 of 2 branches missed.">                if (temp.data &lt; temp.parent.data) {</span>
+<span class="nc" id="L203">                    temp.parent.left = temp.right;</span>
+                } else {
+<span class="fc" id="L205">                    temp.parent.right = temp.right;</span>
+                }
+            } // If it has a left child
+            else {
+<span class="nc bnc" id="L209" title="All 2 branches missed.">                if (temp == root) {</span>
+<span class="nc" id="L210">                    root = temp.left;</span>
+<span class="nc" id="L211">                    return true;</span>
+                }
+
+<span class="nc" id="L214">                temp.left.parent = temp.parent;</span>
+
+                // Assigns temp to left or right side
+<span class="nc bnc" id="L217" title="All 2 branches missed.">                if (temp.data &lt; temp.parent.data) {</span>
+<span class="nc" id="L218">                    temp.parent.left = temp.left;</span>
+                } else {
+<span class="nc" id="L220">                    temp.parent.right = temp.left;</span>
+                }
+            }
+<span class="fc" id="L223">            return true;</span>
+        }
+    }
+
+    /**
+     * This method finds the Successor to the Node given. Move right once and go
+     * left down the tree as far as you can
+     *
+     * @param n Node that you want to find the Successor of
+     * @return The Successor of the node
+     */
+    public Node findSuccessor(Node n) {
+<span class="nc bnc" id="L235" title="All 2 branches missed.">        if (n.right == null) {</span>
+<span class="nc" id="L236">            return n;</span>
+        }
+<span class="nc" id="L238">        Node current = n.right;</span>
+<span class="nc" id="L239">        Node parent = n.right;</span>
+<span class="nc bnc" id="L240" title="All 2 branches missed.">        while (current != null) {</span>
+<span class="nc" id="L241">            parent = current;</span>
+<span class="nc" id="L242">            current = current.left;</span>
+        }
+<span class="nc" id="L244">        return parent;</span>
+    }
+
+    /**
+     * Returns the root of the Binary Tree
+     *
+     * @return the root of the Binary Tree
+     */
+    public Node getRoot() {
+<span class="fc" id="L253">        return root;</span>
+    }
+
+    /**
+     * Prints leftChild - root - rightChild This is the equivalent of a depth
+     * first search
+     *
+     * @param localRoot The local root of the binary tree
+     */
+    public void inOrder(Node localRoot) {
+<span class="fc bfc" id="L263" title="All 2 branches covered.">        if (localRoot != null) {</span>
+<span class="fc" id="L264">            inOrder(localRoot.left);</span>
+<span class="fc" id="L265">            System.out.print(localRoot.data + &quot; &quot;);</span>
+<span class="fc" id="L266">            inOrder(localRoot.right);</span>
+        }
+<span class="fc" id="L268">    }</span>
+
+    /**
+     * Prints root - leftChild - rightChild
+     *
+     * @param localRoot The local root of the binary tree
+     */
+    public void preOrder(Node localRoot) {
+<span class="fc bfc" id="L276" title="All 2 branches covered.">        if (localRoot != null) {</span>
+<span class="fc" id="L277">            System.out.print(localRoot.data + &quot; &quot;);</span>
+<span class="fc" id="L278">            preOrder(localRoot.left);</span>
+<span class="fc" id="L279">            preOrder(localRoot.right);</span>
+        }
+<span class="fc" id="L281">    }</span>
+
+    /**
+     * Prints leftChild - rightChild - root
+     *
+     * @param localRoot The local root of the binary tree
+     */
+    public void postOrder(Node localRoot) {
+<span class="fc bfc" id="L289" title="All 2 branches covered.">        if (localRoot != null) {</span>
+<span class="fc" id="L290">            postOrder(localRoot.left);</span>
+<span class="fc" id="L291">            postOrder(localRoot.right);</span>
+<span class="fc" id="L292">            System.out.print(localRoot.data + &quot; &quot;);</span>
+        }
+<span class="fc" id="L294">    }</span>
+
+    /**
+     * Prints the tree in a breadth first search order This is similar to
+     * pre-order traversal, but instead of being implemented with a stack (or
+     * recursion), it is implemented with a queue
+     *
+     * @param localRoot The local root of the binary tree
+     */
+    public void bfs(Node localRoot) {
+        // Create a queue for the order of the nodes
+<span class="fc" id="L305">        Queue&lt;Node&gt; queue = new LinkedList&lt;&gt;();</span>
+
+        // If the give root is null, then we don't add to the queue
+        // and won't do anything
+<span class="pc bpc" id="L309" title="1 of 2 branches missed.">        if (localRoot != null) {</span>
+<span class="fc" id="L310">            queue.add(localRoot);</span>
+        }
+
+        // Continue until the queue is empty
+<span class="fc bfc" id="L314" title="All 2 branches covered.">        while (!queue.isEmpty()) {</span>
+            // Get the next node on the queue to visit
+<span class="fc" id="L316">            localRoot = queue.remove();</span>
+
+            // Print the data from the node we are visiting
+<span class="fc" id="L319">            System.out.print(localRoot.data + &quot; &quot;);</span>
+
+            // Add the children to the queue if not null
+<span class="fc bfc" id="L322" title="All 2 branches covered.">            if (localRoot.right != null) {</span>
+<span class="fc" id="L323">                queue.add(localRoot.right);</span>
+            }
+<span class="pc bpc" id="L325" title="1 of 2 branches missed.">            if (localRoot.left != null) {</span>
+<span class="nc" id="L326">                queue.add(localRoot.left);</span>
+            }
+        }
+<span class="fc" id="L329">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

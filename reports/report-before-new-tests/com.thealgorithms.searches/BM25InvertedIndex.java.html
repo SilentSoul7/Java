@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BM25InvertedIndex.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.searches</a> &gt; <span class="el_source">BM25InvertedIndex.java</span></div><h1>BM25InvertedIndex.java</h1><pre class="source lang-java linenums">package com.thealgorithms.searches;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+/**
+ * Inverted Index implementation with BM25 Scoring for movie search.
+ * This class supports adding movie documents and searching for terms
+ * within those documents using the BM25 algorithm.
+ * @author Prayas Kumar (https://github.com/prayas7102)
+ */
+
+class Movie {
+    int docId; // Unique identifier for the movie
+    String name; // Movie name
+    double imdbRating; // IMDb rating of the movie
+    int releaseYear; // Year the movie was released
+    String content; // Full text content (could be the description or script)
+
+    /**
+     * Constructor for the Movie class.
+     * @param docId Unique identifier for the movie.
+     * @param name Name of the movie.
+     * @param imdbRating IMDb rating of the movie.
+     * @param releaseYear Release year of the movie.
+     * @param content Content or description of the movie.
+     */
+<span class="fc" id="L31">    Movie(int docId, String name, double imdbRating, int releaseYear, String content) {</span>
+<span class="fc" id="L32">        this.docId = docId;</span>
+<span class="fc" id="L33">        this.name = name;</span>
+<span class="fc" id="L34">        this.imdbRating = imdbRating;</span>
+<span class="fc" id="L35">        this.releaseYear = releaseYear;</span>
+<span class="fc" id="L36">        this.content = content;</span>
+<span class="fc" id="L37">    }</span>
+
+    /**
+     * Get all the words from the movie's name and content.
+     * Converts the name and content to lowercase and splits on non-word characters.
+     * @return Array of words from the movie name and content.
+     */
+    public String[] getWords() {
+<span class="fc" id="L45">        return (name + &quot; &quot; + content).toLowerCase().split(&quot;\\W+&quot;);</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="nc" id="L50">        return &quot;Movie{&quot;</span>
+            + &quot;docId=&quot; + docId + &quot;, name='&quot; + name + '\'' + &quot;, imdbRating=&quot; + imdbRating + &quot;, releaseYear=&quot; + releaseYear + '}';
+    }
+}
+
+class SearchResult {
+    int docId; // Unique identifier of the movie document
+    double relevanceScore; // Relevance score based on the BM25 algorithm
+
+    /**
+     * Constructor for SearchResult class.
+     * @param docId Document ID (movie) for this search result.
+     * @param relevanceScore The relevance score based on BM25 scoring.
+     */
+<span class="fc" id="L64">    SearchResult(int docId, double relevanceScore) {</span>
+<span class="fc" id="L65">        this.docId = docId;</span>
+<span class="fc" id="L66">        this.relevanceScore = relevanceScore;</span>
+<span class="fc" id="L67">    }</span>
+
+    public int getDocId() {
+<span class="fc" id="L70">        return docId;</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="fc" id="L75">        return &quot;SearchResult{&quot;</span>
+            + &quot;docId=&quot; + docId + &quot;, relevanceScore=&quot; + relevanceScore + '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+<span class="pc bpc" id="L81" title="1 of 2 branches missed.">        if (this == o) {</span>
+<span class="nc" id="L82">            return true;</span>
+        }
+<span class="pc bpc" id="L84" title="2 of 4 branches missed.">        if (o == null || getClass() != o.getClass()) {</span>
+<span class="nc" id="L85">            return false;</span>
+        }
+<span class="fc" id="L87">        SearchResult that = (SearchResult) o;</span>
+<span class="pc bpc" id="L88" title="2 of 4 branches missed.">        return docId == that.docId &amp;&amp; Double.compare(that.relevanceScore, relevanceScore) == 0;</span>
+    }
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L93">        return Objects.hash(docId, relevanceScore);</span>
+    }
+
+    public double getRelevanceScore() {
+<span class="fc" id="L97">        return this.relevanceScore;</span>
+    }
+}
+
+public final class BM25InvertedIndex {
+    private Map&lt;String, Map&lt;Integer, Integer&gt;&gt; index; // Inverted index mapping terms to document id and frequency
+    private Map&lt;Integer, Movie&gt; movies; // Mapping of movie document IDs to Movie objects
+    private int totalDocuments; // Total number of movies/documents
+    private double avgDocumentLength; // Average length of documents (number of words)
+    private static final double K = 1.5; // BM25 tuning parameter, controls term frequency saturation
+    private static final double B = 0.75; // BM25 tuning parameter, controls length normalization
+
+    /**
+     * Constructor for BM25InvertedIndex.
+     * Initializes the inverted index and movie storage.
+     */
+<span class="fc" id="L113">    BM25InvertedIndex() {</span>
+<span class="fc" id="L114">        index = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L115">        movies = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L116">        totalDocuments = 0;</span>
+<span class="fc" id="L117">        avgDocumentLength = 0.0;</span>
+<span class="fc" id="L118">    }</span>
+
+    /**
+     * Add a movie to the index.
+     * @param docId Unique identifier for the movie.
+     * @param name Name of the movie.
+     * @param imdbRating IMDb rating of the movie.
+     * @param releaseYear Release year of the movie.
+     * @param content Content or description of the movie.
+     */
+    public void addMovie(int docId, String name, double imdbRating, int releaseYear, String content) {
+<span class="fc" id="L129">        Movie movie = new Movie(docId, name, imdbRating, releaseYear, content);</span>
+<span class="fc" id="L130">        movies.put(docId, movie);</span>
+<span class="fc" id="L131">        totalDocuments++;</span>
+
+        // Get words (terms) from the movie's name and content
+<span class="fc" id="L134">        String[] terms = movie.getWords();</span>
+<span class="fc" id="L135">        int docLength = terms.length;</span>
+
+        // Update the average document length
+<span class="fc" id="L138">        avgDocumentLength = (avgDocumentLength * (totalDocuments - 1) + docLength) / totalDocuments;</span>
+
+        // Update the inverted index
+<span class="fc bfc" id="L141" title="All 2 branches covered.">        for (String term : terms) {</span>
+            // Create a new entry if the term is not yet in the index
+<span class="fc" id="L143">            index.putIfAbsent(term, new HashMap&lt;&gt;());</span>
+
+            // Get the list of documents containing the term
+<span class="fc" id="L146">            Map&lt;Integer, Integer&gt; docList = index.get(term);</span>
+<span class="pc bpc" id="L147" title="1 of 2 branches missed.">            if (docList == null) {</span>
+<span class="nc" id="L148">                docList = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L149">                index.put(term, docList); // Ensure docList is added to the index</span>
+            }
+            // Increment the term frequency in this document
+<span class="fc" id="L152">            docList.put(docId, docList.getOrDefault(docId, 0) + 1);</span>
+        }
+<span class="fc" id="L154">    }</span>
+
+    public int getMoviesLength() {
+<span class="fc" id="L157">        return movies.size();</span>
+    }
+
+    /**
+     * Search for documents containing a term using BM25 scoring.
+     * @param term The search term.
+     * @return A list of search results sorted by relevance score.
+     */
+    public List&lt;SearchResult&gt; search(String term) {
+<span class="fc" id="L166">        term = term.toLowerCase(); // Normalize search term</span>
+<span class="fc bfc" id="L167" title="All 2 branches covered.">        if (!index.containsKey(term)) {</span>
+<span class="fc" id="L168">            return new ArrayList&lt;&gt;(); // Return empty list if term not found</span>
+        }
+
+<span class="fc" id="L171">        Map&lt;Integer, Integer&gt; termDocs = index.get(term); // Documents containing the term</span>
+<span class="fc" id="L172">        List&lt;SearchResult&gt; results = new ArrayList&lt;&gt;();</span>
+
+        // Compute IDF for the search term
+<span class="fc" id="L175">        double idf = computeIDF(termDocs.size());</span>
+
+        // Calculate relevance scores for all documents containing the term
+<span class="fc bfc" id="L178" title="All 2 branches covered.">        for (Map.Entry&lt;Integer, Integer&gt; entry : termDocs.entrySet()) {</span>
+<span class="fc" id="L179">            int docId = entry.getKey();</span>
+<span class="fc" id="L180">            int termFrequency = entry.getValue();</span>
+<span class="fc" id="L181">            Movie movie = movies.get(docId);</span>
+<span class="pc bpc" id="L182" title="1 of 2 branches missed.">            if (movie == null) {</span>
+<span class="nc" id="L183">                continue; // Skip this document if movie doesn't exist</span>
+            }
+<span class="fc" id="L185">            double docLength = movie.getWords().length;</span>
+
+            // Compute BM25 relevance score
+<span class="fc" id="L188">            double score = computeBM25Score(termFrequency, docLength, idf);</span>
+<span class="fc" id="L189">            results.add(new SearchResult(docId, score));</span>
+<span class="fc" id="L190">        }</span>
+
+        // Sort the results by relevance score in descending order
+<span class="fc" id="L193">        results.sort((r1, r2) -&gt; Double.compare(r2.relevanceScore, r1.relevanceScore));</span>
+<span class="fc" id="L194">        return results;</span>
+    }
+
+    /**
+     * Compute the BM25 score for a given term and document.
+     * @param termFrequency The frequency of the term in the document.
+     * @param docLength The length of the document.
+     * @param idf The inverse document frequency of the term.
+     * @return The BM25 relevance score for the term in the document.
+     */
+    private double computeBM25Score(int termFrequency, double docLength, double idf) {
+<span class="fc" id="L205">        double numerator = termFrequency * (K + 1);</span>
+<span class="fc" id="L206">        double denominator = termFrequency + K * (1 - B + B * (docLength / avgDocumentLength));</span>
+<span class="fc" id="L207">        return idf * (numerator / denominator);</span>
+    }
+
+    /**
+     * Compute the inverse document frequency (IDF) of a term.
+     * The IDF measures the importance of a term across the entire document set.
+     * @param docFrequency The number of documents that contain the term.
+     * @return The inverse document frequency (IDF) value.
+     */
+    private double computeIDF(int docFrequency) {
+        // Total number of documents in the index
+<span class="fc" id="L218">        return Math.log((totalDocuments - docFrequency + 0.5) / (docFrequency + 0.5) + 1);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

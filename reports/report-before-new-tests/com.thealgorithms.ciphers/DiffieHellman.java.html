@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DiffieHellman.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.ciphers</a> &gt; <span class="el_source">DiffieHellman.java</span></div><h1>DiffieHellman.java</h1><pre class="source lang-java linenums">package com.thealgorithms.ciphers;
+
+import java.math.BigInteger;
+
+public final class DiffieHellman {
+
+    private final BigInteger base;
+    private final BigInteger secret;
+    private final BigInteger prime;
+
+    // Constructor to initialize base, secret, and prime
+<span class="fc" id="L12">    public DiffieHellman(BigInteger base, BigInteger secret, BigInteger prime) {</span>
+        // Check for non-null and positive values
+<span class="pc bpc" id="L14" title="6 of 12 branches missed.">        if (base == null || secret == null || prime == null || base.signum() &lt;= 0 || secret.signum() &lt;= 0 || prime.signum() &lt;= 0) {</span>
+<span class="nc" id="L15">            throw new IllegalArgumentException(&quot;Base, secret, and prime must be non-null and positive values.&quot;);</span>
+        }
+<span class="fc" id="L17">        this.base = base;</span>
+<span class="fc" id="L18">        this.secret = secret;</span>
+<span class="fc" id="L19">        this.prime = prime;</span>
+<span class="fc" id="L20">    }</span>
+
+    // Method to calculate public value (g^x mod p)
+    public BigInteger calculatePublicValue() {
+        // Returns g^x mod p
+<span class="fc" id="L25">        return base.modPow(secret, prime);</span>
+    }
+
+    // Method to calculate the shared secret key (otherPublic^secret mod p)
+    public BigInteger calculateSharedSecret(BigInteger otherPublicValue) {
+<span class="pc bpc" id="L30" title="2 of 4 branches missed.">        if (otherPublicValue == null || otherPublicValue.signum() &lt;= 0) {</span>
+<span class="nc" id="L31">            throw new IllegalArgumentException(&quot;Other public value must be non-null and positive.&quot;);</span>
+        }
+        // Returns b^x mod p or a^y mod p
+<span class="fc" id="L34">        return otherPublicValue.modPow(secret, prime);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

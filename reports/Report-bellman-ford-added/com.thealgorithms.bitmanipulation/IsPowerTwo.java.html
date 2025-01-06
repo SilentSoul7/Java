@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>IsPowerTwo.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.bitmanipulation</a> &gt; <span class="el_source">IsPowerTwo.java</span></div><h1>IsPowerTwo.java</h1><pre class="source lang-java linenums">package com.thealgorithms.bitmanipulation;
+
+/**
+ * Utility class for checking if a number is a power of two.
+ * A power of two is a number that can be expressed as 2^n where n is a non-negative integer.
+ * This class provides a method to determine if a given integer is a power of two using bit manipulation.
+ *
+ * @author Bama Charan Chhandogi (https://github.com/BamaCharanChhandogi)
+ */
+public final class IsPowerTwo {
+    private IsPowerTwo() {
+    }
+
+    /**
+     * Checks if the given integer is a power of two.
+     *
+     * A number is considered a power of two if it is greater than zero and
+     * has exactly one '1' bit in its binary representation. This method
+     * uses the property that for any power of two (n), the expression
+     * (n &amp; (n - 1)) will be zero.
+     *
+     * @param number the integer to check
+     * @return true if the number is a power of two, false otherwise
+     */
+    public static boolean isPowerTwo(int number) {
+<span class="fc bfc" id="L26" title="All 2 branches covered.">        if (number &lt;= 0) {</span>
+<span class="fc" id="L27">            return false;</span>
+        }
+<span class="fc" id="L29">        int ans = number &amp; (number - 1);</span>
+<span class="fc bfc" id="L30" title="All 2 branches covered.">        return ans == 0;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

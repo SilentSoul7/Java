@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HexToOct.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.conversions</a> &gt; <span class="el_source">HexToOct.java</span></div><h1>HexToOct.java</h1><pre class="source lang-java linenums">package com.thealgorithms.conversions;
+
+/**
+ * Converts any Hexadecimal Number to Octal
+ *
+ * @author Tanmay Joshi
+ */
+public final class HexToOct {
+    private HexToOct() {
+    }
+
+    /**
+     * Converts a Hexadecimal number to a Decimal number.
+     *
+     * @param hex The Hexadecimal number as a String.
+     * @return The Decimal equivalent as an integer.
+     */
+    public static int hexToDecimal(String hex) {
+<span class="fc" id="L19">        String hexDigits = &quot;0123456789ABCDEF&quot;;</span>
+<span class="fc" id="L20">        hex = hex.toUpperCase();</span>
+<span class="fc" id="L21">        int decimalValue = 0;</span>
+
+<span class="fc bfc" id="L23" title="All 2 branches covered.">        for (int i = 0; i &lt; hex.length(); i++) {</span>
+<span class="fc" id="L24">            char hexChar = hex.charAt(i);</span>
+<span class="fc" id="L25">            int digitValue = hexDigits.indexOf(hexChar);</span>
+<span class="fc" id="L26">            decimalValue = 16 * decimalValue + digitValue;</span>
+        }
+
+<span class="fc" id="L29">        return decimalValue;</span>
+    }
+
+    /**
+     * Converts a Decimal number to an Octal number.
+     *
+     * @param decimal The Decimal number as an integer.
+     * @return The Octal equivalent as an integer.
+     */
+    public static int decimalToOctal(int decimal) {
+<span class="fc" id="L39">        int octalValue = 0;</span>
+<span class="fc" id="L40">        int placeValue = 1;</span>
+
+<span class="fc bfc" id="L42" title="All 2 branches covered.">        while (decimal &gt; 0) {</span>
+<span class="fc" id="L43">            int remainder = decimal % 8;</span>
+<span class="fc" id="L44">            octalValue += remainder * placeValue;</span>
+<span class="fc" id="L45">            decimal /= 8;</span>
+<span class="fc" id="L46">            placeValue *= 10;</span>
+<span class="fc" id="L47">        }</span>
+
+<span class="fc" id="L49">        return octalValue;</span>
+    }
+
+    /**
+     * Converts a Hexadecimal number to an Octal number.
+     *
+     * @param hex The Hexadecimal number as a String.
+     * @return The Octal equivalent as an integer.
+     */
+    public static int hexToOctal(String hex) {
+<span class="fc" id="L59">        int decimalValue = hexToDecimal(hex);</span>
+<span class="fc" id="L60">        return decimalToOctal(decimalValue);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MergeKSortedArrays.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.heaps</a> &gt; <span class="el_source">MergeKSortedArrays.java</span></div><h1>MergeKSortedArrays.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.heaps;
+
+import java.util.Comparator;
+import java.util.PriorityQueue;
+
+/**
+ * This class provides a method to merge multiple sorted arrays into a single sorted array.
+ * It utilizes a min-heap to efficiently retrieve the smallest elements from each array.
+ *
+ * Time Complexity: O(n * log k), where n is the total number of elements across all arrays
+ * and k is the number of arrays.
+ *
+ * Space Complexity: O(k) for the heap, where k is the number of arrays.
+ *
+ * @author Hardvan
+ */
+public final class MergeKSortedArrays {
+    private MergeKSortedArrays() {
+    }
+
+    /**
+     * Merges k sorted arrays into one sorted array using a min-heap.
+     * Steps:
+     * 1. Create a min-heap to store elements in the format: {value, array index, element index}
+     * 2. Add the first element from each array to the heap
+     * 3. While the heap is not empty, remove the smallest element from the heap
+     *   and add it to the result array. If there are more elements in the same array,
+     *   add the next element to the heap.
+     *   Continue until all elements have been processed.
+     *   The result array will contain all elements in sorted order.
+     * 4. Return the result array.
+     *
+     * @param arrays a 2D array, where each subarray is sorted in non-decreasing order
+     * @return a single sorted array containing all elements from the input arrays
+     */
+    public static int[] mergeKArrays(int[][] arrays) {
+<span class="fc" id="L37">        PriorityQueue&lt;int[]&gt; minHeap = new PriorityQueue&lt;&gt;(Comparator.comparingInt(a -&gt; a[0]));</span>
+
+<span class="fc" id="L39">        int totalLength = 0;</span>
+<span class="fc bfc" id="L40" title="All 2 branches covered.">        for (int i = 0; i &lt; arrays.length; i++) {</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">            if (arrays[i].length &gt; 0) {</span>
+<span class="fc" id="L42">                minHeap.offer(new int[] {arrays[i][0], i, 0});</span>
+<span class="fc" id="L43">                totalLength += arrays[i].length;</span>
+            }
+        }
+
+<span class="fc" id="L47">        int[] result = new int[totalLength];</span>
+<span class="fc" id="L48">        int index = 0;</span>
+<span class="fc bfc" id="L49" title="All 2 branches covered.">        while (!minHeap.isEmpty()) {</span>
+<span class="fc" id="L50">            int[] top = minHeap.poll();</span>
+<span class="fc" id="L51">            result[index++] = top[0];</span>
+
+<span class="fc bfc" id="L53" title="All 2 branches covered.">            if (top[2] + 1 &lt; arrays[top[1]].length) {</span>
+<span class="fc" id="L54">                minHeap.offer(new int[] {arrays[top[1]][top[2] + 1], top[1], top[2] + 1});</span>
+            }
+<span class="fc" id="L56">        }</span>
+
+<span class="fc" id="L58">        return result;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

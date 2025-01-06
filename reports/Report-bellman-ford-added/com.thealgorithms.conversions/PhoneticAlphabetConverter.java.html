@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PhoneticAlphabetConverter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.conversions</a> &gt; <span class="el_source">PhoneticAlphabetConverter.java</span></div><h1>PhoneticAlphabetConverter.java</h1><pre class="source lang-java linenums">package com.thealgorithms.conversions;
+
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * Converts text to the NATO phonetic alphabet.
+ * Examples:
+ * &quot;ABC&quot; -&gt; &quot;Alpha Bravo Charlie&quot;
+ * &quot;Hello&quot; -&gt; &quot;Hotel Echo Lima Lima Oscar&quot;
+ * &quot;123&quot; -&gt; &quot;One Two Three&quot;
+ * &quot;A1B2C3&quot; -&gt; &quot;Alpha One Bravo Two Charlie Three&quot;
+ *
+ * @author Hardvan
+ */
+public final class PhoneticAlphabetConverter {
+    private PhoneticAlphabetConverter() {
+    }
+
+<span class="fc" id="L20">    private static final Map&lt;Character, String&gt; PHONETIC_MAP = new HashMap&lt;&gt;();</span>
+
+    static {
+<span class="fc" id="L23">        PHONETIC_MAP.put('A', &quot;Alpha&quot;);</span>
+<span class="fc" id="L24">        PHONETIC_MAP.put('B', &quot;Bravo&quot;);</span>
+<span class="fc" id="L25">        PHONETIC_MAP.put('C', &quot;Charlie&quot;);</span>
+<span class="fc" id="L26">        PHONETIC_MAP.put('D', &quot;Delta&quot;);</span>
+<span class="fc" id="L27">        PHONETIC_MAP.put('E', &quot;Echo&quot;);</span>
+<span class="fc" id="L28">        PHONETIC_MAP.put('F', &quot;Foxtrot&quot;);</span>
+<span class="fc" id="L29">        PHONETIC_MAP.put('G', &quot;Golf&quot;);</span>
+<span class="fc" id="L30">        PHONETIC_MAP.put('H', &quot;Hotel&quot;);</span>
+<span class="fc" id="L31">        PHONETIC_MAP.put('I', &quot;India&quot;);</span>
+<span class="fc" id="L32">        PHONETIC_MAP.put('J', &quot;Juliett&quot;);</span>
+<span class="fc" id="L33">        PHONETIC_MAP.put('K', &quot;Kilo&quot;);</span>
+<span class="fc" id="L34">        PHONETIC_MAP.put('L', &quot;Lima&quot;);</span>
+<span class="fc" id="L35">        PHONETIC_MAP.put('M', &quot;Mike&quot;);</span>
+<span class="fc" id="L36">        PHONETIC_MAP.put('N', &quot;November&quot;);</span>
+<span class="fc" id="L37">        PHONETIC_MAP.put('O', &quot;Oscar&quot;);</span>
+<span class="fc" id="L38">        PHONETIC_MAP.put('P', &quot;Papa&quot;);</span>
+<span class="fc" id="L39">        PHONETIC_MAP.put('Q', &quot;Quebec&quot;);</span>
+<span class="fc" id="L40">        PHONETIC_MAP.put('R', &quot;Romeo&quot;);</span>
+<span class="fc" id="L41">        PHONETIC_MAP.put('S', &quot;Sierra&quot;);</span>
+<span class="fc" id="L42">        PHONETIC_MAP.put('T', &quot;Tango&quot;);</span>
+<span class="fc" id="L43">        PHONETIC_MAP.put('U', &quot;Uniform&quot;);</span>
+<span class="fc" id="L44">        PHONETIC_MAP.put('V', &quot;Victor&quot;);</span>
+<span class="fc" id="L45">        PHONETIC_MAP.put('W', &quot;Whiskey&quot;);</span>
+<span class="fc" id="L46">        PHONETIC_MAP.put('X', &quot;X-ray&quot;);</span>
+<span class="fc" id="L47">        PHONETIC_MAP.put('Y', &quot;Yankee&quot;);</span>
+<span class="fc" id="L48">        PHONETIC_MAP.put('Z', &quot;Zulu&quot;);</span>
+<span class="fc" id="L49">        PHONETIC_MAP.put('0', &quot;Zero&quot;);</span>
+<span class="fc" id="L50">        PHONETIC_MAP.put('1', &quot;One&quot;);</span>
+<span class="fc" id="L51">        PHONETIC_MAP.put('2', &quot;Two&quot;);</span>
+<span class="fc" id="L52">        PHONETIC_MAP.put('3', &quot;Three&quot;);</span>
+<span class="fc" id="L53">        PHONETIC_MAP.put('4', &quot;Four&quot;);</span>
+<span class="fc" id="L54">        PHONETIC_MAP.put('5', &quot;Five&quot;);</span>
+<span class="fc" id="L55">        PHONETIC_MAP.put('6', &quot;Six&quot;);</span>
+<span class="fc" id="L56">        PHONETIC_MAP.put('7', &quot;Seven&quot;);</span>
+<span class="fc" id="L57">        PHONETIC_MAP.put('8', &quot;Eight&quot;);</span>
+<span class="fc" id="L58">        PHONETIC_MAP.put('9', &quot;Nine&quot;);</span>
+<span class="fc" id="L59">    }</span>
+
+    /**
+     * Converts text to the NATO phonetic alphabet.
+     * Steps:
+     * 1. Convert the text to uppercase.
+     * 2. Iterate over each character in the text.
+     * 3. Get the phonetic equivalent of the character from the map.
+     * 4. Append the phonetic equivalent to the result.
+     * 5. Append a space to separate the phonetic equivalents.
+     * 6. Return the result.
+     *
+     * @param text the text to convert
+     * @return the NATO phonetic alphabet
+     */
+    public static String textToPhonetic(String text) {
+<span class="fc" id="L75">        StringBuilder phonetic = new StringBuilder();</span>
+<span class="fc bfc" id="L76" title="All 2 branches covered.">        for (char c : text.toUpperCase().toCharArray()) {</span>
+<span class="fc bfc" id="L77" title="All 2 branches covered.">            if (Character.isWhitespace(c)) {</span>
+<span class="fc" id="L78">                continue;</span>
+            }
+<span class="fc" id="L80">            phonetic.append(PHONETIC_MAP.getOrDefault(c, String.valueOf(c))).append(&quot; &quot;);</span>
+        }
+<span class="fc" id="L82">        return phonetic.toString().trim();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

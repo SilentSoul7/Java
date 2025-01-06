@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MatrixGraphs.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.graphs</a> &gt; <span class="el_source">MatrixGraphs.java</span></div><h1>MatrixGraphs.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.graphs;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+
+/**
+ * Implementation of a graph in a matrix form Also known as an adjacency matrix
+ * representation [Adjacency matrix -
+ * Wikipedia](https://en.wikipedia.org/wiki/Adjacency_matrix)
+ *
+ * @author Unknown
+ */
+public final class MatrixGraphs {
+    private MatrixGraphs() {
+    }
+
+    public static void main(String[] args) {
+<span class="nc" id="L20">        AdjacencyMatrixGraph graph = new AdjacencyMatrixGraph(10);</span>
+<span class="nc" id="L21">        graph.addEdge(1, 2);</span>
+<span class="nc" id="L22">        graph.addEdge(1, 5);</span>
+<span class="nc" id="L23">        graph.addEdge(2, 5);</span>
+<span class="nc" id="L24">        graph.addEdge(1, 2);</span>
+<span class="nc" id="L25">        graph.addEdge(2, 3);</span>
+<span class="nc" id="L26">        graph.addEdge(3, 4);</span>
+<span class="nc" id="L27">        graph.addEdge(4, 1);</span>
+<span class="nc" id="L28">        graph.addEdge(2, 3);</span>
+<span class="nc" id="L29">        graph.addEdge(3, 9);</span>
+<span class="nc" id="L30">        graph.addEdge(9, 1);</span>
+<span class="nc" id="L31">        graph.addEdge(9, 8);</span>
+<span class="nc" id="L32">        graph.addEdge(1, 8);</span>
+<span class="nc" id="L33">        graph.addEdge(5, 6);</span>
+<span class="nc" id="L34">        System.out.println(&quot;The graph matrix:&quot;);</span>
+<span class="nc" id="L35">        System.out.println(graph);</span>
+<span class="nc" id="L36">        System.out.println(&quot;Depth first order beginning at node '1':&quot;);</span>
+<span class="nc" id="L37">        System.out.println(graph.depthFirstOrder(1));</span>
+<span class="nc" id="L38">        System.out.println(&quot;Breadth first order beginning at node '1':&quot;);</span>
+<span class="nc" id="L39">        System.out.println(graph.breadthFirstOrder(1));</span>
+<span class="nc" id="L40">    }</span>
+}
+
+/**
+ * AdjacencyMatrixGraph Implementation
+ */
+class AdjacencyMatrixGraph {
+
+    /**
+     * The number of vertices in the graph
+     */
+    private int vertexCount;
+
+    /**
+     * The number of edges in the graph
+     */
+    private int edgeCount;
+
+    /**
+     * The adjacency matrix for the graph
+     */
+    private int[][] adjMatrix;
+
+    /**
+     * Static variables to define whether or not an edge exists in the adjacency
+     * matrix
+     */
+    static final int EDGE_EXIST = 1;
+    static final int EDGE_NONE = 0;
+
+    /**
+     * Constructor
+     */
+<span class="fc" id="L73">    AdjacencyMatrixGraph(int givenNumberOfVertices) {</span>
+<span class="fc" id="L74">        this.setNumberOfVertices(givenNumberOfVertices);</span>
+<span class="fc" id="L75">        this.setNumberOfEdges(0);</span>
+<span class="fc" id="L76">        this.setAdjacency(new int[givenNumberOfVertices][givenNumberOfVertices]);</span>
+<span class="fc bfc" id="L77" title="All 2 branches covered.">        for (int i = 0; i &lt; givenNumberOfVertices; i++) {</span>
+<span class="fc bfc" id="L78" title="All 2 branches covered.">            for (int j = 0; j &lt; givenNumberOfVertices; j++) {</span>
+<span class="fc" id="L79">                this.adjacency()[i][j] = AdjacencyMatrixGraph.EDGE_NONE;</span>
+            }
+        }
+<span class="fc" id="L82">    }</span>
+
+    /**
+     * Updates the number of vertices in the graph
+     *
+     * @param newNumberOfVertices the new number of vertices
+     */
+    private void setNumberOfVertices(int newNumberOfVertices) {
+<span class="fc" id="L90">        this.vertexCount = newNumberOfVertices;</span>
+<span class="fc" id="L91">    }</span>
+
+    /**
+     * Getter for `this.vertexCount`
+     *
+     * @return the number of vertices in the graph
+     */
+    public int numberOfVertices() {
+<span class="fc" id="L99">        return this.vertexCount;</span>
+    }
+
+    /**
+     * Updates the number of edges in the graph
+     *
+     * @param newNumberOfEdges the new number of edges
+     *
+     */
+    private void setNumberOfEdges(int newNumberOfEdges) {
+<span class="fc" id="L109">        this.edgeCount = newNumberOfEdges;</span>
+<span class="fc" id="L110">    }</span>
+
+    /**
+     * Getter for `this.edgeCount`
+     *
+     * @return the number of edges
+     */
+    public int numberOfEdges() {
+<span class="fc" id="L118">        return this.edgeCount;</span>
+    }
+
+    /**
+     * Sets a new matrix as the adjacency matrix
+     *
+     * @param newAdjacency the new adjaceny matrix
+     */
+    private void setAdjacency(int[][] newAdjacency) {
+<span class="fc" id="L127">        this.adjMatrix = newAdjacency;</span>
+<span class="fc" id="L128">    }</span>
+
+    /**
+     * Getter for the adjacency matrix
+     *
+     * @return the adjacency matrix
+     */
+    private int[][] adjacency() {
+<span class="fc" id="L136">        return this.adjMatrix;</span>
+    }
+
+    /**
+     * Checks if two vertices are connected by an edge
+     *
+     * @param from the parent vertex to check for adjacency
+     * @param to the child vertex to check for adjacency
+     * @return whether or not the vertices are adjancent
+     */
+    private boolean adjacencyOfEdgeDoesExist(int from, int to) {
+<span class="fc bfc" id="L147" title="All 2 branches covered.">        return (this.adjacency()[from][to] != AdjacencyMatrixGraph.EDGE_NONE);</span>
+    }
+
+    /**
+     * Checks if a particular vertex exists in a graph
+     *
+     * @param aVertex the vertex to check for existence
+     * @return whether or not the vertex exists
+     */
+    public boolean vertexDoesExist(int aVertex) {
+<span class="fc bfc" id="L157" title="All 4 branches covered.">        return aVertex &gt;= 0 &amp;&amp; aVertex &lt; this.numberOfVertices();</span>
+    }
+
+    /**
+     * Checks if two vertices are connected by an edge
+     *
+     * @param from the parent vertex to check for adjacency
+     * @param to the child vertex to check for adjacency
+     * @return whether or not the vertices are adjancent
+     */
+    public boolean edgeDoesExist(int from, int to) {
+<span class="pc bpc" id="L168" title="2 of 4 branches missed.">        if (this.vertexDoesExist(from) &amp;&amp; this.vertexDoesExist(to)) {</span>
+<span class="fc" id="L169">            return (this.adjacencyOfEdgeDoesExist(from, to));</span>
+        }
+
+<span class="nc" id="L172">        return false;</span>
+    }
+
+    /**
+     * This method adds an edge to the graph between two specified vertices
+     *
+     * @param from the data of the vertex the edge is from
+     * @param to the data of the vertex the edge is going to
+     * @return returns true if the edge did not exist, return false if it
+     * already did
+     */
+    public boolean addEdge(int from, int to) {
+<span class="pc bpc" id="L184" title="1 of 4 branches missed.">        if (this.vertexDoesExist(from) &amp;&amp; this.vertexDoesExist(to)) {</span>
+<span class="fc bfc" id="L185" title="All 2 branches covered.">            if (!this.adjacencyOfEdgeDoesExist(from, to)) {</span>
+<span class="fc" id="L186">                this.adjacency()[from][to] = AdjacencyMatrixGraph.EDGE_EXIST;</span>
+<span class="fc" id="L187">                this.adjacency()[to][from] = AdjacencyMatrixGraph.EDGE_EXIST;</span>
+<span class="fc" id="L188">                this.setNumberOfEdges(this.numberOfEdges() + 1);</span>
+<span class="fc" id="L189">                return true;</span>
+            }
+        }
+
+<span class="fc" id="L193">        return false;</span>
+    }
+
+    /**
+     * this method removes an edge from the graph between two specified vertices
+     *
+     * @param from the data of the vertex the edge is from
+     * @param to the data of the vertex the edge is going to
+     * @return returns false if the edge doesn't exist, returns true if the edge
+     * exists and is removed
+     */
+    public boolean removeEdge(int from, int to) {
+<span class="pc bpc" id="L205" title="1 of 4 branches missed.">        if (this.vertexDoesExist(from) &amp;&amp; this.vertexDoesExist(to)) {</span>
+<span class="fc bfc" id="L206" title="All 2 branches covered.">            if (this.adjacencyOfEdgeDoesExist(from, to)) {</span>
+<span class="fc" id="L207">                this.adjacency()[from][to] = AdjacencyMatrixGraph.EDGE_NONE;</span>
+<span class="fc" id="L208">                this.adjacency()[to][from] = AdjacencyMatrixGraph.EDGE_NONE;</span>
+<span class="fc" id="L209">                this.setNumberOfEdges(this.numberOfEdges() - 1);</span>
+<span class="fc" id="L210">                return true;</span>
+            }
+        }
+<span class="fc" id="L213">        return false;</span>
+    }
+
+    /**
+     * This method returns a list of the vertices in a depth first order
+     * beginning with the specified vertex
+     *
+     * @param startVertex the vertex to begin the traversal
+     * @return the list of the ordered vertices
+     */
+    public List&lt;Integer&gt; depthFirstOrder(int startVertex) {
+        // If the startVertex is invalid, return an empty list
+<span class="pc bpc" id="L225" title="1 of 4 branches missed.">        if (startVertex &gt;= vertexCount || startVertex &lt; 0) {</span>
+<span class="fc" id="L226">            return new ArrayList&lt;&gt;();</span>
+        }
+
+        // Create an array to track the visited vertices
+<span class="fc" id="L230">        boolean[] visited = new boolean[vertexCount];</span>
+
+        // Create a list to keep track of the order of our traversal
+<span class="fc" id="L233">        ArrayList&lt;Integer&gt; orderList = new ArrayList&lt;&gt;();</span>
+
+        // Perform our DFS algorithm
+<span class="fc" id="L236">        depthFirstOrder(startVertex, visited, orderList);</span>
+
+<span class="fc" id="L238">        return orderList;</span>
+    }
+
+    /**
+     * Helper method for public depthFirstOrder(int) that will perform a depth
+     * first traversal recursively on the graph
+     *
+     * @param currentVertex the currently exploring vertex
+     * @param visited the array of values denoting whether or not that vertex
+     * has been visited
+     * @param orderList the list to add vertices to as they are visited
+     */
+    private void depthFirstOrder(int currentVertex, boolean[] visited, List&lt;Integer&gt; orderList) {
+        // If this vertex has already been visited, do nothing and return
+<span class="fc bfc" id="L252" title="All 2 branches covered.">        if (visited[currentVertex]) {</span>
+<span class="fc" id="L253">            return;</span>
+        }
+
+        // Visit the currentVertex by marking it as visited and adding it
+        // to the orderList
+<span class="fc" id="L258">        visited[currentVertex] = true;</span>
+<span class="fc" id="L259">        orderList.add(currentVertex);</span>
+
+        // Get the adjacency array for this vertex
+<span class="fc" id="L262">        int[] adjacent = adjMatrix[currentVertex];</span>
+<span class="fc bfc" id="L263" title="All 2 branches covered.">        for (int i = 0; i &lt; adjacent.length; i++) { // we are considering exploring, recurse on it // If an edge exists between the</span>
+                                                    // currentVertex and the vertex
+<span class="fc bfc" id="L265" title="All 2 branches covered.">            if (adjacent[i] == AdjacencyMatrixGraph.EDGE_EXIST) {</span>
+<span class="fc" id="L266">                depthFirstOrder(i, visited, orderList);</span>
+            }
+        }
+<span class="fc" id="L269">    }</span>
+
+    /**
+     * This method returns a list of the vertices in a breadth first order
+     * beginning with the specified vertex
+     *
+     * @param startVertex the vertext to begin the traversal
+     * @return the list of the ordered vertices
+     */
+    public List&lt;Integer&gt; breadthFirstOrder(int startVertex) {
+        // If the specified startVertex is invalid, return an empty list
+<span class="pc bpc" id="L280" title="1 of 4 branches missed.">        if (startVertex &gt;= vertexCount || startVertex &lt; 0) {</span>
+<span class="fc" id="L281">            return new ArrayList&lt;&gt;();</span>
+        }
+
+        // Create an array to keep track of the visited vertices
+<span class="fc" id="L285">        boolean[] visited = new boolean[vertexCount];</span>
+
+        // Create a list to keep track of the ordered vertices
+<span class="fc" id="L288">        ArrayList&lt;Integer&gt; orderList = new ArrayList&lt;&gt;();</span>
+
+        // Create a queue for our BFS algorithm and add the startVertex
+        // to the queue
+<span class="fc" id="L292">        Queue&lt;Integer&gt; queue = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L293">        queue.add(startVertex);</span>
+
+        // Continue until the queue is empty
+<span class="fc bfc" id="L296" title="All 2 branches covered.">        while (!queue.isEmpty()) {</span>
+            // Remove the first vertex in the queue
+<span class="fc" id="L298">            int currentVertex = queue.poll();</span>
+
+            // If we've visited this vertex, skip it
+<span class="fc bfc" id="L301" title="All 2 branches covered.">            if (visited[currentVertex]) {</span>
+<span class="fc" id="L302">                continue;</span>
+            }
+
+            // We now visit this vertex by adding it to the orderList and
+            // marking it as visited
+<span class="fc" id="L307">            orderList.add(currentVertex);</span>
+<span class="fc" id="L308">            visited[currentVertex] = true;</span>
+
+            // Get the adjacency array for the currentVertex and
+            // check each node
+<span class="fc" id="L312">            int[] adjacent = adjMatrix[currentVertex];</span>
+<span class="fc bfc" id="L313" title="All 2 branches covered.">            for (int vertex = 0; vertex &lt; adjacent.length; vertex++) { // vertex we are considering exploring, we add it to the queue // If an</span>
+                                                                       // edge exists between the current vertex and the
+<span class="fc bfc" id="L315" title="All 2 branches covered.">                if (adjacent[vertex] == AdjacencyMatrixGraph.EDGE_EXIST) {</span>
+<span class="fc" id="L316">                    queue.add(vertex);</span>
+                }
+            }
+<span class="fc" id="L319">        }</span>
+
+<span class="fc" id="L321">        return orderList;</span>
+    }
+
+    /**
+     * this gives a list of vertices in the graph and their adjacencies
+     *
+     * @return returns a string describing this graph
+     */
+    public String toString() {
+<span class="fc" id="L330">        StringBuilder s = new StringBuilder(&quot;    &quot;);</span>
+<span class="fc bfc" id="L331" title="All 2 branches covered.">        for (int i = 0; i &lt; this.numberOfVertices(); i++) {</span>
+<span class="fc" id="L332">            s.append(i).append(&quot; &quot;);</span>
+        }
+<span class="fc" id="L334">        s.append(&quot; \n&quot;);</span>
+
+<span class="fc bfc" id="L336" title="All 2 branches covered.">        for (int i = 0; i &lt; this.numberOfVertices(); i++) {</span>
+<span class="fc" id="L337">            s.append(i).append(&quot; : &quot;);</span>
+<span class="fc bfc" id="L338" title="All 2 branches covered.">            for (int j = 0; j &lt; this.numberOfVertices(); j++) {</span>
+<span class="fc" id="L339">                s.append(this.adjMatrix[i][j]).append(&quot; &quot;);</span>
+            }
+<span class="fc" id="L341">            s.append(&quot;\n&quot;);</span>
+        }
+<span class="fc" id="L343">        return s.toString();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

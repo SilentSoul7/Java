@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PrimeFactorization.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.maths</a> &gt; <span class="el_source">PrimeFactorization.java</span></div><h1>PrimeFactorization.java</h1><pre class="source lang-java linenums">package com.thealgorithms.maths;
+
+/*
+ * Authors:
+ * (1) Aitor Fidalgo Sánchez (https://github.com/aitorfi)
+ * (2) Akshay Dubey (https://github.com/itsAkshayDubey)
+ */
+
+import java.util.ArrayList;
+import java.util.List;
+
+public final class PrimeFactorization {
+    private PrimeFactorization() {
+    }
+
+    public static List&lt;Integer&gt; pfactors(int n) {
+<span class="fc" id="L17">        List&lt;Integer&gt; primeFactors = new ArrayList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L19" title="All 2 branches covered.">        if (n == 0) {</span>
+<span class="fc" id="L20">            return primeFactors;</span>
+        }
+
+<span class="fc bfc" id="L23" title="All 2 branches covered.">        while (n % 2 == 0) {</span>
+<span class="fc" id="L24">            primeFactors.add(2);</span>
+<span class="fc" id="L25">            n /= 2;</span>
+        }
+
+<span class="fc bfc" id="L28" title="All 2 branches covered.">        for (int i = 3; i &lt;= Math.sqrt(n); i += 2) {</span>
+<span class="fc bfc" id="L29" title="All 2 branches covered.">            while (n % i == 0) {</span>
+<span class="fc" id="L30">                primeFactors.add(i);</span>
+<span class="fc" id="L31">                n /= i;</span>
+            }
+        }
+
+<span class="fc bfc" id="L35" title="All 2 branches covered.">        if (n &gt; 2) {</span>
+<span class="fc" id="L36">            primeFactors.add(n);</span>
+        }
+<span class="fc" id="L38">        return primeFactors;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

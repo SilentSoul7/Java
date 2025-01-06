@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MergeSortRecursive.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.sorts</a> &gt; <span class="el_source">MergeSortRecursive.java</span></div><h1>MergeSortRecursive.java</h1><pre class="source lang-java linenums">package com.thealgorithms.sorts;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class MergeSortRecursive {
+
+    List&lt;Integer&gt; arr;
+
+<span class="fc" id="L10">    public MergeSortRecursive(List&lt;Integer&gt; arr) {</span>
+<span class="fc" id="L11">        this.arr = arr;</span>
+<span class="fc" id="L12">    }</span>
+
+    public List&lt;Integer&gt; mergeSort() {
+<span class="fc" id="L15">        return merge(arr);</span>
+    }
+
+    private static List&lt;Integer&gt; merge(List&lt;Integer&gt; arr) {
+        // base condition
+<span class="fc bfc" id="L20" title="All 2 branches covered.">        if (arr.size() &lt;= 1) {</span>
+<span class="fc" id="L21">            return arr;</span>
+        }
+
+<span class="fc" id="L24">        int arrLength = arr.size();</span>
+<span class="fc" id="L25">        int half = arrLength / 2;</span>
+<span class="fc" id="L26">        List&lt;Integer&gt; arrA = arr.subList(0, half);</span>
+<span class="fc" id="L27">        List&lt;Integer&gt; arrB = arr.subList(half, arr.size());</span>
+
+        // recursion
+<span class="fc" id="L30">        arrA = merge(arrA);</span>
+<span class="fc" id="L31">        arrB = merge(arrB);</span>
+
+<span class="fc" id="L33">        return sort(arrA, arrB);</span>
+    }
+
+    private static List&lt;Integer&gt; sort(List&lt;Integer&gt; unsortedA, List&lt;Integer&gt; unsortedB) {
+<span class="pc bpc" id="L37" title="1 of 4 branches missed.">        if (unsortedA.isEmpty() &amp;&amp; unsortedB.isEmpty()) {</span>
+<span class="nc" id="L38">            return new ArrayList&lt;&gt;();</span>
+        }
+<span class="fc bfc" id="L40" title="All 2 branches covered.">        if (unsortedA.isEmpty()) {</span>
+<span class="fc" id="L41">            return unsortedB;</span>
+        }
+<span class="fc bfc" id="L43" title="All 2 branches covered.">        if (unsortedB.isEmpty()) {</span>
+<span class="fc" id="L44">            return unsortedA;</span>
+        }
+<span class="fc bfc" id="L46" title="All 2 branches covered.">        if (unsortedA.get(0) &lt;= unsortedB.get(0)) {</span>
+<span class="fc" id="L47">            List&lt;Integer&gt; newAl = new ArrayList&lt;Integer&gt;() {</span>
+<span class="fc" id="L48">                { add(unsortedA.get(0)); }</span>
+            };
+<span class="fc" id="L50">            newAl.addAll(sort(unsortedA.subList(1, unsortedA.size()), unsortedB));</span>
+<span class="fc" id="L51">            return newAl;</span>
+        } else {
+<span class="fc" id="L53">            List&lt;Integer&gt; newAl = new ArrayList&lt;Integer&gt;() {</span>
+<span class="fc" id="L54">                { add(unsortedB.get(0)); }</span>
+            };
+<span class="fc" id="L56">            newAl.addAll(sort(unsortedA, unsortedB.subList(1, unsortedB.size())));</span>
+<span class="fc" id="L57">            return newAl;</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

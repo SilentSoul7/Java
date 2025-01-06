@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TilingProblem.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.divideandconquer</a> &gt; <span class="el_source">TilingProblem.java</span></div><h1>TilingProblem.java</h1><pre class="source lang-java linenums">package com.thealgorithms.divideandconquer;
+
+/**
+ * This class provides a solution to the Tiling Problem using divide-and-conquer.
+ * &lt;p&gt;
+ * The Tiling Problem involves filling a 2^n x 2^n board with a single missing
+ * square using L-shaped tiles (each tile covers exactly three squares).
+ * The algorithm recursively divides the board into four quadrants, places an
+ * L-shaped tile in the appropriate quadrant, and fills the remaining areas.
+ *
+ * &lt;p&gt;Applications:
+ * - Used in graphics and image processing.
+ * - Helpful in solving puzzles and tiling problems in competitive programming.
+ *
+ * @author Hardvan
+ */
+public final class TilingProblem {
+    private TilingProblem() {
+    }
+
+    /**
+     * A counter used to label the L-shaped tiles placed on the board.
+     */
+<span class="fc" id="L24">    private static int tile = 1;</span>
+
+    /**
+     * A 2D array representing the board to be tiled.
+     */
+    private static int[][] board;
+
+    /**
+     * Solves the tiling problem for a 2^n x 2^n board with one missing square.
+     *
+     * @param size The size of the board (must be a power of 2).
+     * @param missingRow The row index of the missing square.
+     * @param missingCol The column index of the missing square.
+     * @return A 2D array representing the tiled board with L-shaped tiles.
+     */
+    public static int[][] solveTiling(int size, int missingRow, int missingCol) {
+<span class="fc" id="L40">        board = new int[size][size];</span>
+<span class="fc" id="L41">        fillBoard(size, 0, 0, missingRow, missingCol);</span>
+<span class="fc" id="L42">        return board;</span>
+    }
+
+    /**
+     * Recursively fills the board with L-shaped tiles.
+     *
+     * &lt;p&gt;The board is divided into four quadrants. Depending on the location of
+     * the missing square, an L-shaped tile is placed at the center of the board
+     * to cover three of the four quadrants. The process is then repeated for
+     * each quadrant until the entire board is filled.
+     *
+     * @param size The current size of the sub-board.
+     * @param row The starting row index of the current sub-board.
+     * @param col The starting column index of the current sub-board.
+     * @param missingRow The row index of the missing square within the board.
+     * @param missingCol The column index of the missing square within the board.
+     */
+    private static void fillBoard(int size, int row, int col, int missingRow, int missingCol) {
+<span class="fc bfc" id="L60" title="All 2 branches covered.">        if (size == 1) {</span>
+<span class="fc" id="L61">            return;</span>
+        }
+
+<span class="fc" id="L64">        int half = size / 2;</span>
+<span class="fc" id="L65">        int t = tile++;</span>
+
+        // Top-left quadrant
+<span class="pc bpc" id="L68" title="3 of 4 branches missed.">        if (missingRow &lt; row + half &amp;&amp; missingCol &lt; col + half) {</span>
+<span class="nc" id="L69">            fillBoard(half, row, col, missingRow, missingCol);</span>
+        } else {
+<span class="fc" id="L71">            board[row + half - 1][col + half - 1] = t;</span>
+<span class="fc" id="L72">            fillBoard(half, row, col, row + half - 1, col + half - 1);</span>
+        }
+
+        // Top-right quadrant
+<span class="pc bpc" id="L76" title="3 of 4 branches missed.">        if (missingRow &lt; row + half &amp;&amp; missingCol &gt;= col + half) {</span>
+<span class="nc" id="L77">            fillBoard(half, row, col + half, missingRow, missingCol);</span>
+        } else {
+<span class="fc" id="L79">            board[row + half - 1][col + half] = t;</span>
+<span class="fc" id="L80">            fillBoard(half, row, col + half, row + half - 1, col + half);</span>
+        }
+
+        // Bottom-left quadrant
+<span class="pc bpc" id="L84" title="2 of 4 branches missed.">        if (missingRow &gt;= row + half &amp;&amp; missingCol &lt; col + half) {</span>
+<span class="nc" id="L85">            fillBoard(half, row + half, col, missingRow, missingCol);</span>
+        } else {
+<span class="fc" id="L87">            board[row + half][col + half - 1] = t;</span>
+<span class="fc" id="L88">            fillBoard(half, row + half, col, row + half, col + half - 1);</span>
+        }
+
+        // Bottom-right quadrant
+<span class="pc bpc" id="L92" title="2 of 4 branches missed.">        if (missingRow &gt;= row + half &amp;&amp; missingCol &gt;= col + half) {</span>
+<span class="fc" id="L93">            fillBoard(half, row + half, col + half, missingRow, missingCol);</span>
+        } else {
+<span class="nc" id="L95">            board[row + half][col + half] = t;</span>
+<span class="nc" id="L96">            fillBoard(half, row + half, col + half, row + half, col + half);</span>
+        }
+<span class="fc" id="L98">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

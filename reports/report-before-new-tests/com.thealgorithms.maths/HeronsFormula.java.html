@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HeronsFormula.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.maths</a> &gt; <span class="el_source">HeronsFormula.java</span></div><h1>HeronsFormula.java</h1><pre class="source lang-java linenums">package com.thealgorithms.maths;
+
+/**
+ * Wikipedia for HeronsFormula =&gt; https://en.wikipedia.org/wiki/Heron%27s_formula
+ * Find the area of a triangle using only side lengths
+ */
+
+public final class HeronsFormula {
+
+    /*
+     * A function to get the Area of a Triangle using Heron's Formula
+     * @param s1,s2,s3 =&gt; the three sides of the Triangle
+     * @return area using the formula (√(s(s – s1)(s – s2)(s – s3)))
+     * here s is called semi-perimeter and it is the half of the perimeter (i.e; s = (s1+s2+s3)/2)
+     * @author satyabarghav
+     */
+    private HeronsFormula() {
+    }
+
+    private static boolean areAllSidesPositive(final double a, final double b, final double c) {
+<span class="fc bfc" id="L21" title="All 6 branches covered.">        return a &gt; 0 &amp;&amp; b &gt; 0 &amp;&amp; c &gt; 0;</span>
+    }
+
+    private static boolean canFormTriangle(final double a, final double b, final double c) {
+<span class="fc bfc" id="L25" title="All 6 branches covered.">        return a + b &gt; c &amp;&amp; b + c &gt; a &amp;&amp; c + a &gt; b;</span>
+    }
+
+    public static double herons(final double a, final double b, final double c) {
+<span class="fc bfc" id="L29" title="All 4 branches covered.">        if (!areAllSidesPositive(a, b, c) || !canFormTriangle(a, b, c)) {</span>
+<span class="fc" id="L30">            throw new IllegalArgumentException(&quot;Triangle can't be formed with the given side lengths&quot;);</span>
+        }
+<span class="fc" id="L32">        final double s = (a + b + c) / 2.0;</span>
+<span class="fc" id="L33">        return Math.sqrt((s) * (s - a) * (s - b) * (s - c));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

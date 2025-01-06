@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RowColumnWiseSorted2dArrayBinarySearch.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.searches</a> &gt; <span class="el_source">RowColumnWiseSorted2dArrayBinarySearch.java</span></div><h1>RowColumnWiseSorted2dArrayBinarySearch.java</h1><pre class="source lang-java linenums">package com.thealgorithms.searches;
+
+import com.thealgorithms.devutils.searches.MatrixSearchAlgorithm;
+
+/**
+ * The search is for any array which is sorted row and column-wise too. For ex :
+ * {{10, 20, 30, 40},
+ *  {15, 25, 35, 45},
+ *  {18, 28, 38, 48},
+ *  {21, 31, 41, 51}}
+ *
+ * This array is sorted in both row and column manner.
+ * In this two pointers are taken, the first points to the 0th row and the second one points to end
+ * column, and then the element corresponding to the pointers placed in the array is compared with
+ * the target that either its equal, greater or smaller than the target. If the element is equal to
+ * the target, the co-ordinates of that element is returned i.e. an array of the two pointers will
+ * be returned, else if the target is greater than corresponding element then the pointer pointing
+ * to the 0th row will be incremented by 1, else if the target is lesser than the corresponding
+ * element then the pointer pointing to the end column will be decremented by 1. And if the element
+ * doesn't exist in the array, an array
+ * {-1, -1} will be returned.
+ */
+<span class="nc" id="L23">public class RowColumnWiseSorted2dArrayBinarySearch implements MatrixSearchAlgorithm {</span>
+
+    @Override
+    public &lt;T extends Comparable&lt;T&gt;&gt; int[] find(T[][] matrix, T key) {
+<span class="nc" id="L27">        return search(matrix, key);</span>
+    }
+
+    public static &lt;T extends Comparable&lt;T&gt;&gt; int[] search(T[][] matrix, T target) {
+<span class="fc" id="L31">        int rowPointer = 0; // The pointer at 0th row</span>
+<span class="fc" id="L32">        int colPointer = matrix.length - 1; // The pointer at end column</span>
+
+<span class="pc bpc" id="L34" title="1 of 4 branches missed.">        while (rowPointer &lt; matrix.length &amp;&amp; colPointer &gt;= 0) {</span>
+<span class="fc" id="L35">            int comp = target.compareTo(matrix[rowPointer][colPointer]);</span>
+
+<span class="fc bfc" id="L37" title="All 2 branches covered.">            if (comp == 0) {</span>
+<span class="fc" id="L38">                return new int[] {rowPointer, colPointer};</span>
+<span class="fc bfc" id="L39" title="All 2 branches covered.">            } else if (comp &gt; 0) {</span>
+<span class="fc" id="L40">                rowPointer++; // Incrementing the row pointer if the target is greater</span>
+            } else {
+<span class="fc" id="L42">                colPointer--; // Decrementing the column pointer if the target is lesser</span>
+            }
+<span class="fc" id="L44">        }</span>
+<span class="fc" id="L45">        return new int[] {-1, -1}; // The not found condition</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

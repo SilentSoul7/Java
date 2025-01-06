@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>IntrospectiveSort.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.sorts</a> &gt; <span class="el_source">IntrospectiveSort.java</span></div><h1>IntrospectiveSort.java</h1><pre class="source lang-java linenums">package com.thealgorithms.sorts;
+
+/**
+ * Introspective Sort Algorithm Implementation
+ *
+ * @see &lt;a href=&quot;https://en.wikipedia.org/wiki/Introsort&quot;&gt;IntroSort Algorithm&lt;/a&gt;
+ */
+<span class="fc" id="L8">public class IntrospectiveSort implements SortAlgorithm {</span>
+
+    private static final int INSERTION_SORT_THRESHOLD = 16;
+
+    /**
+     * Sorts the given array using Introspective Sort, which combines quicksort, heapsort, and insertion sort.
+     *
+     * @param array The array to be sorted
+     * @param &lt;T&gt;   The type of elements in the array, which must be comparable
+     * @return The sorted array
+     */
+    @Override
+    public &lt;T extends Comparable&lt;T&gt;&gt; T[] sort(T[] array) {
+<span class="pc bpc" id="L21" title="1 of 4 branches missed.">        if (array == null || array.length &lt;= 1) {</span>
+<span class="fc" id="L22">            return array;</span>
+        }
+<span class="fc" id="L24">        final int depth = 2 * (int) (Math.log(array.length) / Math.log(2));</span>
+<span class="fc" id="L25">        introspectiveSort(array, 0, array.length - 1, depth);</span>
+<span class="fc" id="L26">        return array;</span>
+    }
+
+    /**
+     * Performs introspective sort on the specified subarray.
+     *
+     * @param array The array to be sorted
+     * @param low   The starting index of the subarray
+     * @param high  The ending index of the subarray
+     * @param depth The current depth of recursion
+     * @param &lt;T&gt;   The type of elements in the array, which must be comparable
+     */
+    private static &lt;T extends Comparable&lt;T&gt;&gt; void introspectiveSort(T[] array, final int low, int high, final int depth) {
+<span class="fc bfc" id="L39" title="All 2 branches covered.">        while (high - low &gt; INSERTION_SORT_THRESHOLD) {</span>
+<span class="pc bpc" id="L40" title="1 of 2 branches missed.">            if (depth == 0) {</span>
+<span class="nc" id="L41">                heapSort(array, low, high);</span>
+<span class="nc" id="L42">                return;</span>
+            }
+<span class="fc" id="L44">            final int pivotIndex = partition(array, low, high);</span>
+<span class="fc" id="L45">            introspectiveSort(array, pivotIndex + 1, high, depth - 1);</span>
+<span class="fc" id="L46">            high = pivotIndex - 1;</span>
+<span class="fc" id="L47">        }</span>
+<span class="fc" id="L48">        insertionSort(array, low, high);</span>
+<span class="fc" id="L49">    }</span>
+
+    /**
+     * Partitions the array around a pivot.
+     *
+     * @param array The array to be partitioned
+     * @param low   The starting index of the subarray
+     * @param high  The ending index of the subarray
+     * @param &lt;T&gt;   The type of elements in the array, which must be comparable
+     * @return The index of the pivot
+     */
+    private static &lt;T extends Comparable&lt;T&gt;&gt; int partition(T[] array, final int low, final int high) {
+<span class="fc" id="L61">        final int pivotIndex = low + (int) (Math.random() * (high - low + 1));</span>
+<span class="fc" id="L62">        SortUtils.swap(array, pivotIndex, high);</span>
+<span class="fc" id="L63">        final T pivot = array[high];</span>
+<span class="fc" id="L64">        int i = low - 1;</span>
+<span class="fc bfc" id="L65" title="All 2 branches covered.">        for (int j = low; j &lt; high; j++) {</span>
+<span class="fc bfc" id="L66" title="All 2 branches covered.">            if (array[j].compareTo(pivot) &lt;= 0) {</span>
+<span class="fc" id="L67">                i++;</span>
+<span class="fc" id="L68">                SortUtils.swap(array, i, j);</span>
+            }
+        }
+<span class="fc" id="L71">        SortUtils.swap(array, i + 1, high);</span>
+<span class="fc" id="L72">        return i + 1;</span>
+    }
+
+    /**
+     * Sorts a subarray using insertion sort.
+     *
+     * @param array The array to be sorted
+     * @param low   The starting index of the subarray
+     * @param high  The ending index of the subarray
+     * @param &lt;T&gt;   The type of elements in the array, which must be comparable
+     */
+    private static &lt;T extends Comparable&lt;T&gt;&gt; void insertionSort(T[] array, final int low, final int high) {
+<span class="fc bfc" id="L84" title="All 2 branches covered.">        for (int i = low + 1; i &lt;= high; i++) {</span>
+<span class="fc" id="L85">            final T key = array[i];</span>
+<span class="fc" id="L86">            int j = i - 1;</span>
+<span class="fc bfc" id="L87" title="All 4 branches covered.">            while (j &gt;= low &amp;&amp; array[j].compareTo(key) &gt; 0) {</span>
+<span class="fc" id="L88">                array[j + 1] = array[j];</span>
+<span class="fc" id="L89">                j--;</span>
+            }
+<span class="fc" id="L91">            array[j + 1] = key;</span>
+        }
+<span class="fc" id="L93">    }</span>
+
+    /**
+     * Sorts a subarray using heapsort.
+     *
+     * @param array The array to be sorted
+     * @param low   The starting index of the subarray
+     * @param high  The ending index of the subarray
+     * @param &lt;T&gt;   The type of elements in the array, which must be comparable
+     */
+    private static &lt;T extends Comparable&lt;T&gt;&gt; void heapSort(T[] array, final int low, final int high) {
+<span class="nc" id="L104">        final int n = high - low + 1;</span>
+<span class="nc bnc" id="L105" title="All 2 branches missed.">        for (int i = (n / 2) - 1; i &gt;= 0; i--) {</span>
+<span class="nc" id="L106">            heapify(array, i, n, low);</span>
+        }
+<span class="nc bnc" id="L108" title="All 2 branches missed.">        for (int i = high; i &gt; low; i--) {</span>
+<span class="nc" id="L109">            SortUtils.swap(array, low, i);</span>
+<span class="nc" id="L110">            heapify(array, 0, i - low, low);</span>
+        }
+<span class="nc" id="L112">    }</span>
+
+    /**
+     * Maintains the heap property for a subarray.
+     *
+     * @param array The array to be heapified
+     * @param i     The index to be heapified
+     * @param n     The size of the heap
+     * @param low   The starting index of the subarray
+     * @param &lt;T&gt;   The type of elements in the array, which must be comparable
+     */
+    private static &lt;T extends Comparable&lt;T&gt;&gt; void heapify(T[] array, final int i, final int n, final int low) {
+<span class="nc" id="L124">        final int left = 2 * i + 1;</span>
+<span class="nc" id="L125">        final int right = 2 * i + 2;</span>
+<span class="nc" id="L126">        int largest = i;</span>
+
+<span class="nc bnc" id="L128" title="All 4 branches missed.">        if (left &lt; n &amp;&amp; array[low + left].compareTo(array[low + largest]) &gt; 0) {</span>
+<span class="nc" id="L129">            largest = left;</span>
+        }
+<span class="nc bnc" id="L131" title="All 4 branches missed.">        if (right &lt; n &amp;&amp; array[low + right].compareTo(array[low + largest]) &gt; 0) {</span>
+<span class="nc" id="L132">            largest = right;</span>
+        }
+<span class="nc bnc" id="L134" title="All 2 branches missed.">        if (largest != i) {</span>
+<span class="nc" id="L135">            SortUtils.swap(array, low + i, low + largest);</span>
+<span class="nc" id="L136">            heapify(array, largest, n, low);</span>
+        }
+<span class="nc" id="L138">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

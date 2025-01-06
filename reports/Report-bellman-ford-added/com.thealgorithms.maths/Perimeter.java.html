@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Perimeter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.maths</a> &gt; <span class="el_source">Perimeter.java</span></div><h1>Perimeter.java</h1><pre class="source lang-java linenums">package com.thealgorithms.maths;
+
+// Perimeter of different 2D geometrical shapes
+public final class Perimeter {
+    private Perimeter() {
+    }
+
+    /**
+     * Calculate the Perimeter of regular polygon (equals sides)
+     * Examples of regular polygon are Equilateral Triangle, Square, Regular Pentagon, Regular
+     * Hexagon.
+     *
+     * @param n for number of sides.
+     * @param side for length of each side.
+     * @return Perimeter of given polygon
+     */
+    public static float perimeterRegularPolygon(int n, float side) {
+<span class="fc" id="L18">        return n * side;</span>
+    }
+
+    /**
+     * Calculate the Perimeter of irregular polygon (unequals sides)
+     * Examples of irregular polygon are scalent triangle, irregular quadrilateral, irregular
+     * Pentagon, irregular Hexagon.
+     *
+     * @param side1 for length of side 1
+     * @param side2 for length of side 2
+     * @param side3 for length of side 3
+     * @param sides for length of remaining sides
+     * @return Perimeter of given trapezoid.
+     */
+    public static float perimeterIrregularPolygon(float side1, float side2, float side3, float... sides) {
+<span class="fc" id="L33">        float perimeter = side1 + side2 + side3;</span>
+<span class="fc bfc" id="L34" title="All 2 branches covered.">        for (float side : sides) {</span>
+<span class="fc" id="L35">            perimeter += side;</span>
+        }
+<span class="fc" id="L37">        return perimeter;</span>
+    }
+
+    /**
+     * Calculate the Perimeter of rectangle
+     *
+     * @param length for length of rectangle
+     * @param breadth for breadth of rectangle
+     * @return Perimeter of given rectangle
+     */
+    public static float perimeterRectangle(float length, float breadth) {
+<span class="fc" id="L48">        return 2 * (length + breadth);</span>
+    }
+
+    /**
+     * Calculate the Perimeter or Circumference of circle.
+     *
+     * @param r for radius of circle.
+     * @return circumference of given circle.
+     */
+    public static double perimeterCircle(float r) {
+<span class="fc" id="L58">        return 2 * Math.PI * r;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

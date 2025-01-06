@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PalindromeWithStack.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.stacks</a> &gt; <span class="el_source">PalindromeWithStack.java</span></div><h1>PalindromeWithStack.java</h1><pre class="source lang-java linenums">package com.thealgorithms.stacks;
+
+import java.util.LinkedList;
+
+/**
+ * A class that implements a palindrome checker using a stack.
+ * The stack is used to store the characters of the string,
+ * which we will pop one-by-one to create the string in reverse.
+ *
+ * Reference: https://www.geeksforgeeks.org/check-whether-the-given-string-is-palindrome-using-stack/
+ */
+public class PalindromeWithStack {
+    private LinkedList&lt;Character&gt; stack;
+
+    /**
+     * Constructs an empty stack that stores characters.
+     */
+<span class="fc" id="L18">    public PalindromeWithStack() {</span>
+<span class="fc" id="L19">        stack = new LinkedList&lt;Character&gt;();</span>
+<span class="fc" id="L20">    }</span>
+
+    /**
+     * Check if the string is a palindrome or not.
+     * Convert all characters to lowercase and push them into a stack.
+     * At the same time, build a string
+     * Next, pop from the stack and build the reverse string
+     * Finally, compare these two strings
+     *
+     * @param string The string to check if it is palindrome or not.
+     */
+    public boolean checkPalindrome(String string) {
+        // Create a StringBuilder to build the string from left to right
+<span class="fc" id="L33">        StringBuilder stringBuilder = new StringBuilder(string.length());</span>
+        // Convert all characters to lowercase
+<span class="fc" id="L35">        String lowercase = string.toLowerCase();</span>
+
+        // Iterate through the string
+<span class="fc bfc" id="L38" title="All 2 branches covered.">        for (int i = 0; i &lt; lowercase.length(); ++i) {</span>
+<span class="fc" id="L39">            char c = lowercase.charAt(i);</span>
+            // Build the string from L-&gt;R
+<span class="fc" id="L41">            stringBuilder.append(c);</span>
+            // Push to the stack
+<span class="fc" id="L43">            stack.push(c);</span>
+        }
+
+        // The stack contains the reverse order of the string
+<span class="fc" id="L47">        StringBuilder reverseString = new StringBuilder(stack.size());</span>
+        // Until the stack is not empty
+<span class="fc bfc" id="L49" title="All 2 branches covered.">        while (!stack.isEmpty()) {</span>
+            // Build the string from R-&gt;L
+<span class="fc" id="L51">            reverseString.append(stack.pop());</span>
+        }
+
+        // Finally, compare the L-&gt;R string with the R-&gt;L string
+<span class="fc" id="L55">        return reverseString.toString().equals(stringBuilder.toString());</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

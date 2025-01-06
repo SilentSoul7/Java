@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ADFGVXCipher.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.ciphers</a> &gt; <span class="el_source">ADFGVXCipher.java</span></div><h1>ADFGVXCipher.java</h1><pre class="source lang-java linenums">package com.thealgorithms.ciphers;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * The ADFGVX cipher is a fractionating transposition cipher that was used by
+ * the German Army during World War I. It combines a **Polybius square substitution**
+ * with a **columnar transposition** to enhance encryption strength.
+ * &lt;p&gt;
+ * The name &quot;ADFGVX&quot; refers to the six letters (A, D, F, G, V, X) used as row and
+ * column labels in the Polybius square. This cipher was designed to secure
+ * communication and create complex, hard-to-break ciphertexts.
+ * &lt;p&gt;
+ * Learn more: &lt;a href=&quot;https://en.wikipedia.org/wiki/ADFGVX_cipher&quot;&gt;ADFGVX Cipher - Wikipedia&lt;/a&gt;.
+ * &lt;p&gt;
+ * Example usage:
+ * &lt;pre&gt;
+ * ADFGVXCipher cipher = new ADFGVXCipher();
+ * String encrypted = cipher.encrypt(&quot;attack at 1200am&quot;, &quot;PRIVACY&quot;);
+ * String decrypted = cipher.decrypt(encrypted, &quot;PRIVACY&quot;);
+ * &lt;/pre&gt;
+ *
+ * @author bennybebo
+ */
+<span class="fc" id="L27">public class ADFGVXCipher {</span>
+
+    // Constants used in the Polybius square
+<span class="fc" id="L30">    private static final char[] POLYBIUS_LETTERS = {'A', 'D', 'F', 'G', 'V', 'X'};</span>
+<span class="fc" id="L31">    private static final char[][] POLYBIUS_SQUARE = {{'N', 'A', '1', 'C', '3', 'H'}, {'8', 'T', 'B', '2', 'O', 'M'}, {'E', '5', 'W', 'R', 'P', 'D'}, {'4', 'F', '6', 'G', '7', 'I'}, {'9', 'J', '0', 'K', 'L', 'Q'}, {'S', 'U', 'V', 'X', 'Y', 'Z'}};</span>
+
+    // Maps for fast substitution lookups
+<span class="fc" id="L34">    private static final Map&lt;String, Character&gt; POLYBIUS_MAP = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L35">    private static final Map&lt;Character, String&gt; REVERSE_POLYBIUS_MAP = new HashMap&lt;&gt;();</span>
+
+    // Static block to initialize the lookup tables from the Polybius square
+    static {
+<span class="fc bfc" id="L39" title="All 2 branches covered.">        for (int i = 0; i &lt; POLYBIUS_SQUARE.length; i++) {</span>
+<span class="fc bfc" id="L40" title="All 2 branches covered.">            for (int j = 0; j &lt; POLYBIUS_SQUARE[i].length; j++) {</span>
+<span class="fc" id="L41">                String key = &quot;&quot; + POLYBIUS_LETTERS[i] + POLYBIUS_LETTERS[j];</span>
+<span class="fc" id="L42">                POLYBIUS_MAP.put(key, POLYBIUS_SQUARE[i][j]);</span>
+<span class="fc" id="L43">                REVERSE_POLYBIUS_MAP.put(POLYBIUS_SQUARE[i][j], key);</span>
+            }
+        }
+<span class="fc" id="L46">    }</span>
+
+    /**
+     * Encrypts a given plaintext using the ADFGVX cipher with the provided keyword.
+     * Steps:
+     * 1. Substitute each letter in the plaintext with a pair of ADFGVX letters.
+     * 2. Perform a columnar transposition on the fractionated text using the keyword.
+     *
+     * @param plaintext The message to be encrypted (can contain letters and digits).
+     * @param key       The keyword for columnar transposition.
+     * @return The encrypted message as ciphertext.
+     */
+    public String encrypt(String plaintext, String key) {
+<span class="fc" id="L59">        plaintext = plaintext.toUpperCase().replaceAll(&quot;[^A-Z0-9]&quot;, &quot;&quot;); // Sanitize input</span>
+<span class="fc" id="L60">        StringBuilder fractionatedText = new StringBuilder();</span>
+
+<span class="fc bfc" id="L62" title="All 2 branches covered.">        for (char c : plaintext.toCharArray()) {</span>
+<span class="fc" id="L63">            fractionatedText.append(REVERSE_POLYBIUS_MAP.get(c));</span>
+        }
+
+<span class="fc" id="L66">        return columnarTransposition(fractionatedText.toString(), key);</span>
+    }
+
+    /**
+     * Decrypts a given ciphertext using the ADFGVX cipher with the provided keyword.
+     * Steps:
+     * 1. Reverse the columnar transposition performed during encryption.
+     * 2. Substitute each pair of ADFGVX letters with the corresponding plaintext letter.
+     * The resulting text is the decrypted message.
+     *
+     * @param ciphertext The encrypted message.
+     * @param key        The keyword used during encryption.
+     * @return The decrypted plaintext message.
+     */
+    public String decrypt(String ciphertext, String key) {
+<span class="fc" id="L81">        String fractionatedText = reverseColumnarTransposition(ciphertext, key);</span>
+
+<span class="fc" id="L83">        StringBuilder plaintext = new StringBuilder();</span>
+<span class="fc bfc" id="L84" title="All 2 branches covered.">        for (int i = 0; i &lt; fractionatedText.length(); i += 2) {</span>
+<span class="fc" id="L85">            String pair = fractionatedText.substring(i, i + 2);</span>
+<span class="fc" id="L86">            plaintext.append(POLYBIUS_MAP.get(pair));</span>
+        }
+
+<span class="fc" id="L89">        return plaintext.toString();</span>
+    }
+
+    /**
+     * Helper method: Performs columnar transposition during encryption
+     *
+     * @param text The fractionated text to be transposed
+     * @param key  The keyword for columnar transposition
+     * @return The transposed text
+     */
+    private String columnarTransposition(String text, String key) {
+<span class="fc" id="L100">        int numRows = (int) Math.ceil((double) text.length() / key.length());</span>
+<span class="fc" id="L101">        char[][] table = new char[numRows][key.length()];</span>
+<span class="fc bfc" id="L102" title="All 2 branches covered.">        for (char[] row : table) { // Fill empty cells with underscores</span>
+<span class="fc" id="L103">            Arrays.fill(row, '_');</span>
+        }
+
+        // Populate the table row by row
+<span class="fc bfc" id="L107" title="All 2 branches covered.">        for (int i = 0; i &lt; text.length(); i++) {</span>
+<span class="fc" id="L108">            table[i / key.length()][i % key.length()] = text.charAt(i);</span>
+        }
+
+        // Read columns based on the alphabetical order of the key
+<span class="fc" id="L112">        StringBuilder ciphertext = new StringBuilder();</span>
+<span class="fc" id="L113">        char[] sortedKey = key.toCharArray();</span>
+<span class="fc" id="L114">        Arrays.sort(sortedKey);</span>
+
+<span class="fc bfc" id="L116" title="All 2 branches covered.">        for (char keyChar : sortedKey) {</span>
+<span class="fc" id="L117">            int column = key.indexOf(keyChar);</span>
+<span class="fc bfc" id="L118" title="All 2 branches covered.">            for (char[] row : table) {</span>
+<span class="pc bpc" id="L119" title="1 of 2 branches missed.">                if (row[column] != '_') {</span>
+<span class="fc" id="L120">                    ciphertext.append(row[column]);</span>
+                }
+            }
+        }
+
+<span class="fc" id="L125">        return ciphertext.toString();</span>
+    }
+
+    /**
+     * Helper method: Reverses the columnar transposition during decryption
+     *
+     * @param ciphertext The transposed text to be reversed
+     * @param key        The keyword used during encryption
+     * @return The reversed text
+     */
+    private String reverseColumnarTransposition(String ciphertext, String key) {
+<span class="fc" id="L136">        int numRows = (int) Math.ceil((double) ciphertext.length() / key.length());</span>
+<span class="fc" id="L137">        char[][] table = new char[numRows][key.length()];</span>
+
+<span class="fc" id="L139">        char[] sortedKey = key.toCharArray();</span>
+<span class="fc" id="L140">        Arrays.sort(sortedKey);</span>
+
+<span class="fc" id="L142">        int index = 0;</span>
+        // Populate the table column by column according to the sorted key
+<span class="fc bfc" id="L144" title="All 2 branches covered.">        for (char keyChar : sortedKey) {</span>
+<span class="fc" id="L145">            int column = key.indexOf(keyChar);</span>
+<span class="fc bfc" id="L146" title="All 2 branches covered.">            for (int row = 0; row &lt; numRows; row++) {</span>
+<span class="pc bpc" id="L147" title="1 of 2 branches missed.">                if (index &lt; ciphertext.length()) {</span>
+<span class="fc" id="L148">                    table[row][column] = ciphertext.charAt(index++);</span>
+                } else {
+<span class="nc" id="L150">                    table[row][column] = '_';</span>
+                }
+            }
+        }
+
+        // Read the table row by row to reconstruct the fractionated text
+<span class="fc" id="L156">        StringBuilder fractionatedText = new StringBuilder();</span>
+<span class="fc bfc" id="L157" title="All 2 branches covered.">        for (char[] row : table) {</span>
+<span class="fc bfc" id="L158" title="All 2 branches covered.">            for (char cell : row) {</span>
+<span class="pc bpc" id="L159" title="1 of 2 branches missed.">                if (cell != '_') {</span>
+<span class="fc" id="L160">                    fractionatedText.append(cell);</span>
+                }
+            }
+        }
+
+<span class="fc" id="L165">        return fractionatedText.toString();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

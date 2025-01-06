@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LongestAlternatingSubsequence.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.dynamicprogramming</a> &gt; <span class="el_source">LongestAlternatingSubsequence.java</span></div><h1>LongestAlternatingSubsequence.java</h1><pre class="source lang-java linenums">package com.thealgorithms.dynamicprogramming;
+
+/**
+ * Class for finding the length of the longest alternating subsequence in an array.
+ *
+ * &lt;p&gt;An alternating sequence is a sequence of numbers where the elements alternate
+ * between increasing and decreasing. Specifically, a sequence is alternating if its elements
+ * satisfy one of the following relations:
+ *
+ * &lt;ul&gt;
+ *   &lt;li&gt;{@code x1 &lt; x2 &gt; x3 &lt; x4 &gt; x5 &lt; ... &lt; xn}&lt;/li&gt;
+ *   &lt;li&gt;{@code x1 &gt; x2 &lt; x3 &gt; x4 &lt; x5 &gt; ... &gt; xn}&lt;/li&gt;
+ * &lt;/ul&gt;
+ *
+ * &lt;p&gt;This class provides a method to compute the length of the longest such subsequence
+ * from a given array of integers.
+ */
+public final class LongestAlternatingSubsequence {
+    private LongestAlternatingSubsequence() {
+    }
+
+    /**
+     * Finds the length of the longest alternating subsequence in the given array.
+     *
+     * @param arr an array of integers where the longest alternating subsequence is to be found
+     * @param n the length of the array {@code arr}
+     * @return the length of the longest alternating subsequence
+     *
+     * &lt;p&gt;The method uses dynamic programming to solve the problem. It maintains a 2D array
+     * {@code las} where:
+     * &lt;ul&gt;
+     *   &lt;li&gt;{@code las[i][0]} represents the length of the longest alternating subsequence
+     *   ending at index {@code i} with the last element being greater than the previous element.&lt;/li&gt;
+     *   &lt;li&gt;{@code las[i][1]} represents the length of the longest alternating subsequence
+     *   ending at index {@code i} with the last element being smaller than the previous element.&lt;/li&gt;
+     * &lt;/ul&gt;
+     *
+     * &lt;p&gt;The method iterates through the array and updates the {@code las} array based on
+     * whether the current element is greater or smaller than the previous elements.
+     * The result is the maximum value found in the {@code las} array.
+     */
+    static int alternatingLength(int[] arr, int n) {
+<span class="fc" id="L43">        int[][] las = new int[n][2]; // las = LongestAlternatingSubsequence</span>
+
+        // Initialize the dp array
+<span class="fc bfc" id="L46" title="All 2 branches covered.">        for (int i = 0; i &lt; n; i++) {</span>
+<span class="fc" id="L47">            las[i][0] = 1;</span>
+<span class="fc" id="L48">            las[i][1] = 1;</span>
+        }
+
+<span class="fc" id="L51">        int result = 1; // Initialize result</span>
+
+        // Compute values in a bottom-up manner
+<span class="fc bfc" id="L54" title="All 2 branches covered.">        for (int i = 1; i &lt; n; i++) {</span>
+<span class="fc bfc" id="L55" title="All 2 branches covered.">            for (int j = 0; j &lt; i; j++) {</span>
+                // If arr[i] is greater than arr[j], update las[i][0]
+<span class="fc bfc" id="L57" title="All 4 branches covered.">                if (arr[j] &lt; arr[i] &amp;&amp; las[i][0] &lt; las[j][1] + 1) {</span>
+<span class="fc" id="L58">                    las[i][0] = las[j][1] + 1;</span>
+                }
+
+                // If arr[i] is smaller than arr[j], update las[i][1]
+<span class="fc bfc" id="L62" title="All 4 branches covered.">                if (arr[j] &gt; arr[i] &amp;&amp; las[i][1] &lt; las[j][0] + 1) {</span>
+<span class="fc" id="L63">                    las[i][1] = las[j][0] + 1;</span>
+                }
+            }
+
+            // Pick the maximum of both values at index i
+<span class="fc" id="L68">            result = Math.max(result, Math.max(las[i][0], las[i][1]));</span>
+        }
+
+<span class="fc" id="L71">        return result;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

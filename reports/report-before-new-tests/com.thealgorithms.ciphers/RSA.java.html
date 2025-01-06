@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RSA.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.ciphers</a> &gt; <span class="el_source">RSA.java</span></div><h1>RSA.java</h1><pre class="source lang-java linenums">package com.thealgorithms.ciphers;
+
+import java.math.BigInteger;
+import java.security.SecureRandom;
+
+/**
+ * RSA is an asymmetric cryptographic algorithm used for secure data encryption and decryption.
+ * It relies on a pair of keys: a public key (used for encryption) and a private key
+ * (used for decryption). The algorithm is based on the difficulty of factoring large prime numbers.
+ *
+ * This implementation includes key generation, encryption, and decryption methods that can handle both
+ * text-based messages and BigInteger inputs. For more details on RSA:
+ * &lt;a href=&quot;https://en.wikipedia.org/wiki/RSA_(cryptosystem)&quot;&gt;RSA Cryptosystem - Wikipedia&lt;/a&gt;.
+ *
+ * Example Usage:
+ * &lt;pre&gt;
+ * RSA rsa = new RSA(1024);
+ * String encryptedMessage = rsa.encrypt(&quot;Hello RSA!&quot;);
+ * String decryptedMessage = rsa.decrypt(encryptedMessage);
+ * System.out.println(decryptedMessage);  // Output: Hello RSA!
+ * &lt;/pre&gt;
+ *
+ * Note: The key size directly affects the security and performance of the RSA algorithm.
+ * Larger keys are more secure but slower to compute.
+ *
+ * @author Nguyen Duy Tiep
+ * @version 23-Oct-17
+ */
+public class RSA {
+
+    private BigInteger modulus;
+    private BigInteger privateKey;
+    private BigInteger publicKey;
+
+    /**
+     * Constructor that generates RSA keys with the specified number of bits.
+     *
+     * @param bits The bit length of the keys to be generated. Common sizes include 512, 1024, 2048, etc.
+     */
+<span class="fc" id="L40">    public RSA(int bits) {</span>
+<span class="fc" id="L41">        generateKeys(bits);</span>
+<span class="fc" id="L42">    }</span>
+
+    /**
+     * Encrypts a text message using the RSA public key.
+     *
+     * @param message The plaintext message to be encrypted.
+     * @throws IllegalArgumentException If the message is empty.
+     * @return The encrypted message represented as a String.
+     */
+    public synchronized String encrypt(String message) {
+<span class="fc bfc" id="L52" title="All 2 branches covered.">        if (message.isEmpty()) {</span>
+<span class="fc" id="L53">            throw new IllegalArgumentException(&quot;Message is empty&quot;);</span>
+        }
+<span class="fc" id="L55">        return (new BigInteger(message.getBytes())).modPow(publicKey, modulus).toString();</span>
+    }
+
+    /**
+     * Encrypts a BigInteger message using the RSA public key.
+     *
+     * @param message The plaintext message as a BigInteger.
+     * @return The encrypted message as a BigInteger.
+     */
+    public synchronized BigInteger encrypt(BigInteger message) {
+<span class="fc" id="L65">        return message.modPow(publicKey, modulus);</span>
+    }
+
+    /**
+     * Decrypts an encrypted message (as String) using the RSA private key.
+     *
+     * @param encryptedMessage The encrypted message to be decrypted, represented as a String.
+     * @throws IllegalArgumentException If the message is empty.
+     * @return The decrypted plaintext message as a String.
+     */
+    public synchronized String decrypt(String encryptedMessage) {
+<span class="fc bfc" id="L76" title="All 2 branches covered.">        if (encryptedMessage.isEmpty()) {</span>
+<span class="fc" id="L77">            throw new IllegalArgumentException(&quot;Message is empty&quot;);</span>
+        }
+<span class="fc" id="L79">        return new String((new BigInteger(encryptedMessage)).modPow(privateKey, modulus).toByteArray());</span>
+    }
+
+    /**
+     * Decrypts an encrypted BigInteger message using the RSA private key.
+     *
+     * @param encryptedMessage The encrypted message as a BigInteger.
+     * @return The decrypted plaintext message as a BigInteger.
+     */
+    public synchronized BigInteger decrypt(BigInteger encryptedMessage) {
+<span class="fc" id="L89">        return encryptedMessage.modPow(privateKey, modulus);</span>
+    }
+
+    /**
+     * Generates a new RSA key pair (public and private keys) with the specified bit length.
+     * Steps:
+     * 1. Generate two large prime numbers p and q.
+     * 2. Compute the modulus n = p * q.
+     * 3. Compute Euler's totient function: φ(n) = (p-1) * (q-1).
+     * 4. Choose a public key e (starting from 3) that is coprime with φ(n).
+     * 5. Compute the private key d as the modular inverse of e mod φ(n).
+     * The public key is (e, n) and the private key is (d, n).
+     *
+     * @param bits The bit length of the keys to be generated.
+     */
+    public final synchronized void generateKeys(int bits) {
+<span class="fc" id="L105">        SecureRandom random = new SecureRandom();</span>
+<span class="fc" id="L106">        BigInteger p = new BigInteger(bits / 2, 100, random);</span>
+<span class="fc" id="L107">        BigInteger q = new BigInteger(bits / 2, 100, random);</span>
+<span class="fc" id="L108">        modulus = p.multiply(q);</span>
+
+<span class="fc" id="L110">        BigInteger phi = (p.subtract(BigInteger.ONE)).multiply(q.subtract(BigInteger.ONE));</span>
+
+<span class="fc" id="L112">        publicKey = BigInteger.valueOf(3L);</span>
+<span class="fc bfc" id="L113" title="All 2 branches covered.">        while (phi.gcd(publicKey).intValue() &gt; 1) {</span>
+<span class="fc" id="L114">            publicKey = publicKey.add(BigInteger.TWO);</span>
+        }
+
+<span class="fc" id="L117">        privateKey = publicKey.modInverse(phi);</span>
+<span class="fc" id="L118">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>A5Cipher.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.ciphers.a5</a> &gt; <span class="el_source">A5Cipher.java</span></div><h1>A5Cipher.java</h1><pre class="source lang-java linenums">package com.thealgorithms.ciphers.a5;
+
+import java.util.BitSet;
+
+/**
+ * The A5Cipher class implements the A5/1 stream cipher, which is a widely used
+ * encryption algorithm, particularly in mobile communications.
+ *
+ * This implementation uses a key stream generator to produce a stream of bits
+ * that are XORed with the plaintext bits to produce the ciphertext.
+ *
+ * &lt;p&gt;
+ * For more details about the A5/1 algorithm, refer to
+ * &lt;a href=&quot;https://en.wikipedia.org/wiki/A5/1&quot;&gt;Wikipedia&lt;/a&gt;.
+ * &lt;/p&gt;
+ */
+public class A5Cipher {
+
+    private final A5KeyStreamGenerator keyStreamGenerator;
+    private static final int KEY_STREAM_LENGTH = 228; // Length of the key stream in bits (28.5 bytes)
+
+    /**
+     * Constructs an A5Cipher instance with the specified session key and frame counter.
+     *
+     * @param sessionKey a BitSet representing the session key used for encryption.
+     * @param frameCounter a BitSet representing the frame counter that helps in key stream generation.
+     */
+<span class="fc" id="L28">    public A5Cipher(BitSet sessionKey, BitSet frameCounter) {</span>
+<span class="fc" id="L29">        keyStreamGenerator = new A5KeyStreamGenerator();</span>
+<span class="fc" id="L30">        keyStreamGenerator.initialize(sessionKey, frameCounter);</span>
+<span class="fc" id="L31">    }</span>
+
+    /**
+     * Encrypts the given plaintext bits using the A5/1 cipher algorithm.
+     *
+     * This method generates a key stream and XORs it with the provided plaintext
+     * bits to produce the ciphertext.
+     *
+     * @param plainTextBits a BitSet representing the plaintext bits to be encrypted.
+     * @return a BitSet containing the encrypted ciphertext bits.
+     */
+    public BitSet encrypt(BitSet plainTextBits) {
+        // create a copy
+<span class="fc" id="L44">        var result = new BitSet(KEY_STREAM_LENGTH);</span>
+<span class="fc" id="L45">        result.xor(plainTextBits);</span>
+
+<span class="fc" id="L47">        var key = keyStreamGenerator.getNextKeyStream();</span>
+<span class="fc" id="L48">        result.xor(key);</span>
+
+<span class="fc" id="L50">        return result;</span>
+    }
+
+    /**
+     * Resets the internal counter of the key stream generator.
+     *
+     * This method can be called to re-initialize the state of the key stream
+     * generator, allowing for new key streams to be generated for subsequent
+     * encryptions.
+     */
+    public void resetCounter() {
+<span class="nc" id="L61">        keyStreamGenerator.reInitialize();</span>
+<span class="nc" id="L62">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

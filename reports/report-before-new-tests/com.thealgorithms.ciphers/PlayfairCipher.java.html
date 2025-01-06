@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PlayfairCipher.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.ciphers</a> &gt; <span class="el_source">PlayfairCipher.java</span></div><h1>PlayfairCipher.java</h1><pre class="source lang-java linenums">package com.thealgorithms.ciphers;
+
+public class PlayfairCipher {
+
+    private char[][] matrix;
+    private String key;
+
+<span class="fc" id="L8">    public PlayfairCipher(String key) {</span>
+<span class="fc" id="L9">        this.key = key;</span>
+<span class="fc" id="L10">        generateMatrix();</span>
+<span class="fc" id="L11">    }</span>
+
+    public String encrypt(String plaintext) {
+<span class="fc" id="L14">        plaintext = prepareText(plaintext.replace(&quot;J&quot;, &quot;I&quot;));</span>
+<span class="fc" id="L15">        StringBuilder ciphertext = new StringBuilder();</span>
+<span class="fc bfc" id="L16" title="All 2 branches covered.">        for (int i = 0; i &lt; plaintext.length(); i += 2) {</span>
+<span class="fc" id="L17">            char char1 = plaintext.charAt(i);</span>
+<span class="fc" id="L18">            char char2 = plaintext.charAt(i + 1);</span>
+<span class="fc" id="L19">            int[] pos1 = findPosition(char1);</span>
+<span class="fc" id="L20">            int[] pos2 = findPosition(char2);</span>
+<span class="fc" id="L21">            int row1 = pos1[0];</span>
+<span class="fc" id="L22">            int col1 = pos1[1];</span>
+<span class="fc" id="L23">            int row2 = pos2[0];</span>
+<span class="fc" id="L24">            int col2 = pos2[1];</span>
+<span class="pc bpc" id="L25" title="1 of 2 branches missed.">            if (row1 == row2) {</span>
+<span class="nc" id="L26">                ciphertext.append(matrix[row1][(col1 + 1) % 5]);</span>
+<span class="nc" id="L27">                ciphertext.append(matrix[row2][(col2 + 1) % 5]);</span>
+<span class="fc bfc" id="L28" title="All 2 branches covered.">            } else if (col1 == col2) {</span>
+<span class="fc" id="L29">                ciphertext.append(matrix[(row1 + 1) % 5][col1]);</span>
+<span class="fc" id="L30">                ciphertext.append(matrix[(row2 + 1) % 5][col2]);</span>
+            } else {
+<span class="fc" id="L32">                ciphertext.append(matrix[row1][col2]);</span>
+<span class="fc" id="L33">                ciphertext.append(matrix[row2][col1]);</span>
+            }
+        }
+<span class="fc" id="L36">        return ciphertext.toString();</span>
+    }
+
+    public String decrypt(String ciphertext) {
+<span class="fc" id="L40">        StringBuilder plaintext = new StringBuilder();</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">        for (int i = 0; i &lt; ciphertext.length(); i += 2) {</span>
+<span class="fc" id="L42">            char char1 = ciphertext.charAt(i);</span>
+<span class="fc" id="L43">            char char2 = ciphertext.charAt(i + 1);</span>
+<span class="fc" id="L44">            int[] pos1 = findPosition(char1);</span>
+<span class="fc" id="L45">            int[] pos2 = findPosition(char2);</span>
+<span class="fc" id="L46">            int row1 = pos1[0];</span>
+<span class="fc" id="L47">            int col1 = pos1[1];</span>
+<span class="fc" id="L48">            int row2 = pos2[0];</span>
+<span class="fc" id="L49">            int col2 = pos2[1];</span>
+<span class="pc bpc" id="L50" title="1 of 2 branches missed.">            if (row1 == row2) {</span>
+<span class="nc" id="L51">                plaintext.append(matrix[row1][(col1 + 4) % 5]);</span>
+<span class="nc" id="L52">                plaintext.append(matrix[row2][(col2 + 4) % 5]);</span>
+<span class="fc bfc" id="L53" title="All 2 branches covered.">            } else if (col1 == col2) {</span>
+<span class="fc" id="L54">                plaintext.append(matrix[(row1 + 4) % 5][col1]);</span>
+<span class="fc" id="L55">                plaintext.append(matrix[(row2 + 4) % 5][col2]);</span>
+            } else {
+<span class="fc" id="L57">                plaintext.append(matrix[row1][col2]);</span>
+<span class="fc" id="L58">                plaintext.append(matrix[row2][col1]);</span>
+            }
+        }
+<span class="fc" id="L61">        return plaintext.toString();</span>
+    }
+
+    private void generateMatrix() {
+<span class="fc" id="L65">        String keyWithoutDuplicates = removeDuplicateChars(key + &quot;ABCDEFGHIKLMNOPQRSTUVWXYZ&quot;);</span>
+<span class="fc" id="L66">        matrix = new char[5][5];</span>
+<span class="fc" id="L67">        int index = 0;</span>
+<span class="fc bfc" id="L68" title="All 2 branches covered.">        for (int i = 0; i &lt; 5; i++) {</span>
+<span class="fc bfc" id="L69" title="All 2 branches covered.">            for (int j = 0; j &lt; 5; j++) {</span>
+<span class="fc" id="L70">                matrix[i][j] = keyWithoutDuplicates.charAt(index);</span>
+<span class="fc" id="L71">                index++;</span>
+            }
+        }
+<span class="fc" id="L74">    }</span>
+
+    private String removeDuplicateChars(String str) {
+<span class="fc" id="L77">        StringBuilder result = new StringBuilder();</span>
+<span class="fc bfc" id="L78" title="All 2 branches covered.">        for (int i = 0; i &lt; str.length(); i++) {</span>
+<span class="fc bfc" id="L79" title="All 2 branches covered.">            if (result.indexOf(String.valueOf(str.charAt(i))) == -1) {</span>
+<span class="fc" id="L80">                result.append(str.charAt(i));</span>
+            }
+        }
+<span class="fc" id="L83">        return result.toString();</span>
+    }
+
+    private String prepareText(String text) {
+<span class="fc" id="L87">        text = text.toUpperCase().replaceAll(&quot;[^A-Z]&quot;, &quot;&quot;);</span>
+<span class="fc" id="L88">        StringBuilder preparedText = new StringBuilder();</span>
+<span class="fc" id="L89">        char prevChar = '\0';</span>
+<span class="fc bfc" id="L90" title="All 2 branches covered.">        for (char c : text.toCharArray()) {</span>
+<span class="fc bfc" id="L91" title="All 2 branches covered.">            if (c != prevChar) {</span>
+<span class="fc" id="L92">                preparedText.append(c);</span>
+<span class="fc" id="L93">                prevChar = c;</span>
+            } else {
+<span class="fc" id="L95">                preparedText.append('X').append(c);</span>
+<span class="fc" id="L96">                prevChar = '\0';</span>
+            }
+        }
+<span class="pc bpc" id="L99" title="1 of 2 branches missed.">        if (preparedText.length() % 2 != 0) {</span>
+<span class="nc" id="L100">            preparedText.append('X');</span>
+        }
+<span class="fc" id="L102">        return preparedText.toString();</span>
+    }
+
+    private int[] findPosition(char c) {
+<span class="fc" id="L106">        int[] pos = new int[2];</span>
+<span class="pc bpc" id="L107" title="1 of 2 branches missed.">        for (int i = 0; i &lt; 5; i++) {</span>
+<span class="fc bfc" id="L108" title="All 2 branches covered.">            for (int j = 0; j &lt; 5; j++) {</span>
+<span class="fc bfc" id="L109" title="All 2 branches covered.">                if (matrix[i][j] == c) {</span>
+<span class="fc" id="L110">                    pos[0] = i;</span>
+<span class="fc" id="L111">                    pos[1] = j;</span>
+<span class="fc" id="L112">                    return pos;</span>
+                }
+            }
+        }
+<span class="nc" id="L116">        return pos;</span>
+    }
+
+    public void printMatrix() {
+<span class="nc" id="L120">        System.out.println(&quot;\nPlayfair Cipher Matrix:&quot;);</span>
+<span class="nc bnc" id="L121" title="All 2 branches missed.">        for (int i = 0; i &lt; 5; i++) {</span>
+<span class="nc bnc" id="L122" title="All 2 branches missed.">            for (int j = 0; j &lt; 5; j++) {</span>
+<span class="nc" id="L123">                System.out.print(matrix[i][j] + &quot; &quot;);</span>
+            }
+<span class="nc" id="L125">            System.out.println();</span>
+        }
+<span class="nc" id="L127">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

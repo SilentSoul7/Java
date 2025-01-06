@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Knapsack.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.dynamicprogramming</a> &gt; <span class="el_source">Knapsack.java</span></div><h1>Knapsack.java</h1><pre class="source lang-java linenums">package com.thealgorithms.dynamicprogramming;
+
+import java.util.Arrays;
+
+/**
+ * A Dynamic Programming based solution for the 0-1 Knapsack problem.
+ * This class provides a method, `knapSack`, that calculates the maximum value that can be
+ * obtained from a given set of items with weights and values, while not exceeding a
+ * given weight capacity.
+ *
+ * @see &lt;a href=&quot;https://en.wikipedia.org/?title=0-1_Knapsack_problem&quot;&gt;0-1 Knapsack Problem &lt;/a&gt;
+ */
+public final class Knapsack {
+
+    private Knapsack() {
+    }
+
+    private static void throwIfInvalidInput(final int weightCapacity, final int[] weights, final int[] values) {
+<span class="fc bfc" id="L19" title="All 2 branches covered.">        if (weightCapacity &lt; 0) {</span>
+<span class="fc" id="L20">            throw new IllegalArgumentException(&quot;Weight capacity should not be negative.&quot;);</span>
+        }
+<span class="fc bfc" id="L22" title="All 6 branches covered.">        if (weights == null || values == null || weights.length != values.length) {</span>
+<span class="fc" id="L23">            throw new IllegalArgumentException(&quot;Input arrays must not be null and must have the same length.&quot;);</span>
+        }
+<span class="fc bfc" id="L25" title="All 4 branches covered.">        if (Arrays.stream(weights).anyMatch(w -&gt; w &lt;= 0)) {</span>
+<span class="fc" id="L26">            throw new IllegalArgumentException(&quot;Input array should not contain non-positive weight(s).&quot;);</span>
+        }
+<span class="fc" id="L28">    }</span>
+
+    /**
+     * Solves the 0-1 Knapsack problem using Dynamic Programming.
+     *
+     * @param weightCapacity The maximum weight capacity of the knapsack.
+     * @param weights        An array of item weights.
+     * @param values         An array of item values.
+     * @return The maximum value that can be obtained without exceeding the weight capacity.
+     * @throws IllegalArgumentException If the input arrays are null or have different lengths.
+     */
+    public static int knapSack(final int weightCapacity, final int[] weights, final int[] values) throws IllegalArgumentException {
+<span class="fc" id="L40">        throwIfInvalidInput(weightCapacity, weights, values);</span>
+
+        // DP table to store the state of the maximum possible return for a given weight capacity.
+<span class="fc" id="L43">        int[] dp = new int[weightCapacity + 1];</span>
+
+<span class="fc bfc" id="L45" title="All 2 branches covered.">        for (int i = 0; i &lt; values.length; i++) {</span>
+<span class="fc bfc" id="L46" title="All 2 branches covered.">            for (int w = weightCapacity; w &gt; 0; w--) {</span>
+<span class="fc bfc" id="L47" title="All 2 branches covered.">                if (weights[i] &lt;= w) {</span>
+<span class="fc" id="L48">                    dp[w] = Math.max(dp[w], dp[w - weights[i]] + values[i]);</span>
+                }
+            }
+        }
+
+<span class="fc" id="L53">        return dp[weightCapacity];</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Conway.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.others</a> &gt; <span class="el_source">Conway.java</span></div><h1>Conway.java</h1><pre class="source lang-java linenums">package com.thealgorithms.others;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public final class Conway {
+    private Conway() {
+    }
+
+    /*
+     * This class will generate the conway sequence also known as the look and say sequence.
+     * To generate a member of the sequence from the previous member, read off the digits of the
+     *previous member, counting the number of digits in groups of the same digit. For example: 1 is
+     *read off as &quot;one 1&quot; or 11. 11 is read off as &quot;two 1s&quot; or 21. 21 is read off as &quot;one 2, one 1&quot;
+     *or 1211. 1211 is read off as &quot;one 1, one 2, two 1s&quot; or 111221. 111221 is read off as &quot;three
+     *1s, two 2s, one 1&quot; or 312211. https://en.wikipedia.org/wiki/Look-and-say_sequence
+     * */
+
+<span class="fc" id="L20">    private static final StringBuilder BUILDER = new StringBuilder();</span>
+
+    protected static List&lt;String&gt; generateList(String originalString, int maxIteration) {
+<span class="fc" id="L23">        List&lt;String&gt; numbers = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L24" title="All 2 branches covered.">        for (int i = 0; i &lt; maxIteration; i++) {</span>
+<span class="fc" id="L25">            originalString = generateNextElement(originalString);</span>
+<span class="fc" id="L26">            numbers.add(originalString);</span>
+        }
+<span class="fc" id="L28">        return numbers;</span>
+    }
+
+    public static String generateNextElement(String originalString) {
+<span class="fc" id="L32">        BUILDER.setLength(0);</span>
+<span class="fc" id="L33">        String[] stp = originalString.split(&quot;(?&lt;=(.))(?!\\1)&quot;);</span>
+<span class="fc" id="L34">        Arrays.stream(stp).forEach(s -&gt; BUILDER.append(s.length()).append(s.charAt(0)));</span>
+<span class="fc" id="L35">        return BUILDER.toString();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

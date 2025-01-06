@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DutchNationalFlagSort.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.sorts</a> &gt; <span class="el_source">DutchNationalFlagSort.java</span></div><h1>DutchNationalFlagSort.java</h1><pre class="source lang-java linenums">package com.thealgorithms.sorts;
+
+/**
+ * The Dutch National Flag Sort sorts a sequence of values into three permutations which are defined
+ * by a value given as the indented middle. First permutation: values less than middle. Second
+ * permutation: values equal middle. Third permutation: values greater than middle. If no indented
+ * middle is given, this implementation will use a value from the given Array. This value is the one
+ * positioned in the arrays' middle if the arrays' length is odd. If the arrays' length is even, the
+ * value left to the middle will be used. More information and Pseudocode:
+ * https://en.wikipedia.org/wiki/Dutch_national_flag_problem
+ */
+<span class="fc" id="L12">public class DutchNationalFlagSort implements SortAlgorithm {</span>
+
+    @Override
+    public &lt;T extends Comparable&lt;T&gt;&gt; T[] sort(T[] array) {
+<span class="fc" id="L16">        return dutchNationalFlagSort(array, array[(int) Math.ceil((array.length) / 2.0) - 1]);</span>
+    }
+
+    public &lt;T extends Comparable&lt;T&gt;&gt; T[] sort(T[] array, T intendedMiddle) {
+<span class="fc" id="L20">        return dutchNationalFlagSort(array, intendedMiddle);</span>
+    }
+
+    private &lt;T extends Comparable&lt;T&gt;&gt; T[] dutchNationalFlagSort(final T[] array, final T intendedMiddle) {
+<span class="fc" id="L24">        int i = 0;</span>
+<span class="fc" id="L25">        int j = 0;</span>
+<span class="fc" id="L26">        int k = array.length - 1;</span>
+
+<span class="fc bfc" id="L28" title="All 2 branches covered.">        while (j &lt;= k) {</span>
+<span class="fc bfc" id="L29" title="All 2 branches covered.">            if (0 &gt; array[j].compareTo(intendedMiddle)) {</span>
+<span class="fc" id="L30">                SortUtils.swap(array, i, j);</span>
+<span class="fc" id="L31">                j++;</span>
+<span class="fc" id="L32">                i++;</span>
+<span class="fc bfc" id="L33" title="All 2 branches covered.">            } else if (0 &lt; array[j].compareTo(intendedMiddle)) {</span>
+<span class="fc" id="L34">                SortUtils.swap(array, j, k);</span>
+<span class="fc" id="L35">                k--;</span>
+            } else {
+<span class="fc" id="L37">                j++;</span>
+            }
+        }
+<span class="fc" id="L40">        return array;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

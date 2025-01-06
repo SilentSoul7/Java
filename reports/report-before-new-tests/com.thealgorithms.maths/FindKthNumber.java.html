@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FindKthNumber.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.maths</a> &gt; <span class="el_source">FindKthNumber.java</span></div><h1>FindKthNumber.java</h1><pre class="source lang-java linenums">package com.thealgorithms.maths;
+
+import java.util.Collections;
+import java.util.PriorityQueue;
+import java.util.Random;
+
+/**
+ * Use a quicksort-based approach to identify the k-th largest or k-th max element within the provided array.
+ */
+public final class FindKthNumber {
+    private FindKthNumber() {
+    }
+
+<span class="fc" id="L14">    private static final Random RANDOM = new Random();</span>
+
+    public static int findKthMax(int[] array, int k) {
+<span class="fc bfc" id="L17" title="All 4 branches covered.">        if (k &lt;= 0 || k &gt; array.length) {</span>
+<span class="fc" id="L18">            throw new IllegalArgumentException(&quot;k must be between 1 and the size of the array&quot;);</span>
+        }
+
+        // Convert k-th largest to index for QuickSelect
+<span class="fc" id="L22">        return quickSelect(array, 0, array.length - 1, array.length - k);</span>
+    }
+
+    private static int quickSelect(int[] array, int left, int right, int kSmallest) {
+<span class="fc bfc" id="L26" title="All 2 branches covered.">        if (left == right) {</span>
+<span class="fc" id="L27">            return array[left];</span>
+        }
+
+        // Randomly select a pivot index
+<span class="fc" id="L31">        int pivotIndex = left + RANDOM.nextInt(right - left + 1);</span>
+<span class="fc" id="L32">        pivotIndex = partition(array, left, right, pivotIndex);</span>
+
+<span class="fc bfc" id="L34" title="All 2 branches covered.">        if (kSmallest == pivotIndex) {</span>
+<span class="fc" id="L35">            return array[kSmallest];</span>
+<span class="fc bfc" id="L36" title="All 2 branches covered.">        } else if (kSmallest &lt; pivotIndex) {</span>
+<span class="fc" id="L37">            return quickSelect(array, left, pivotIndex - 1, kSmallest);</span>
+        } else {
+<span class="fc" id="L39">            return quickSelect(array, pivotIndex + 1, right, kSmallest);</span>
+        }
+    }
+
+    private static int partition(int[] array, int left, int right, int pivotIndex) {
+<span class="fc" id="L44">        int pivotValue = array[pivotIndex];</span>
+        // Move pivot to end
+<span class="fc" id="L46">        swap(array, pivotIndex, right);</span>
+<span class="fc" id="L47">        int storeIndex = left;</span>
+
+        // Move all smaller elements to the left
+<span class="fc bfc" id="L50" title="All 2 branches covered.">        for (int i = left; i &lt; right; i++) {</span>
+<span class="fc bfc" id="L51" title="All 2 branches covered.">            if (array[i] &lt; pivotValue) {</span>
+<span class="fc" id="L52">                swap(array, storeIndex, i);</span>
+<span class="fc" id="L53">                storeIndex++;</span>
+            }
+        }
+
+        // Move pivot to its final place
+<span class="fc" id="L58">        swap(array, storeIndex, right);</span>
+<span class="fc" id="L59">        return storeIndex;</span>
+    }
+
+    private static void swap(int[] array, int i, int j) {
+<span class="fc" id="L63">        int temp = array[i];</span>
+<span class="fc" id="L64">        array[i] = array[j];</span>
+<span class="fc" id="L65">        array[j] = temp;</span>
+<span class="fc" id="L66">    }</span>
+
+    public static int findKthMaxUsingHeap(int[] array, int k) {
+<span class="fc bfc" id="L69" title="All 4 branches covered.">        if (k &lt;= 0 || k &gt; array.length) {</span>
+<span class="fc" id="L70">            throw new IllegalArgumentException(&quot;k must be between 1 and the size of the array&quot;);</span>
+        }
+<span class="fc" id="L72">        PriorityQueue&lt;Integer&gt; maxHeap = new PriorityQueue&lt;&gt;(Collections.reverseOrder()); // using max-heap to store numbers.</span>
+<span class="fc bfc" id="L73" title="All 2 branches covered.">        for (int num : array) {</span>
+<span class="fc" id="L74">            maxHeap.add(num);</span>
+        }
+<span class="fc bfc" id="L76" title="All 2 branches covered.">        while (k &gt; 1) {</span>
+<span class="fc" id="L77">            maxHeap.poll(); // removing max number from heap</span>
+<span class="fc" id="L78">            k--;</span>
+        }
+<span class="fc" id="L80">        return maxHeap.peek();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

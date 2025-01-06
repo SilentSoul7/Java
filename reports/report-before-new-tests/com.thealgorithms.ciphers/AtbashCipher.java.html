@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AtbashCipher.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.ciphers</a> &gt; <span class="el_source">AtbashCipher.java</span></div><h1>AtbashCipher.java</h1><pre class="source lang-java linenums">package com.thealgorithms.ciphers;
+
+/**
+ * The Atbash cipher is a classic substitution cipher that substitutes each letter
+ * with its opposite letter in the alphabet.
+ *
+ * For example:
+ * - 'A' becomes 'Z', 'B' becomes 'Y', 'C' becomes 'X', and so on.
+ * - Similarly, 'a' becomes 'z', 'b' becomes 'y', and so on.
+ *
+ * The cipher works identically for both uppercase and lowercase letters.
+ * Non-alphabetical characters remain unchanged in the output.
+ *
+ * This cipher is symmetric, meaning that applying the cipher twice will return
+ * the original text. Therefore, the same function is used for both encryption and decryption.
+ *
+ * &lt;p&gt;Usage Example:&lt;/p&gt;
+ * &lt;pre&gt;
+ * AtbashCipher cipher = new AtbashCipher(&quot;Hello World!&quot;);
+ * String encrypted = cipher.convert(); // Output: &quot;Svool Dliow!&quot;
+ * &lt;/pre&gt;
+ *
+ * @author &lt;a href=&quot;https://github.com/Krounosity&quot;&gt;Krounosity&lt;/a&gt;
+ * @see &lt;a href=&quot;https://en.wikipedia.org/wiki/Atbash&quot;&gt;Atbash Cipher (Wikipedia)&lt;/a&gt;
+ */
+public class AtbashCipher {
+
+    private String toConvert;
+
+<span class="nc" id="L30">    public AtbashCipher() {</span>
+<span class="nc" id="L31">    }</span>
+
+    /**
+     * Constructor with a string parameter.
+     *
+     * @param str The string to be converted using the Atbash cipher
+     */
+<span class="fc" id="L38">    public AtbashCipher(String str) {</span>
+<span class="fc" id="L39">        this.toConvert = str;</span>
+<span class="fc" id="L40">    }</span>
+
+    /**
+     * Returns the current string set for conversion.
+     *
+     * @return The string to be converted
+     */
+    public String getString() {
+<span class="nc" id="L48">        return toConvert;</span>
+    }
+
+    /**
+     * Sets the string to be converted using the Atbash cipher.
+     *
+     * @param str The new string to convert
+     */
+    public void setString(String str) {
+<span class="nc" id="L57">        this.toConvert = str;</span>
+<span class="nc" id="L58">    }</span>
+
+    /**
+     * Checks if a character is uppercase.
+     *
+     * @param ch The character to check
+     * @return {@code true} if the character is uppercase, {@code false} otherwise
+     */
+    private boolean isCapital(char ch) {
+<span class="pc bpc" id="L67" title="1 of 4 branches missed.">        return ch &gt;= 'A' &amp;&amp; ch &lt;= 'Z';</span>
+    }
+
+    /**
+     * Checks if a character is lowercase.
+     *
+     * @param ch The character to check
+     * @return {@code true} if the character is lowercase, {@code false} otherwise
+     */
+    private boolean isSmall(char ch) {
+<span class="pc bpc" id="L77" title="1 of 4 branches missed.">        return ch &gt;= 'a' &amp;&amp; ch &lt;= 'z';</span>
+    }
+
+    /**
+     * Converts the input string using the Atbash cipher.
+     * Alphabetic characters are substituted with their opposite in the alphabet,
+     * while non-alphabetic characters remain unchanged.
+     *
+     * @return The converted string after applying the Atbash cipher
+     */
+    public String convert() {
+<span class="fc" id="L88">        StringBuilder convertedString = new StringBuilder();</span>
+
+<span class="fc bfc" id="L90" title="All 2 branches covered.">        for (char ch : toConvert.toCharArray()) {</span>
+<span class="fc bfc" id="L91" title="All 2 branches covered.">            if (isSmall(ch)) {</span>
+<span class="fc" id="L92">                convertedString.append((char) ('z' - (ch - 'a')));</span>
+<span class="fc bfc" id="L93" title="All 2 branches covered.">            } else if (isCapital(ch)) {</span>
+<span class="fc" id="L94">                convertedString.append((char) ('Z' - (ch - 'A')));</span>
+            } else {
+<span class="fc" id="L96">                convertedString.append(ch);</span>
+            }
+        }
+<span class="fc" id="L99">        return convertedString.toString();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

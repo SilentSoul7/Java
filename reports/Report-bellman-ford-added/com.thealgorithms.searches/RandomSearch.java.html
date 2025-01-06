@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RandomSearch.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.searches</a> &gt; <span class="el_source">RandomSearch.java</span></div><h1>RandomSearch.java</h1><pre class="source lang-java linenums">package com.thealgorithms.searches;
+
+import com.thealgorithms.devutils.searches.SearchAlgorithm;
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Set;
+
+/**
+ * A Random Search algorithm that randomly selects an index and checks if the
+ * value at that index matches the target. It repeats the process until it
+ * finds the target or checks all elements.
+ *
+ * &lt;p&gt;
+ * Time Complexity: O(n) in the worst case.
+ * &lt;/p&gt;
+ *
+ * @author Hardvan
+ */
+<span class="fc" id="L19">public class RandomSearch implements SearchAlgorithm {</span>
+
+<span class="fc" id="L21">    private final Random random = new Random();</span>
+
+    /**
+     * Finds the index of a given element using random search.
+     *
+     * @param array Array to search through
+     * @param key Element to search for
+     * @return Index of the element if found, -1 otherwise
+     */
+    @Override
+    public &lt;T extends Comparable&lt;T&gt;&gt; int find(T[] array, T key) {
+<span class="fc" id="L32">        Set&lt;Integer&gt; visitedIndices = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L33">        int size = array.length;</span>
+
+<span class="fc bfc" id="L35" title="All 2 branches covered.">        while (visitedIndices.size() &lt; size) {</span>
+<span class="fc" id="L36">            int randomIndex = random.nextInt(size);</span>
+<span class="fc bfc" id="L37" title="All 2 branches covered.">            if (array[randomIndex].compareTo(key) == 0) {</span>
+<span class="fc" id="L38">                return randomIndex;</span>
+            }
+<span class="fc" id="L40">            visitedIndices.add(randomIndex);</span>
+<span class="fc" id="L41">        }</span>
+
+<span class="fc" id="L43">        return -1;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

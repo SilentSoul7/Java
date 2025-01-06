@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BinaryInsertionSort.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.sorts</a> &gt; <span class="el_source">BinaryInsertionSort.java</span></div><h1>BinaryInsertionSort.java</h1><pre class="source lang-java linenums">package com.thealgorithms.sorts;
+
+/**
+ * BinaryInsertionSort class implements the SortAlgorithm interface using the binary insertion sort technique.
+ * Binary Insertion Sort improves upon the simple insertion sort by using binary search to find the appropriate
+ * location to insert the new element, reducing the number of comparisons in the insertion step.
+ */
+<span class="fc" id="L8">public class BinaryInsertionSort implements SortAlgorithm {</span>
+
+    /**
+     * Sorts the given array using the Binary Insertion Sort algorithm.
+     *
+     * @param &lt;T&gt; the type of elements in the array, which must implement the Comparable interface
+     * @param array the array to be sorted
+     * @return the sorted array
+     */
+    public &lt;T extends Comparable&lt;T&gt;&gt; T[] sort(T[] array) {
+<span class="fc bfc" id="L18" title="All 2 branches covered.">        for (int i = 1; i &lt; array.length; i++) {</span>
+<span class="fc" id="L19">            final T temp = array[i];</span>
+<span class="fc" id="L20">            int low = 0;</span>
+<span class="fc" id="L21">            int high = i - 1;</span>
+
+<span class="fc bfc" id="L23" title="All 2 branches covered.">            while (low &lt;= high) {</span>
+<span class="fc" id="L24">                final int mid = (low + high) &gt;&gt;&gt; 1;</span>
+<span class="fc bfc" id="L25" title="All 2 branches covered.">                if (temp.compareTo(array[mid]) &lt; 0) {</span>
+<span class="fc" id="L26">                    high = mid - 1;</span>
+                } else {
+<span class="fc" id="L28">                    low = mid + 1;</span>
+                }
+<span class="fc" id="L30">            }</span>
+
+<span class="fc bfc" id="L32" title="All 2 branches covered.">            for (int j = i; j &gt;= low + 1; j--) {</span>
+<span class="fc" id="L33">                array[j] = array[j - 1];</span>
+            }
+
+<span class="fc" id="L36">            array[low] = temp;</span>
+        }
+<span class="fc" id="L38">        return array;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FloydWarshall.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.graphs</a> &gt; <span class="el_source">FloydWarshall.java</span></div><h1>FloydWarshall.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.graphs;
+
+/**
+ * The {@code FloydWarshall} class provides an implementation of the Floyd-Warshall algorithm
+ * to compute the shortest paths between all pairs of vertices in a weighted graph.
+ * It handles both positive and negative edge weights but does not support negative cycles.
+ * The algorithm is based on dynamic programming and runs in O(V^3) time complexity,
+ * where V is the number of vertices in the graph.
+ *
+ * &lt;p&gt;
+ * The distance matrix is updated iteratively to find the shortest distance between any two vertices
+ * by considering each vertex as an intermediate step.
+ * &lt;/p&gt;
+ *
+ * Reference: &lt;a href=&quot;https://en.wikipedia.org/wiki/Floyd%E2%80%93Warshall_algorithm&quot;&gt;Floyd-Warshall Algorithm&lt;/a&gt;
+ */
+public class FloydWarshall {
+
+    private int[][] distanceMatrix;
+    private int numberofvertices;
+    public static final int INFINITY = 999;
+
+    /**
+     * Constructs a Floyd-Warshall instance for a graph with the given number of vertices.
+     * Initializes the distance matrix for the graph.
+     *
+     * @param numberofvertices The number of vertices in the graph.
+     */
+<span class="fc" id="L29">    public FloydWarshall(int numberofvertices) {</span>
+<span class="fc" id="L30">        distanceMatrix = new int[numberofvertices + 1][numberofvertices + 1];</span>
+        // The matrix is initialized with 0's by default
+<span class="fc" id="L32">        this.numberofvertices = numberofvertices;</span>
+<span class="fc" id="L33">    }</span>
+
+    /**
+     * Executes the Floyd-Warshall algorithm to compute the shortest path between all pairs of vertices.
+     * It uses an adjacency matrix to calculate the distance matrix by considering each vertex as an intermediate point.
+     *
+     * @param adjacencyMatrix The weighted adjacency matrix representing the graph.
+     *                        A value of 0 means no direct edge between the vertices, except for diagonal elements which are 0 (distance to self).
+     */
+    public void floydwarshall(int[][] adjacencyMatrix) {
+        // Initialize the distance matrix with the adjacency matrix.
+<span class="fc bfc" id="L44" title="All 2 branches covered.">        for (int source = 1; source &lt;= numberofvertices; source++) {</span>
+<span class="fc" id="L45">            System.arraycopy(adjacencyMatrix[source], 1, distanceMatrix[source], 1, numberofvertices);</span>
+        }
+<span class="fc bfc" id="L47" title="All 2 branches covered.">        for (int intermediate = 1; intermediate &lt;= numberofvertices; intermediate++) {</span>
+<span class="fc bfc" id="L48" title="All 2 branches covered.">            for (int source = 1; source &lt;= numberofvertices; source++) {</span>
+<span class="fc bfc" id="L49" title="All 2 branches covered.">                for (int destination = 1; destination &lt;= numberofvertices; destination++) {</span>
+                    // Update distance if a shorter path through the intermediate vertex exists.
+<span class="fc bfc" id="L51" title="All 2 branches covered.">                    if (distanceMatrix[source][intermediate] + distanceMatrix[intermediate][destination] &lt; distanceMatrix[source][destination]) {</span>
+<span class="fc" id="L52">                        distanceMatrix[source][destination] = distanceMatrix[source][intermediate] + distanceMatrix[intermediate][destination];</span>
+                    }
+                }
+            }
+        }
+
+<span class="fc" id="L58">        printDistanceMatrix();</span>
+<span class="fc" id="L59">    }</span>
+
+    /**
+     * Prints the distance matrix representing the shortest paths between all pairs of vertices.
+     * The rows and columns correspond to the source and destination vertices.
+     */
+    private void printDistanceMatrix() {
+        // Print header for vertices
+<span class="fc bfc" id="L67" title="All 2 branches covered.">        for (int source = 1; source &lt;= numberofvertices; source++) {</span>
+<span class="fc" id="L68">            System.out.print(&quot;\t&quot; + source);</span>
+        }
+<span class="fc" id="L70">        System.out.println();</span>
+
+        // Print the distance matrix
+<span class="fc bfc" id="L73" title="All 2 branches covered.">        for (int source = 1; source &lt;= numberofvertices; source++) {</span>
+<span class="fc" id="L74">            System.out.print(source + &quot;\t&quot;);</span>
+<span class="fc bfc" id="L75" title="All 2 branches covered.">            for (int destination = 1; destination &lt;= numberofvertices; destination++) {</span>
+<span class="fc" id="L76">                System.out.print(distanceMatrix[source][destination] + &quot;\t&quot;);</span>
+            }
+<span class="fc" id="L78">            System.out.println();</span>
+        }
+<span class="fc" id="L80">    }</span>
+
+    public Object[] getDistanceMatrix() {
+<span class="fc" id="L83">        return distanceMatrix;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

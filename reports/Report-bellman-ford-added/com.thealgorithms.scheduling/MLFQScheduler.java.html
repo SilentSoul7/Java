@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MLFQScheduler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.scheduling</a> &gt; <span class="el_source">MLFQScheduler.java</span></div><h1>MLFQScheduler.java</h1><pre class="source lang-java linenums">package com.thealgorithms.scheduling;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+
+/**
+ * The Multi-Level Feedback Queue (MLFQ) Scheduler class.
+ * This class simulates scheduling using multiple queues, where processes move
+ * between queues depending on their CPU burst behavior.
+ */
+public class MLFQScheduler {
+    private List&lt;Queue&lt;Process&gt;&gt; queues; // Multi-level feedback queues
+    private int[] timeQuantum; // Time quantum for each queue level
+    private int currentTime; // Current time in the system
+
+    /**
+     * Constructor to initialize the MLFQ scheduler with the specified number of
+     * levels and their corresponding time quantums.
+     *
+     * @param levels       Number of queues (priority levels)
+     * @param timeQuantums Time quantum for each queue level
+     */
+<span class="fc" id="L25">    public MLFQScheduler(int levels, int[] timeQuantums) {</span>
+<span class="fc" id="L26">        queues = new ArrayList&lt;&gt;(levels);</span>
+<span class="fc bfc" id="L27" title="All 2 branches covered.">        for (int i = 0; i &lt; levels; i++) {</span>
+<span class="fc" id="L28">            queues.add(new LinkedList&lt;&gt;());</span>
+        }
+<span class="fc" id="L30">        timeQuantum = timeQuantums;</span>
+<span class="fc" id="L31">        currentTime = 0;</span>
+<span class="fc" id="L32">    }</span>
+
+    /**
+     * Adds a new process to the highest priority queue (queue 0).
+     *
+     * @param p The process to be added to the scheduler
+     */
+    public void addProcess(Process p) {
+<span class="fc" id="L40">        queues.get(0).add(p);</span>
+<span class="fc" id="L41">    }</span>
+
+    /**
+     * Executes the scheduling process by running the processes in all queues,
+     * promoting or demoting them based on their completion status and behavior.
+     * The process continues until all queues are empty.
+     */
+    public void run() {
+<span class="fc bfc" id="L49" title="All 2 branches covered.">        while (!allQueuesEmpty()) {</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">            for (int i = 0; i &lt; queues.size(); i++) {</span>
+<span class="fc" id="L51">                Queue&lt;Process&gt; queue = queues.get(i);</span>
+<span class="fc bfc" id="L52" title="All 2 branches covered.">                if (!queue.isEmpty()) {</span>
+<span class="fc" id="L53">                    Process p = queue.poll();</span>
+<span class="fc" id="L54">                    int quantum = timeQuantum[i];</span>
+
+                    // Execute the process for the minimum of the time quantum or the remaining time
+<span class="fc" id="L57">                    int timeSlice = Math.min(quantum, p.remainingTime);</span>
+<span class="fc" id="L58">                    p.execute(timeSlice);</span>
+<span class="fc" id="L59">                    currentTime += timeSlice; // Update the system's current time</span>
+
+<span class="fc bfc" id="L61" title="All 2 branches covered.">                    if (p.isFinished()) {</span>
+<span class="fc" id="L62">                        System.out.println(&quot;Process &quot; + p.pid + &quot; finished at time &quot; + currentTime);</span>
+                    } else {
+<span class="fc bfc" id="L64" title="All 2 branches covered.">                        if (i &lt; queues.size() - 1) {</span>
+<span class="fc" id="L65">                            p.priority++; // Demote the process to the next lower priority queue</span>
+<span class="fc" id="L66">                            queues.get(i + 1).add(p); // Add to the next queue level</span>
+                        } else {
+<span class="fc" id="L68">                            queue.add(p); // Stay in the same queue if it's the last level</span>
+                        }
+                    }
+                }
+            }
+        }
+<span class="fc" id="L74">    }</span>
+
+    /**
+     * Helper function to check if all the queues are empty (i.e., no process is
+     * left to execute).
+     *
+     * @return true if all queues are empty, otherwise false
+     */
+    private boolean allQueuesEmpty() {
+<span class="fc bfc" id="L83" title="All 2 branches covered.">        for (Queue&lt;Process&gt; queue : queues) {</span>
+<span class="fc bfc" id="L84" title="All 2 branches covered.">            if (!queue.isEmpty()) {</span>
+<span class="fc" id="L85">                return false;</span>
+            }
+<span class="fc" id="L87">        }</span>
+<span class="fc" id="L88">        return true;</span>
+    }
+
+    /**
+     * Retrieves the current time of the scheduler, which reflects the total time
+     * elapsed during the execution of all processes.
+     *
+     * @return The current time in the system
+     */
+    public int getCurrentTime() {
+<span class="fc" id="L98">        return currentTime;</span>
+    }
+}
+
+/**
+ * Represents a process in the Multi-Level Feedback Queue (MLFQ) scheduling
+ * algorithm.
+ */
+class Process {
+    int pid;
+    int burstTime;
+    int remainingTime;
+    int arrivalTime;
+    int priority;
+
+    /**
+     * Constructor to initialize a new process.
+     *
+     * @param pid         Process ID
+     * @param burstTime   CPU Burst Time (time required for the process)
+     * @param arrivalTime Arrival time of the process
+     */
+<span class="fc" id="L120">    Process(int pid, int burstTime, int arrivalTime) {</span>
+<span class="fc" id="L121">        this.pid = pid;</span>
+<span class="fc" id="L122">        this.burstTime = burstTime;</span>
+<span class="fc" id="L123">        this.remainingTime = burstTime;</span>
+<span class="fc" id="L124">        this.arrivalTime = arrivalTime;</span>
+<span class="fc" id="L125">        this.priority = 0;</span>
+<span class="fc" id="L126">    }</span>
+
+    /**
+     * Executes the process for a given time slice.
+     *
+     * @param timeSlice The amount of time the process is executed
+     */
+    public void execute(int timeSlice) {
+<span class="fc" id="L134">        remainingTime -= timeSlice;</span>
+<span class="pc bpc" id="L135" title="1 of 2 branches missed.">        if (remainingTime &lt; 0) {</span>
+<span class="nc" id="L136">            remainingTime = 0;</span>
+        }
+<span class="fc" id="L138">    }</span>
+
+    /**
+     * Checks if the process has finished execution.
+     *
+     * @return true if the process is finished, otherwise false
+     */
+    public boolean isFinished() {
+<span class="fc bfc" id="L146" title="All 2 branches covered.">        return remainingTime == 0;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BooleanAlgebraGates.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.bitmanipulation</a> &gt; <span class="el_source">BooleanAlgebraGates.java</span></div><h1>BooleanAlgebraGates.java</h1><pre class="source lang-java linenums">package com.thealgorithms.bitmanipulation;
+
+import java.util.List;
+
+/**
+ * Implements various Boolean algebra gates (AND, OR, NOT, XOR, NAND, NOR)
+ */
+public final class BooleanAlgebraGates {
+
+    private BooleanAlgebraGates() {
+        // Prevent instantiation
+    }
+
+    /**
+     * Represents a Boolean gate that takes multiple inputs and returns a result.
+     */
+    interface BooleanGate {
+        /**
+         * Evaluates the gate with the given inputs.
+         *
+         * @param inputs The input values for the gate.
+         * @return The result of the evaluation.
+         */
+        boolean evaluate(List&lt;Boolean&gt; inputs);
+    }
+
+    /**
+     * AND Gate implementation.
+     * Returns true if all inputs are true; otherwise, false.
+     */
+<span class="fc" id="L31">    static class ANDGate implements BooleanGate {</span>
+        @Override
+        public boolean evaluate(List&lt;Boolean&gt; inputs) {
+<span class="fc bfc" id="L34" title="All 2 branches covered.">            for (boolean input : inputs) {</span>
+<span class="fc bfc" id="L35" title="All 2 branches covered.">                if (!input) {</span>
+<span class="fc" id="L36">                    return false;</span>
+                }
+<span class="fc" id="L38">            }</span>
+<span class="fc" id="L39">            return true;</span>
+        }
+    }
+
+    /**
+     * OR Gate implementation.
+     * Returns true if at least one input is true; otherwise, false.
+     */
+<span class="fc" id="L47">    static class ORGate implements BooleanGate {</span>
+        @Override
+        public boolean evaluate(List&lt;Boolean&gt; inputs) {
+<span class="fc bfc" id="L50" title="All 2 branches covered.">            for (boolean input : inputs) {</span>
+<span class="fc bfc" id="L51" title="All 2 branches covered.">                if (input) {</span>
+<span class="fc" id="L52">                    return true;</span>
+                }
+<span class="fc" id="L54">            }</span>
+<span class="fc" id="L55">            return false;</span>
+        }
+    }
+
+    /**
+     * NOT Gate implementation (Unary operation).
+     * Negates a single input value.
+     */
+<span class="fc" id="L63">    static class NOTGate {</span>
+        /**
+         * Evaluates the negation of the input.
+         *
+         * @param input The input value to be negated.
+         * @return The negated value.
+         */
+        public boolean evaluate(boolean input) {
+<span class="fc bfc" id="L71" title="All 2 branches covered.">            return !input;</span>
+        }
+    }
+
+    /**
+     * XOR Gate implementation.
+     * Returns true if an odd number of inputs are true; otherwise, false.
+     */
+<span class="fc" id="L79">    static class XORGate implements BooleanGate {</span>
+        @Override
+        public boolean evaluate(List&lt;Boolean&gt; inputs) {
+<span class="fc" id="L82">            boolean result = false;</span>
+<span class="fc bfc" id="L83" title="All 2 branches covered.">            for (boolean input : inputs) {</span>
+<span class="fc" id="L84">                result ^= input;</span>
+<span class="fc" id="L85">            }</span>
+<span class="fc" id="L86">            return result;</span>
+        }
+    }
+
+    /**
+     * NAND Gate implementation.
+     * Returns true if at least one input is false; otherwise, false.
+     */
+<span class="fc" id="L94">    static class NANDGate implements BooleanGate {</span>
+        @Override
+        public boolean evaluate(List&lt;Boolean&gt; inputs) {
+<span class="fc bfc" id="L97" title="All 2 branches covered.">            return !new ANDGate().evaluate(inputs); // Equivalent to negation of AND</span>
+        }
+    }
+
+    /**
+     * NOR Gate implementation.
+     * Returns true if all inputs are false; otherwise, false.
+     */
+<span class="fc" id="L105">    static class NORGate implements BooleanGate {</span>
+        @Override
+        public boolean evaluate(List&lt;Boolean&gt; inputs) {
+<span class="fc bfc" id="L108" title="All 2 branches covered.">            return !new ORGate().evaluate(inputs); // Equivalent to negation of OR</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HashMap.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.hashmap.hashing</a> &gt; <span class="el_source">HashMap.java</span></div><h1>HashMap.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.hashmap.hashing;
+
+/**
+ * A generic HashMap implementation that uses separate chaining with linked lists
+ * to handle collisions. The class supports basic operations such as insert, delete,
+ * and search, as well as displaying the contents of the hash map.
+ *
+ * @param &lt;K&gt; the type of keys maintained by this map
+ * @param &lt;V&gt; the type of mapped values
+ */
+public class HashMap&lt;K, V&gt; {
+    private final int hashSize;
+    private final LinkedList&lt;K, V&gt;[] buckets;
+
+    /**
+     * Constructs a HashMap with the specified hash size.
+     *
+     * @param hashSize the number of buckets in the hash map
+     */
+    @SuppressWarnings(&quot;unchecked&quot;)
+<span class="fc" id="L21">    public HashMap(int hashSize) {</span>
+<span class="fc" id="L22">        this.hashSize = hashSize;</span>
+        // Safe to suppress warning because we are creating an array of generic type
+<span class="fc" id="L24">        this.buckets = new LinkedList[hashSize];</span>
+<span class="fc bfc" id="L25" title="All 2 branches covered.">        for (int i = 0; i &lt; hashSize; i++) {</span>
+<span class="fc" id="L26">            buckets[i] = new LinkedList&lt;&gt;();</span>
+        }
+<span class="fc" id="L28">    }</span>
+
+    /**
+     * Computes the hash code for the specified key.
+     * Null keys are hashed to bucket 0.
+     *
+     * @param key the key for which the hash code is to be computed
+     * @return the hash code corresponding to the key
+     */
+    private int computeHash(K key) {
+<span class="fc bfc" id="L38" title="All 2 branches covered.">        if (key == null) {</span>
+<span class="fc" id="L39">            return 0; // Use a special bucket (e.g., bucket 0) for null keys</span>
+        }
+<span class="fc" id="L41">        int hash = key.hashCode() % hashSize;</span>
+<span class="pc bpc" id="L42" title="1 of 2 branches missed.">        return hash &lt; 0 ? hash + hashSize : hash;</span>
+    }
+
+    /**
+     * Inserts the specified key-value pair into the hash map.
+     * If the key already exists, the value is updated.
+     *
+     * @param key   the key to be inserted
+     * @param value the value to be associated with the key
+     */
+    public void insert(K key, V value) {
+<span class="fc" id="L53">        int hash = computeHash(key);</span>
+<span class="fc" id="L54">        buckets[hash].insert(key, value);</span>
+<span class="fc" id="L55">    }</span>
+
+    /**
+     * Deletes the key-value pair associated with the specified key from the hash map.
+     *
+     * @param key the key whose key-value pair is to be deleted
+     */
+    public void delete(K key) {
+<span class="fc" id="L63">        int hash = computeHash(key);</span>
+<span class="fc" id="L64">        buckets[hash].delete(key);</span>
+<span class="fc" id="L65">    }</span>
+
+    /**
+     * Searches for the value associated with the specified key in the hash map.
+     *
+     * @param key the key whose associated value is to be returned
+     * @return the value associated with the specified key, or null if the key does not exist
+     */
+    public V search(K key) {
+<span class="fc" id="L74">        int hash = computeHash(key);</span>
+<span class="fc" id="L75">        Node&lt;K, V&gt; node = buckets[hash].findKey(key);</span>
+<span class="fc bfc" id="L76" title="All 2 branches covered.">        return node != null ? node.getValue() : null;</span>
+    }
+
+    /**
+     * Displays the contents of the hash map, showing each bucket and its key-value pairs.
+     */
+    public void display() {
+<span class="fc bfc" id="L83" title="All 2 branches covered.">        for (int i = 0; i &lt; hashSize; i++) {</span>
+<span class="fc" id="L84">            System.out.printf(&quot;Bucket %d: %s%n&quot;, i, buckets[i].display());</span>
+        }
+<span class="fc" id="L86">    }</span>
+
+    /**
+     * Clears the contents of the hash map by reinitializing each bucket.
+     */
+    public void clear() {
+<span class="fc bfc" id="L92" title="All 2 branches covered.">        for (int i = 0; i &lt; hashSize; i++) {</span>
+<span class="fc" id="L93">            buckets[i] = new LinkedList&lt;&gt;();</span>
+        }
+<span class="fc" id="L95">    }</span>
+
+    /**
+     * Gets the number of key-value pairs in the hash map.
+     *
+     * @return the number of key-value pairs in the hash map
+     */
+    public int size() {
+<span class="fc" id="L103">        int size = 0;</span>
+<span class="fc bfc" id="L104" title="All 2 branches covered.">        for (int i = 0; i &lt; hashSize; i++) {</span>
+<span class="pc bpc" id="L105" title="1 of 2 branches missed.">            size += buckets[i].isEmpty() ? 0 : 1;</span>
+        }
+<span class="fc" id="L107">        return size;</span>
+    }
+
+    /**
+     * A nested static class that represents a linked list used for separate chaining in the hash map.
+     *
+     * @param &lt;K&gt; the type of keys maintained by this linked list
+     * @param &lt;V&gt; the type of mapped values
+     */
+<span class="fc" id="L116">    public static class LinkedList&lt;K, V&gt; {</span>
+        private Node&lt;K, V&gt; head;
+
+        /**
+         * Inserts the specified key-value pair into the linked list.
+         * If the linked list is empty, the pair becomes the head.
+         * Otherwise, the pair is added to the end of the list.
+         *
+         * @param key   the key to be inserted
+         * @param value the value to be associated with the key
+         */
+        public void insert(K key, V value) {
+<span class="fc" id="L128">            Node&lt;K, V&gt; existingNode = findKey(key);</span>
+<span class="fc bfc" id="L129" title="All 2 branches covered.">            if (existingNode != null) {</span>
+<span class="fc" id="L130">                existingNode.setValue(value); // Update the value, even if it's null</span>
+            } else {
+<span class="fc bfc" id="L132" title="All 2 branches covered.">                if (isEmpty()) {</span>
+<span class="fc" id="L133">                    head = new Node&lt;&gt;(key, value);</span>
+                } else {
+<span class="fc" id="L135">                    Node&lt;K, V&gt; temp = findEnd(head);</span>
+<span class="fc" id="L136">                    temp.setNext(new Node&lt;&gt;(key, value));</span>
+                }
+            }
+<span class="fc" id="L139">        }</span>
+
+        /**
+         * Finds the last node in the linked list.
+         *
+         * @param node the starting node
+         * @return the last node in the linked list
+         */
+        private Node&lt;K, V&gt; findEnd(Node&lt;K, V&gt; node) {
+<span class="fc bfc" id="L148" title="All 2 branches covered.">            while (node.getNext() != null) {</span>
+<span class="fc" id="L149">                node = node.getNext();</span>
+            }
+<span class="fc" id="L151">            return node;</span>
+        }
+
+        /**
+         * Finds the node associated with the specified key in the linked list.
+         *
+         * @param key the key to search for
+         * @return the node associated with the specified key, or null if not found
+         */
+        public Node&lt;K, V&gt; findKey(K key) {
+<span class="fc" id="L161">            Node&lt;K, V&gt; temp = head;</span>
+<span class="fc bfc" id="L162" title="All 2 branches covered.">            while (temp != null) {</span>
+<span class="pc bpc" id="L163" title="2 of 8 branches missed.">                if ((key == null &amp;&amp; temp.getKey() == null) || (temp.getKey() != null &amp;&amp; temp.getKey().equals(key))) {</span>
+<span class="fc" id="L164">                    return temp;</span>
+                }
+<span class="fc" id="L166">                temp = temp.getNext();</span>
+            }
+<span class="fc" id="L168">            return null;</span>
+        }
+
+        /**
+         * Deletes the node associated with the specified key from the linked list.
+         * Handles the case where the key could be null.
+         *
+         * @param key the key whose associated node is to be deleted
+         */
+        public void delete(K key) {
+<span class="pc bpc" id="L178" title="1 of 2 branches missed.">            if (isEmpty()) {</span>
+<span class="nc" id="L179">                return;</span>
+            }
+
+            // Handle the case where the head node has the key to delete
+<span class="pc bpc" id="L183" title="4 of 8 branches missed.">            if ((key == null &amp;&amp; head.getKey() == null) || (head.getKey() != null &amp;&amp; head.getKey().equals(key))) {</span>
+<span class="fc" id="L184">                head = head.getNext();</span>
+<span class="fc" id="L185">                return;</span>
+            }
+
+            // Traverse the list to find and delete the node
+<span class="fc" id="L189">            Node&lt;K, V&gt; current = head;</span>
+<span class="fc bfc" id="L190" title="All 2 branches covered.">            while (current.getNext() != null) {</span>
+<span class="pc bpc" id="L191" title="4 of 8 branches missed.">                if ((key == null &amp;&amp; current.getNext().getKey() == null) || (current.getNext().getKey() != null &amp;&amp; current.getNext().getKey().equals(key))) {</span>
+<span class="fc" id="L192">                    current.setNext(current.getNext().getNext());</span>
+<span class="fc" id="L193">                    return;</span>
+                }
+<span class="fc" id="L195">                current = current.getNext();</span>
+            }
+<span class="fc" id="L197">        }</span>
+
+        /**
+         * Displays the contents of the linked list as a string.
+         *
+         * @return a string representation of the linked list
+         */
+        public String display() {
+<span class="fc" id="L205">            return display(head);</span>
+        }
+
+        /**
+         * Constructs a string representation of the linked list non-recursively.
+         *
+         * @param node the starting node
+         * @return a string representation of the linked list starting from the given node
+         */
+        private String display(Node&lt;K, V&gt; node) {
+<span class="fc" id="L215">            StringBuilder sb = new StringBuilder();</span>
+<span class="fc bfc" id="L216" title="All 2 branches covered.">            while (node != null) {</span>
+<span class="fc" id="L217">                sb.append(node.getKey()).append(&quot;=&quot;).append(node.getValue());</span>
+<span class="fc" id="L218">                node = node.getNext();</span>
+<span class="fc bfc" id="L219" title="All 2 branches covered.">                if (node != null) {</span>
+<span class="fc" id="L220">                    sb.append(&quot; -&gt; &quot;);</span>
+                }
+            }
+<span class="fc bfc" id="L223" title="All 2 branches covered.">            return sb.toString().isEmpty() ? &quot;null&quot; : sb.toString();</span>
+        }
+
+        /**
+         * Checks if the linked list is empty.
+         *
+         * @return true if the linked list is empty, false otherwise
+         */
+        public boolean isEmpty() {
+<span class="fc bfc" id="L232" title="All 2 branches covered.">            return head == null;</span>
+        }
+    }
+
+    /**
+     * A nested static class representing a node in the linked list.
+     *
+     * @param &lt;K&gt; the type of key maintained by this node
+     * @param &lt;V&gt; the type of value maintained by this node
+     */
+    public static class Node&lt;K, V&gt; {
+        private final K key;
+        private V value;
+        private Node&lt;K, V&gt; next;
+
+        /**
+         * Constructs a Node with the specified key and value.
+         *
+         * @param key   the key associated with this node
+         * @param value the value associated with this node
+         */
+<span class="fc" id="L253">        public Node(K key, V value) {</span>
+<span class="fc" id="L254">            this.key = key;</span>
+<span class="fc" id="L255">            this.value = value;</span>
+<span class="fc" id="L256">        }</span>
+
+        /**
+         * Gets the key associated with this node.
+         *
+         * @return the key associated with this node
+         */
+        public K getKey() {
+<span class="fc" id="L264">            return key;</span>
+        }
+
+        /**
+         * Gets the value associated with this node.
+         *
+         * @return the value associated with this node
+         */
+        public V getValue() {
+<span class="fc" id="L273">            return value;</span>
+        }
+
+        public void setValue(V value) { // This method allows updating the value
+<span class="fc" id="L277">            this.value = value;</span>
+<span class="fc" id="L278">        }</span>
+
+        /**
+         * Gets the next node in the linked list.
+         *
+         * @return the next node in the linked list
+         */
+        public Node&lt;K, V&gt; getNext() {
+<span class="fc" id="L286">            return next;</span>
+        }
+
+        /**
+         * Sets the next node in the linked list.
+         *
+         * @param next the next node to be linked
+         */
+        public void setNext(Node&lt;K, V&gt; next) {
+<span class="fc" id="L295">            this.next = next;</span>
+<span class="fc" id="L296">        }</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

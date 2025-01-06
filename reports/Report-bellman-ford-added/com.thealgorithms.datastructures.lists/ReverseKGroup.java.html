@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ReverseKGroup.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.lists</a> &gt; <span class="el_source">ReverseKGroup.java</span></div><h1>ReverseKGroup.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.lists;
+
+/**
+ * The ReverseKGroup class provides functionality to reverse nodes in a
+ * linked list in groups of k nodes.
+ * &lt;p&gt;
+ * This algorithm follows the approach of reversing the linked list in segments of
+ * size k. If the remaining nodes are fewer than k, they remain unchanged.
+ * &lt;/p&gt;
+ * &lt;p&gt;
+ * Example:
+ * Given a linked list: 1 -&gt; 2 -&gt; 3 -&gt; 4 -&gt; 5 and k = 3,
+ * the output will be: 3 -&gt; 2 -&gt; 1 -&gt; 4 -&gt; 5.
+ * &lt;/p&gt;
+ * &lt;p&gt;
+ * The implementation contains:
+ * - {@code length(Node head)}: A method to calculate the length of the linked list.
+ * - {@code reverse(Node head, int count, int k)}: A helper method that reverses the nodes
+ *   in the linked list in groups of k.
+ * - {@code reverseKGroup(Node head, int k)}: The main method that initiates the reversal
+ *   process by calling the reverse method.
+ * &lt;/p&gt;
+ * &lt;p&gt;
+ * Complexity:
+ * &lt;ul&gt;
+ *   &lt;li&gt;Time Complexity: O(n), where n is the number of nodes in the linked list.&lt;/li&gt;
+ *   &lt;li&gt;Space Complexity: O(1), as we are reversing in place.&lt;/li&gt;
+ * &lt;/ul&gt;
+ * &lt;/p&gt;
+ *
+ * Author: Bama Charan Chhandogi (https://github.com/BamaCharanChhandogi)
+ */
+<span class="fc" id="L33">public class ReverseKGroup {</span>
+
+    /**
+     * Calculates the length of the linked list.
+     *
+     * @param head The head node of the linked list.
+     * @return The total number of nodes in the linked list.
+     */
+    public int length(Node head) {
+<span class="fc" id="L42">        Node curr = head;</span>
+<span class="fc" id="L43">        int count = 0;</span>
+<span class="fc bfc" id="L44" title="All 2 branches covered.">        while (curr != null) {</span>
+<span class="fc" id="L45">            curr = curr.next;</span>
+<span class="fc" id="L46">            count++;</span>
+        }
+<span class="fc" id="L48">        return count;</span>
+    }
+
+    /**
+     * Reverses the linked list in groups of k nodes.
+     *
+     * @param head The head node of the linked list.
+     * @param count The remaining number of nodes.
+     * @param k The size of the group to reverse.
+     * @return The new head of the reversed linked list segment.
+     */
+    public Node reverse(Node head, int count, int k) {
+<span class="fc bfc" id="L60" title="All 2 branches covered.">        if (count &lt; k) {</span>
+<span class="fc" id="L61">            return head;</span>
+        }
+<span class="fc" id="L63">        Node prev = null;</span>
+<span class="fc" id="L64">        int count1 = 0;</span>
+<span class="fc" id="L65">        Node curr = head;</span>
+<span class="fc" id="L66">        Node next = null;</span>
+<span class="pc bpc" id="L67" title="1 of 4 branches missed.">        while (curr != null &amp;&amp; count1 &lt; k) {</span>
+<span class="fc" id="L68">            next = curr.next;</span>
+<span class="fc" id="L69">            curr.next = prev;</span>
+<span class="fc" id="L70">            prev = curr;</span>
+<span class="fc" id="L71">            curr = next;</span>
+<span class="fc" id="L72">            count1++;</span>
+        }
+
+<span class="pc bpc" id="L75" title="1 of 2 branches missed.">        if (next != null) {</span>
+<span class="fc" id="L76">            head.next = reverse(next, count - k, k);</span>
+        }
+<span class="fc" id="L78">        return prev;</span>
+    }
+
+    /**
+     * Reverses the linked list in groups of k nodes.
+     *
+     * @param head The head node of the linked list.
+     * @param k The size of the group to reverse.
+     * @return The head of the modified linked list after reversal.
+     */
+    public Node reverseKGroup(Node head, int k) {
+<span class="fc" id="L89">        int count = length(head);</span>
+<span class="fc" id="L90">        return reverse(head, count, k);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SingleElement.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.bitmanipulation</a> &gt; <span class="el_source">SingleElement.java</span></div><h1>SingleElement.java</h1><pre class="source lang-java linenums">package com.thealgorithms.bitmanipulation;
+
+/**
+ * Utility class to find the single non-duplicate element from an array
+ * where all other elements appear twice.
+ * &lt;p&gt;
+ * The algorithm runs in O(n) time complexity and O(1) space complexity
+ * using bitwise XOR.
+ * &lt;/p&gt;
+ *
+ * @author &lt;a href=&quot;http://github.com/tuhinm2002&quot;&gt;Tuhin M&lt;/a&gt;
+ */
+public final class SingleElement {
+
+    /**
+     * Private constructor to prevent instantiation of this utility class.
+     * Throws an UnsupportedOperationException if attempted.
+     */
+<span class="nc" id="L19">    private SingleElement() {</span>
+<span class="nc" id="L20">        throw new UnsupportedOperationException(&quot;Utility Class&quot;);</span>
+    }
+
+    /**
+     * Finds the single non-duplicate element in an array where every other
+     * element appears exactly twice. Uses bitwise XOR to achieve O(n) time
+     * complexity and O(1) space complexity.
+     *
+     * @param arr the input array containing integers where every element
+     *            except one appears exactly twice
+     * @return the single non-duplicate element
+     */
+    public static int findSingleElement(int[] arr) {
+<span class="fc" id="L33">        int ele = 0;</span>
+<span class="fc bfc" id="L34" title="All 2 branches covered.">        for (int i = 0; i &lt; arr.length; i++) {</span>
+<span class="fc" id="L35">            ele ^= arr[i];</span>
+        }
+<span class="fc" id="L37">        return ele;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

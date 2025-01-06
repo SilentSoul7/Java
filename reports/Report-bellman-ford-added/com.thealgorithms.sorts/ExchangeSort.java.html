@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ExchangeSort.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.sorts</a> &gt; <span class="el_source">ExchangeSort.java</span></div><h1>ExchangeSort.java</h1><pre class="source lang-java linenums">package com.thealgorithms.sorts;
+
+/**
+ * ExchangeSort is an implementation of the Exchange Sort algorithm.
+ *
+ * &lt;p&gt;
+ * Exchange sort works by comparing each element with all subsequent elements,
+ * swapping where needed, to ensure the correct placement of each element
+ * in the final sorted order. It iteratively performs this process for each
+ * element in the array. While it lacks the advantage of bubble sort in
+ * detecting sorted lists in one pass, it can be more efficient than bubble sort
+ * due to a constant factor (one less pass over the data to be sorted; half as
+ * many total comparisons) in worst-case scenarios.
+ * &lt;/p&gt;
+ *
+ * &lt;p&gt;
+ * Reference: https://en.wikipedia.org/wiki/Sorting_algorithm#Exchange_sort
+ * &lt;/p&gt;
+ *
+ * @author 555vedant (Vedant Kasar)
+ */
+<span class="fc" id="L22">class ExchangeSort implements SortAlgorithm {</span>
+    /**
+     * Implementation of Exchange Sort Algorithm
+     *
+     * @param array the array to be sorted.
+     * @param &lt;T&gt;   the type of elements in the array.
+     * @return the sorted array.
+     */
+    @Override
+    public &lt;T extends Comparable&lt;T&gt;&gt; T[] sort(T[] array) {
+<span class="fc bfc" id="L32" title="All 2 branches covered.">        for (int i = 0; i &lt; array.length - 1; i++) {</span>
+<span class="fc bfc" id="L33" title="All 2 branches covered.">            for (int j = i + 1; j &lt; array.length; j++) {</span>
+<span class="fc bfc" id="L34" title="All 2 branches covered.">                if (array[i].compareTo(array[j]) &gt; 0) {</span>
+<span class="fc" id="L35">                    SortUtils.swap(array, i, j);</span>
+                }
+            }
+        }
+<span class="fc" id="L39">        return array;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

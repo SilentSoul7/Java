@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ParityCheck.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.bitmanipulation</a> &gt; <span class="el_source">ParityCheck.java</span></div><h1>ParityCheck.java</h1><pre class="source lang-java linenums">package com.thealgorithms.bitmanipulation;
+
+/**
+ * The ParityCheck class provides a method to check the parity of a given number.
+ * &lt;p&gt;
+ * Parity is a mathematical term that describes the property of an integer's binary representation.
+ * The parity of a binary number is the number of 1s in its binary representation.
+ * If the number of 1s is even, the parity is even; otherwise, it is odd.
+ * &lt;p&gt;
+ * For example, the binary representation of 5 is 101, which has two 1s, so the parity of 5 is even.
+ * The binary representation of 6 is 110, which has two 1s, so the parity of 6 is even.
+ * The binary representation of 7 is 111, which has three 1s, so the parity of 7 is odd.
+ *
+ * @author Hardvan
+ */
+public final class ParityCheck {
+    private ParityCheck() {
+    }
+
+    /**
+     * This method checks the parity of the given number.
+     *
+     * @param n the number to check the parity of
+     * @return true if the number has even parity, false otherwise
+     */
+    public static boolean checkParity(int n) {
+<span class="fc" id="L27">        int count = 0;</span>
+<span class="fc bfc" id="L28" title="All 2 branches covered.">        while (n &gt; 0) {</span>
+<span class="fc" id="L29">            count += n &amp; 1;</span>
+<span class="fc" id="L30">            n &gt;&gt;= 1;</span>
+        }
+<span class="fc bfc" id="L32" title="All 2 branches covered.">        return count % 2 == 0;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

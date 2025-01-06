@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CompositeLFSR.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.ciphers.a5</a> &gt; <span class="el_source">CompositeLFSR.java</span></div><h1>CompositeLFSR.java</h1><pre class="source lang-java linenums">package com.thealgorithms.ciphers.a5;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
+/**
+ * The CompositeLFSR class represents a composite implementation of
+ * Linear Feedback Shift Registers (LFSRs) for cryptographic purposes.
+ *
+ * &lt;p&gt;
+ * This abstract class manages a collection of LFSR instances and
+ * provides a mechanism for irregular clocking based on the
+ * majority bit among the registers. It implements the BaseLFSR
+ * interface, requiring subclasses to define specific LFSR behaviors.
+ * &lt;/p&gt;
+ */
+<span class="fc" id="L19">public abstract class CompositeLFSR implements BaseLFSR {</span>
+
+<span class="fc" id="L21">    protected final List&lt;LFSR&gt; registers = new ArrayList&lt;&gt;();</span>
+
+    /**
+     * Performs a clocking operation on the composite LFSR.
+     *
+     * &lt;p&gt;
+     * This method determines the majority bit across all registers and
+     * clocks each register based on its clock bit. If a register's
+     * clock bit matches the majority bit, it is clocked (shifted).
+     * The method also computes and returns the XOR of the last bits
+     * of all registers.
+     * &lt;/p&gt;
+     *
+     * @return the XOR value of the last bits of all registers.
+     */
+    @Override
+    public boolean clock() {
+<span class="fc" id="L38">        boolean majorityBit = getMajorityBit();</span>
+<span class="fc" id="L39">        boolean result = false;</span>
+<span class="fc bfc" id="L40" title="All 2 branches covered.">        for (var register : registers) {</span>
+<span class="fc" id="L41">            result ^= register.getLastBit();</span>
+<span class="fc bfc" id="L42" title="All 2 branches covered.">            if (register.getClockBit() == majorityBit) {</span>
+<span class="fc" id="L43">                register.clock();</span>
+            }
+<span class="fc" id="L45">        }</span>
+<span class="fc" id="L46">        return result;</span>
+    }
+
+    /**
+     * Calculates the majority bit among all registers.
+     *
+     * &lt;p&gt;
+     * This private method counts the number of true and false clock bits
+     * across all LFSR registers. It returns true if the count of true
+     * bits is greater than or equal to the count of false bits; otherwise,
+     * it returns false.
+     * &lt;/p&gt;
+     *
+     * @return true if the majority clock bits are true; false otherwise.
+     */
+    private boolean getMajorityBit() {
+<span class="fc" id="L62">        Map&lt;Boolean, Integer&gt; bitCount = new TreeMap&lt;&gt;();</span>
+<span class="fc" id="L63">        bitCount.put(Boolean.FALSE, 0);</span>
+<span class="fc" id="L64">        bitCount.put(Boolean.TRUE, 0);</span>
+
+<span class="fc" id="L66">        registers.forEach(lfsr -&gt; bitCount.put(lfsr.getClockBit(), bitCount.get(lfsr.getClockBit()) + 1));</span>
+<span class="fc bfc" id="L67" title="All 2 branches covered.">        return bitCount.get(Boolean.FALSE) &lt;= bitCount.get(Boolean.TRUE);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

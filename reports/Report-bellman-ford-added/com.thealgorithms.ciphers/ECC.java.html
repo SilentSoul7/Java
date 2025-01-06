@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ECC.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.ciphers</a> &gt; <span class="el_source">ECC.java</span></div><h1>ECC.java</h1><pre class="source lang-java linenums">package com.thealgorithms.ciphers;
+
+import java.math.BigInteger;
+import java.security.SecureRandom;
+
+/**
+ * ECC - Elliptic Curve Cryptography
+ * Elliptic Curve Cryptography is a public-key cryptography method that uses the algebraic structure of
+ * elliptic curves over finite fields. ECC provides a higher level of security with smaller key sizes compared
+ * to other public-key methods like RSA, making it particularly suitable for environments where computational
+ * resources are limited, such as mobile devices and embedded systems.
+ *
+ * This class implements elliptic curve cryptography, providing encryption and decryption
+ * functionalities based on public and private key pairs.
+ *
+ * @author xuyang
+ */
+public class ECC {
+
+    private BigInteger privateKey; // Private key used for decryption
+    private ECPoint publicKey; // Public key used for encryption
+    private EllipticCurve curve; // Elliptic curve used in cryptography
+    private ECPoint basePoint; // Base point G on the elliptic curve
+
+<span class="fc" id="L25">    public ECC(int bits) {</span>
+<span class="fc" id="L26">        generateKeys(bits); // Generates public-private key pair</span>
+<span class="fc" id="L27">    }</span>
+
+    public EllipticCurve getCurve() {
+<span class="fc" id="L30">        return curve; // Returns the elliptic curve</span>
+    }
+
+    public void setCurve(EllipticCurve curve) {
+<span class="fc" id="L34">        this.curve = curve;</span>
+<span class="fc" id="L35">    }</span>
+
+    // Getter and Setter for private key
+    public BigInteger getPrivateKey() {
+<span class="fc" id="L39">        return privateKey;</span>
+    }
+
+    public void setPrivateKey(BigInteger privateKey) {
+<span class="fc" id="L43">        this.privateKey = privateKey;</span>
+<span class="fc" id="L44">    }</span>
+
+    /**
+     * Encrypts the message using the public key.
+     * The message is transformed into an ECPoint and encrypted with elliptic curve operations.
+     *
+     * @param message The plain message to be encrypted
+     * @return The encrypted message as an array of ECPoints (R, S)
+     */
+    public ECPoint[] encrypt(String message) {
+<span class="fc" id="L54">        BigInteger m = new BigInteger(message.getBytes()); // Convert message to BigInteger</span>
+<span class="fc" id="L55">        SecureRandom r = new SecureRandom(); // Generate random value for k</span>
+<span class="fc" id="L56">        BigInteger k = new BigInteger(curve.getFieldSize(), r); // Generate random scalar k</span>
+
+        // Calculate point r = k * G, where G is the base point
+<span class="fc" id="L59">        ECPoint rPoint = basePoint.multiply(k, curve.getP(), curve.getA());</span>
+
+        // Calculate point s = k * publicKey + encodedMessage
+<span class="fc" id="L62">        ECPoint sPoint = publicKey.multiply(k, curve.getP(), curve.getA()).add(curve.encodeMessage(m), curve.getP(), curve.getA());</span>
+
+<span class="fc" id="L64">        return new ECPoint[] {rPoint, sPoint}; // Return encrypted message as two ECPoints</span>
+    }
+
+    /**
+     * Decrypts the encrypted message using the private key.
+     * The decryption process is the reverse of encryption, recovering the original message.
+     *
+     * @param encryptedMessage The encrypted message as an array of ECPoints (R, S)
+     * @return The decrypted plain message as a String
+     */
+    public String decrypt(ECPoint[] encryptedMessage) {
+<span class="fc" id="L75">        ECPoint rPoint = encryptedMessage[0]; // First part of ciphertext</span>
+<span class="fc" id="L76">        ECPoint sPoint = encryptedMessage[1]; // Second part of ciphertext</span>
+
+        // Perform decryption: s - r * privateKey
+<span class="fc" id="L79">        ECPoint decodedMessage = sPoint.subtract(rPoint.multiply(privateKey, curve.getP(), curve.getA()), curve.getP(), curve.getA());</span>
+
+<span class="fc" id="L81">        BigInteger m = curve.decodeMessage(decodedMessage); // Decode the message from ECPoint</span>
+
+<span class="fc" id="L83">        return new String(m.toByteArray()); // Convert BigInteger back to String</span>
+    }
+
+    /**
+     * Generates a new public-private key pair for encryption and decryption.
+     *
+     * @param bits The size (in bits) of the keys to generate
+     */
+    public final void generateKeys(int bits) {
+<span class="fc" id="L92">        SecureRandom r = new SecureRandom();</span>
+<span class="fc" id="L93">        curve = new EllipticCurve(bits); // Initialize a new elliptic curve</span>
+<span class="fc" id="L94">        basePoint = curve.getBasePoint(); // Set the base point G</span>
+
+        // Generate private key as a random BigInteger
+<span class="fc" id="L97">        privateKey = new BigInteger(bits, r);</span>
+
+        // Generate public key as the point publicKey = privateKey * G
+<span class="fc" id="L100">        publicKey = basePoint.multiply(privateKey, curve.getP(), curve.getA());</span>
+<span class="fc" id="L101">    }</span>
+
+    /**
+     * Class representing an elliptic curve with the form y^2 = x^3 + ax + b.
+     */
+    public static class EllipticCurve {
+        private final BigInteger a; // Coefficient a in the curve equation
+        private final BigInteger b; // Coefficient b in the curve equation
+        private final BigInteger p; // Prime number p, defining the finite field
+        private final ECPoint basePoint; // Base point G on the curve
+
+        // Constructor with explicit parameters for a, b, p, and base point
+<span class="fc" id="L113">        public EllipticCurve(BigInteger a, BigInteger b, BigInteger p, ECPoint basePoint) {</span>
+<span class="fc" id="L114">            this.a = a;</span>
+<span class="fc" id="L115">            this.b = b;</span>
+<span class="fc" id="L116">            this.p = p;</span>
+<span class="fc" id="L117">            this.basePoint = basePoint;</span>
+<span class="fc" id="L118">        }</span>
+
+        // Constructor that randomly generates the curve parameters
+<span class="fc" id="L121">        public EllipticCurve(int bits) {</span>
+<span class="fc" id="L122">            SecureRandom r = new SecureRandom();</span>
+<span class="fc" id="L123">            this.p = BigInteger.probablePrime(bits, r); // Random prime p</span>
+<span class="fc" id="L124">            this.a = new BigInteger(bits, r); // Random coefficient a</span>
+<span class="fc" id="L125">            this.b = new BigInteger(bits, r); // Random coefficient b</span>
+<span class="fc" id="L126">            this.basePoint = new ECPoint(BigInteger.valueOf(4), BigInteger.valueOf(8)); // Fixed base point G</span>
+<span class="fc" id="L127">        }</span>
+
+        public ECPoint getBasePoint() {
+<span class="fc" id="L130">            return basePoint;</span>
+        }
+
+        public BigInteger getP() {
+<span class="fc" id="L134">            return p;</span>
+        }
+
+        public BigInteger getA() {
+<span class="fc" id="L138">            return a;</span>
+        }
+
+        public BigInteger getB() {
+<span class="fc" id="L142">            return b;</span>
+        }
+
+        public int getFieldSize() {
+<span class="fc" id="L146">            return p.bitLength();</span>
+        }
+
+        public ECPoint encodeMessage(BigInteger message) {
+            // Simple encoding of a message as an ECPoint (this is a simplified example)
+<span class="fc" id="L151">            return new ECPoint(message, message);</span>
+        }
+
+        public BigInteger decodeMessage(ECPoint point) {
+<span class="fc" id="L155">            return point.getX(); // Decode the message from ECPoint (simplified)</span>
+        }
+    }
+
+    /**
+     * Class representing a point on the elliptic curve.
+     */
+    public static class ECPoint {
+        private final BigInteger x; // X-coordinate of the point
+        private final BigInteger y; // Y-coordinate of the point
+
+<span class="fc" id="L166">        public ECPoint(BigInteger x, BigInteger y) {</span>
+<span class="fc" id="L167">            this.x = x;</span>
+<span class="fc" id="L168">            this.y = y;</span>
+<span class="fc" id="L169">        }</span>
+
+        public BigInteger getX() {
+<span class="fc" id="L172">            return x;</span>
+        }
+
+        public BigInteger getY() {
+<span class="nc" id="L176">            return y;</span>
+        }
+
+        @Override
+        public String toString() {
+<span class="fc" id="L181">            return &quot;ECPoint(x=&quot; + x.toString() + &quot;, y=&quot; + y.toString() + &quot;)&quot;;</span>
+        }
+
+        /**
+         * Add two points on the elliptic curve.
+         */
+        public ECPoint add(ECPoint other, BigInteger p, BigInteger a) {
+<span class="pc bpc" id="L188" title="1 of 4 branches missed.">            if (this.x.equals(BigInteger.ZERO) &amp;&amp; this.y.equals(BigInteger.ZERO)) {</span>
+<span class="fc" id="L189">                return other; // If this point is the identity, return the other point</span>
+            }
+<span class="pc bpc" id="L191" title="3 of 4 branches missed.">            if (other.x.equals(BigInteger.ZERO) &amp;&amp; other.y.equals(BigInteger.ZERO)) {</span>
+<span class="nc" id="L192">                return this; // If the other point is the identity, return this point</span>
+            }
+
+            BigInteger lambda;
+<span class="fc bfc" id="L196" title="All 2 branches covered.">            if (this.equals(other)) {</span>
+                // Special case: point doubling
+<span class="fc" id="L198">                lambda = this.x.pow(2).multiply(BigInteger.valueOf(3)).add(a).multiply(this.y.multiply(BigInteger.valueOf(2)).modInverse(p)).mod(p);</span>
+            } else {
+                // General case: adding two different points
+<span class="fc" id="L201">                lambda = other.y.subtract(this.y).multiply(other.x.subtract(this.x).modInverse(p)).mod(p);</span>
+            }
+
+<span class="fc" id="L204">            BigInteger xr = lambda.pow(2).subtract(this.x).subtract(other.x).mod(p);</span>
+<span class="fc" id="L205">            BigInteger yr = lambda.multiply(this.x.subtract(xr)).subtract(this.y).mod(p);</span>
+
+<span class="fc" id="L207">            return new ECPoint(xr, yr);</span>
+        }
+
+        /**
+         * Subtract two points on the elliptic curve.
+         */
+        public ECPoint subtract(ECPoint other, BigInteger p, BigInteger a) {
+<span class="fc" id="L214">            ECPoint negOther = new ECPoint(other.x, p.subtract(other.y)); // Negate the Y coordinate</span>
+<span class="fc" id="L215">            return this.add(negOther, p, a); // Add the negated point</span>
+        }
+
+        /**
+         * Multiply a point by a scalar (repeated addition).
+         */
+        public ECPoint multiply(BigInteger k, BigInteger p, BigInteger a) {
+<span class="fc" id="L222">            ECPoint result = new ECPoint(BigInteger.ZERO, BigInteger.ZERO); // Identity point</span>
+<span class="fc" id="L223">            ECPoint addend = this;</span>
+
+<span class="fc bfc" id="L225" title="All 2 branches covered.">            while (k.signum() &gt; 0) {</span>
+<span class="fc bfc" id="L226" title="All 2 branches covered.">                if (k.testBit(0)) {</span>
+<span class="fc" id="L227">                    result = result.add(addend, p, a); // Add the current point</span>
+                }
+<span class="fc" id="L229">                addend = addend.add(addend, p, a); // Double the point</span>
+<span class="fc" id="L230">                k = k.shiftRight(1); // Divide k by 2</span>
+            }
+
+<span class="fc" id="L233">            return result;</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

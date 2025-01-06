@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AutomorphicNumber.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.maths</a> &gt; <span class="el_source">AutomorphicNumber.java</span></div><h1>AutomorphicNumber.java</h1><pre class="source lang-java linenums">package com.thealgorithms.maths;
+
+import java.math.BigInteger;
+/**
+ * &lt;a href=&quot;https://en.wikipedia.org/wiki/Automorphic_number&quot;&gt;Automorphic Number&lt;/a&gt;
+ * A number is said to be an Automorphic, if it is present in the last digit(s)
+ * of its square. Example- Let the number be 25, its square is 625. Since,
+ * 25(The input number) is present in the last two digits of its square(625), it
+ * is an Automorphic Number.
+ */
+public final class AutomorphicNumber {
+    private AutomorphicNumber() {
+    }
+
+    /**
+     * A function to check if a number is Automorphic number or not
+     *
+     * @param n The number to be checked
+     * @return {@code true} if {@code a} is Automorphic number, otherwise
+     *         {@code false}
+     */
+    public static boolean isAutomorphic(long n) {
+<span class="fc bfc" id="L23" title="All 2 branches covered.">        if (n &lt; 0) {</span>
+<span class="fc" id="L24">            return false;</span>
+        }
+<span class="fc" id="L26">        long square = n * n; // Calculating square of the number</span>
+<span class="fc" id="L27">        long t = n;</span>
+<span class="fc" id="L28">        long numberOfdigits = 0;</span>
+<span class="fc bfc" id="L29" title="All 2 branches covered.">        while (t &gt; 0) {</span>
+<span class="fc" id="L30">            numberOfdigits++; // Calculating number of digits in n</span>
+<span class="fc" id="L31">            t /= 10;</span>
+        }
+<span class="fc" id="L33">        long lastDigits = square % (long) Math.pow(10, numberOfdigits); // Extracting last Digits of square</span>
+<span class="fc bfc" id="L34" title="All 2 branches covered.">        return n == lastDigits;</span>
+    }
+
+    /**
+     * A function to check if a number is Automorphic number or not by using String functions
+     *
+     * @param n The number to be checked
+     * @return {@code true} if {@code a} is Automorphic number, otherwise
+     *         {@code false}
+     */
+    public static boolean isAutomorphic2(long n) {
+<span class="fc bfc" id="L45" title="All 2 branches covered.">        if (n &lt; 0) {</span>
+<span class="fc" id="L46">            return false;</span>
+        }
+<span class="fc" id="L48">        long square = n * n; // Calculating square of the number</span>
+<span class="fc" id="L49">        return String.valueOf(square).endsWith(String.valueOf(n));</span>
+    }
+
+    /**
+     * A function to check if a number is Automorphic number or not by using BigInteger
+     *
+     * @param s The number in String to be checked
+     * @return {@code true} if {@code a} is Automorphic number, otherwise
+     *         {@code false}
+     */
+    public static boolean isAutomorphic3(String s) {
+<span class="fc" id="L60">        BigInteger n = new BigInteger(s);</span>
+<span class="fc bfc" id="L61" title="All 2 branches covered.">        if (n.signum() == -1) {</span>
+<span class="fc" id="L62">            return false; // if number is negative, return false</span>
+        }
+<span class="fc" id="L64">        BigInteger square = n.multiply(n); // Calculating square of the number</span>
+<span class="fc" id="L65">        return String.valueOf(square).endsWith(String.valueOf(n));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

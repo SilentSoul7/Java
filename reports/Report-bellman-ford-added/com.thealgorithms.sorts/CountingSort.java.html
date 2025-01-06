@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CountingSort.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.sorts</a> &gt; <span class="el_source">CountingSort.java</span></div><h1>CountingSort.java</h1><pre class="source lang-java linenums">package com.thealgorithms.sorts;
+
+import java.util.Arrays;
+
+/**
+ * A standard implementation of the Counting Sort algorithm for integer arrays.
+ * This implementation has a time complexity of O(n + k), where n is the number
+ * of elements in the input array and k is the range of the input.
+ * It works only with integer arrays.
+ *
+ * The space complexity is O(k), where k is the range of the input integers.
+ *
+ * Note: This implementation handles negative integers as it
+ * calculates the range based on the minimum and maximum values of the array.
+ *
+ */
+public final class CountingSort {
+    private CountingSort() {
+    }
+
+    /**
+     * Sorts an array of integers using the Counting Sort algorithm.
+     *
+     * @param array the array to be sorted
+     * @return the sorted array
+     */
+    public static int[] sort(int[] array) {
+<span class="fc bfc" id="L28" title="All 2 branches covered.">        if (array.length == 0) {</span>
+<span class="fc" id="L29">            return array;</span>
+        }
+<span class="fc" id="L31">        final var stats = Arrays.stream(array).summaryStatistics();</span>
+<span class="fc" id="L32">        final int min = stats.getMin();</span>
+<span class="fc" id="L33">        int[] count = computeHistogram(array, min, stats.getMax() - min + 1);</span>
+<span class="fc" id="L34">        toCumulative(count);</span>
+<span class="fc" id="L35">        return reconstructSorted(count, min, array);</span>
+    }
+
+    private static int[] computeHistogram(final int[] array, final int shift, final int spread) {
+<span class="fc" id="L39">        int[] res = new int[spread];</span>
+<span class="fc bfc" id="L40" title="All 2 branches covered.">        for (final var value : array) {</span>
+<span class="fc" id="L41">            res[value - shift]++;</span>
+        }
+<span class="fc" id="L43">        return res;</span>
+    }
+
+    private static void toCumulative(int[] count) {
+<span class="fc bfc" id="L47" title="All 2 branches covered.">        for (int i = 1; i &lt; count.length; i++) {</span>
+<span class="fc" id="L48">            count[i] += count[i - 1];</span>
+        }
+<span class="fc" id="L50">    }</span>
+
+    private static int[] reconstructSorted(final int[] cumulativeCount, final int shift, final int[] array) {
+<span class="fc" id="L53">        int[] res = new int[array.length];</span>
+<span class="fc bfc" id="L54" title="All 2 branches covered.">        for (int i = array.length - 1; i &gt;= 0; i--) {</span>
+<span class="fc" id="L55">            res[cumulativeCount[array[i] - shift] - 1] = array[i];</span>
+<span class="fc" id="L56">            cumulativeCount[array[i] - shift]--;</span>
+        }
+<span class="fc" id="L58">        return res;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LeftistHeap.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.heaps</a> &gt; <span class="el_source">LeftistHeap.java</span></div><h1>LeftistHeap.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.heaps;
+
+import java.util.ArrayList;
+
+/**
+ * This class implements a Leftist Heap, which is a type of priority queue
+ * that follows similar operations to a binary min-heap but allows for
+ * unbalanced structures based on the leftist property.
+ *
+ * &lt;p&gt;
+ * A Leftist Heap maintains the leftist property, which ensures that the
+ * left subtree is heavier than the right subtree based on the
+ * null-path length (npl) values. This allows for efficient merging
+ * of heaps and supports operations like insertion, extraction of
+ * the minimum element, and in-order traversal.
+ * &lt;/p&gt;
+ *
+ * &lt;p&gt;
+ * For more information on Leftist Heaps, visit:
+ * &lt;a href=&quot;https://iq.opengenus.org/leftist-heap/&quot;&gt;OpenGenus&lt;/a&gt;
+ * &lt;/p&gt;
+ */
+public class LeftistHeap {
+    // Node class representing each element in the Leftist Heap
+    private static final class Node {
+        private final int element;
+        private int npl;
+        private Node left;
+        private Node right;
+
+        // Node constructor that initializes the element and sets child pointers to null
+<span class="fc" id="L32">        private Node(int element) {</span>
+<span class="fc" id="L33">            this.element = element;</span>
+<span class="fc" id="L34">            left = null;</span>
+<span class="fc" id="L35">            right = null;</span>
+<span class="fc" id="L36">            npl = 0;</span>
+<span class="fc" id="L37">        }</span>
+    }
+
+    private Node root;
+
+    // Constructor initializing an empty Leftist Heap
+<span class="fc" id="L43">    public LeftistHeap() {</span>
+<span class="fc" id="L44">        root = null;</span>
+<span class="fc" id="L45">    }</span>
+
+    /**
+     * Checks if the heap is empty.
+     *
+     * @return true if the heap is empty; false otherwise
+     */
+    public boolean isEmpty() {
+<span class="fc bfc" id="L53" title="All 2 branches covered.">        return root == null;</span>
+    }
+
+    /**
+     * Resets the heap to its initial state, effectively clearing all elements.
+     */
+    public void clear() {
+<span class="fc" id="L60">        root = null; // Set root to null to clear the heap</span>
+<span class="fc" id="L61">    }</span>
+
+    /**
+     * Merges the contents of another Leftist Heap into this one.
+     *
+     * @param h1 the LeftistHeap to be merged into this heap
+     */
+    public void merge(LeftistHeap h1) {
+        // Merge the current heap with the provided heap and set the provided heap's root to null
+<span class="fc" id="L70">        root = merge(root, h1.root);</span>
+<span class="fc" id="L71">        h1.root = null;</span>
+<span class="fc" id="L72">    }</span>
+
+    /**
+     * Merges two nodes, maintaining the leftist property.
+     *
+     * @param a the first node
+     * @param b the second node
+     * @return the merged node maintaining the leftist property
+     */
+    public Node merge(Node a, Node b) {
+<span class="fc bfc" id="L82" title="All 2 branches covered.">        if (a == null) {</span>
+<span class="fc" id="L83">            return b;</span>
+        }
+
+<span class="fc bfc" id="L86" title="All 2 branches covered.">        if (b == null) {</span>
+<span class="fc" id="L87">            return a;</span>
+        }
+
+        // Ensure that the leftist property is maintained
+<span class="fc bfc" id="L91" title="All 2 branches covered.">        if (a.element &gt; b.element) {</span>
+<span class="fc" id="L92">            Node temp = a;</span>
+<span class="fc" id="L93">            a = b;</span>
+<span class="fc" id="L94">            b = temp;</span>
+        }
+
+        // Merge the right child of node a with node b
+<span class="fc" id="L98">        a.right = merge(a.right, b);</span>
+
+        // If left child is null, make right child the left child
+<span class="fc bfc" id="L101" title="All 2 branches covered.">        if (a.left == null) {</span>
+<span class="fc" id="L102">            a.left = a.right;</span>
+<span class="fc" id="L103">            a.right = null;</span>
+        } else {
+<span class="fc bfc" id="L105" title="All 2 branches covered.">            if (a.left.npl &lt; a.right.npl) {</span>
+<span class="fc" id="L106">                Node temp = a.left;</span>
+<span class="fc" id="L107">                a.left = a.right;</span>
+<span class="fc" id="L108">                a.right = temp;</span>
+            }
+<span class="fc" id="L110">            a.npl = a.right.npl + 1;</span>
+        }
+<span class="fc" id="L112">        return a;</span>
+    }
+
+    /**
+     * Inserts a new element into the Leftist Heap.
+     *
+     * @param a the element to be inserted
+     */
+    public void insert(int a) {
+<span class="fc" id="L121">        root = merge(new Node(a), root);</span>
+<span class="fc" id="L122">    }</span>
+
+    /**
+     * Extracts and removes the minimum element from the heap.
+     *
+     * @return the minimum element in the heap, or -1 if the heap is empty
+     */
+    public int extractMin() {
+<span class="fc bfc" id="L130" title="All 2 branches covered.">        if (isEmpty()) {</span>
+<span class="fc" id="L131">            return -1;</span>
+        }
+
+<span class="fc" id="L134">        int min = root.element;</span>
+<span class="fc" id="L135">        root = merge(root.left, root.right);</span>
+<span class="fc" id="L136">        return min;</span>
+    }
+
+    /**
+     * Returns a list of the elements in the heap in in-order traversal.
+     *
+     * @return an ArrayList containing the elements in in-order
+     */
+    public ArrayList&lt;Integer&gt; inOrder() {
+<span class="fc" id="L145">        ArrayList&lt;Integer&gt; lst = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L146">        inOrderAux(root, lst);</span>
+<span class="fc" id="L147">        return new ArrayList&lt;&gt;(lst);</span>
+    }
+
+    /**
+     * Auxiliary function for in-order traversal
+     *
+     * @param n the current node
+     * @param lst the list to store the elements in in-order
+     */
+    private void inOrderAux(Node n, ArrayList&lt;Integer&gt; lst) {
+<span class="fc bfc" id="L157" title="All 2 branches covered.">        if (n == null) {</span>
+<span class="fc" id="L158">            return;</span>
+        }
+<span class="fc" id="L160">        inOrderAux(n.left, lst);</span>
+<span class="fc" id="L161">        lst.add(n.element);</span>
+<span class="fc" id="L162">        inOrderAux(n.right, lst);</span>
+<span class="fc" id="L163">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

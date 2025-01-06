@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>KnightsTour.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.backtracking</a> &gt; <span class="el_source">KnightsTour.java</span></div><h1>KnightsTour.java</h1><pre class="source lang-java linenums">package com.thealgorithms.backtracking;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
+/**
+ * The KnightsTour class solves the Knight's Tour problem using backtracking.
+ *
+ * Problem Statement:
+ * Given an N*N board with a knight placed on the first block, the knight must
+ * move according to chess rules and visit each square on the board exactly once.
+ * The class outputs the sequence of moves for the knight.
+ *
+ * Example:
+ * Input: N = 8 (8x8 chess board)
+ * Output: The sequence of numbers representing the order in which the knight visits each square.
+ */
+public final class KnightsTour {
+    private KnightsTour() {
+    }
+
+    // The size of the chess board (12x12 grid, with 2 extra rows/columns as a buffer around a 8x8 area)
+    private static final int BASE = 12;
+
+    // Possible moves for a knight in chess
+<span class="fc" id="L27">    private static final int[][] MOVES = {</span>
+        {1, -2},
+        {2, -1},
+        {2, 1},
+        {1, 2},
+        {-1, 2},
+        {-2, 1},
+        {-2, -1},
+        {-1, -2},
+    };
+
+    // Chess grid representing the board
+    static int[][] grid;
+
+    // Total number of cells the knight needs to visit
+    static int total;
+
+    /**
+     * Resets the chess board to its initial state.
+     * Initializes the grid with boundary cells marked as -1 and internal cells as 0.
+     * Sets the total number of cells the knight needs to visit.
+     */
+    public static void resetBoard() {
+<span class="fc" id="L50">        grid = new int[BASE][BASE];</span>
+<span class="fc" id="L51">        total = (BASE - 4) * (BASE - 4);</span>
+<span class="fc bfc" id="L52" title="All 2 branches covered.">        for (int r = 0; r &lt; BASE; r++) {</span>
+<span class="fc bfc" id="L53" title="All 2 branches covered.">            for (int c = 0; c &lt; BASE; c++) {</span>
+<span class="fc bfc" id="L54" title="All 8 branches covered.">                if (r &lt; 2 || r &gt; BASE - 3 || c &lt; 2 || c &gt; BASE - 3) {</span>
+<span class="fc" id="L55">                    grid[r][c] = -1; // Mark boundary cells</span>
+                }
+            }
+        }
+<span class="fc" id="L59">    }</span>
+
+    /**
+     * Recursive method to solve the Knight's Tour problem.
+     *
+     * @param row   The current row of the knight
+     * @param column The current column of the knight
+     * @param count  The current move number
+     * @return True if a solution is found, False otherwise
+     */
+    static boolean solve(int row, int column, int count) {
+<span class="fc bfc" id="L70" title="All 2 branches covered.">        if (count &gt; total) {</span>
+<span class="fc" id="L71">            return true;</span>
+        }
+
+<span class="fc" id="L74">        List&lt;int[]&gt; neighbor = neighbors(row, column);</span>
+
+<span class="pc bpc" id="L76" title="3 of 4 branches missed.">        if (neighbor.isEmpty() &amp;&amp; count != total) {</span>
+<span class="nc" id="L77">            return false;</span>
+        }
+
+        // Sort neighbors by Warnsdorff's rule (fewest onward moves)
+<span class="fc" id="L81">        neighbor.sort(Comparator.comparingInt(a -&gt; a[2]));</span>
+
+<span class="pc bpc" id="L83" title="1 of 2 branches missed.">        for (int[] nb : neighbor) {</span>
+<span class="fc" id="L84">            int nextRow = nb[0];</span>
+<span class="fc" id="L85">            int nextCol = nb[1];</span>
+<span class="fc" id="L86">            grid[nextRow][nextCol] = count;</span>
+<span class="pc bpc" id="L87" title="2 of 4 branches missed.">            if (!orphanDetected(count, nextRow, nextCol) &amp;&amp; solve(nextRow, nextCol, count + 1)) {</span>
+<span class="fc" id="L88">                return true;</span>
+            }
+<span class="nc" id="L90">            grid[nextRow][nextCol] = 0; // Backtrack</span>
+<span class="nc" id="L91">        }</span>
+
+<span class="nc" id="L93">        return false;</span>
+    }
+
+    /**
+     * Returns a list of valid neighboring cells where the knight can move.
+     *
+     * @param row   The current row of the knight
+     * @param column The current column of the knight
+     * @return A list of arrays representing valid moves, where each array contains:
+     *         {nextRow, nextCol, numberOfPossibleNextMoves}
+     */
+    static List&lt;int[]&gt; neighbors(int row, int column) {
+<span class="fc" id="L105">        List&lt;int[]&gt; neighbour = new ArrayList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L107" title="All 2 branches covered.">        for (int[] m : MOVES) {</span>
+<span class="fc" id="L108">            int x = m[0];</span>
+<span class="fc" id="L109">            int y = m[1];</span>
+<span class="pc bpc" id="L110" title="4 of 10 branches missed.">            if (row + y &gt;= 0 &amp;&amp; row + y &lt; BASE &amp;&amp; column + x &gt;= 0 &amp;&amp; column + x &lt; BASE &amp;&amp; grid[row + y][column + x] == 0) {</span>
+<span class="fc" id="L111">                int num = countNeighbors(row + y, column + x);</span>
+<span class="fc" id="L112">                neighbour.add(new int[] {row + y, column + x, num});</span>
+            }
+        }
+<span class="fc" id="L115">        return neighbour;</span>
+    }
+
+    /**
+     * Counts the number of possible valid moves for a knight from a given position.
+     *
+     * @param row    The row of the current position
+     * @param column The column of the current position
+     * @return The number of valid neighboring moves
+     */
+    static int countNeighbors(int row, int column) {
+<span class="fc" id="L126">        int num = 0;</span>
+<span class="fc bfc" id="L127" title="All 2 branches covered.">        for (int[] m : MOVES) {</span>
+<span class="fc" id="L128">            int x = m[0];</span>
+<span class="fc" id="L129">            int y = m[1];</span>
+<span class="pc bpc" id="L130" title="4 of 10 branches missed.">            if (row + y &gt;= 0 &amp;&amp; row + y &lt; BASE &amp;&amp; column + x &gt;= 0 &amp;&amp; column + x &lt; BASE &amp;&amp; grid[row + y][column + x] == 0) {</span>
+<span class="fc" id="L131">                num++;</span>
+            }
+        }
+<span class="fc" id="L134">        return num;</span>
+    }
+
+    /**
+     * Detects if moving to a given position will create an orphan (a position with no further valid moves).
+     *
+     * @param count   The current move number
+     * @param row     The row of the current position
+     * @param column  The column of the current position
+     * @return True if an orphan is detected, False otherwise
+     */
+    static boolean orphanDetected(int count, int row, int column) {
+<span class="fc bfc" id="L146" title="All 2 branches covered.">        if (count &lt; total - 1) {</span>
+<span class="fc" id="L147">            List&lt;int[]&gt; neighbor = neighbors(row, column);</span>
+<span class="fc bfc" id="L148" title="All 2 branches covered.">            for (int[] nb : neighbor) {</span>
+<span class="pc bpc" id="L149" title="1 of 2 branches missed.">                if (countNeighbors(nb[0], nb[1]) == 0) {</span>
+<span class="nc" id="L150">                    return true;</span>
+                }
+<span class="fc" id="L152">            }</span>
+        }
+<span class="fc" id="L154">        return false;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

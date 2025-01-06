@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BresenhamLine.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.geometry</a> &gt; <span class="el_source">BresenhamLine.java</span></div><h1>BresenhamLine.java</h1><pre class="source lang-java linenums">package com.thealgorithms.geometry;
+
+import java.awt.Point;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * The {@code BresenhamLine} class implements the Bresenham's line algorithm,
+ * which is an efficient way to determine the points of a straight line
+ * between two given points in a 2D space.
+ *
+ * &lt;p&gt;This algorithm uses integer arithmetic to calculate the points,
+ * making it suitable for rasterization in computer graphics.&lt;/p&gt;
+ *
+ * For more information, please visit {@link https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm}
+ */
+public final class BresenhamLine {
+
+    private BresenhamLine() {
+        // Private constructor to prevent instantiation.
+    }
+
+    /**
+     * Finds the list of points that form a straight line between two endpoints.
+     *
+     * @param x0 the x-coordinate of the starting point
+     * @param y0 the y-coordinate of the starting point
+     * @param x1 the x-coordinate of the ending point
+     * @param y1 the y-coordinate of the ending point
+     * @return a {@code List&lt;Point&gt;} containing all points on the line
+     */
+    public static List&lt;Point&gt; findLine(int x0, int y0, int x1, int y1) {
+<span class="fc" id="L33">        List&lt;Point&gt; line = new ArrayList&lt;&gt;();</span>
+
+        // Calculate differences and steps for each axis
+<span class="fc" id="L36">        int dx = Math.abs(x1 - x0); // Change in x</span>
+<span class="fc" id="L37">        int dy = Math.abs(y1 - y0); // Change in y</span>
+<span class="fc bfc" id="L38" title="All 2 branches covered.">        int sx = (x0 &lt; x1) ? 1 : -1; // Step in x direction</span>
+<span class="fc bfc" id="L39" title="All 2 branches covered.">        int sy = (y0 &lt; y1) ? 1 : -1; // Step in y direction</span>
+<span class="fc" id="L40">        int err = dx - dy; // Initial error term</span>
+
+        // Loop until we reach the endpoint
+        while (true) {
+<span class="fc" id="L44">            line.add(new Point(x0, y0)); // Add current point to the line</span>
+
+            // Check if we've reached the endpoint
+<span class="fc bfc" id="L47" title="All 4 branches covered.">            if (x0 == x1 &amp;&amp; y0 == y1) {</span>
+<span class="fc" id="L48">                break; // Exit loop if endpoint is reached</span>
+            }
+
+            // Calculate error term doubled for decision making
+<span class="fc" id="L52">            final int e2 = err * 2;</span>
+
+            // Adjust x coordinate if necessary
+<span class="fc bfc" id="L55" title="All 2 branches covered.">            if (e2 &gt; -dy) {</span>
+<span class="fc" id="L56">                err -= dy; // Update error term</span>
+<span class="fc" id="L57">                x0 += sx; // Move to next point in x direction</span>
+            }
+
+            // Adjust y coordinate if necessary
+<span class="fc bfc" id="L61" title="All 2 branches covered.">            if (e2 &lt; dx) {</span>
+<span class="fc" id="L62">                err += dx; // Update error term</span>
+<span class="fc" id="L63">                y0 += sy; // Move to next point in y direction</span>
+            }
+<span class="fc" id="L65">        }</span>
+
+<span class="fc" id="L67">        return line; // Return the list of points forming the line</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

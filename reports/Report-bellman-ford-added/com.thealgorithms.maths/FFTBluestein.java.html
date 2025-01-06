@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FFTBluestein.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.maths</a> &gt; <span class="el_source">FFTBluestein.java</span></div><h1>FFTBluestein.java</h1><pre class="source lang-java linenums">package com.thealgorithms.maths;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Class for calculating the Fast Fourier Transform (FFT) of a discrete signal
+ * using the Bluestein's algorithm.
+ *
+ * @author Ioannis Karavitsis
+ * @version 1.0
+ */
+public final class FFTBluestein {
+    private FFTBluestein() {
+    }
+
+    /**
+     * Bluestein's FFT Algorithm.
+     *
+     * &lt;p&gt;
+     * More info:
+     * https://en.wikipedia.org/wiki/Chirp_Z-transform#Bluestein.27s_algorithm
+     * http://tka4.org/materials/lib/Articles-Books/Numerical%20Algorithms/Hartley_Trasform/Bluestein%27s%20FFT%20algorithm%20-%20Wikipedia,%20the%20free%20encyclopedia.htm
+     *
+     * @param x The discrete signal which is then converted to the FFT or the
+     * IFFT of signal x.
+     * @param inverse True if you want to find the inverse FFT.
+     */
+    public static void fftBluestein(List&lt;FFT.Complex&gt; x, boolean inverse) {
+<span class="nc" id="L30">        int n = x.size();</span>
+<span class="nc" id="L31">        int bnSize = 2 * n - 1;</span>
+<span class="nc bnc" id="L32" title="All 2 branches missed.">        int direction = inverse ? -1 : 1;</span>
+<span class="nc" id="L33">        ArrayList&lt;FFT.Complex&gt; an = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L34">        ArrayList&lt;FFT.Complex&gt; bn = new ArrayList&lt;&gt;();</span>
+
+        /* Initialization of the b(n) sequence (see Wikipedia's article above for the symbols
+         * used)*/
+<span class="nc bnc" id="L38" title="All 2 branches missed.">        for (int i = 0; i &lt; bnSize; i++) {</span>
+<span class="nc" id="L39">            bn.add(new FFT.Complex());</span>
+        }
+
+<span class="nc bnc" id="L42" title="All 2 branches missed.">        for (int i = 0; i &lt; n; i++) {</span>
+<span class="nc" id="L43">            double angle = (i - n + 1) * (i - n + 1) * Math.PI / n * direction;</span>
+<span class="nc" id="L44">            bn.set(i, new FFT.Complex(Math.cos(angle), Math.sin(angle)));</span>
+<span class="nc" id="L45">            bn.set(bnSize - i - 1, new FFT.Complex(Math.cos(angle), Math.sin(angle)));</span>
+        }
+
+        /* Initialization of the a(n) sequence */
+<span class="nc bnc" id="L49" title="All 2 branches missed.">        for (int i = 0; i &lt; n; i++) {</span>
+<span class="nc" id="L50">            double angle = -i * i * Math.PI / n * direction;</span>
+<span class="nc" id="L51">            an.add(x.get(i).multiply(new FFT.Complex(Math.cos(angle), Math.sin(angle))));</span>
+        }
+
+<span class="nc" id="L54">        ArrayList&lt;FFT.Complex&gt; convolution = ConvolutionFFT.convolutionFFT(an, bn);</span>
+
+        /* The final multiplication of the convolution with the b*(k) factor  */
+<span class="nc bnc" id="L57" title="All 2 branches missed.">        for (int i = 0; i &lt; n; i++) {</span>
+<span class="nc" id="L58">            double angle = -1 * i * i * Math.PI / n * direction;</span>
+<span class="nc" id="L59">            FFT.Complex bk = new FFT.Complex(Math.cos(angle), Math.sin(angle));</span>
+<span class="nc" id="L60">            x.set(i, bk.multiply(convolution.get(i + n - 1)));</span>
+        }
+
+        /* Divide by n if we want the inverse FFT */
+<span class="nc bnc" id="L64" title="All 2 branches missed.">        if (inverse) {</span>
+<span class="nc bnc" id="L65" title="All 2 branches missed.">            for (int i = 0; i &lt; n; i++) {</span>
+<span class="nc" id="L66">                FFT.Complex z = x.get(i);</span>
+<span class="nc" id="L67">                x.set(i, z.divide(n));</span>
+            }
+        }
+<span class="nc" id="L70">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

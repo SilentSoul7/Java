@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WineProblem.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.dynamicprogramming</a> &gt; <span class="el_source">WineProblem.java</span></div><h1>WineProblem.java</h1><pre class="source lang-java linenums">package com.thealgorithms.dynamicprogramming;
+
+/**
+ * The WineProblem class provides a solution to the wine selling problem.
+ * Given a collection of N wines with different prices, the objective is to maximize profit by selling
+ * one wine each year, considering the constraint that only the leftmost or rightmost wine can be sold
+ * at any given time.
+ *
+ * The price of the ith wine is pi, and the selling price increases by a factor of the year in which
+ * it is sold. This class implements three approaches to solve the problem:
+ *
+ * 1. **Recursion**: A straightforward recursive method that computes the maximum profit.
+ *    - Time Complexity: O(2^N)
+ *    - Space Complexity: O(N) due to recursive calls.
+ *
+ * 2. **Top-Down Dynamic Programming (Memoization)**: This approach caches the results of subproblems
+ *    to avoid redundant computations.
+ *    - Time Complexity: O(N^2)
+ *    - Space Complexity: O(N^2) for the storage of results and O(N) for recursion stack.
+ *
+ * 3. **Bottom-Up Dynamic Programming (Tabulation)**: This method builds a table iteratively to
+ *    compute the maximum profit for all possible subproblems.
+ *    - Time Complexity: O(N^2)
+ *    - Space Complexity: O(N^2) for the table.
+ */
+public final class WineProblem {
+    private WineProblem() {
+    }
+
+    /**
+     * Calculate maximum profit using recursion.
+     *
+     * @param arr Array of wine prices.
+     * @param si  Start index of the wine to consider.
+     * @param ei  End index of the wine to consider.
+     * @return Maximum profit obtainable by selling the wines.
+     */
+    public static int wpRecursion(int[] arr, int si, int ei) {
+<span class="fc" id="L39">        int n = arr.length;</span>
+<span class="fc" id="L40">        int year = (n - (ei - si + 1)) + 1;</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">        if (si == ei) {</span>
+<span class="fc" id="L42">            return arr[si] * year;</span>
+        }
+
+<span class="fc" id="L45">        int start = wpRecursion(arr, si + 1, ei) + arr[si] * year;</span>
+<span class="fc" id="L46">        int end = wpRecursion(arr, si, ei - 1) + arr[ei] * year;</span>
+
+<span class="fc" id="L48">        return Math.max(start, end);</span>
+    }
+
+    /**
+     * Calculate maximum profit using top-down dynamic programming with memoization.
+     *
+     * @param arr  Array of wine prices.
+     * @param si   Start index of the wine to consider.
+     * @param ei   End index of the wine to consider.
+     * @param strg 2D array to store results of subproblems.
+     * @return Maximum profit obtainable by selling the wines.
+     */
+    public static int wptd(int[] arr, int si, int ei, int[][] strg) {
+<span class="fc" id="L61">        int n = arr.length;</span>
+<span class="fc" id="L62">        int year = (n - (ei - si + 1)) + 1;</span>
+<span class="fc bfc" id="L63" title="All 2 branches covered.">        if (si == ei) {</span>
+<span class="fc" id="L64">            return arr[si] * year;</span>
+        }
+
+<span class="fc bfc" id="L67" title="All 2 branches covered.">        if (strg[si][ei] != 0) {</span>
+<span class="fc" id="L68">            return strg[si][ei];</span>
+        }
+<span class="fc" id="L70">        int start = wptd(arr, si + 1, ei, strg) + arr[si] * year;</span>
+<span class="fc" id="L71">        int end = wptd(arr, si, ei - 1, strg) + arr[ei] * year;</span>
+
+<span class="fc" id="L73">        int ans = Math.max(start, end);</span>
+<span class="fc" id="L74">        strg[si][ei] = ans;</span>
+
+<span class="fc" id="L76">        return ans;</span>
+    }
+
+    /**
+     * Calculate maximum profit using bottom-up dynamic programming with tabulation.
+     *
+     * @param arr Array of wine prices.
+     * @throws IllegalArgumentException if the input array is null or empty.
+     * @return Maximum profit obtainable by selling the wines.
+     */
+    public static int wpbu(int[] arr) {
+<span class="pc bpc" id="L87" title="1 of 4 branches missed.">        if (arr == null || arr.length == 0) {</span>
+<span class="fc" id="L88">            throw new IllegalArgumentException(&quot;Input array cannot be null or empty.&quot;);</span>
+        }
+<span class="fc" id="L90">        int n = arr.length;</span>
+<span class="fc" id="L91">        int[][] strg = new int[n][n];</span>
+
+<span class="fc bfc" id="L93" title="All 2 branches covered.">        for (int slide = 0; slide &lt;= n - 1; slide++) {</span>
+<span class="fc bfc" id="L94" title="All 2 branches covered.">            for (int si = 0; si &lt;= n - slide - 1; si++) {</span>
+<span class="fc" id="L95">                int ei = si + slide;</span>
+<span class="fc" id="L96">                int year = (n - (ei - si + 1)) + 1;</span>
+<span class="fc bfc" id="L97" title="All 2 branches covered.">                if (si == ei) {</span>
+<span class="fc" id="L98">                    strg[si][ei] = arr[si] * year;</span>
+                } else {
+<span class="fc" id="L100">                    int start = strg[si + 1][ei] + arr[si] * year;</span>
+<span class="fc" id="L101">                    int end = strg[si][ei - 1] + arr[ei] * year;</span>
+
+<span class="fc" id="L103">                    strg[si][ei] = Math.max(start, end);</span>
+                }
+            }
+        }
+<span class="fc" id="L107">        return strg[0][n - 1];</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CheckIfBinaryTreeBalanced.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.trees</a> &gt; <span class="el_source">CheckIfBinaryTreeBalanced.java</span></div><h1>CheckIfBinaryTreeBalanced.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.trees;
+
+import java.util.HashMap;
+import java.util.Stack;
+
+/**
+ * This class will check if a BinaryTree is balanced. A balanced binary tree is
+ * defined as a binary tree where the difference in height between the left and
+ * right subtree of each node differs by at most one.
+ * &lt;p&gt;
+ * This can be done in both an iterative and recursive fashion. Below,
+ * `isBalancedRecursive()` is implemented in a recursive fashion, and
+ * `isBalancedIterative()` is implemented in an iterative fashion.
+ *
+ * @author [Ian Cowan](&lt;a href=&quot;https://github.com/iccowan&quot;&gt;Git-Ian Cowan&lt;/a&gt;)
+ */
+public final class CheckIfBinaryTreeBalanced {
+    private CheckIfBinaryTreeBalanced() {
+    }
+    /**
+     * Recursive is BT balanced implementation
+     *
+     * @param root The binary tree to check if balanced
+     */
+    public static boolean isBalancedRecursive(BinaryTree.Node root) {
+<span class="fc bfc" id="L26" title="All 2 branches covered.">        if (root == null) {</span>
+<span class="fc" id="L27">            return true;</span>
+        }
+        // Create an array of length 1 to keep track of our balance
+        // Default to true. We use an array, so we have an efficient mutable object
+<span class="fc" id="L31">        boolean[] isBalanced = new boolean[1];</span>
+<span class="fc" id="L32">        isBalanced[0] = true;</span>
+
+        // Check for balance and return whether we are balanced
+<span class="fc" id="L35">        isBalancedRecursive(root, 0, isBalanced);</span>
+<span class="fc" id="L36">        return isBalanced[0];</span>
+    }
+
+    /**
+     * Private helper method to keep track of the depth and balance during
+     * recursion. We effectively perform a modified post-order traversal where
+     * we are looking at the heights of both children of each node in the tree
+     *
+     * @param node       The current node to explore
+     * @param depth      The current depth of the node
+     * @param isBalanced The array of length 1 keeping track of our balance
+     */
+    private static int isBalancedRecursive(BinaryTree.Node node, int depth, boolean[] isBalanced) {
+        // If the node is null, we should not explore it and the height is 0
+        // If the tree is already not balanced, might as well stop because we
+        // can't make it balanced now!
+<span class="pc bpc" id="L52" title="1 of 4 branches missed.">        if (node == null || !isBalanced[0]) {</span>
+<span class="fc" id="L53">            return 0;</span>
+        }
+
+        // Visit the left and right children, incrementing their depths by 1
+<span class="fc" id="L57">        int leftHeight = isBalancedRecursive(node.left, depth + 1, isBalanced);</span>
+<span class="fc" id="L58">        int rightHeight = isBalancedRecursive(node.right, depth + 1, isBalanced);</span>
+
+        // If the height of either of the left or right subtrees differ by more
+        // than 1, we cannot be balanced
+<span class="fc bfc" id="L62" title="All 2 branches covered.">        if (Math.abs(leftHeight - rightHeight) &gt; 1) {</span>
+<span class="fc" id="L63">            isBalanced[0] = false;</span>
+        }
+
+        // The height of our tree is the maximum of the heights of the left
+        // and right subtrees plus one
+<span class="fc" id="L68">        return Math.max(leftHeight, rightHeight) + 1;</span>
+    }
+
+    /**
+     * Iterative is BT balanced implementation
+     */
+    public static boolean isBalancedIterative(BinaryTree.Node root) {
+<span class="fc bfc" id="L75" title="All 2 branches covered.">        if (root == null) {</span>
+<span class="fc" id="L76">            return true;</span>
+        }
+
+        // Default that we are balanced and our algo will prove it wrong
+<span class="fc" id="L80">        boolean isBalanced = true;</span>
+
+        // Create a stack for our post order traversal
+<span class="fc" id="L83">        Stack&lt;BinaryTree.Node&gt; nodeStack = new Stack&lt;&gt;();</span>
+
+        // For post order traversal, we'll have to keep track of where we
+        // visited last
+<span class="fc" id="L87">        BinaryTree.Node lastVisited = null;</span>
+
+        // Create a HashMap to keep track of the subtree heights for each node
+<span class="fc" id="L90">        HashMap&lt;BinaryTree.Node, Integer&gt; subtreeHeights = new HashMap&lt;&gt;();</span>
+
+        // We begin at the root of the tree
+<span class="fc" id="L93">        BinaryTree.Node node = root;</span>
+
+        // We loop while:
+        // - the node stack is empty and the node we explore is null
+        // AND
+        // - the tree is still balanced
+<span class="pc bpc" id="L99" title="1 of 6 branches missed.">        while (!(nodeStack.isEmpty() &amp;&amp; node == null) &amp;&amp; isBalanced) {</span>
+            // If the node is not null, we push it to the stack and continue
+            // to the left
+<span class="fc bfc" id="L102" title="All 2 branches covered.">            if (node != null) {</span>
+<span class="fc" id="L103">                nodeStack.push(node);</span>
+<span class="fc" id="L104">                node = node.left;</span>
+                // Once we hit a node that is null, we are as deep as we can go
+                // to the left
+            } else {
+                // Find the last node we put on the stack
+<span class="fc" id="L109">                node = nodeStack.peek();</span>
+
+                // If the right child of the node has either been visited or
+                // is null, we visit this node
+<span class="fc bfc" id="L113" title="All 4 branches covered.">                if (node.right == null || node.right == lastVisited) {</span>
+                    // We assume the left and right heights are 0
+<span class="fc" id="L115">                    int leftHeight = 0;</span>
+<span class="fc" id="L116">                    int rightHeight = 0;</span>
+
+                    // If the right and left children are not null, we must
+                    // have already explored them and have a height
+                    // for them so let's get that
+<span class="fc bfc" id="L121" title="All 2 branches covered.">                    if (node.left != null) {</span>
+<span class="fc" id="L122">                        leftHeight = subtreeHeights.get(node.left);</span>
+                    }
+
+<span class="fc bfc" id="L125" title="All 2 branches covered.">                    if (node.right != null) {</span>
+<span class="fc" id="L126">                        rightHeight = subtreeHeights.get(node.right);</span>
+                    }
+
+                    // If the difference in the height of the right subtree
+                    // and left subtree differs by more than 1, we cannot be
+                    // balanced
+<span class="fc bfc" id="L132" title="All 2 branches covered.">                    if (Math.abs(rightHeight - leftHeight) &gt; 1) {</span>
+<span class="fc" id="L133">                        isBalanced = false;</span>
+                    }
+
+                    // The height of the subtree containing this node is the
+                    // max of the left and right subtree heights plus 1
+<span class="fc" id="L138">                    subtreeHeights.put(node, Math.max(rightHeight, leftHeight) + 1);</span>
+
+                    // We've now visited this node, so we pop it from the stack
+<span class="fc" id="L141">                    nodeStack.pop();</span>
+<span class="fc" id="L142">                    lastVisited = node;</span>
+
+                    // Current visiting node is now null
+<span class="fc" id="L145">                    node = null;</span>
+                    // If the right child node of this node has not been visited
+                    // and is not null, we need to get that child node on the stack
+<span class="fc" id="L148">                } else {</span>
+<span class="fc" id="L149">                    node = node.right;</span>
+                }
+            }
+        }
+
+        // Return whether the tree is balanced
+<span class="fc" id="L155">        return isBalanced;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

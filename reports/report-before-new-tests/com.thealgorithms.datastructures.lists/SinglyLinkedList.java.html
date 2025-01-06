@@ -1,0 +1,517 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SinglyLinkedList.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.lists</a> &gt; <span class="el_source">SinglyLinkedList.java</span></div><h1>SinglyLinkedList.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.lists;
+
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.StringJoiner;
+
+/**
+ * &lt;a href=&quot;https://en.wikipedia.org/wiki/Linked_list&quot;&gt;wikipedia&lt;/a&gt;
+ */
+<span class="fc" id="L10">public class SinglyLinkedList implements Iterable&lt;Integer&gt; {</span>
+
+    /**
+     * Head refer to the front of the list
+     */
+    private Node head;
+
+    /**
+     * Size of SinglyLinkedList
+     */
+    private int size;
+
+    /**
+     * Init SinglyLinkedList
+     */
+<span class="fc" id="L25">    public SinglyLinkedList() {</span>
+<span class="fc" id="L26">        head = null;</span>
+<span class="fc" id="L27">        size = 0;</span>
+<span class="fc" id="L28">    }</span>
+
+    /**
+     * Init SinglyLinkedList with specified head node and size
+     *
+     * @param head the head node of list
+     * @param size the size of list
+     */
+<span class="fc" id="L36">    public SinglyLinkedList(Node head, int size) {</span>
+<span class="fc" id="L37">        this.head = head;</span>
+<span class="fc" id="L38">        this.size = size;</span>
+<span class="fc" id="L39">    }</span>
+
+    /**
+     * Detects if there is a loop in the singly linked list using floy'd turtle
+     * and hare algorithm.
+     *
+     */
+    public boolean detectLoop() {
+<span class="fc" id="L47">        Node currentNodeFast = head;</span>
+<span class="fc" id="L48">        Node currentNodeSlow = head;</span>
+<span class="pc bpc" id="L49" title="1 of 4 branches missed.">        while (currentNodeFast != null &amp;&amp; currentNodeFast.next != null) {</span>
+<span class="fc" id="L50">            currentNodeFast = currentNodeFast.next.next;</span>
+<span class="fc" id="L51">            currentNodeSlow = currentNodeSlow.next;</span>
+<span class="fc bfc" id="L52" title="All 2 branches covered.">            if (currentNodeFast == currentNodeSlow) {</span>
+<span class="fc" id="L53">                return true;</span>
+            }
+        }
+<span class="fc" id="L56">        return false;</span>
+    }
+
+    /**
+     * Return the node in the middle of the list
+     * If the length of the list is even then return item number length/2
+     * @return middle node of the list
+     */
+    public Node middle() {
+<span class="fc bfc" id="L65" title="All 2 branches covered.">        if (head == null) {</span>
+<span class="fc" id="L66">            return null;</span>
+        }
+<span class="fc" id="L68">        Node firstCounter = head;</span>
+<span class="fc" id="L69">        Node secondCounter = firstCounter.next;</span>
+<span class="fc bfc" id="L70" title="All 4 branches covered.">        while (secondCounter != null &amp;&amp; secondCounter.next != null) {</span>
+<span class="fc" id="L71">            firstCounter = firstCounter.next;</span>
+<span class="fc" id="L72">            secondCounter = secondCounter.next.next;</span>
+        }
+<span class="fc" id="L74">        return firstCounter;</span>
+    }
+
+    /**
+     * Swaps nodes of two given values a and b.
+     *
+     */
+    public void swapNodes(int valueFirst, int valueSecond) {
+<span class="pc bpc" id="L82" title="1 of 2 branches missed.">        if (valueFirst == valueSecond) {</span>
+<span class="nc" id="L83">            return;</span>
+        }
+<span class="fc" id="L85">        Node previousA = null;</span>
+<span class="fc" id="L86">        Node currentA = head;</span>
+<span class="pc bpc" id="L87" title="2 of 4 branches missed.">        while (currentA != null &amp;&amp; currentA.value != valueFirst) {</span>
+<span class="nc" id="L88">            previousA = currentA;</span>
+<span class="nc" id="L89">            currentA = currentA.next;</span>
+        }
+
+<span class="fc" id="L92">        Node previousB = null;</span>
+<span class="fc" id="L93">        Node currentB = head;</span>
+<span class="pc bpc" id="L94" title="1 of 4 branches missed.">        while (currentB != null &amp;&amp; currentB.value != valueSecond) {</span>
+<span class="fc" id="L95">            previousB = currentB;</span>
+<span class="fc" id="L96">            currentB = currentB.next;</span>
+        }
+        /* If either of 'a' or 'b' is not present, then return */
+<span class="pc bpc" id="L99" title="2 of 4 branches missed.">        if (currentA == null || currentB == null) {</span>
+<span class="nc" id="L100">            return;</span>
+        }
+
+        // If 'a' is not head node of list
+<span class="pc bpc" id="L104" title="1 of 2 branches missed.">        if (previousA != null) {</span>
+<span class="nc" id="L105">            previousA.next = currentB;</span>
+        } else {
+            // make 'b' as the new head
+<span class="fc" id="L108">            head = currentB;</span>
+        }
+
+        // If 'b' is not head node of list
+<span class="pc bpc" id="L112" title="1 of 2 branches missed.">        if (previousB != null) {</span>
+<span class="fc" id="L113">            previousB.next = currentA;</span>
+        } else {
+            // Make 'a' as new head
+<span class="nc" id="L116">            head = currentA;</span>
+        }
+        // Swap next pointer
+
+<span class="fc" id="L120">        Node temp = currentA.next;</span>
+<span class="fc" id="L121">        currentA.next = currentB.next;</span>
+<span class="fc" id="L122">        currentB.next = temp;</span>
+<span class="fc" id="L123">    }</span>
+
+    /**
+     * Reverse a singly linked list[Iterative] from a given node till the end
+     *
+     */
+    public Node reverseListIter(Node node) {
+<span class="fc" id="L130">        Node prev = null;</span>
+<span class="fc" id="L131">        Node curr = node;</span>
+
+<span class="fc bfc" id="L133" title="All 4 branches covered.">        while (curr != null &amp;&amp; curr.next != null) {</span>
+<span class="fc" id="L134">            Node next = curr.next;</span>
+<span class="fc" id="L135">            curr.next = prev;</span>
+<span class="fc" id="L136">            prev = curr;</span>
+<span class="fc" id="L137">            curr = next;</span>
+<span class="fc" id="L138">        }</span>
+        // when curr.next==null, the current element is left without pointing it to its prev,so
+<span class="fc bfc" id="L140" title="All 2 branches covered.">        if (curr != null) {</span>
+<span class="fc" id="L141">            curr.next = prev;</span>
+<span class="fc" id="L142">            prev = curr;</span>
+        }
+        // prev will be pointing to the last element in the Linkedlist, it will be the new head of
+        // the reversed linkedlist
+<span class="fc" id="L146">        return prev;</span>
+    }
+    /**
+     * Reverse a singly linked list[Recursive] from a given node till the end
+     *
+     */
+    public Node reverseListRec(Node head) {
+<span class="fc bfc" id="L153" title="All 4 branches covered.">        if (head == null || head.next == null) {</span>
+<span class="fc" id="L154">            return head;</span>
+        }
+
+<span class="fc" id="L157">        Node prev = null;</span>
+<span class="fc" id="L158">        Node h2 = reverseListRec(head.next);</span>
+
+<span class="fc" id="L160">        head.next.next = head;</span>
+<span class="fc" id="L161">        head.next = prev;</span>
+
+<span class="fc" id="L163">        return h2;</span>
+    }
+
+    /**
+     * Clear all nodes in the list
+     */
+    public void clear() {
+<span class="fc" id="L170">        Node cur = head;</span>
+<span class="fc bfc" id="L171" title="All 2 branches covered.">        while (cur != null) {</span>
+<span class="fc" id="L172">            cur = cur.next;</span>
+        }
+<span class="fc" id="L174">        head = null;</span>
+<span class="fc" id="L175">        size = 0;</span>
+<span class="fc" id="L176">    }</span>
+
+    /**
+     * Checks if the list is empty
+     *
+     * @return {@code true} if list is empty, otherwise {@code false}.
+     */
+    public boolean isEmpty() {
+<span class="pc bpc" id="L184" title="1 of 2 branches missed.">        return size == 0;</span>
+    }
+
+    /**
+     * Returns the size of the linked list.
+     *
+     * @return the size of the list.
+     */
+    public int size() {
+<span class="fc" id="L193">        return size;</span>
+    }
+
+    /**
+     * Get head of the list.
+     *
+     * @return head of the list.
+     */
+    public Node getHead() {
+<span class="fc" id="L202">        return head;</span>
+    }
+
+    /**
+     * Set head of the list.
+     *
+     */
+    public void setHead(Node head) {
+<span class="fc" id="L210">        this.head = head;</span>
+<span class="fc" id="L211">    }</span>
+
+    /**
+     * Calculate the count of the list manually
+     *
+     * @return count of the list
+     */
+    public int count() {
+<span class="fc" id="L219">        int count = 0;</span>
+<span class="fc bfc" id="L220" title="All 2 branches covered.">        for (final var element : this) {</span>
+<span class="fc" id="L221">            ++count;</span>
+<span class="fc" id="L222">        }</span>
+<span class="fc" id="L223">        return count;</span>
+    }
+
+    /**
+     * Test if the value key is present in the list.
+     *
+     * @param key the value to be searched.
+     * @return {@code true} if key is present in the list, otherwise
+     * {@code false}.
+     */
+    public boolean search(final int key) {
+<span class="fc bfc" id="L234" title="All 2 branches covered.">        for (final var element : this) {</span>
+<span class="fc bfc" id="L235" title="All 2 branches covered.">            if (element == key) {</span>
+<span class="fc" id="L236">                return true;</span>
+            }
+<span class="fc" id="L238">        }</span>
+<span class="fc" id="L239">        return false;</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="fc" id="L244">        StringJoiner joiner = new StringJoiner(&quot;-&gt;&quot;);</span>
+<span class="fc bfc" id="L245" title="All 2 branches covered.">        for (final var element : this) {</span>
+<span class="fc" id="L246">            joiner.add(element + &quot;&quot;);</span>
+<span class="fc" id="L247">        }</span>
+<span class="fc" id="L248">        return joiner.toString();</span>
+    }
+
+    public void deleteDuplicates() {
+<span class="nc" id="L252">        Node pred = head;</span>
+        // predecessor = the node
+        // having sublist of its duplicates
+<span class="nc" id="L255">        Node newHead = head;</span>
+<span class="nc bnc" id="L256" title="All 2 branches missed.">        while (newHead != null) {</span>
+            // if it's a beginning of duplicates sublist
+            // skip all duplicates
+<span class="nc bnc" id="L259" title="All 4 branches missed.">            if (newHead.next != null &amp;&amp; newHead.value == newHead.next.value) {</span>
+                // move till the end of duplicates sublist
+<span class="nc bnc" id="L261" title="All 4 branches missed.">                while (newHead.next != null &amp;&amp; newHead.value == newHead.next.value) {</span>
+<span class="nc" id="L262">                    newHead = newHead.next;</span>
+                }
+                // skip all duplicates
+<span class="nc" id="L265">                pred.next = newHead.next;</span>
+<span class="nc" id="L266">                newHead = null;</span>
+                // otherwise, move predecessor
+            }
+            // move forward
+<span class="nc" id="L270">            pred = pred.next;</span>
+<span class="nc" id="L271">            newHead = pred;</span>
+        }
+<span class="nc" id="L273">    }</span>
+
+    public void print() {
+<span class="nc" id="L276">        Node temp = head;</span>
+<span class="nc bnc" id="L277" title="All 4 branches missed.">        while (temp != null &amp;&amp; temp.next != null) {</span>
+<span class="nc" id="L278">            System.out.print(temp.value + &quot;-&gt;&quot;);</span>
+<span class="nc" id="L279">            temp = temp.next;</span>
+        }
+<span class="nc bnc" id="L281" title="All 2 branches missed.">        if (temp != null) {</span>
+<span class="nc" id="L282">            System.out.print(temp.value);</span>
+<span class="nc" id="L283">            System.out.println();</span>
+        }
+<span class="nc" id="L285">    }</span>
+
+    /**
+     * Inserts an element at the head of the list
+     *
+     * @param x element to be added
+     */
+    public void insertHead(int x) {
+<span class="nc" id="L293">        insertNth(x, 0);</span>
+<span class="nc" id="L294">    }</span>
+
+    /**
+     * Insert an element at the tail of the list
+     *
+     * @param data element to be added
+     */
+    public void insert(int data) {
+<span class="fc" id="L302">        insertNth(data, size);</span>
+<span class="fc" id="L303">    }</span>
+
+    /**
+     * Inserts a new node at a specified position of the list
+     *
+     * @param data data to be stored in a new node
+     * @param position position at which a new node is to be inserted
+     */
+    public void insertNth(int data, int position) {
+<span class="fc" id="L312">        checkBounds(position, 0, size);</span>
+<span class="fc" id="L313">        Node newNode = new Node(data);</span>
+<span class="fc bfc" id="L314" title="All 2 branches covered.">        if (head == null) {</span>
+            /* the list is empty */
+<span class="fc" id="L316">            head = newNode;</span>
+<span class="fc" id="L317">            size++;</span>
+<span class="fc" id="L318">            return;</span>
+        }
+<span class="pc bpc" id="L320" title="1 of 2 branches missed.">        if (position == 0) {</span>
+            /* insert at the head of the list */
+<span class="nc" id="L322">            newNode.next = head;</span>
+<span class="nc" id="L323">            head = newNode;</span>
+<span class="nc" id="L324">            size++;</span>
+<span class="nc" id="L325">            return;</span>
+        }
+
+<span class="fc" id="L328">        Node cur = head;</span>
+<span class="fc bfc" id="L329" title="All 2 branches covered.">        for (int i = 0; i &lt; position - 1; ++i) {</span>
+<span class="fc" id="L330">            cur = cur.next;</span>
+        }
+<span class="fc" id="L332">        newNode.next = cur.next;</span>
+<span class="fc" id="L333">        cur.next = newNode;</span>
+<span class="fc" id="L334">        size++;</span>
+<span class="fc" id="L335">    }</span>
+
+    /**
+     * Deletes a node at the head
+     */
+    public void deleteHead() {
+<span class="nc" id="L341">        deleteNth(0);</span>
+<span class="nc" id="L342">    }</span>
+
+    /**
+     * Deletes an element at the tail
+     */
+    public void delete() {
+<span class="nc" id="L348">        deleteNth(size - 1);</span>
+<span class="nc" id="L349">    }</span>
+
+    /**
+     * Deletes an element at Nth position
+     */
+    public void deleteNth(int position) {
+<span class="fc" id="L355">        checkBounds(position, 0, size - 1);</span>
+<span class="pc bpc" id="L356" title="1 of 2 branches missed.">        if (position == 0) {</span>
+<span class="nc" id="L357">            head = head.next;</span>
+            /* clear to let GC do its work */
+<span class="nc" id="L359">            size--;</span>
+<span class="nc" id="L360">            return;</span>
+        }
+<span class="fc" id="L362">        Node cur = head;</span>
+<span class="fc bfc" id="L363" title="All 2 branches covered.">        for (int i = 0; i &lt; position - 1; ++i) {</span>
+<span class="fc" id="L364">            cur = cur.next;</span>
+        }
+
+<span class="fc" id="L367">        cur.next = cur.next.next;</span>
+<span class="fc" id="L368">        size--;</span>
+<span class="fc" id="L369">    }</span>
+
+    /**
+     * Return element at special index.
+     *
+     * @param index given index of element
+     * @return element at special index.
+     */
+    public int getNth(int index) {
+<span class="fc" id="L378">        checkBounds(index, 0, size - 1);</span>
+<span class="fc" id="L379">        Node cur = head;</span>
+<span class="fc bfc" id="L380" title="All 2 branches covered.">        for (int i = 0; i &lt; index; ++i) {</span>
+<span class="fc" id="L381">            cur = cur.next;</span>
+        }
+<span class="fc" id="L383">        return cur.value;</span>
+    }
+
+    /**
+     * @param position to check position
+     * @param low low index
+     * @param high high index
+     * @throws IndexOutOfBoundsException if {@code position} not in range
+     * {@code low} to {@code high}
+     */
+    public void checkBounds(int position, int low, int high) {
+<span class="pc bpc" id="L394" title="2 of 4 branches missed.">        if (position &gt; high || position &lt; low) {</span>
+<span class="nc" id="L395">            throw new IndexOutOfBoundsException(position + &quot;&quot;);</span>
+        }
+<span class="fc" id="L397">    }</span>
+
+    /**
+     * Driver Code
+     */
+    public static void main(String[] arg) {
+<span class="nc" id="L403">        SinglyLinkedList list = new SinglyLinkedList();</span>
+<span class="nc bnc" id="L404" title="All 2 branches missed.">        assert list.isEmpty();</span>
+<span class="nc bnc" id="L405" title="All 4 branches missed.">        assert list.size() == 0 &amp;&amp; list.count() == 0;</span>
+<span class="nc bnc" id="L406" title="All 2 branches missed.">        assert list.toString().isEmpty();</span>
+
+        /* Test insert function */
+<span class="nc" id="L409">        list.insertHead(5);</span>
+<span class="nc" id="L410">        list.insertHead(7);</span>
+<span class="nc" id="L411">        list.insertHead(10);</span>
+<span class="nc" id="L412">        list.insert(3);</span>
+<span class="nc" id="L413">        list.insertNth(1, 4);</span>
+<span class="nc bnc" id="L414" title="All 2 branches missed.">        assert list.toString().equals(&quot;10-&gt;7-&gt;5-&gt;3-&gt;1&quot;);</span>
+<span class="nc" id="L415">        System.out.println(list);</span>
+        /* Test search function */
+<span class="nc bnc" id="L417" title="All 8 branches missed.">        assert list.search(10) &amp;&amp; list.search(5) &amp;&amp; list.search(1) &amp;&amp; !list.search(100);</span>
+
+        /* Test get function */
+<span class="nc bnc" id="L420" title="All 6 branches missed.">        assert list.getNth(0) == 10 &amp;&amp; list.getNth(2) == 5 &amp;&amp; list.getNth(4) == 1;</span>
+
+        /* Test delete function */
+<span class="nc" id="L423">        list.deleteHead();</span>
+<span class="nc" id="L424">        list.deleteNth(1);</span>
+<span class="nc" id="L425">        list.delete();</span>
+<span class="nc bnc" id="L426" title="All 2 branches missed.">        assert list.toString().equals(&quot;7-&gt;3&quot;);</span>
+<span class="nc" id="L427">        System.out.println(list);</span>
+<span class="nc bnc" id="L428" title="All 4 branches missed.">        assert list.size == 2 &amp;&amp; list.size() == list.count();</span>
+
+<span class="nc" id="L430">        list.clear();</span>
+<span class="nc bnc" id="L431" title="All 2 branches missed.">        assert list.isEmpty();</span>
+
+        try {
+<span class="nc" id="L434">            list.delete();</span>
+<span class="nc" id="L435">            assert false;</span>
+            /* this should not happen */
+<span class="nc" id="L437">        } catch (Exception e) {</span>
+            assert true;
+            /* this should happen */
+<span class="nc" id="L440">        }</span>
+
+<span class="nc" id="L442">        SinglyLinkedList instance = new SinglyLinkedList();</span>
+<span class="nc" id="L443">        Node head = new Node(0, new Node(2, new Node(3, new Node(3, new Node(4)))));</span>
+<span class="nc" id="L444">        instance.setHead(head);</span>
+<span class="nc" id="L445">        instance.deleteDuplicates();</span>
+<span class="nc" id="L446">        instance.print();</span>
+<span class="nc" id="L447">    }</span>
+
+    @Override
+    public Iterator&lt;Integer&gt; iterator() {
+<span class="fc" id="L451">        return new SinglyLinkedListIterator();</span>
+    }
+
+    private class SinglyLinkedListIterator implements Iterator&lt;Integer&gt; {
+        private Node current;
+
+<span class="fc" id="L457">        SinglyLinkedListIterator() {</span>
+<span class="fc" id="L458">            current = head;</span>
+<span class="fc" id="L459">        }</span>
+
+        @Override
+        public boolean hasNext() {
+<span class="fc bfc" id="L463" title="All 2 branches covered.">            return current != null;</span>
+        }
+
+        @Override
+        public Integer next() {
+<span class="pc bpc" id="L468" title="1 of 2 branches missed.">            if (!hasNext()) {</span>
+<span class="nc" id="L469">                throw new NoSuchElementException();</span>
+            }
+<span class="fc" id="L471">            final var value = current.value;</span>
+<span class="fc" id="L472">            current = current.next;</span>
+<span class="fc" id="L473">            return value;</span>
+        }
+    }
+}
+
+/**
+ * This class is the nodes of the SinglyLinked List. They consist of a value and
+ * a pointer to the node after them.
+ */
+class Node {
+
+    /**
+     * The value of the node
+     */
+    int value;
+
+    /**
+     * Point to the next node
+     */
+    Node next;
+
+<span class="fc" id="L494">    Node() {</span>
+<span class="fc" id="L495">    }</span>
+
+    /**
+     * Constructor
+     *
+     * @param value Value to be put in the node
+     */
+    Node(int value) {
+<span class="fc" id="L503">        this(value, null);</span>
+<span class="fc" id="L504">    }</span>
+
+    /**
+     * Constructor
+     *
+     * @param value Value to be put in the node
+     * @param next Reference to the next node
+     */
+<span class="fc" id="L512">    Node(int value, Node next) {</span>
+<span class="fc" id="L513">        this.value = value;</span>
+<span class="fc" id="L514">        this.next = next;</span>
+<span class="fc" id="L515">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

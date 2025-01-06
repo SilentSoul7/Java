@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LotteryScheduling.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.scheduling</a> &gt; <span class="el_source">LotteryScheduling.java</span></div><h1>LotteryScheduling.java</h1><pre class="source lang-java linenums">package com.thealgorithms.scheduling;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+/**
+ * The LotteryScheduling class implements the Lottery Scheduling algorithm, which is
+ * a probabilistic CPU scheduling algorithm. Processes are assigned tickets, and
+ * the CPU is allocated to a randomly selected process based on ticket count.
+ * Processes with more tickets have a higher chance of being selected.
+ */
+public final class LotteryScheduling {
+    private LotteryScheduling() {
+    }
+
+    private List&lt;Process&gt; processes;
+    private Random random;
+
+    /**
+     * Constructs a LotteryScheduling object with the provided list of processes.
+     *
+     * @param processes List of processes to be scheduled using Lottery Scheduling.
+     */
+<span class="nc" id="L25">    public LotteryScheduling(final List&lt;Process&gt; processes) {</span>
+<span class="nc" id="L26">        this.processes = processes;</span>
+<span class="nc" id="L27">        this.random = new Random();</span>
+<span class="nc" id="L28">    }</span>
+
+    /**
+     * Constructs a LotteryScheduling object with the provided list of processes and a Random object.
+     *
+     * @param processes List of processes to be scheduled using Lottery Scheduling.
+     * @param random    Random object used for generating random numbers.
+     */
+<span class="fc" id="L36">    public LotteryScheduling(final List&lt;Process&gt; processes, Random random) {</span>
+<span class="fc" id="L37">        this.processes = processes;</span>
+<span class="fc" id="L38">        this.random = random;</span>
+<span class="fc" id="L39">    }</span>
+
+    /**
+     * Schedules the processes using the Lottery Scheduling algorithm.
+     * Each process is assigned a certain number of tickets, and the algorithm randomly
+     * selects a process to execute based on ticket count. The method calculates the
+     * waiting time and turnaround time for each process and simulates their execution.
+     */
+    public List&lt;Process&gt; scheduleProcesses() {
+<span class="fc" id="L48">        int totalTickets = processes.stream().mapToInt(Process::getTickets).sum();</span>
+<span class="fc" id="L49">        int currentTime = 0;</span>
+<span class="fc" id="L50">        List&lt;Process&gt; executedProcesses = new ArrayList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L52" title="All 2 branches covered.">        while (!processes.isEmpty()) {</span>
+<span class="fc" id="L53">            int winningTicket = random.nextInt(totalTickets) + 1;</span>
+<span class="fc" id="L54">            Process selectedProcess = selectProcessByTicket(winningTicket);</span>
+
+<span class="pc bpc" id="L56" title="1 of 2 branches missed.">            if (selectedProcess == null) {</span>
+                // This should not happen in normal circumstances, but we'll handle it just in case
+<span class="nc" id="L58">                System.err.println(&quot;Error: No process selected. Recalculating total tickets.&quot;);</span>
+<span class="nc" id="L59">                totalTickets = processes.stream().mapToInt(Process::getTickets).sum();</span>
+<span class="nc" id="L60">                continue;</span>
+            }
+
+<span class="fc" id="L63">            selectedProcess.setWaitingTime(currentTime);</span>
+<span class="fc" id="L64">            currentTime += selectedProcess.getBurstTime();</span>
+<span class="fc" id="L65">            selectedProcess.setTurnAroundTime(selectedProcess.getWaitingTime() + selectedProcess.getBurstTime());</span>
+
+<span class="fc" id="L67">            executedProcesses.add(selectedProcess);</span>
+<span class="fc" id="L68">            processes.remove(selectedProcess);</span>
+
+<span class="fc" id="L70">            totalTickets = processes.stream().mapToInt(Process::getTickets).sum();</span>
+<span class="fc" id="L71">        }</span>
+
+<span class="fc" id="L73">        return executedProcesses;</span>
+    }
+
+    /**
+     * Selects a process based on a winning ticket. The method iterates over the
+     * list of processes, and as the ticket sum accumulates, it checks if the
+     * current process holds the winning ticket.
+     *
+     * @param winningTicket The randomly generated ticket number that determines the selected process.
+     * @return The process associated with the winning ticket.
+     */
+    private Process selectProcessByTicket(int winningTicket) {
+<span class="fc" id="L85">        int ticketSum = 0;</span>
+<span class="pc bpc" id="L86" title="1 of 2 branches missed.">        for (Process process : processes) {</span>
+<span class="fc" id="L87">            ticketSum += process.getTickets();</span>
+<span class="pc bpc" id="L88" title="1 of 2 branches missed.">            if (ticketSum &gt;= winningTicket) {</span>
+<span class="fc" id="L89">                return process;</span>
+            }
+<span class="nc" id="L91">        }</span>
+<span class="nc" id="L92">        return null;</span>
+    }
+
+    /**
+     * The Process class represents a process in the scheduling system. Each process has
+     * an ID, burst time (CPU time required for execution), number of tickets (used in
+     * lottery selection), waiting time, and turnaround time.
+     */
+    public static class Process {
+        private String processId;
+        private int burstTime;
+        private int tickets;
+        private int waitingTime;
+        private int turnAroundTime;
+
+<span class="fc" id="L107">        public Process(String processId, int burstTime, int tickets) {</span>
+<span class="fc" id="L108">            this.processId = processId;</span>
+<span class="fc" id="L109">            this.burstTime = burstTime;</span>
+<span class="fc" id="L110">            this.tickets = tickets;</span>
+<span class="fc" id="L111">        }</span>
+
+        public String getProcessId() {
+<span class="fc" id="L114">            return processId;</span>
+        }
+
+        public int getBurstTime() {
+<span class="fc" id="L118">            return burstTime;</span>
+        }
+
+        public int getTickets() {
+<span class="fc" id="L122">            return tickets;</span>
+        }
+
+        public int getWaitingTime() {
+<span class="fc" id="L126">            return waitingTime;</span>
+        }
+
+        public void setWaitingTime(int waitingTime) {
+<span class="fc" id="L130">            this.waitingTime = waitingTime;</span>
+<span class="fc" id="L131">        }</span>
+
+        public int getTurnAroundTime() {
+<span class="fc" id="L134">            return turnAroundTime;</span>
+        }
+
+        public void setTurnAroundTime(int turnAroundTime) {
+<span class="fc" id="L138">            this.turnAroundTime = turnAroundTime;</span>
+<span class="fc" id="L139">        }</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

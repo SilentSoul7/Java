@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LinearSearchThread.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.searches</a> &gt; <span class="el_source">LinearSearchThread.java</span></div><h1>LinearSearchThread.java</h1><pre class="source lang-java linenums">package com.thealgorithms.searches;
+
+/**
+ * LinearSearchThread is a multithreaded implementation of the linear search algorithm.
+ * It creates multiple threads to search for a specific number in an array.
+ *
+ * &lt;p&gt;
+ * The class generates an array of random integers, prompts the user to enter a number to search for,
+ * and divides the array into four segments, each handled by a separate thread.
+ * The threads run concurrently and search for the specified number within their designated segments.
+ * Finally, it consolidates the results to determine if the number was found.
+ * &lt;/p&gt;
+ *
+ * &lt;p&gt;
+ * Example usage:
+ * 1. The program will output the generated array.
+ * 2. The user will be prompted to input a number to search for.
+ * 3. The program will display whether the number was found in the array.
+ * &lt;/p&gt;
+ */
+public final class LinearSearchThread {
+    private LinearSearchThread() {
+    }
+}
+
+/**
+ * The Searcher class extends Thread and is responsible for searching for a specific
+ * number in a segment of an array.
+ */
+class Searcher extends Thread {
+    private final int[] arr; // The array to search in
+    private final int left; // Starting index of the segment
+    private final int right; // Ending index of the segment
+    private final int x; // The number to search for
+    private boolean found; // Result flag
+
+    /**
+     * Constructor to initialize the Searcher.
+     *
+     * @param arr The array to search in
+     * @param left The starting index of the segment
+     * @param right The ending index of the segment
+     * @param x The number to search for
+     */
+<span class="fc" id="L45">    Searcher(int[] arr, int left, int right, int x) {</span>
+<span class="fc" id="L46">        this.arr = arr;</span>
+<span class="fc" id="L47">        this.left = left;</span>
+<span class="fc" id="L48">        this.right = right;</span>
+<span class="fc" id="L49">        this.x = x;</span>
+<span class="fc" id="L50">    }</span>
+
+    /**
+     * The run method for the thread, performing the linear search in its segment.
+     */
+    @Override
+    public void run() {
+<span class="fc" id="L57">        int k = left;</span>
+<span class="fc" id="L58">        found = false;</span>
+<span class="fc bfc" id="L59" title="All 4 branches covered.">        while (k &lt; right &amp;&amp; !found) {</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">            if (arr[k++] == x) {</span>
+<span class="fc" id="L61">                found = true;</span>
+            }
+        }
+<span class="fc" id="L64">    }</span>
+
+    /**
+     * Returns whether the number was found in the segment.
+     *
+     * @return true if the number was found, false otherwise
+     */
+    boolean getResult() {
+<span class="fc" id="L72">        return found;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BoundaryTraversal.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.trees</a> &gt; <span class="el_source">BoundaryTraversal.java</span></div><h1>BoundaryTraversal.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.trees;
+
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.List;
+
+/**
+ * BoundaryTraversal
+ * &lt;p&gt;
+ * Start with the Root:
+ * Add the root node to the boundary list.
+ * Traverse the Left Boundary (Excluding Leaf Nodes):
+ * Move down the left side of the tree, adding each non-leaf node to the boundary list.
+ * If a node has a left child, go left; otherwise, go right.
+ * Visit All Leaf Nodes:
+ * Traverse the tree and add all leaf nodes to the boundary list, from left to right.
+ * Traverse the Right Boundary (Excluding Leaf Nodes) in Reverse Order:
+ * Move up the right side of the tree, adding each non-leaf node to a temporary list.
+ * If a node has a right child, go right; otherwise, go left.
+ * Reverse the temporary list and add it to the boundary list.
+ * Combine and Output:
+ * The final boundary list contains the root, left boundary, leaf nodes, and reversed right boundary in that order.
+ */
+public final class BoundaryTraversal {
+    private BoundaryTraversal() {
+    }
+
+    // Main function for boundary traversal, returns a list of boundary nodes in order
+    public static List&lt;Integer&gt; boundaryTraversal(BinaryTree.Node root) {
+<span class="fc" id="L31">        List&lt;Integer&gt; result = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L32" title="All 2 branches covered.">        if (root == null) {</span>
+<span class="fc" id="L33">            return result;</span>
+        }
+
+        // Add root node if it's not a leaf node
+<span class="fc bfc" id="L37" title="All 2 branches covered.">        if (!isLeaf(root)) {</span>
+<span class="fc" id="L38">            result.add(root.data);</span>
+        }
+
+        // Add left boundary
+<span class="fc" id="L42">        addLeftBoundary(root, result);</span>
+
+        // Add leaf nodes
+<span class="fc" id="L45">        addLeaves(root, result);</span>
+
+        // Add right boundary
+<span class="fc" id="L48">        addRightBoundary(root, result);</span>
+
+<span class="fc" id="L50">        return result;</span>
+    }
+
+    // Adds the left boundary, including nodes that have no left child but have a right child
+    private static void addLeftBoundary(BinaryTree.Node node, List&lt;Integer&gt; result) {
+<span class="fc" id="L55">        BinaryTree.Node cur = node.left;</span>
+
+        // If there is no left child but there is a right child, treat the right child as part of the left boundary
+<span class="fc bfc" id="L58" title="All 4 branches covered.">        if (cur == null &amp;&amp; node.right != null) {</span>
+<span class="fc" id="L59">            cur = node.right;</span>
+        }
+
+<span class="fc bfc" id="L62" title="All 2 branches covered.">        while (cur != null) {</span>
+<span class="fc bfc" id="L63" title="All 2 branches covered.">            if (!isLeaf(cur)) {</span>
+<span class="fc" id="L64">                result.add(cur.data); // Add non-leaf nodes to result</span>
+            }
+<span class="fc bfc" id="L66" title="All 2 branches covered.">            if (cur.left != null) {</span>
+<span class="fc" id="L67">                cur = cur.left; // Move to the left child</span>
+<span class="fc bfc" id="L68" title="All 2 branches covered.">            } else if (cur.right != null) {</span>
+<span class="fc" id="L69">                cur = cur.right; // If left child is null, move to the right child</span>
+            } else {
+                break; // Stop if there are no children
+            }
+        }
+<span class="fc" id="L74">    }</span>
+
+    // Adds leaf nodes (nodes without children)
+    private static void addLeaves(BinaryTree.Node node, List&lt;Integer&gt; result) {
+<span class="fc bfc" id="L78" title="All 2 branches covered.">        if (node == null) {</span>
+<span class="fc" id="L79">            return;</span>
+        }
+<span class="fc bfc" id="L81" title="All 2 branches covered.">        if (isLeaf(node)) {</span>
+<span class="fc" id="L82">            result.add(node.data); // Add leaf node</span>
+        } else {
+<span class="fc" id="L84">            addLeaves(node.left, result); // Recur for left subtree</span>
+<span class="fc" id="L85">            addLeaves(node.right, result); // Recur for right subtree</span>
+        }
+<span class="fc" id="L87">    }</span>
+
+    // Adds the right boundary, excluding leaf nodes
+    private static void addRightBoundary(BinaryTree.Node node, List&lt;Integer&gt; result) {
+<span class="fc" id="L91">        BinaryTree.Node cur = node.right;</span>
+<span class="fc" id="L92">        List&lt;Integer&gt; temp = new ArrayList&lt;&gt;();</span>
+
+        // If no right boundary is present and there is no left subtree, skip
+<span class="fc bfc" id="L95" title="All 4 branches covered.">        if (cur != null &amp;&amp; node.left == null) {</span>
+<span class="fc" id="L96">            return;</span>
+        }
+<span class="fc bfc" id="L98" title="All 2 branches covered.">        while (cur != null) {</span>
+<span class="fc bfc" id="L99" title="All 2 branches covered.">            if (!isLeaf(cur)) {</span>
+<span class="fc" id="L100">                temp.add(cur.data); // Store non-leaf nodes temporarily</span>
+            }
+<span class="fc bfc" id="L102" title="All 2 branches covered.">            if (cur.right != null) {</span>
+<span class="fc" id="L103">                cur = cur.right; // Move to the right child</span>
+<span class="fc bfc" id="L104" title="All 2 branches covered.">            } else if (cur.left != null) {</span>
+<span class="fc" id="L105">                cur = cur.left; // If right child is null, move to the left child</span>
+            } else {
+                break; // Stop if there are no children
+            }
+        }
+
+        // Add the right boundary nodes in reverse order
+<span class="fc bfc" id="L112" title="All 2 branches covered.">        for (int i = temp.size() - 1; i &gt;= 0; i--) {</span>
+<span class="fc" id="L113">            result.add(temp.get(i));</span>
+        }
+<span class="fc" id="L115">    }</span>
+
+    // Checks if a node is a leaf node
+    private static boolean isLeaf(BinaryTree.Node node) {
+<span class="fc bfc" id="L119" title="All 4 branches covered.">        return node.left == null &amp;&amp; node.right == null;</span>
+    }
+
+    // Iterative boundary traversal
+    public static List&lt;Integer&gt; iterativeBoundaryTraversal(BinaryTree.Node root) {
+<span class="fc" id="L124">        List&lt;Integer&gt; result = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L125" title="All 2 branches covered.">        if (root == null) {</span>
+<span class="fc" id="L126">            return result;</span>
+        }
+
+        // Add root node if it's not a leaf node
+<span class="fc bfc" id="L130" title="All 2 branches covered.">        if (!isLeaf(root)) {</span>
+<span class="fc" id="L131">            result.add(root.data);</span>
+        }
+
+        // Handle the left boundary
+<span class="fc" id="L135">        BinaryTree.Node cur = root.left;</span>
+<span class="fc bfc" id="L136" title="All 4 branches covered.">        if (cur == null &amp;&amp; root.right != null) {</span>
+<span class="fc" id="L137">            cur = root.right;</span>
+        }
+<span class="fc bfc" id="L139" title="All 2 branches covered.">        while (cur != null) {</span>
+<span class="fc bfc" id="L140" title="All 2 branches covered.">            if (!isLeaf(cur)) {</span>
+<span class="fc" id="L141">                result.add(cur.data); // Add non-leaf nodes to result</span>
+            }
+<span class="fc bfc" id="L143" title="All 2 branches covered.">            cur = (cur.left != null) ? cur.left : cur.right; // Prioritize left child, move to right if left is null</span>
+        }
+
+        // Add leaf nodes
+<span class="fc" id="L147">        addLeaves(root, result);</span>
+
+        // Handle the right boundary using a stack (reverse order)
+<span class="fc" id="L150">        cur = root.right;</span>
+<span class="fc" id="L151">        Deque&lt;Integer&gt; stack = new LinkedList&lt;&gt;();</span>
+<span class="fc bfc" id="L152" title="All 4 branches covered.">        if (cur != null &amp;&amp; root.left == null) {</span>
+<span class="fc" id="L153">            return result;</span>
+        }
+<span class="fc bfc" id="L155" title="All 2 branches covered.">        while (cur != null) {</span>
+<span class="fc bfc" id="L156" title="All 2 branches covered.">            if (!isLeaf(cur)) {</span>
+<span class="fc" id="L157">                stack.push(cur.data); // Temporarily store right boundary nodes in a stack</span>
+            }
+<span class="fc bfc" id="L159" title="All 2 branches covered.">            cur = (cur.right != null) ? cur.right : cur.left; // Prioritize right child, move to left if right is null</span>
+        }
+
+        // Add the right boundary nodes from the stack to maintain the correct order
+<span class="fc bfc" id="L163" title="All 2 branches covered.">        while (!stack.isEmpty()) {</span>
+<span class="fc" id="L164">            result.add(stack.pop());</span>
+        }
+<span class="fc" id="L166">        return result;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

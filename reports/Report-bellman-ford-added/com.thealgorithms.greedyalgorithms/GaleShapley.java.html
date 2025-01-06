@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GaleShapley.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.greedyalgorithms</a> &gt; <span class="el_source">GaleShapley.java</span></div><h1>GaleShapley.java</h1><pre class="source lang-java linenums">package com.thealgorithms.greedyalgorithms;
+
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+
+/**
+ * Implementation of the Gale-Shapley Algorithm for Stable Matching.
+ * Problem link: https://en.wikipedia.org/wiki/Stable_marriage_problem
+ */
+public final class GaleShapley {
+
+    private GaleShapley() {
+    }
+
+    /**
+     * Function to find stable matches between men and women.
+     *
+     * @param womenPrefs A map containing women's preferences where each key is a woman and the value is an array of men in order of preference.
+     * @param menPrefs   A map containing men's preferences where each key is a man and the value is an array of women in order of preference.
+     * @return A map containing stable matches where the key is a woman and the value is her matched man.
+     */
+    public static Map&lt;String, String&gt; stableMatch(Map&lt;String, LinkedList&lt;String&gt;&gt; womenPrefs, Map&lt;String, LinkedList&lt;String&gt;&gt; menPrefs) {
+        // Initialize all men as free
+<span class="fc" id="L25">        Map&lt;String, String&gt; engagements = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L26">        LinkedList&lt;String&gt; freeMen = new LinkedList&lt;&gt;(menPrefs.keySet());</span>
+
+        // While there are free men
+<span class="fc bfc" id="L29" title="All 2 branches covered.">        while (!freeMen.isEmpty()) {</span>
+<span class="fc" id="L30">            String man = freeMen.poll(); // Get the first free man</span>
+<span class="fc" id="L31">            LinkedList&lt;String&gt; manPref = menPrefs.get(man); // Get the preferences of the man</span>
+
+            // Check if manPref is null or empty
+<span class="pc bpc" id="L34" title="2 of 4 branches missed.">            if (manPref == null || manPref.isEmpty()) {</span>
+<span class="nc" id="L35">                continue; // Skip if no preferences</span>
+            }
+
+            // Propose to the first woman in the man's preference list
+<span class="fc" id="L39">            String woman = manPref.poll();</span>
+<span class="fc" id="L40">            String fiance = engagements.get(woman);</span>
+
+            // If the woman is not engaged, engage her with the current man
+<span class="fc bfc" id="L43" title="All 2 branches covered.">            if (fiance == null) {</span>
+<span class="fc" id="L44">                engagements.put(woman, man);</span>
+            } else {
+                // If the woman prefers the current man over her current fiance
+<span class="fc" id="L47">                LinkedList&lt;String&gt; womanPrefList = womenPrefs.get(woman);</span>
+
+                // Check if womanPrefList is null
+<span class="pc bpc" id="L50" title="1 of 2 branches missed.">                if (womanPrefList == null) {</span>
+<span class="nc" id="L51">                    continue; // Skip if no preferences for the woman</span>
+                }
+
+<span class="pc bpc" id="L54" title="1 of 2 branches missed.">                if (womanPrefList.indexOf(man) &lt; womanPrefList.indexOf(fiance)) {</span>
+<span class="nc" id="L55">                    engagements.put(woman, man);</span>
+<span class="nc" id="L56">                    freeMen.add(fiance); // Previous fiance becomes free</span>
+                } else {
+                    // Woman rejects the new proposal, the man remains free
+<span class="fc" id="L59">                    freeMen.add(man);</span>
+                }
+            }
+<span class="fc" id="L62">        }</span>
+<span class="fc" id="L63">        return engagements; // Return the stable matches</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

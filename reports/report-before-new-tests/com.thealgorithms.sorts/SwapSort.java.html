@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SwapSort.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.sorts</a> &gt; <span class="el_source">SwapSort.java</span></div><h1>SwapSort.java</h1><pre class="source lang-java linenums">package com.thealgorithms.sorts;
+
+/**
+ * The idea of Swap-Sort is to count the number m of smaller values (that are in
+ * A) from each element of an array A(1...n) and then swap the element with the
+ * element in A(m+1). This ensures that the exchanged element is already in the
+ * correct, i.e. final, position. The disadvantage of this algorithm is that
+ * each element may only occur once, otherwise there is no termination.
+ */
+<span class="fc" id="L10">public class SwapSort implements SortAlgorithm {</span>
+
+    @Override
+    public &lt;T extends Comparable&lt;T&gt;&gt; T[] sort(T[] array) {
+<span class="fc" id="L14">        int index = 0;</span>
+
+<span class="fc bfc" id="L16" title="All 2 branches covered.">        while (index &lt; array.length - 1) {</span>
+<span class="fc" id="L17">            final int amountSmallerElements = this.getSmallerElementCount(array, index);</span>
+
+<span class="fc bfc" id="L19" title="All 2 branches covered.">            if (amountSmallerElements &gt; 0) {</span>
+<span class="fc" id="L20">                SortUtils.swap(array, index, index + amountSmallerElements);</span>
+            } else {
+<span class="fc" id="L22">                index++;</span>
+            }
+<span class="fc" id="L24">        }</span>
+
+<span class="fc" id="L26">        return array;</span>
+    }
+
+    private &lt;T extends Comparable&lt;T&gt;&gt; int getSmallerElementCount(final T[] array, final int index) {
+<span class="fc" id="L30">        int counter = 0;</span>
+<span class="fc bfc" id="L31" title="All 2 branches covered.">        for (int i = index + 1; i &lt; array.length; i++) {</span>
+<span class="fc bfc" id="L32" title="All 2 branches covered.">            if (SortUtils.less(array[i], array[index])) {</span>
+<span class="fc" id="L33">                counter++;</span>
+            }
+        }
+
+<span class="fc" id="L37">        return counter;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

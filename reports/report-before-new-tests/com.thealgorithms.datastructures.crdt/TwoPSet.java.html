@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TwoPSet.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.crdt</a> &gt; <span class="el_source">TwoPSet.java</span></div><h1>TwoPSet.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.crdt;
+
+import java.util.HashSet;
+import java.util.Set;
+
+/**
+ * TwoPhaseSet (2P-Set) is a state-based CRDT (Conflict-free Replicated Data Type) designed for managing sets
+ * with support for both addition and removal operations in a distributed and concurrent environment.
+ * It combines two G-Sets (grow-only sets) - one set for additions and another set (tombstone set) for removals.
+ * Once an element is removed and placed in the tombstone set, it cannot be re-added, adhering to &quot;remove-wins&quot; semantics.
+ * This implementation supports querying the presence of elements, adding elements, removing elements,
+ * comparing with other 2P-Sets, and merging two 2P-Sets while preserving the remove-wins semantics.
+ * (https://en.wikipedia.org/wiki/Conflict-free_replicated_data_type)
+ *
+ * @author itakurah (Niklas Hoefflin) (https://github.com/itakurah)
+ */
+
+public class TwoPSet&lt;T&gt; {
+    private final Set&lt;T&gt; setA;
+    private final Set&lt;T&gt; setR;
+
+    /**
+     * Constructs an empty Two-Phase Set.
+     */
+<span class="fc" id="L25">    public TwoPSet() {</span>
+<span class="fc" id="L26">        this.setA = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L27">        this.setR = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L28">    }</span>
+
+    /**
+     * Checks if an element is in the set and has not been removed.
+     *
+     * @param element The element to be checked.
+     * @return True if the element is in the set and has not been removed, otherwise false.
+     */
+    public boolean lookup(T element) {
+<span class="fc bfc" id="L37" title="All 4 branches covered.">        return setA.contains(element) &amp;&amp; !setR.contains(element);</span>
+    }
+
+    /**
+     * Adds an element to the set.
+     *
+     * @param element The element to be added.
+     */
+    public void add(T element) {
+<span class="fc" id="L46">        setA.add(element);</span>
+<span class="fc" id="L47">    }</span>
+
+    /**
+     * Removes an element from the set. The element will be placed in the tombstone set.
+     *
+     * @param element The element to be removed.
+     */
+    public void remove(T element) {
+<span class="pc bpc" id="L55" title="1 of 2 branches missed.">        if (lookup(element)) {</span>
+<span class="fc" id="L56">            setR.add(element);</span>
+        }
+<span class="fc" id="L58">    }</span>
+
+    /**
+     * Compares the current 2P-Set with another 2P-Set.
+     *
+     * @param otherSet The other 2P-Set to compare with.
+     * @return True if both SetA and SetR are subset, otherwise false.
+     */
+    public boolean compare(TwoPSet&lt;T&gt; otherSet) {
+<span class="fc bfc" id="L67" title="All 4 branches covered.">        return otherSet.setA.containsAll(setA) &amp;&amp; otherSet.setR.containsAll(setR);</span>
+    }
+
+    /**
+     * Merges the current 2P-Set with another 2P-Set.
+     *
+     * @param otherSet The other 2P-Set to merge with.
+     * @return A new 2P-Set containing the merged elements.
+     */
+    public TwoPSet&lt;T&gt; merge(TwoPSet&lt;T&gt; otherSet) {
+<span class="fc" id="L77">        TwoPSet&lt;T&gt; mergedSet = new TwoPSet&lt;&gt;();</span>
+<span class="fc" id="L78">        mergedSet.setA.addAll(this.setA);</span>
+<span class="fc" id="L79">        mergedSet.setA.addAll(otherSet.setA);</span>
+<span class="fc" id="L80">        mergedSet.setR.addAll(this.setR);</span>
+<span class="fc" id="L81">        mergedSet.setR.addAll(otherSet.setR);</span>
+<span class="fc" id="L82">        return mergedSet;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

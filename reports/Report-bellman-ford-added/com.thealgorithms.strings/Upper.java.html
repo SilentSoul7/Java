@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Upper.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.strings</a> &gt; <span class="el_source">Upper.java</span></div><h1>Upper.java</h1><pre class="source lang-java linenums">package com.thealgorithms.strings;
+
+<span class="fc" id="L3">public final class Upper {</span>
+    private Upper() {
+    }
+
+    /**
+     * Driver Code
+     */
+    public static void main(String[] args) {
+<span class="nc" id="L11">        String[] strings = {&quot;ABC&quot;, &quot;ABC123&quot;, &quot;abcABC&quot;, &quot;abc123ABC&quot;};</span>
+<span class="nc bnc" id="L12" title="All 2 branches missed.">        for (String s : strings) {</span>
+<span class="nc bnc" id="L13" title="All 2 branches missed.">            assert toUpperCase(s).equals(s.toUpperCase());</span>
+        }
+<span class="nc" id="L15">    }</span>
+
+    /**
+     * Converts all the characters in this {@code String} to upper case
+     *
+     * @param s the string to convert
+     * @return the {@code String}, converted to uppercase.
+     */
+    public static String toUpperCase(String s) {
+<span class="pc bpc" id="L24" title="2 of 4 branches missed.">        if (s == null || s.isEmpty()) {</span>
+<span class="nc" id="L25">            return s;</span>
+        }
+<span class="fc" id="L27">        char[] values = s.toCharArray();</span>
+<span class="fc bfc" id="L28" title="All 2 branches covered.">        for (int i = 0; i &lt; values.length; ++i) {</span>
+<span class="fc bfc" id="L29" title="All 4 branches covered.">            if (Character.isLetter(values[i]) &amp;&amp; Character.isLowerCase(values[i])) {</span>
+<span class="fc" id="L30">                values[i] = Character.toUpperCase(values[i]);</span>
+            }
+        }
+<span class="fc" id="L33">        return new String(values);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

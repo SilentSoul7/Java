@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Palindrome.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.strings</a> &gt; <span class="el_source">Palindrome.java</span></div><h1>Palindrome.java</h1><pre class="source lang-java linenums">package com.thealgorithms.strings;
+
+/**
+ * Wikipedia: https://en.wikipedia.org/wiki/Palindrome
+ */
+final class Palindrome {
+    private Palindrome() {
+    }
+
+    /**
+     * Check if a string is palindrome string or not using String Builder
+     *
+     * @param s a string to check
+     * @return {@code true} if given string is palindrome, otherwise
+     * {@code false}
+     */
+    public static boolean isPalindrome(String s) {
+<span class="fc bfc" id="L18" title="All 6 branches covered.">        return ((s == null || s.length() &lt;= 1) || s.equals(new StringBuilder(s).reverse().toString()));</span>
+    }
+
+    /**
+     * Check if a string is palindrome string or not using recursion
+     *
+     * @param s a string to check
+     * @return {@code true} if given string is palindrome, otherwise
+     * {@code false}
+     */
+    public static boolean isPalindromeRecursion(String s) {
+<span class="fc bfc" id="L29" title="All 4 branches covered.">        if (s == null || s.length() &lt;= 1) {</span>
+<span class="fc" id="L30">            return true;</span>
+        }
+
+<span class="pc bpc" id="L33" title="1 of 2 branches missed.">        if (s.charAt(0) != s.charAt(s.length() - 1)) {</span>
+<span class="nc" id="L34">            return false;</span>
+        }
+
+<span class="fc" id="L37">        return isPalindromeRecursion(s.substring(1, s.length() - 1));</span>
+    }
+
+    /**
+     * Check if a string is palindrome string or not using two pointer technique
+     *
+     * @param s a string to check
+     * @return {@code true} if given string is palindrome, otherwise
+     * {@code false}
+     */
+    public static boolean isPalindromeTwoPointer(String s) {
+<span class="fc bfc" id="L48" title="All 4 branches covered.">        if (s == null || s.length() &lt;= 1) {</span>
+<span class="fc" id="L49">            return true;</span>
+        }
+<span class="fc bfc" id="L51" title="All 2 branches covered.">        for (int i = 0, j = s.length() - 1; i &lt; j; ++i, --j) {</span>
+<span class="pc bpc" id="L52" title="1 of 2 branches missed.">            if (s.charAt(i) != s.charAt(j)) {</span>
+<span class="nc" id="L53">                return false;</span>
+            }
+        }
+<span class="fc" id="L56">        return true;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

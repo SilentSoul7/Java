@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HammingDistance.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.strings</a> &gt; <span class="el_source">HammingDistance.java</span></div><h1>HammingDistance.java</h1><pre class="source lang-java linenums">package com.thealgorithms.strings;
+
+/**
+ * Class for calculating the Hamming distance between two strings of equal length.
+ * &lt;p&gt;
+ * The Hamming distance is the number of positions at which the corresponding symbols are different.
+ * It is used in information theory, coding theory, and computer science.
+ * &lt;/p&gt;
+ * @see &lt;a href=&quot;https://en.wikipedia.org/wiki/Hamming_distance&quot;&gt;Hamming distance - Wikipedia&lt;/a&gt;
+ */
+public final class HammingDistance {
+    private HammingDistance() {
+    }
+
+    /**
+     * Calculates the Hamming distance between two strings of equal length.
+     * &lt;p&gt;
+     * The Hamming distance is defined only for strings of equal length. If the strings are not
+     * of equal length, this method throws an {@code IllegalArgumentException}.
+     * &lt;/p&gt;
+     *
+     * @param s1 the first string
+     * @param s2 the second string
+     * @return the Hamming distance between the two strings
+     * @throws IllegalArgumentException if the lengths of {@code s1} and {@code s2} are not equal
+     */
+    public static int calculateHammingDistance(String s1, String s2) {
+<span class="fc bfc" id="L28" title="All 4 branches covered.">        if (s1 == null || s2 == null) {</span>
+<span class="fc" id="L29">            throw new IllegalArgumentException(&quot;Strings must not be null&quot;);</span>
+        }
+
+<span class="fc bfc" id="L32" title="All 2 branches covered.">        if (s1.length() != s2.length()) {</span>
+<span class="fc" id="L33">            throw new IllegalArgumentException(&quot;String lengths must be equal&quot;);</span>
+        }
+
+<span class="fc" id="L36">        int distance = 0;</span>
+
+<span class="fc bfc" id="L38" title="All 2 branches covered.">        for (int i = 0; i &lt; s1.length(); i++) {</span>
+<span class="fc bfc" id="L39" title="All 2 branches covered.">            if (s1.charAt(i) != s2.charAt(i)) {</span>
+<span class="fc" id="L40">                distance++;</span>
+            }
+        }
+<span class="fc" id="L43">        return distance;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SameTreesCheck.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.trees</a> &gt; <span class="el_source">SameTreesCheck.java</span></div><h1>SameTreesCheck.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.trees;
+
+import java.util.ArrayDeque;
+import java.util.Deque;
+
+/**
+ * Given 2 binary trees.
+ * This code checks whether they are the same (structurally identical and have the same values) or
+ * not. &lt;p&gt; Example:
+ * 1. Binary trees:
+ *      1                 1
+ *     / \               / \
+ *    2   3             2   3
+ *   /\   /\           /\   /\
+ *  4  5 6  7         4  5 6  7
+ * These trees are the same, so the code returns 'true'.
+ * &lt;p&gt;
+ * 2. Binary trees:
+ *      1   1
+ *     /     \
+ *    2       2
+ * These trees are NOT the same (the structure differs), so the code returns 'false'.
+ * &lt;p&gt;
+ * This solution implements the breadth-first search (BFS) algorithm.
+ * For each tree we create a queue and iterate the trees using these queues.
+ * On each step we check the nodes for equality, and if the nodes are not the same, return false.
+ * Otherwise, add children nodes to the queues and continue traversing the trees.
+ * &lt;p&gt;
+ * Complexities:
+ * O(N) - time, where N is the number of nodes in a binary tree,
+ * O(N) - space, where N is the number of nodes in a binary tree.
+ *
+ * @author Albina Gimaletdinova on 13/01/2023
+ */
+public final class SameTreesCheck {
+    private SameTreesCheck() {
+    }
+    public static boolean check(BinaryTree.Node p, BinaryTree.Node q) {
+<span class="pc bpc" id="L39" title="1 of 4 branches missed.">        if (p == null &amp;&amp; q == null) {</span>
+<span class="fc" id="L40">            return true;</span>
+        }
+<span class="pc bpc" id="L42" title="1 of 4 branches missed.">        if (p == null || q == null) {</span>
+<span class="fc" id="L43">            return false;</span>
+        }
+
+<span class="fc" id="L46">        Deque&lt;BinaryTree.Node&gt; q1 = new ArrayDeque&lt;&gt;();</span>
+<span class="fc" id="L47">        Deque&lt;BinaryTree.Node&gt; q2 = new ArrayDeque&lt;&gt;();</span>
+<span class="fc" id="L48">        q1.add(p);</span>
+<span class="fc" id="L49">        q2.add(q);</span>
+<span class="pc bpc" id="L50" title="1 of 4 branches missed.">        while (!q1.isEmpty() &amp;&amp; !q2.isEmpty()) {</span>
+<span class="fc" id="L51">            BinaryTree.Node first = q1.poll();</span>
+<span class="fc" id="L52">            BinaryTree.Node second = q2.poll();</span>
+            // check that some node can be null
+            // if the check is true: both nodes are null or both nodes are not null
+<span class="pc bpc" id="L55" title="1 of 2 branches missed.">            if (!equalNodes(first, second)) {</span>
+<span class="nc" id="L56">                return false;</span>
+            }
+
+<span class="pc bpc" id="L59" title="1 of 2 branches missed.">            if (first != null) {</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">                if (!equalNodes(first.left, second.left)) {</span>
+<span class="fc" id="L61">                    return false;</span>
+                }
+<span class="fc bfc" id="L63" title="All 2 branches covered.">                if (first.left != null) {</span>
+<span class="fc" id="L64">                    q1.add(first.left);</span>
+<span class="fc" id="L65">                    q2.add(second.left);</span>
+                }
+
+<span class="fc bfc" id="L68" title="All 2 branches covered.">                if (!equalNodes(first.right, second.right)) {</span>
+<span class="fc" id="L69">                    return false;</span>
+                }
+<span class="fc bfc" id="L71" title="All 2 branches covered.">                if (first.right != null) {</span>
+<span class="fc" id="L72">                    q1.add(first.right);</span>
+<span class="fc" id="L73">                    q2.add(second.right);</span>
+                }
+            }
+<span class="fc" id="L76">        }</span>
+<span class="fc" id="L77">        return true;</span>
+    }
+
+    private static boolean equalNodes(BinaryTree.Node p, BinaryTree.Node q) {
+<span class="pc bpc" id="L81" title="1 of 4 branches missed.">        if (p == null &amp;&amp; q == null) {</span>
+<span class="fc" id="L82">            return true;</span>
+        }
+<span class="pc bpc" id="L84" title="1 of 4 branches missed.">        if (p == null || q == null) {</span>
+<span class="fc" id="L85">            return false;</span>
+        }
+<span class="pc bpc" id="L87" title="1 of 2 branches missed.">        return p.data == q.data;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

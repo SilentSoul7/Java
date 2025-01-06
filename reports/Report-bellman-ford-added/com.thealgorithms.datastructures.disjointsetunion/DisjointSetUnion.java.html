@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DisjointSetUnion.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.disjointsetunion</a> &gt; <span class="el_source">DisjointSetUnion.java</span></div><h1>DisjointSetUnion.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.disjointsetunion;
+
+/**
+ * Disjoint Set Union or DSU is useful for solving problems related to connected components,
+ * cycle detection in graphs, and maintaining relationships in disjoint sets of data.
+ * It is commonly employed in graph algorithms and problems.
+ *
+ * @see &lt;a href=&quot;https://en.wikipedia.org/wiki/Disjoint-set_data_structure&quot;&gt;Disjoint Set Union&lt;/a&gt;
+ */
+<span class="fc" id="L10">public class DisjointSetUnion&lt;T&gt; {</span>
+
+    /**
+     * Creates a new node of DSU with parent initialised as same node
+     */
+    public Node&lt;T&gt; makeSet(final T x) {
+<span class="fc" id="L16">        return new Node&lt;T&gt;(x);</span>
+    }
+
+    /**
+     * Finds and returns the representative (root) element of the set to which a given element belongs.
+     * This operation uses path compression to optimize future findSet operations.
+     */
+    public Node&lt;T&gt; findSet(Node&lt;T&gt; node) {
+<span class="fc bfc" id="L24" title="All 2 branches covered.">        while (node != node.parent) {</span>
+<span class="fc" id="L25">            node = node.parent;</span>
+        }
+<span class="fc" id="L27">        return node;</span>
+    }
+
+    /**
+     * Unions two sets by merging their representative elements. The merge is performed based on the rank of each set
+     * to ensure efficient merging and path compression to optimize future findSet operations.
+     */
+    public void unionSets(final Node&lt;T&gt; x, final Node&lt;T&gt; y) {
+<span class="fc" id="L35">        Node&lt;T&gt; nx = findSet(x);</span>
+<span class="fc" id="L36">        Node&lt;T&gt; ny = findSet(y);</span>
+
+<span class="fc bfc" id="L38" title="All 2 branches covered.">        if (nx == ny) {</span>
+<span class="fc" id="L39">            return; // Both elements already belong to the same set.</span>
+        }
+        // Merging happens based on rank of node, this is done to avoid long chaining of nodes and reduce time
+        // to find root of the component. Idea is to attach small components in big, instead of other way around.
+<span class="fc bfc" id="L43" title="All 2 branches covered.">        if (nx.rank &gt; ny.rank) {</span>
+<span class="fc" id="L44">            ny.parent = nx;</span>
+<span class="fc bfc" id="L45" title="All 2 branches covered.">        } else if (ny.rank &gt; nx.rank) {</span>
+<span class="fc" id="L46">            nx.parent = ny;</span>
+        } else {
+            // Both sets have the same rank; choose one as the parent and increment the rank.
+<span class="fc" id="L49">            ny.parent = nx;</span>
+<span class="fc" id="L50">            nx.rank++;</span>
+        }
+<span class="fc" id="L52">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

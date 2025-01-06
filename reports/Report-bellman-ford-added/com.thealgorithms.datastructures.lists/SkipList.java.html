@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SkipList.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.lists</a> &gt; <span class="el_source">SkipList.java</span></div><h1>SkipList.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.lists;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.Random;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+/**
+ * Skip list is a data structure that allows {@code O(log n)} search complexity
+ * as well as {@code O(log n)} insertion complexity within an ordered sequence
+ * of {@code n} elements. Thus it can get the best features of a sorted array
+ * (for searching) while maintaining a linked list-like structure that allows
+ * insertion, which is not possible with a static array.
+ * &lt;p&gt;
+ * A skip list is built in layers. The bottom layer is an ordinary ordered
+ * linked list. Each higher layer acts as an &quot;express lane&quot; for the lists
+ * below.
+ * &lt;pre&gt;
+ * [ ] ------&gt; [ ] --&gt; [ ]
+ * [ ] --&gt; [ ] [ ] --&gt; [ ]
+ * [ ] [ ] [ ] [ ] [ ] [ ]
+ *  H   0   1   2   3   4
+ * &lt;/pre&gt;
+ *
+ * @param &lt;E&gt; type of elements
+ * @see &lt;a href=&quot;https://en.wikipedia.org/wiki/Skip_list&quot;&gt;Wiki. Skip list&lt;/a&gt;
+ */
+public class SkipList&lt;E extends Comparable&lt;E&gt;&gt; {
+
+    /**
+     * Node before first node.
+     */
+    private final Node&lt;E&gt; head;
+
+    /**
+     * Maximum layers count.
+     * Calculated by {@link #heightStrategy}.
+     */
+    private final int height;
+
+    /**
+     * Function for determining height of new nodes.
+     * @see HeightStrategy
+     */
+    private final HeightStrategy heightStrategy;
+
+    /**
+     * Current count of elements in list.
+     */
+    private int size;
+
+    private static final int DEFAULT_CAPACITY = 100;
+
+    public SkipList() {
+<span class="fc" id="L59">        this(DEFAULT_CAPACITY, new BernoulliHeightStrategy());</span>
+<span class="fc" id="L60">    }</span>
+
+<span class="fc" id="L62">    public SkipList(int expectedCapacity, HeightStrategy heightStrategy) {</span>
+<span class="fc" id="L63">        this.heightStrategy = heightStrategy;</span>
+<span class="fc" id="L64">        this.height = heightStrategy.height(expectedCapacity);</span>
+<span class="fc" id="L65">        this.head = new Node&lt;&gt;(null, this.height);</span>
+<span class="fc" id="L66">        this.size = 0;</span>
+<span class="fc" id="L67">    }</span>
+
+    public void add(E e) {
+<span class="fc" id="L70">        Objects.requireNonNull(e);</span>
+<span class="fc" id="L71">        Node&lt;E&gt; current = head;</span>
+<span class="fc" id="L72">        int layer = height;</span>
+<span class="fc" id="L73">        Node&lt;E&gt;[] toFix = new Node[height + 1];</span>
+
+<span class="fc bfc" id="L75" title="All 2 branches covered.">        while (layer &gt;= 0) {</span>
+<span class="fc" id="L76">            Node&lt;E&gt; next = current.next(layer);</span>
+<span class="fc bfc" id="L77" title="All 4 branches covered.">            if (next == null || next.getValue().compareTo(e) &gt; 0) {</span>
+<span class="fc" id="L78">                toFix[layer] = current;</span>
+<span class="fc" id="L79">                layer--;</span>
+            } else {
+<span class="fc" id="L81">                current = next;</span>
+            }
+<span class="fc" id="L83">        }</span>
+<span class="fc" id="L84">        int nodeHeight = heightStrategy.nodeHeight(height);</span>
+<span class="fc" id="L85">        Node&lt;E&gt; node = new Node&lt;&gt;(e, nodeHeight);</span>
+<span class="fc bfc" id="L86" title="All 2 branches covered.">        for (int i = 0; i &lt;= nodeHeight; i++) {</span>
+<span class="fc bfc" id="L87" title="All 2 branches covered.">            if (toFix[i].next(i) != null) {</span>
+<span class="fc" id="L88">                node.setNext(i, toFix[i].next(i));</span>
+<span class="fc" id="L89">                toFix[i].next(i).setPrevious(i, node);</span>
+            }
+
+<span class="fc" id="L92">            toFix[i].setNext(i, node);</span>
+<span class="fc" id="L93">            node.setPrevious(i, toFix[i]);</span>
+        }
+<span class="fc" id="L95">        size++;</span>
+<span class="fc" id="L96">    }</span>
+
+    public E get(int index) {
+<span class="fc" id="L99">        int counter = -1; // head index</span>
+<span class="fc" id="L100">        Node&lt;E&gt; current = head;</span>
+<span class="fc bfc" id="L101" title="All 2 branches covered.">        while (counter != index) {</span>
+<span class="fc" id="L102">            current = current.next(0);</span>
+<span class="fc" id="L103">            counter++;</span>
+        }
+<span class="fc" id="L105">        return current.value;</span>
+    }
+
+    public void remove(E e) {
+<span class="fc" id="L109">        Objects.requireNonNull(e);</span>
+<span class="fc" id="L110">        Node&lt;E&gt; current = head;</span>
+<span class="fc" id="L111">        int layer = height;</span>
+
+<span class="pc bpc" id="L113" title="1 of 2 branches missed.">        while (layer &gt;= 0) {</span>
+<span class="fc" id="L114">            Node&lt;E&gt; next = current.next(layer);</span>
+<span class="fc bfc" id="L115" title="All 2 branches covered.">            if (e.equals(current.getValue())) {</span>
+<span class="fc" id="L116">                break;</span>
+<span class="fc bfc" id="L117" title="All 4 branches covered.">            } else if (next == null || next.getValue().compareTo(e) &gt; 0) {</span>
+<span class="fc" id="L118">                layer--;</span>
+            } else {
+<span class="fc" id="L120">                current = next;</span>
+            }
+<span class="fc" id="L122">        }</span>
+<span class="fc bfc" id="L123" title="All 2 branches covered.">        for (int i = 0; i &lt;= layer; i++) {</span>
+<span class="fc" id="L124">            current.previous(i).setNext(i, current.next(i));</span>
+<span class="fc bfc" id="L125" title="All 2 branches covered.">            if (current.next(i) != null) {</span>
+<span class="fc" id="L126">                current.next(i).setPrevious(i, current.previous(i));</span>
+            }
+        }
+<span class="fc" id="L129">        size--;</span>
+<span class="fc" id="L130">    }</span>
+
+    /**
+     * A search for a target element begins at the head element in the top
+     * list, and proceeds horizontally until the current element is greater
+     * than or equal to the target. If the current element is equal to the
+     * target, it has been found. If the current element is greater than the
+     * target, or the search reaches the end of the linked list, the procedure
+     * is repeated after returning to the previous element and dropping down
+     * vertically to the next lower list.
+     *
+     * @param e element whose presence in this list is to be tested
+     * @return true if this list contains the specified element
+     */
+    public boolean contains(E e) {
+<span class="fc" id="L145">        Objects.requireNonNull(e);</span>
+<span class="fc" id="L146">        Node&lt;E&gt; current = head;</span>
+<span class="fc" id="L147">        int layer = height;</span>
+
+<span class="pc bpc" id="L149" title="1 of 2 branches missed.">        while (layer &gt;= 0) {</span>
+<span class="fc" id="L150">            Node&lt;E&gt; next = current.next(layer);</span>
+<span class="fc bfc" id="L151" title="All 2 branches covered.">            if (e.equals(current.getValue())) {</span>
+<span class="fc" id="L152">                return true;</span>
+<span class="fc bfc" id="L153" title="All 4 branches covered.">            } else if (next == null || next.getValue().compareTo(e) &gt; 0) {</span>
+<span class="fc" id="L154">                layer--;</span>
+            } else {
+<span class="fc" id="L156">                current = next;</span>
+            }
+<span class="fc" id="L158">        }</span>
+<span class="nc" id="L159">        return false;</span>
+    }
+
+    public int size() {
+<span class="fc" id="L163">        return size;</span>
+    }
+
+    /**
+     * Print height distribution of the nodes in a manner:
+     * &lt;pre&gt;
+     * [ ] --- --- [ ] --- [ ]
+     * [ ] --- [ ] [ ] --- [ ]
+     * [ ] [ ] [ ] [ ] [ ] [ ]
+     *  H   0   1   2   3   4
+     * &lt;/pre&gt;
+     * Values of nodes is not presented.
+     *
+     * @return string representation
+     */
+    @Override
+    public String toString() {
+<span class="fc" id="L180">        List&lt;boolean[]&gt; layers = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L181">        int sizeWithHeader = size + 1;</span>
+<span class="fc bfc" id="L182" title="All 2 branches covered.">        for (int i = 0; i &lt;= height; i++) {</span>
+<span class="fc" id="L183">            layers.add(new boolean[sizeWithHeader]);</span>
+        }
+
+<span class="fc" id="L186">        Node&lt;E&gt; current = head;</span>
+<span class="fc" id="L187">        int position = 0;</span>
+<span class="fc bfc" id="L188" title="All 2 branches covered.">        while (current != null) {</span>
+<span class="fc bfc" id="L189" title="All 2 branches covered.">            for (int i = 0; i &lt;= current.height; i++) {</span>
+<span class="fc" id="L190">                layers.get(i)[position] = true;</span>
+            }
+<span class="fc" id="L192">            current = current.next(0);</span>
+<span class="fc" id="L193">            position++;</span>
+        }
+
+<span class="fc" id="L196">        Collections.reverse(layers);</span>
+<span class="fc" id="L197">        String result = layers.stream()</span>
+<span class="fc" id="L198">                            .map(layer -&gt; {</span>
+<span class="fc" id="L199">                                StringBuilder acc = new StringBuilder();</span>
+<span class="fc bfc" id="L200" title="All 2 branches covered.">                                for (boolean b : layer) {</span>
+<span class="fc bfc" id="L201" title="All 2 branches covered.">                                    if (b) {</span>
+<span class="fc" id="L202">                                        acc.append(&quot;[ ]&quot;);</span>
+                                    } else {
+<span class="fc" id="L204">                                        acc.append(&quot;---&quot;);</span>
+                                    }
+<span class="fc" id="L206">                                    acc.append(&quot; &quot;);</span>
+                                }
+<span class="fc" id="L208">                                return acc.toString();</span>
+                            })
+<span class="fc" id="L210">                            .collect(Collectors.joining(&quot;\n&quot;));</span>
+<span class="fc" id="L211">        String positions = IntStream.range(0, sizeWithHeader - 1).mapToObj(i -&gt; String.format(&quot;%3d&quot;, i)).collect(Collectors.joining(&quot; &quot;));</span>
+
+<span class="fc" id="L213">        return result + String.format(&quot;%n H %s%n&quot;, positions);</span>
+    }
+
+    /**
+     * Value container.
+     * Each node have pointers to the closest nodes left and right from current
+     * on each layer of nodes height.
+     * @param &lt;E&gt; type of elements
+     */
+    private static class Node&lt;E&gt; {
+
+        private final E value;
+        private final int height;
+        private final List&lt;Node&lt;E&gt;&gt; forward;
+        private final List&lt;Node&lt;E&gt;&gt; backward;
+
+        @SuppressWarnings(&quot;unchecked&quot;)
+<span class="fc" id="L230">        Node(E value, int height) {</span>
+<span class="fc" id="L231">            this.value = value;</span>
+<span class="fc" id="L232">            this.height = height;</span>
+
+            // predefined size lists with null values in every cell
+<span class="fc" id="L235">            this.forward = Arrays.asList(new Node[height + 1]);</span>
+<span class="fc" id="L236">            this.backward = Arrays.asList(new Node[height + 1]);</span>
+<span class="fc" id="L237">        }</span>
+
+        public Node&lt;E&gt; next(int layer) {
+<span class="fc" id="L240">            checkLayer(layer);</span>
+<span class="fc" id="L241">            return forward.get(layer);</span>
+        }
+
+        public void setNext(int layer, Node&lt;E&gt; node) {
+<span class="fc" id="L245">            forward.set(layer, node);</span>
+<span class="fc" id="L246">        }</span>
+
+        public void setPrevious(int layer, Node&lt;E&gt; node) {
+<span class="fc" id="L249">            backward.set(layer, node);</span>
+<span class="fc" id="L250">        }</span>
+
+        public Node&lt;E&gt; previous(int layer) {
+<span class="fc" id="L253">            checkLayer(layer);</span>
+<span class="fc" id="L254">            return backward.get(layer);</span>
+        }
+
+        public E getValue() {
+<span class="fc" id="L258">            return value;</span>
+        }
+
+        private void checkLayer(int layer) {
+<span class="pc bpc" id="L262" title="2 of 4 branches missed.">            if (layer &lt; 0 || layer &gt; height) {</span>
+<span class="nc" id="L263">                throw new IllegalArgumentException();</span>
+            }
+<span class="fc" id="L265">        }</span>
+    }
+
+    /**
+     * Height strategy is a way of calculating maximum height for skip list
+     * and height for each node.
+     * @see BernoulliHeightStrategy
+     */
+    public interface HeightStrategy {
+        int height(int expectedSize);
+        int nodeHeight(int heightCap);
+    }
+
+    /**
+     * In most common skip list realisation element in layer {@code i} appears
+     * in layer {@code i+1} with some fixed probability {@code p}.
+     * Two commonly used values for {@code p} are 1/2 and 1/4.
+     * Probability of appearing element in layer {@code i} could be calculated
+     * with &lt;code&gt;P = p&lt;sup&gt;i&lt;/sup&gt;(1 - p)&lt;/code&gt;
+     * &lt;p&gt;
+     * Maximum height that would give the best search complexity
+     * calculated by &lt;code&gt;log&lt;sub&gt;1/p&lt;/sub&gt;n&lt;/code&gt;
+     * where {@code n} is an expected count of elements in list.
+     */
+    public static class BernoulliHeightStrategy implements HeightStrategy {
+
+        private final double probability;
+
+        private static final double DEFAULT_PROBABILITY = 0.5;
+<span class="fc" id="L294">        private static final Random RANDOM = new Random();</span>
+
+<span class="fc" id="L296">        public BernoulliHeightStrategy() {</span>
+<span class="fc" id="L297">            this.probability = DEFAULT_PROBABILITY;</span>
+<span class="fc" id="L298">        }</span>
+
+<span class="nc" id="L300">        public BernoulliHeightStrategy(double probability) {</span>
+<span class="nc bnc" id="L301" title="All 4 branches missed.">            if (probability &lt;= 0 || probability &gt;= 1) {</span>
+<span class="nc" id="L302">                throw new IllegalArgumentException(&quot;Probability should be from 0 to 1. But was: &quot; + probability);</span>
+            }
+<span class="nc" id="L304">            this.probability = probability;</span>
+<span class="nc" id="L305">        }</span>
+
+        @Override
+        public int height(int expectedSize) {
+<span class="fc" id="L309">            long height = Math.round(Math.log10(expectedSize) / Math.log10(1 / probability));</span>
+<span class="pc bpc" id="L310" title="1 of 2 branches missed.">            if (height &gt; Integer.MAX_VALUE) {</span>
+<span class="nc" id="L311">                throw new IllegalArgumentException();</span>
+            }
+<span class="fc" id="L313">            return (int) height;</span>
+        }
+
+        @Override
+        public int nodeHeight(int heightCap) {
+<span class="fc" id="L318">            int level = 0;</span>
+<span class="fc" id="L319">            double border = 100 * (1 - probability);</span>
+<span class="fc bfc" id="L320" title="All 2 branches covered.">            while (((RANDOM.nextInt(Integer.MAX_VALUE) % 100) + 1) &gt; border) {</span>
+<span class="fc bfc" id="L321" title="All 2 branches covered.">                if (level + 1 &gt;= heightCap) {</span>
+<span class="fc" id="L322">                    return level;</span>
+                }
+<span class="fc" id="L324">                level++;</span>
+            }
+<span class="fc" id="L326">            return level;</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

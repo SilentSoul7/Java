@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GrayCodeConversion.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.bitmanipulation</a> &gt; <span class="el_source">GrayCodeConversion.java</span></div><h1>GrayCodeConversion.java</h1><pre class="source lang-java linenums">package com.thealgorithms.bitmanipulation;
+
+/**
+ * Gray code is a binary numeral system where two successive values differ in only one bit.
+ * This is a simple conversion between binary and Gray code.
+ * Example:
+ * 7 -&gt; 0111 -&gt; 0100 -&gt; 4
+ * 4 -&gt; 0100 -&gt; 0111 -&gt; 7
+ * 0 -&gt; 0000 -&gt; 0000 -&gt; 0
+ * 1 -&gt; 0001 -&gt; 0000 -&gt; 0
+ * 2 -&gt; 0010 -&gt; 0011 -&gt; 3
+ * 3 -&gt; 0011 -&gt; 0010 -&gt; 2
+ *
+ * @author Hardvan
+ */
+public final class GrayCodeConversion {
+    private GrayCodeConversion() {
+    }
+
+    /**
+     * Converts a binary number to Gray code.
+     *
+     * @param num The binary number.
+     * @return The corresponding Gray code.
+     */
+    public static int binaryToGray(int num) {
+<span class="fc" id="L27">        return num ^ (num &gt;&gt; 1);</span>
+    }
+
+    /**
+     * Converts a Gray code number back to binary.
+     *
+     * @param gray The Gray code number.
+     * @return The corresponding binary number.
+     */
+    public static int grayToBinary(int gray) {
+<span class="fc" id="L37">        int binary = gray;</span>
+<span class="fc bfc" id="L38" title="All 2 branches covered.">        while (gray &gt; 0) {</span>
+<span class="fc" id="L39">            gray &gt;&gt;= 1;</span>
+<span class="fc" id="L40">            binary ^= gray;</span>
+        }
+<span class="fc" id="L42">        return binary;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

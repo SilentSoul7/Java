@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Krishnamurthy.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.others</a> &gt; <span class="el_source">Krishnamurthy.java</span></div><h1>Krishnamurthy.java</h1><pre class="source lang-java linenums">package com.thealgorithms.others;
+
+import java.util.Scanner;
+
+final class Krishnamurthy {
+    private Krishnamurthy() {
+    }
+
+    static int fact(int n) {
+        int i;
+<span class="nc" id="L11">        int p = 1;</span>
+<span class="nc bnc" id="L12" title="All 2 branches missed.">        for (i = n; i &gt;= 1; i--) {</span>
+<span class="nc" id="L13">            p = p * i;</span>
+        }
+<span class="nc" id="L15">        return p;</span>
+    }
+
+    public static void main(String[] args) {
+<span class="nc" id="L19">        Scanner sc = new Scanner(System.in);</span>
+        int a;
+        int b;
+<span class="nc" id="L22">        int s = 0;</span>
+<span class="nc" id="L23">        System.out.print(&quot;Enter the number : &quot;);</span>
+<span class="nc" id="L24">        a = sc.nextInt();</span>
+<span class="nc" id="L25">        int n = a;</span>
+<span class="nc bnc" id="L26" title="All 2 branches missed.">        while (a &gt; 0) {</span>
+<span class="nc" id="L27">            b = a % 10;</span>
+<span class="nc" id="L28">            s = s + fact(b);</span>
+<span class="nc" id="L29">            a = a / 10;</span>
+        }
+<span class="nc bnc" id="L31" title="All 2 branches missed.">        if (s == n) {</span>
+<span class="nc" id="L32">            System.out.print(n + &quot; is a krishnamurthy number&quot;);</span>
+        } else {
+<span class="nc" id="L34">            System.out.print(n + &quot; is not a krishnamurthy number&quot;);</span>
+        }
+<span class="nc" id="L36">        sc.close();</span>
+<span class="nc" id="L37">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

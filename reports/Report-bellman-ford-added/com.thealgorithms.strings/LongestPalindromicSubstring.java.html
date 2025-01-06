@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LongestPalindromicSubstring.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.strings</a> &gt; <span class="el_source">LongestPalindromicSubstring.java</span></div><h1>LongestPalindromicSubstring.java</h1><pre class="source lang-java linenums">package com.thealgorithms.strings;
+
+final class LongestPalindromicSubstring {
+    private LongestPalindromicSubstring() {
+    }
+
+    /**
+     * Finds the longest palindromic substring in the given string.
+     *
+     * @param s the input string
+     * @return the longest palindromic substring
+     */
+    public static String longestPalindrome(String s) {
+<span class="fc bfc" id="L14" title="All 4 branches covered.">        if (s == null || s.isEmpty()) {</span>
+<span class="fc" id="L15">            return &quot;&quot;;</span>
+        }
+<span class="fc" id="L17">        String maxStr = &quot;&quot;;</span>
+<span class="fc bfc" id="L18" title="All 2 branches covered.">        for (int i = 0; i &lt; s.length(); ++i) {</span>
+<span class="fc bfc" id="L19" title="All 2 branches covered.">            for (int j = i; j &lt; s.length(); ++j) {</span>
+<span class="fc bfc" id="L20" title="All 4 branches covered.">                if (isValid(s, i, j) &amp;&amp; (j - i + 1 &gt; maxStr.length())) {</span>
+<span class="fc" id="L21">                    maxStr = s.substring(i, j + 1);</span>
+                }
+            }
+        }
+<span class="fc" id="L25">        return maxStr;</span>
+    }
+
+    private static boolean isValid(String s, int lo, int hi) {
+<span class="fc" id="L29">        int n = hi - lo + 1;</span>
+<span class="fc bfc" id="L30" title="All 2 branches covered.">        for (int i = 0; i &lt; n / 2; ++i) {</span>
+<span class="fc bfc" id="L31" title="All 2 branches covered.">            if (s.charAt(lo + i) != s.charAt(hi - i)) {</span>
+<span class="fc" id="L32">                return false;</span>
+            }
+        }
+<span class="fc" id="L35">        return true;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

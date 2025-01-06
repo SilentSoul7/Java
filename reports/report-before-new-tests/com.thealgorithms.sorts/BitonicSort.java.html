@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BitonicSort.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.sorts</a> &gt; <span class="el_source">BitonicSort.java</span></div><h1>BitonicSort.java</h1><pre class="source lang-java linenums">package com.thealgorithms.sorts;
+
+import java.util.Arrays;
+import java.util.function.BiPredicate;
+
+/**
+ * BitonicSort class implements the SortAlgorithm interface using the bitonic sort technique.
+ */
+<span class="fc" id="L9">public class BitonicSort implements SortAlgorithm {</span>
+<span class="fc" id="L10">    private enum Direction {</span>
+<span class="fc" id="L11">        DESCENDING,</span>
+<span class="fc" id="L12">        ASCENDING,</span>
+    }
+
+    /**
+     * Sorts the given array using the Bitonic Sort algorithm.
+     *
+     * @param &lt;T&gt; the type of elements in the array, which must implement the Comparable interface
+     * @param array the array to be sorted
+     * @return the sorted array
+     */
+    @Override
+    public &lt;T extends Comparable&lt;T&gt;&gt; T[] sort(T[] array) {
+<span class="fc bfc" id="L24" title="All 2 branches covered.">        if (array.length == 0) {</span>
+<span class="fc" id="L25">            return array;</span>
+        }
+
+<span class="fc" id="L28">        final int paddedSize = nextPowerOfTwo(array.length);</span>
+<span class="fc" id="L29">        T[] paddedArray = Arrays.copyOf(array, paddedSize);</span>
+
+        // Fill the padded part with a maximum value
+<span class="fc" id="L32">        final T maxValue = max(array);</span>
+<span class="fc" id="L33">        Arrays.fill(paddedArray, array.length, paddedSize, maxValue);</span>
+
+<span class="fc" id="L35">        bitonicSort(paddedArray, 0, paddedSize, Direction.ASCENDING);</span>
+<span class="fc" id="L36">        return Arrays.copyOf(paddedArray, array.length);</span>
+    }
+
+    private &lt;T extends Comparable&lt;T&gt;&gt; void bitonicSort(final T[] array, final int low, final int cnt, final Direction direction) {
+<span class="fc bfc" id="L40" title="All 2 branches covered.">        if (cnt &gt; 1) {</span>
+<span class="fc" id="L41">            final int k = cnt / 2;</span>
+
+            // Sort first half in ascending order
+<span class="fc" id="L44">            bitonicSort(array, low, k, Direction.ASCENDING);</span>
+
+            // Sort second half in descending order
+<span class="fc" id="L47">            bitonicSort(array, low + k, cnt - k, Direction.DESCENDING);</span>
+
+            // Merge the whole sequence in ascending order
+<span class="fc" id="L50">            bitonicMerge(array, low, cnt, direction);</span>
+        }
+<span class="fc" id="L52">    }</span>
+
+    /**
+     * Merges the bitonic sequence in the specified direction.
+     *
+     * @param &lt;T&gt; the type of elements in the array, which must be Comparable
+     * @param array the array containing the bitonic sequence to be merged
+     * @param low the starting index of the sequence to be merged
+     * @param cnt the number of elements in the sequence to be merged
+     * @param direction the direction of sorting
+     */
+    private &lt;T extends Comparable&lt;T&gt;&gt; void bitonicMerge(T[] array, int low, int cnt, Direction direction) {
+<span class="fc bfc" id="L64" title="All 2 branches covered.">        if (cnt &gt; 1) {</span>
+<span class="fc" id="L65">            final int k = cnt / 2;</span>
+
+<span class="fc bfc" id="L67" title="All 6 branches covered.">            final BiPredicate&lt;T, T&gt; areSorted = (direction == Direction.ASCENDING) ? (a, b) -&gt; a.compareTo(b) &lt; 0 : (a, b) -&gt; a.compareTo(b) &gt; 0;</span>
+<span class="fc bfc" id="L68" title="All 2 branches covered.">            for (int i = low; i &lt; low + k; i++) {</span>
+<span class="fc bfc" id="L69" title="All 2 branches covered.">                if (!areSorted.test(array[i], array[i + k])) {</span>
+<span class="fc" id="L70">                    SortUtils.swap(array, i, i + k);</span>
+                }
+            }
+
+<span class="fc" id="L74">            bitonicMerge(array, low, k, direction);</span>
+<span class="fc" id="L75">            bitonicMerge(array, low + k, cnt - k, direction);</span>
+        }
+<span class="fc" id="L77">    }</span>
+
+    /**
+     * Finds the next power of two greater than or equal to the given number.
+     *
+     * @param n the number
+     * @return the next power of two
+     */
+    private static int nextPowerOfTwo(int n) {
+<span class="fc" id="L86">        int count = 0;</span>
+
+        // First n in the below condition is for the case where n is 0
+<span class="fc bfc" id="L89" title="All 2 branches covered.">        if ((n &amp; (n - 1)) == 0) {</span>
+<span class="fc" id="L90">            return n;</span>
+        }
+
+<span class="fc bfc" id="L93" title="All 2 branches covered.">        while (n != 0) {</span>
+<span class="fc" id="L94">            n &gt;&gt;= 1;</span>
+<span class="fc" id="L95">            count += 1;</span>
+        }
+
+<span class="fc" id="L98">        return 1 &lt;&lt; count;</span>
+    }
+
+    /**
+     * Finds the maximum element in the given array.
+     *
+     * @param &lt;T&gt; the type of elements in the array, which must implement the Comparable interface
+     * @param array the array to be searched
+     * @return the maximum element in the array
+     * @throws IllegalArgumentException if the array is null or empty
+     */
+    private static &lt;T extends Comparable&lt;T&gt;&gt; T max(final T[] array) {
+<span class="fc" id="L110">        return Arrays.stream(array).max(Comparable::compareTo).orElseThrow();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LRUCache.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.caches</a> &gt; <span class="el_source">LRUCache.java</span></div><h1>LRUCache.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.caches;
+
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * A Least Recently Used (LRU) Cache implementation.
+ *
+ * &lt;p&gt;An LRU cache is a fixed-size cache that maintains items in order of use. When the cache reaches
+ * its capacity and a new item needs to be added, it removes the least recently used item first.
+ * This implementation provides O(1) time complexity for both get and put operations.&lt;/p&gt;
+ *
+ * &lt;p&gt;Features:&lt;/p&gt;
+ * &lt;ul&gt;
+ *   &lt;li&gt;Fixed-size cache with configurable capacity&lt;/li&gt;
+ *   &lt;li&gt;Constant time O(1) operations for get and put&lt;/li&gt;
+ *   &lt;li&gt;Thread-unsafe - should be externally synchronized if used in concurrent environments&lt;/li&gt;
+ *   &lt;li&gt;Supports null values but not null keys&lt;/li&gt;
+ * &lt;/ul&gt;
+ *
+ * &lt;p&gt;Implementation Details:&lt;/p&gt;
+ * &lt;ul&gt;
+ *   &lt;li&gt;Uses a HashMap for O(1) key-value lookups&lt;/li&gt;
+ *   &lt;li&gt;Maintains a doubly-linked list for tracking access order&lt;/li&gt;
+ *   &lt;li&gt;The head of the list contains the least recently used item&lt;/li&gt;
+ *   &lt;li&gt;The tail of the list contains the most recently used item&lt;/li&gt;
+ * &lt;/ul&gt;
+ *
+ * &lt;p&gt;Example usage:&lt;/p&gt;
+ * &lt;pre&gt;
+ * LRUCache&lt;String, Integer&gt; cache = new LRUCache&lt;&gt;(3); // Create cache with capacity 3
+ * cache.put(&quot;A&quot;, 1); // Cache: A=1
+ * cache.put(&quot;B&quot;, 2); // Cache: A=1, B=2
+ * cache.put(&quot;C&quot;, 3); // Cache: A=1, B=2, C=3
+ * cache.get(&quot;A&quot;);    // Cache: B=2, C=3, A=1 (A moved to end)
+ * cache.put(&quot;D&quot;, 4); // Cache: C=3, A=1, D=4 (B evicted)
+ * &lt;/pre&gt;
+ *
+ * @param &lt;K&gt; the type of keys maintained by this cache
+ * @param &lt;V&gt; the type of mapped values
+ */
+public class LRUCache&lt;K, V&gt; {
+
+<span class="pc" id="L44">    private final Map&lt;K, Entry&lt;K, V&gt;&gt; data = new HashMap&lt;&gt;();</span>
+    private Entry&lt;K, V&gt; head;
+    private Entry&lt;K, V&gt; tail;
+    private int cap;
+    private static final int DEFAULT_CAP = 100;
+
+<span class="nc" id="L50">    public LRUCache() {</span>
+<span class="nc" id="L51">        setCapacity(DEFAULT_CAP);</span>
+<span class="nc" id="L52">    }</span>
+
+<span class="fc" id="L54">    public LRUCache(int cap) {</span>
+<span class="fc" id="L55">        setCapacity(cap);</span>
+<span class="fc" id="L56">    }</span>
+
+    /**
+     * Returns the current capacity of the cache.
+     *
+     * @param newCapacity the new capacity of the cache
+     */
+    private void setCapacity(int newCapacity) {
+<span class="fc" id="L64">        checkCapacity(newCapacity);</span>
+<span class="pc bpc" id="L65" title="1 of 2 branches missed.">        for (int i = data.size(); i &gt; newCapacity; i--) {</span>
+<span class="nc" id="L66">            Entry&lt;K, V&gt; evicted = evict();</span>
+<span class="nc" id="L67">            data.remove(evicted.getKey());</span>
+        }
+<span class="fc" id="L69">        this.cap = newCapacity;</span>
+<span class="fc" id="L70">    }</span>
+
+    /**
+     * Evicts the least recently used item from the cache.
+     *
+     * @return the evicted entry
+     */
+    private Entry&lt;K, V&gt; evict() {
+<span class="pc bpc" id="L78" title="1 of 2 branches missed.">        if (head == null) {</span>
+<span class="nc" id="L79">            throw new RuntimeException(&quot;cache cannot be empty!&quot;);</span>
+        }
+<span class="fc" id="L81">        Entry&lt;K, V&gt; evicted = head;</span>
+<span class="fc" id="L82">        head = evicted.getNextEntry();</span>
+<span class="fc" id="L83">        head.setPreEntry(null);</span>
+<span class="fc" id="L84">        evicted.setNextEntry(null);</span>
+<span class="fc" id="L85">        return evicted;</span>
+    }
+
+    /**
+     * Checks if the capacity is valid.
+     *
+     * @param capacity the capacity to check
+     */
+    private void checkCapacity(int capacity) {
+<span class="pc bpc" id="L94" title="1 of 2 branches missed.">        if (capacity &lt;= 0) {</span>
+<span class="nc" id="L95">            throw new RuntimeException(&quot;capacity must greater than 0!&quot;);</span>
+        }
+<span class="fc" id="L97">    }</span>
+
+    /**
+     * Returns the value to which the specified key is mapped, or null if this cache contains no
+     * mapping for the key.
+     *
+     * @param key the key whose associated value is to be returned
+     * @return the value to which the specified key is mapped, or null if this cache contains no
+     * mapping for the key
+     */
+    public V get(K key) {
+<span class="fc bfc" id="L108" title="All 2 branches covered.">        if (!data.containsKey(key)) {</span>
+<span class="fc" id="L109">            return null;</span>
+        }
+<span class="fc" id="L111">        final Entry&lt;K, V&gt; entry = data.get(key);</span>
+<span class="fc" id="L112">        moveNodeToLast(entry);</span>
+<span class="fc" id="L113">        return entry.getValue();</span>
+    }
+
+    /**
+     * Moves the specified entry to the end of the list.
+     *
+     * @param entry the entry to move
+     */
+    private void moveNodeToLast(Entry&lt;K, V&gt; entry) {
+<span class="fc bfc" id="L122" title="All 2 branches covered.">        if (tail == entry) {</span>
+<span class="fc" id="L123">            return;</span>
+        }
+<span class="fc" id="L125">        final Entry&lt;K, V&gt; preEntry = entry.getPreEntry();</span>
+<span class="fc" id="L126">        final Entry&lt;K, V&gt; nextEntry = entry.getNextEntry();</span>
+<span class="fc bfc" id="L127" title="All 2 branches covered.">        if (preEntry != null) {</span>
+<span class="fc" id="L128">            preEntry.setNextEntry(nextEntry);</span>
+        }
+<span class="pc bpc" id="L130" title="1 of 2 branches missed.">        if (nextEntry != null) {</span>
+<span class="fc" id="L131">            nextEntry.setPreEntry(preEntry);</span>
+        }
+<span class="fc bfc" id="L133" title="All 2 branches covered.">        if (head == entry) {</span>
+<span class="fc" id="L134">            head = nextEntry;</span>
+        }
+<span class="fc" id="L136">        tail.setNextEntry(entry);</span>
+<span class="fc" id="L137">        entry.setPreEntry(tail);</span>
+<span class="fc" id="L138">        entry.setNextEntry(null);</span>
+<span class="fc" id="L139">        tail = entry;</span>
+<span class="fc" id="L140">    }</span>
+
+    /**
+     * Associates the specified value with the specified key in this cache.
+     *
+     * @param key the key with which the specified value is to be associated
+     * @param value the value to be associated with the specified key
+     */
+    public void put(K key, V value) {
+<span class="fc bfc" id="L149" title="All 2 branches covered.">        if (data.containsKey(key)) {</span>
+<span class="fc" id="L150">            final Entry&lt;K, V&gt; existingEntry = data.get(key);</span>
+<span class="fc" id="L151">            existingEntry.setValue(value);</span>
+<span class="fc" id="L152">            moveNodeToLast(existingEntry);</span>
+<span class="fc" id="L153">            return;</span>
+        }
+        Entry&lt;K, V&gt; newEntry;
+<span class="fc bfc" id="L156" title="All 2 branches covered.">        if (data.size() == cap) {</span>
+<span class="fc" id="L157">            newEntry = evict();</span>
+<span class="fc" id="L158">            data.remove(newEntry.getKey());</span>
+        } else {
+<span class="fc" id="L160">            newEntry = new Entry&lt;&gt;();</span>
+        }
+
+<span class="fc" id="L163">        newEntry.setKey(key);</span>
+<span class="fc" id="L164">        newEntry.setValue(value);</span>
+<span class="fc" id="L165">        addNewEntry(newEntry);</span>
+<span class="fc" id="L166">        data.put(key, newEntry);</span>
+<span class="fc" id="L167">    }</span>
+
+    /**
+     * Adds a new entry to the end of the list.
+     *
+     * @param newEntry the entry to add
+     */
+    private void addNewEntry(Entry&lt;K, V&gt; newEntry) {
+<span class="fc bfc" id="L175" title="All 2 branches covered.">        if (data.isEmpty()) {</span>
+<span class="fc" id="L176">            head = newEntry;</span>
+<span class="fc" id="L177">            tail = newEntry;</span>
+<span class="fc" id="L178">            return;</span>
+        }
+<span class="fc" id="L180">        tail.setNextEntry(newEntry);</span>
+<span class="fc" id="L181">        newEntry.setPreEntry(tail);</span>
+<span class="fc" id="L182">        newEntry.setNextEntry(null);</span>
+<span class="fc" id="L183">        tail = newEntry;</span>
+<span class="fc" id="L184">    }</span>
+
+    static final class Entry&lt;I, J&gt; {
+
+        private Entry&lt;I, J&gt; preEntry;
+        private Entry&lt;I, J&gt; nextEntry;
+        private I key;
+        private J value;
+
+<span class="fc" id="L193">        Entry() {</span>
+<span class="fc" id="L194">        }</span>
+
+<span class="nc" id="L196">        Entry(Entry&lt;I, J&gt; preEntry, Entry&lt;I, J&gt; nextEntry, I key, J value) {</span>
+<span class="nc" id="L197">            this.preEntry = preEntry;</span>
+<span class="nc" id="L198">            this.nextEntry = nextEntry;</span>
+<span class="nc" id="L199">            this.key = key;</span>
+<span class="nc" id="L200">            this.value = value;</span>
+<span class="nc" id="L201">        }</span>
+
+        public Entry&lt;I, J&gt; getPreEntry() {
+<span class="fc" id="L204">            return preEntry;</span>
+        }
+
+        public void setPreEntry(Entry&lt;I, J&gt; preEntry) {
+<span class="fc" id="L208">            this.preEntry = preEntry;</span>
+<span class="fc" id="L209">        }</span>
+
+        public Entry&lt;I, J&gt; getNextEntry() {
+<span class="fc" id="L212">            return nextEntry;</span>
+        }
+
+        public void setNextEntry(Entry&lt;I, J&gt; nextEntry) {
+<span class="fc" id="L216">            this.nextEntry = nextEntry;</span>
+<span class="fc" id="L217">        }</span>
+
+        public I getKey() {
+<span class="fc" id="L220">            return key;</span>
+        }
+
+        public void setKey(I key) {
+<span class="fc" id="L224">            this.key = key;</span>
+<span class="fc" id="L225">        }</span>
+
+        public J getValue() {
+<span class="fc" id="L228">            return value;</span>
+        }
+
+        public void setValue(J value) {
+<span class="fc" id="L232">            this.value = value;</span>
+<span class="fc" id="L233">        }</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

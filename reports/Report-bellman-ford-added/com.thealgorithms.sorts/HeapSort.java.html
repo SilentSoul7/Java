@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HeapSort.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.sorts</a> &gt; <span class="el_source">HeapSort.java</span></div><h1>HeapSort.java</h1><pre class="source lang-java linenums">package com.thealgorithms.sorts;
+
+/**
+ * Heap Sort Algorithm Implementation
+ *
+ * @see &lt;a href=&quot;https://en.wikipedia.org/wiki/Heapsort&quot;&gt;Heap Sort Algorithm&lt;/a&gt;
+ */
+<span class="fc" id="L8">public class HeapSort implements SortAlgorithm {</span>
+
+    /**
+     * For simplicity, we are considering the heap root index as 1 instead of 0.
+     * This approach simplifies future calculations. As a result, we decrease
+     * the indexes by 1 when calling {@link SortUtils#less(Comparable, Comparable)}
+     * and provide adjusted values to the {@link SortUtils#swap(Object[], int, int)} methods.
+     */
+    @Override
+    public &lt;T extends Comparable&lt;T&gt;&gt; T[] sort(T[] array) {
+<span class="fc" id="L18">        int n = array.length;</span>
+<span class="fc" id="L19">        heapify(array, n);</span>
+<span class="fc bfc" id="L20" title="All 2 branches covered.">        while (n &gt; 1) {</span>
+<span class="fc" id="L21">            SortUtils.swap(array, 0, n - 1);</span>
+<span class="fc" id="L22">            n--;</span>
+<span class="fc" id="L23">            siftDown(array, 1, n);</span>
+        }
+<span class="fc" id="L25">        return array;</span>
+    }
+
+    private &lt;T extends Comparable&lt;T&gt;&gt; void heapify(final T[] array, final int n) {
+<span class="fc bfc" id="L29" title="All 2 branches covered.">        for (int k = n / 2; k &gt;= 1; k--) {</span>
+<span class="fc" id="L30">            siftDown(array, k, n);</span>
+        }
+<span class="fc" id="L32">    }</span>
+
+    private &lt;T extends Comparable&lt;T&gt;&gt; void siftDown(final T[] array, int k, final int n) {
+<span class="fc bfc" id="L35" title="All 2 branches covered.">        while (2 * k &lt;= n) {</span>
+<span class="fc" id="L36">            int j = 2 * k;</span>
+<span class="fc bfc" id="L37" title="All 4 branches covered.">            if (j &lt; n &amp;&amp; SortUtils.less(array[j - 1], array[j])) {</span>
+<span class="fc" id="L38">                j++;</span>
+            }
+<span class="fc bfc" id="L40" title="All 2 branches covered.">            if (!SortUtils.less(array[k - 1], array[j - 1])) {</span>
+<span class="fc" id="L41">                break;</span>
+            }
+<span class="fc" id="L43">            SortUtils.swap(array, k - 1, j - 1);</span>
+<span class="fc" id="L44">            k = j;</span>
+<span class="fc" id="L45">        }</span>
+<span class="fc" id="L46">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

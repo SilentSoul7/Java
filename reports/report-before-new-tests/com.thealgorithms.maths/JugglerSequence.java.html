@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JugglerSequence.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.maths</a> &gt; <span class="el_source">JugglerSequence.java</span></div><h1>JugglerSequence.java</h1><pre class="source lang-java linenums">package com.thealgorithms.maths;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/*
+ * Java program for printing juggler sequence
+ * Wikipedia: https://en.wikipedia.org/wiki/Juggler_sequence
+ *
+ * Author: Akshay Dubey (https://github.com/itsAkshayDubey)
+ *
+ * */
+
+public final class JugglerSequence {
+    private JugglerSequence() {
+    }
+
+    /**
+     * This method prints juggler sequence starting with the number in the parameter
+     *
+     * @param inputNumber Number from which juggler sequence is to be started
+     */
+    public static void jugglerSequence(int inputNumber) {
+        // Copy method argument to a local variable
+<span class="nc" id="L25">        int n = inputNumber;</span>
+<span class="nc" id="L26">        List&lt;String&gt; seq = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L27">        seq.add(n + &quot;&quot;);</span>
+        // Looping till n reaches 1
+<span class="nc bnc" id="L29" title="All 2 branches missed.">        while (n != 1) {</span>
+            int temp;
+            // if previous term is even then
+            // next term in the sequence is square root of previous term
+            // if previous term is odd then
+            // next term is floor value of 3 time the square root of previous term
+
+            // Check if previous term is even or odd
+<span class="nc bnc" id="L37" title="All 2 branches missed.">            if (n % 2 == 0) {</span>
+<span class="nc" id="L38">                temp = (int) Math.floor(Math.sqrt(n));</span>
+            } else {
+<span class="nc" id="L40">                temp = (int) Math.floor(Math.sqrt(n) * Math.sqrt(n) * Math.sqrt(n));</span>
+            }
+<span class="nc" id="L42">            n = temp;</span>
+<span class="nc" id="L43">            seq.add(n + &quot;&quot;);</span>
+<span class="nc" id="L44">        }</span>
+<span class="nc" id="L45">        String res = String.join(&quot;,&quot;, seq);</span>
+<span class="nc" id="L46">        System.out.println(res);</span>
+<span class="nc" id="L47">    }</span>
+
+    // Driver code
+    public static void main(String[] args) {
+<span class="nc" id="L51">        jugglerSequence(3);</span>
+        // Output: 3,5,11,36,6,2,1
+<span class="nc" id="L53">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

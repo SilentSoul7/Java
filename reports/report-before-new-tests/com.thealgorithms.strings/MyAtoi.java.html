@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MyAtoi.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.strings</a> &gt; <span class="el_source">MyAtoi.java</span></div><h1>MyAtoi.java</h1><pre class="source lang-java linenums">package com.thealgorithms.strings;
+
+/**
+ * A utility class that provides a method to convert a string to a 32-bit signed integer (similar to C/C++'s atoi function).
+ */
+public final class MyAtoi {
+    private MyAtoi() {
+    }
+
+    /**
+     * Converts the given string to a 32-bit signed integer.
+     * The conversion discards any leading whitespace characters until the first non-whitespace character is found.
+     * Then, it takes an optional initial plus or minus sign followed by as many numerical digits as possible and interprets them as a numerical value.
+     * The string can contain additional characters after those that form the integral number, which are ignored and have no effect on the behavior of this function.
+     *
+     * If the number is out of the range of a 32-bit signed integer:
+     * - Returns {@code Integer.MAX_VALUE} if the value exceeds {@code Integer.MAX_VALUE}.
+     * - Returns {@code Integer.MIN_VALUE} if the value is less than {@code Integer.MIN_VALUE}.
+     *
+     * If no valid conversion could be performed, a zero is returned.
+     *
+     * @param s the string to convert
+     * @return the converted integer, or 0 if the string cannot be converted to a valid integer
+     */
+    public static int myAtoi(String s) {
+<span class="fc bfc" id="L26" title="All 4 branches covered.">        if (s == null || s.isEmpty()) {</span>
+<span class="fc" id="L27">            return 0;</span>
+        }
+
+<span class="fc" id="L30">        s = s.trim();</span>
+<span class="fc" id="L31">        int length = s.length();</span>
+<span class="fc bfc" id="L32" title="All 2 branches covered.">        if (length == 0) {</span>
+<span class="fc" id="L33">            return 0;</span>
+        }
+
+<span class="fc" id="L36">        int index = 0;</span>
+<span class="fc" id="L37">        boolean negative = false;</span>
+
+        // Check for the sign
+<span class="fc bfc" id="L40" title="All 4 branches covered.">        if (s.charAt(index) == '-' || s.charAt(index) == '+') {</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">            negative = s.charAt(index) == '-';</span>
+<span class="fc" id="L42">            index++;</span>
+        }
+
+<span class="fc" id="L45">        int number = 0;</span>
+<span class="fc bfc" id="L46" title="All 2 branches covered.">        while (index &lt; length) {</span>
+<span class="fc" id="L47">            char ch = s.charAt(index);</span>
+<span class="fc bfc" id="L48" title="All 2 branches covered.">            if (!Character.isDigit(ch)) {</span>
+<span class="fc" id="L49">                break;</span>
+            }
+
+<span class="fc" id="L52">            int digit = ch - '0';</span>
+
+            // Check for overflow
+<span class="fc bfc" id="L55" title="All 2 branches covered.">            if (number &gt; (Integer.MAX_VALUE - digit) / 10) {</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">                return negative ? Integer.MIN_VALUE : Integer.MAX_VALUE;</span>
+            }
+
+<span class="fc" id="L59">            number = number * 10 + digit;</span>
+<span class="fc" id="L60">            index++;</span>
+<span class="fc" id="L61">        }</span>
+
+<span class="fc bfc" id="L63" title="All 2 branches covered.">        return negative ? -number : number;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

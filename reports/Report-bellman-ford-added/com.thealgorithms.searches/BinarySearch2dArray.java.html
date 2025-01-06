@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BinarySearch2dArray.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.searches</a> &gt; <span class="el_source">BinarySearch2dArray.java</span></div><h1>BinarySearch2dArray.java</h1><pre class="source lang-java linenums">package com.thealgorithms.searches;
+
+/**
+ * This class provides a method to search for a target value in a 2D sorted
+ * array.
+ * The search is performed using a combination of binary search on rows and
+ * columns.
+ * The 2D array must be strictly sorted in both rows and columns.
+ *
+ * The algorithm works by:
+ * 1. Performing a binary search on the middle column of the 2D array.
+ * 2. Depending on the value found, it eliminates rows above or below the middle
+ * element.
+ * 3. After finding or eliminating rows, it further applies binary search in the
+ * relevant columns.
+ */
+public final class BinarySearch2dArray {
+
+    private BinarySearch2dArray() {
+    }
+
+    /**
+     * Performs a binary search on a 2D sorted array to find the target value.
+     * The array must be sorted in ascending order in both rows and columns.
+     *
+     * @param arr    The 2D array to search in.
+     * @param target The value to search for.
+     * @return An array containing the row and column indices of the target, or [-1,
+     *         -1] if the target is not found.
+     */
+    static int[] binarySearch(int[][] arr, int target) {
+<span class="fc" id="L32">        int rowCount = arr.length;</span>
+<span class="fc" id="L33">        int colCount = arr[0].length;</span>
+
+        // Edge case: If there's only one row, search that row directly.
+<span class="fc bfc" id="L36" title="All 2 branches covered.">        if (rowCount == 1) {</span>
+<span class="fc" id="L37">            return binarySearch(arr, target, 0, 0, colCount);</span>
+        }
+
+        // Set initial boundaries for binary search on rows.
+<span class="fc" id="L41">        int startRow = 0;</span>
+<span class="fc" id="L42">        int endRow = rowCount - 1;</span>
+<span class="fc" id="L43">        int midCol = colCount / 2; // Middle column index for comparison.</span>
+
+        // Perform binary search on rows based on the middle column.
+<span class="fc bfc" id="L46" title="All 2 branches covered.">        while (startRow &lt; endRow - 1) {</span>
+<span class="fc" id="L47">            int midRow = startRow + (endRow - startRow) / 2;</span>
+
+            // If the middle element matches the target, return its position.
+<span class="fc bfc" id="L50" title="All 2 branches covered.">            if (arr[midRow][midCol] == target) {</span>
+<span class="fc" id="L51">                return new int[] {midRow, midCol};</span>
+            }
+            // If the middle element is smaller than the target, discard the upper half.
+<span class="fc bfc" id="L54" title="All 2 branches covered.">            else if (arr[midRow][midCol] &lt; target) {</span>
+<span class="fc" id="L55">                startRow = midRow;</span>
+            }
+            // If the middle element is larger than the target, discard the lower half.
+            else {
+<span class="fc" id="L59">                endRow = midRow;</span>
+            }
+<span class="fc" id="L61">        }</span>
+
+        // If the target wasn't found during the row search, check the middle column of
+        // startRow and endRow.
+<span class="fc bfc" id="L65" title="All 2 branches covered.">        if (arr[startRow][midCol] == target) {</span>
+<span class="fc" id="L66">            return new int[] {startRow, midCol};</span>
+        }
+
+<span class="fc bfc" id="L69" title="All 2 branches covered.">        if (arr[endRow][midCol] == target) {</span>
+<span class="fc" id="L70">            return new int[] {endRow, midCol};</span>
+        }
+
+        // If target is smaller than the element in the left of startRow, perform a
+        // binary search on the left of startRow.
+<span class="fc bfc" id="L75" title="All 2 branches covered.">        if (target &lt;= arr[startRow][midCol - 1]) {</span>
+<span class="fc" id="L76">            return binarySearch(arr, target, startRow, 0, midCol - 1);</span>
+        }
+
+        // If target is between midCol and the last column of startRow, perform a binary
+        // search on that part of the row.
+<span class="pc bpc" id="L81" title="1 of 4 branches missed.">        if (target &gt;= arr[startRow][midCol + 1] &amp;&amp; target &lt;= arr[startRow][colCount - 1]) {</span>
+<span class="fc" id="L82">            return binarySearch(arr, target, startRow, midCol + 1, colCount - 1);</span>
+        }
+
+        // If target is smaller than the element in the left of endRow, perform a binary
+        // search on the left of endRow.
+<span class="fc bfc" id="L87" title="All 2 branches covered.">        if (target &lt;= arr[endRow][midCol - 1]) {</span>
+<span class="fc" id="L88">            return binarySearch(arr, target, endRow, 0, midCol - 1);</span>
+        } else {
+            // Otherwise, search on the right of endRow.
+<span class="fc" id="L91">            return binarySearch(arr, target, endRow, midCol + 1, colCount - 1);</span>
+        }
+    }
+
+    /**
+     * Performs a binary search on a specific row of the 2D array.
+     *
+     * @param arr      The 2D array to search in.
+     * @param target   The value to search for.
+     * @param row      The row index where the target will be searched.
+     * @param colStart The starting column index for the search.
+     * @param colEnd   The ending column index for the search.
+     * @return An array containing the row and column indices of the target, or [-1,
+     *         -1] if the target is not found.
+     */
+    static int[] binarySearch(int[][] arr, int target, int row, int colStart, int colEnd) {
+        // Perform binary search within the specified column range.
+<span class="fc bfc" id="L108" title="All 2 branches covered.">        while (colStart &lt;= colEnd) {</span>
+<span class="fc" id="L109">            int midIndex = colStart + (colEnd - colStart) / 2;</span>
+
+            // If the middle element matches the target, return its position.
+<span class="fc bfc" id="L112" title="All 2 branches covered.">            if (arr[row][midIndex] == target) {</span>
+<span class="fc" id="L113">                return new int[] {row, midIndex};</span>
+            }
+            // If the middle element is smaller than the target, move to the right half.
+<span class="fc bfc" id="L116" title="All 2 branches covered.">            else if (arr[row][midIndex] &lt; target) {</span>
+<span class="fc" id="L117">                colStart = midIndex + 1;</span>
+            }
+            // If the middle element is larger than the target, move to the left half.
+            else {
+<span class="fc" id="L121">                colEnd = midIndex - 1;</span>
+            }
+<span class="fc" id="L123">        }</span>
+
+<span class="fc" id="L125">        return new int[] {-1, -1}; // Target not found</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

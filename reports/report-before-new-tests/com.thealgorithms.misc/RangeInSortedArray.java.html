@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RangeInSortedArray.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.misc</a> &gt; <span class="el_source">RangeInSortedArray.java</span></div><h1>RangeInSortedArray.java</h1><pre class="source lang-java linenums">package com.thealgorithms.misc;
+
+public final class RangeInSortedArray {
+    private RangeInSortedArray() {
+    }
+
+    // Get the 1st and last occurrence index of a number 'key' in a non-decreasing array 'nums'
+    // Gives [-1, -1] in case element doesn't exist in array
+    public static int[] sortedRange(int[] nums, int key) {
+<span class="fc" id="L10">        int[] range = new int[] {-1, -1};</span>
+<span class="fc" id="L11">        alteredBinSearchIter(nums, key, 0, nums.length - 1, range, true);</span>
+<span class="fc" id="L12">        alteredBinSearchIter(nums, key, 0, nums.length - 1, range, false);</span>
+<span class="fc" id="L13">        return range;</span>
+    }
+
+    // Recursive altered binary search which searches for leftmost as well as rightmost occurrence
+    // of 'key'
+    public static void alteredBinSearch(int[] nums, int key, int left, int right, int[] range, boolean goLeft) {
+<span class="nc bnc" id="L19" title="All 2 branches missed.">        if (left &gt; right) {</span>
+<span class="nc" id="L20">            return;</span>
+        }
+<span class="nc" id="L22">        int mid = (left + right) &gt;&gt;&gt; 1;</span>
+<span class="nc bnc" id="L23" title="All 2 branches missed.">        if (nums[mid] &gt; key) {</span>
+<span class="nc" id="L24">            alteredBinSearch(nums, key, left, mid - 1, range, goLeft);</span>
+<span class="nc bnc" id="L25" title="All 2 branches missed.">        } else if (nums[mid] &lt; key) {</span>
+<span class="nc" id="L26">            alteredBinSearch(nums, key, mid + 1, right, range, goLeft);</span>
+        } else {
+<span class="nc bnc" id="L28" title="All 2 branches missed.">            if (goLeft) {</span>
+<span class="nc bnc" id="L29" title="All 4 branches missed.">                if (mid == 0 || nums[mid - 1] != key) {</span>
+<span class="nc" id="L30">                    range[0] = mid;</span>
+                } else {
+<span class="nc" id="L32">                    alteredBinSearch(nums, key, left, mid - 1, range, goLeft);</span>
+                }
+            } else {
+<span class="nc bnc" id="L35" title="All 4 branches missed.">                if (mid == nums.length - 1 || nums[mid + 1] != key) {</span>
+<span class="nc" id="L36">                    range[1] = mid;</span>
+                } else {
+<span class="nc" id="L38">                    alteredBinSearch(nums, key, mid + 1, right, range, goLeft);</span>
+                }
+            }
+        }
+<span class="nc" id="L42">    }</span>
+
+    // Iterative altered binary search which searches for leftmost as well as rightmost occurrence
+    // of 'key'
+    public static void alteredBinSearchIter(int[] nums, int key, int left, int right, int[] range, boolean goLeft) {
+<span class="fc bfc" id="L47" title="All 2 branches covered.">        while (left &lt;= right) {</span>
+<span class="fc" id="L48">            final int mid = (left + right) &gt;&gt;&gt; 1;</span>
+<span class="fc bfc" id="L49" title="All 2 branches covered.">            if (nums[mid] &gt; key) {</span>
+<span class="fc" id="L50">                right = mid - 1;</span>
+<span class="fc bfc" id="L51" title="All 2 branches covered.">            } else if (nums[mid] &lt; key) {</span>
+<span class="fc" id="L52">                left = mid + 1;</span>
+            } else {
+<span class="fc bfc" id="L54" title="All 2 branches covered.">                if (goLeft) {</span>
+<span class="fc bfc" id="L55" title="All 4 branches covered.">                    if (mid == 0 || nums[mid - 1] != key) {</span>
+<span class="fc" id="L56">                        range[0] = mid;</span>
+<span class="fc" id="L57">                        return;</span>
+                    } else {
+<span class="fc" id="L59">                        right = mid - 1;</span>
+                    }
+                } else {
+<span class="fc bfc" id="L62" title="All 4 branches covered.">                    if (mid == nums.length - 1 || nums[mid + 1] != key) {</span>
+<span class="fc" id="L63">                        range[1] = mid;</span>
+<span class="fc" id="L64">                        return;</span>
+                    } else {
+<span class="fc" id="L66">                        left = mid + 1;</span>
+                    }
+                }
+            }
+<span class="fc" id="L70">        }</span>
+<span class="fc" id="L71">    }</span>
+
+    public static int getCountLessThan(int[] nums, int key) {
+<span class="fc" id="L74">        return getLessThan(nums, key, 0, nums.length - 1);</span>
+    }
+
+    public static int getLessThan(int[] nums, int key, int left, int right) {
+<span class="fc" id="L78">        int count = 0;</span>
+<span class="fc bfc" id="L79" title="All 2 branches covered.">        while (left &lt;= right) {</span>
+<span class="fc" id="L80">            final int mid = (left + right) &gt;&gt;&gt; 1;</span>
+<span class="fc bfc" id="L81" title="All 2 branches covered.">            if (nums[mid] &gt; key) {</span>
+<span class="fc" id="L82">                right = mid - 1;</span>
+<span class="pc bpc" id="L83" title="1 of 2 branches missed.">            } else if (nums[mid] &lt;= key) {</span>
+<span class="fc" id="L84">                count = mid + 1; // At least mid+1 elements exist which are &lt;= key</span>
+<span class="fc" id="L85">                left = mid + 1;</span>
+            }
+<span class="fc" id="L87">        }</span>
+<span class="fc" id="L88">        return count;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

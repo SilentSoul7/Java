@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AStar.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.graphs</a> &gt; <span class="el_source">AStar.java</span></div><h1>AStar.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.graphs;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.PriorityQueue;
+
+/**
+ * AStar class implements the A* pathfinding algorithm to find the shortest path in a graph.
+ * The graph is represented using an adjacency list, and the algorithm uses a heuristic to estimate
+ * the cost to reach the destination node.
+ * Time Complexity = O(E), where E is equal to the number of edges
+ */
+public final class AStar {
+    private AStar() {
+    }
+
+    /**
+     * Represents a graph using an adjacency list.
+     */
+    static class Graph {
+        private ArrayList&lt;ArrayList&lt;Edge&gt;&gt; graph;
+
+<span class="fc" id="L24">        Graph(int size) {</span>
+<span class="fc" id="L25">            this.graph = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L26" title="All 2 branches covered.">            for (int i = 0; i &lt; size; i++) {</span>
+<span class="fc" id="L27">                this.graph.add(new ArrayList&lt;&gt;());</span>
+            }
+<span class="fc" id="L29">        }</span>
+
+        private ArrayList&lt;Edge&gt; getNeighbours(int from) {
+<span class="fc" id="L32">            return this.graph.get(from);</span>
+        }
+
+        // Add a bidirectional edge to the graph
+        private void addEdge(Edge edge) {
+<span class="fc" id="L37">            this.graph.get(edge.getFrom()).add(new Edge(edge.getFrom(), edge.getTo(), edge.getWeight()));</span>
+<span class="fc" id="L38">            this.graph.get(edge.getTo()).add(new Edge(edge.getTo(), edge.getFrom(), edge.getWeight()));</span>
+<span class="fc" id="L39">        }</span>
+    }
+
+    /**
+     * Represents an edge in the graph with a start node, end node, and weight.
+     */
+    private static class Edge {
+        private int from;
+        private int to;
+        private int weight;
+
+<span class="fc" id="L50">        Edge(int from, int to, int weight) {</span>
+<span class="fc" id="L51">            this.from = from;</span>
+<span class="fc" id="L52">            this.to = to;</span>
+<span class="fc" id="L53">            this.weight = weight;</span>
+<span class="fc" id="L54">        }</span>
+
+        public int getFrom() {
+<span class="fc" id="L57">            return from;</span>
+        }
+
+        public int getTo() {
+<span class="fc" id="L61">            return to;</span>
+        }
+
+        public int getWeight() {
+<span class="fc" id="L65">            return weight;</span>
+        }
+    }
+
+    /**
+     * Contains information about the path and its total distance.
+     */
+    static class PathAndDistance {
+        private int distance; // total distance from the start node
+        private ArrayList&lt;Integer&gt; path; // list of nodes in the path
+        private int estimated; // heuristic estimate for reaching the destination
+
+<span class="fc" id="L77">        PathAndDistance(int distance, ArrayList&lt;Integer&gt; path, int estimated) {</span>
+<span class="fc" id="L78">            this.distance = distance;</span>
+<span class="fc" id="L79">            this.path = path;</span>
+<span class="fc" id="L80">            this.estimated = estimated;</span>
+<span class="fc" id="L81">        }</span>
+
+        public int getDistance() {
+<span class="fc" id="L84">            return distance;</span>
+        }
+
+        public ArrayList&lt;Integer&gt; getPath() {
+<span class="fc" id="L88">            return path;</span>
+        }
+
+        public int getEstimated() {
+<span class="fc" id="L92">            return estimated;</span>
+        }
+    }
+
+    // Initializes the graph with edges defined in the input data
+    static void initializeGraph(Graph graph, List&lt;Integer&gt; data) {
+<span class="fc bfc" id="L98" title="All 2 branches covered.">        for (int i = 0; i &lt; data.size(); i += 4) {</span>
+<span class="fc" id="L99">            graph.addEdge(new Edge(data.get(i), data.get(i + 1), data.get(i + 2)));</span>
+        }
+<span class="fc" id="L101">    }</span>
+
+    /**
+     * Implements the A* pathfinding algorithm to find the shortest path from a start node to a destination node.
+     *
+     * @param from     the starting node
+     * @param to       the destination node
+     * @param graph    the graph representation of the problem
+     * @param heuristic the heuristic estimates for each node
+     * @return a PathAndDistance object containing the shortest path and its distance
+     */
+    public static PathAndDistance aStar(int from, int to, Graph graph, int[] heuristic) {
+        // PriorityQueue to explore nodes based on their distance and estimated cost to reach the destination
+<span class="fc" id="L114">        PriorityQueue&lt;PathAndDistance&gt; queue = new PriorityQueue&lt;&gt;(Comparator.comparingInt(a -&gt; (a.getDistance() + a.getEstimated())));</span>
+
+        // Start with the initial node
+<span class="fc" id="L117">        queue.add(new PathAndDistance(0, new ArrayList&lt;&gt;(List.of(from)), heuristic[from]));</span>
+
+<span class="fc" id="L119">        boolean solutionFound = false;</span>
+<span class="fc" id="L120">        PathAndDistance currentData = new PathAndDistance(-1, null, -1);</span>
+
+<span class="fc bfc" id="L122" title="All 4 branches covered.">        while (!queue.isEmpty() &amp;&amp; !solutionFound) {</span>
+<span class="fc" id="L123">            currentData = queue.poll(); // get the best node from the queue</span>
+<span class="fc" id="L124">            int currentPosition = currentData.getPath().get(currentData.getPath().size() - 1); // current node</span>
+
+            // Check if the destination has been reached
+<span class="fc bfc" id="L127" title="All 2 branches covered.">            if (currentPosition == to) {</span>
+<span class="fc" id="L128">                solutionFound = true;</span>
+            } else {
+<span class="fc bfc" id="L130" title="All 2 branches covered.">                for (Edge edge : graph.getNeighbours(currentPosition)) {</span>
+                    // Avoid cycles by checking if the next node is already in the path
+<span class="fc bfc" id="L132" title="All 2 branches covered.">                    if (!currentData.getPath().contains(edge.getTo())) {</span>
+<span class="fc" id="L133">                        ArrayList&lt;Integer&gt; updatedPath = new ArrayList&lt;&gt;(currentData.getPath());</span>
+<span class="fc" id="L134">                        updatedPath.add(edge.getTo());</span>
+
+                        // Update the distance and heuristic for the new path
+<span class="fc" id="L137">                        queue.add(new PathAndDistance(currentData.getDistance() + edge.getWeight(), updatedPath, heuristic[edge.getTo()]));</span>
+                    }
+<span class="fc" id="L139">                }</span>
+            }
+<span class="fc" id="L141">        }</span>
+<span class="fc bfc" id="L142" title="All 2 branches covered.">        return (solutionFound) ? currentData : new PathAndDistance(-1, null, -1);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

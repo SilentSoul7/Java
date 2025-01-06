@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ReverseBits.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.bitmanipulation</a> &gt; <span class="el_source">ReverseBits.java</span></div><h1>ReverseBits.java</h1><pre class="source lang-java linenums">package com.thealgorithms.bitmanipulation;
+
+/**
+ * This class provides a method to reverse the bits of a 32-bit integer.
+ * Reversing the bits means that the least significant bit (LSB) becomes
+ * the most significant bit (MSB) and vice versa.
+ *
+ * Example:
+ * Input (binary): 00000010100101000001111010011100 (43261596)
+ * Output (binary): 00111001011110000010100101000000 (964176192)
+ *
+ * Time Complexity: O(32) - A fixed number of 32 iterations
+ * Space Complexity: O(1) - No extra space used
+ *
+ * Note:
+ * - If the input is negative, Java handles it using two’s complement representation.
+ * - This function works on 32-bit integers by default.
+ *
+ * @author Bama Charan Chhandogi
+ */
+public final class ReverseBits {
+    private ReverseBits() {
+    }
+
+    /**
+     * Reverses the bits of a 32-bit integer.
+     *
+     * @param n the integer whose bits are to be reversed
+     * @return the integer obtained by reversing the bits of the input
+     */
+    public static int reverseBits(int n) {
+<span class="fc" id="L32">        int result = 0;</span>
+<span class="fc" id="L33">        int bitCount = 32;</span>
+<span class="fc bfc" id="L34" title="All 2 branches covered.">        for (int i = 0; i &lt; bitCount; i++) {</span>
+<span class="fc" id="L35">            result &lt;&lt;= 1; // Left shift the result to make space for the next bit</span>
+<span class="fc" id="L36">            result |= (n &amp; 1); // OR operation to set the least significant bit of result with the current bit of n</span>
+<span class="fc" id="L37">            n &gt;&gt;= 1; // Right shift n to move on to the next bit</span>
+        }
+<span class="fc" id="L39">        return result;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

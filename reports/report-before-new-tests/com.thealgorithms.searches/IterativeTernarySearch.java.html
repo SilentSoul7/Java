@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>IterativeTernarySearch.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.searches</a> &gt; <span class="el_source">IterativeTernarySearch.java</span></div><h1>IterativeTernarySearch.java</h1><pre class="source lang-java linenums">package com.thealgorithms.searches;
+
+import com.thealgorithms.devutils.searches.SearchAlgorithm;
+
+/**
+ * An iterative implementation of the Ternary Search algorithm.
+ *
+ * &lt;p&gt;
+ * Ternary search is a divide-and-conquer algorithm that splits the array into three parts
+ * instead of two, as in binary search. This implementation is iterative, reducing the overhead
+ * associated with recursive function calls. However, the recursive version can also be optimized
+ * by the Java compiler to resemble the iterative version, resulting in similar performance.
+ *
+ * &lt;p&gt;
+ * Worst-case performance: Θ(log3(N))&lt;br&gt;
+ * Best-case performance: O(1)&lt;br&gt;
+ * Average performance: Θ(log3(N))&lt;br&gt;
+ * Worst-case space complexity: O(1)
+ *
+ * &lt;p&gt;
+ * This class implements the {@link SearchAlgorithm} interface, providing a generic search method
+ * for any comparable type.
+ *
+ * @see SearchAlgorithm
+ * @see TernarySearch
+ * @since 2018-04-13
+ */
+<span class="fc" id="L28">public class IterativeTernarySearch implements SearchAlgorithm {</span>
+
+    @Override
+    public &lt;T extends Comparable&lt;T&gt;&gt; int find(T[] array, T key) {
+<span class="pc bpc" id="L32" title="2 of 6 branches missed.">        if (array == null || array.length == 0 || key == null) {</span>
+<span class="fc" id="L33">            return -1;</span>
+        }
+<span class="fc bfc" id="L35" title="All 2 branches covered.">        if (array.length == 1) {</span>
+<span class="fc bfc" id="L36" title="All 2 branches covered.">            return array[0].compareTo(key) == 0 ? 0 : -1;</span>
+        }
+
+<span class="fc" id="L39">        int left = 0;</span>
+<span class="fc" id="L40">        int right = array.length - 1;</span>
+
+<span class="fc bfc" id="L42" title="All 2 branches covered.">        while (right &gt; left) {</span>
+<span class="fc" id="L43">            int leftCmp = array[left].compareTo(key);</span>
+<span class="fc" id="L44">            int rightCmp = array[right].compareTo(key);</span>
+<span class="fc bfc" id="L45" title="All 2 branches covered.">            if (leftCmp == 0) {</span>
+<span class="fc" id="L46">                return left;</span>
+            }
+<span class="fc bfc" id="L48" title="All 2 branches covered.">            if (rightCmp == 0) {</span>
+<span class="fc" id="L49">                return right;</span>
+            }
+
+<span class="fc" id="L52">            int leftThird = left + (right - left) / 3 + 1;</span>
+<span class="fc" id="L53">            int rightThird = right - (right - left) / 3 - 1;</span>
+
+<span class="fc bfc" id="L55" title="All 2 branches covered.">            if (array[leftThird].compareTo(key) &lt;= 0) {</span>
+<span class="fc" id="L56">                left = leftThird;</span>
+            } else {
+<span class="fc" id="L58">                right = rightThird;</span>
+            }
+<span class="fc" id="L60">        }</span>
+
+<span class="fc" id="L62">        return -1;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

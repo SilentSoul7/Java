@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BFPRT.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.others</a> &gt; <span class="el_source">BFPRT.java</span></div><h1>BFPRT.java</h1><pre class="source lang-java linenums">package com.thealgorithms.others;
+
+/**
+ * The BFPRT (Median of Medians) algorithm implementation.
+ * It provides a way to find the k-th smallest element in an unsorted array
+ * with an optimal worst-case time complexity of O(n).
+ * This algorithm is used to find the k smallest numbers in an array.
+ */
+public final class BFPRT {
+    private BFPRT() {
+    }
+
+    /**
+     * Returns the k smallest elements from the array using the BFPRT algorithm.
+     *
+     * @param arr the input array
+     * @param k the number of smallest elements to return
+     * @return an array containing the k smallest elements, or null if k is invalid
+     */
+    public static int[] getMinKNumsByBFPRT(int[] arr, int k) {
+<span class="pc bpc" id="L21" title="2 of 4 branches missed.">        if (k &lt; 1 || k &gt; arr.length) {</span>
+<span class="nc" id="L22">            return null;</span>
+        }
+<span class="fc" id="L24">        int minKth = getMinKthByBFPRT(arr, k);</span>
+<span class="fc" id="L25">        int[] res = new int[k];</span>
+<span class="fc" id="L26">        int index = 0;</span>
+<span class="fc bfc" id="L27" title="All 2 branches covered.">        for (int value : arr) {</span>
+<span class="fc bfc" id="L28" title="All 2 branches covered.">            if (value &lt; minKth) {</span>
+<span class="fc" id="L29">                res[index++] = value;</span>
+            }
+        }
+<span class="fc bfc" id="L32" title="All 2 branches covered.">        for (; index != res.length; index++) {</span>
+<span class="fc" id="L33">            res[index] = minKth;</span>
+        }
+<span class="fc" id="L35">        return res;</span>
+    }
+
+    /**
+     * Returns the k-th smallest element from the array using the BFPRT algorithm.
+     *
+     * @param arr the input array
+     * @param k the rank of the smallest element to find
+     * @return the k-th smallest element
+     */
+    public static int getMinKthByBFPRT(int[] arr, int k) {
+<span class="fc" id="L46">        int[] copyArr = copyArray(arr);</span>
+<span class="fc" id="L47">        return bfprt(copyArr, 0, copyArr.length - 1, k - 1);</span>
+    }
+
+    /**
+     * Creates a copy of the input array.
+     *
+     * @param arr the input array
+     * @return a copy of the array
+     */
+    public static int[] copyArray(int[] arr) {
+<span class="fc" id="L57">        int[] copyArr = new int[arr.length];</span>
+<span class="fc" id="L58">        System.arraycopy(arr, 0, copyArr, 0, arr.length);</span>
+<span class="fc" id="L59">        return copyArr;</span>
+    }
+
+    /**
+     * BFPRT recursive method to find the k-th smallest element.
+     *
+     * @param arr the input array
+     * @param begin the starting index
+     * @param end the ending index
+     * @param i the index of the desired smallest element
+     * @return the k-th smallest element
+     */
+    public static int bfprt(int[] arr, int begin, int end, int i) {
+<span class="fc bfc" id="L72" title="All 2 branches covered.">        if (begin == end) {</span>
+<span class="fc" id="L73">            return arr[begin];</span>
+        }
+<span class="fc" id="L75">        int pivot = medianOfMedians(arr, begin, end);</span>
+<span class="fc" id="L76">        int[] pivotRange = partition(arr, begin, end, pivot);</span>
+<span class="fc bfc" id="L77" title="All 4 branches covered.">        if (i &gt;= pivotRange[0] &amp;&amp; i &lt;= pivotRange[1]) {</span>
+<span class="fc" id="L78">            return arr[i];</span>
+<span class="fc bfc" id="L79" title="All 2 branches covered.">        } else if (i &lt; pivotRange[0]) {</span>
+<span class="fc" id="L80">            return bfprt(arr, begin, pivotRange[0] - 1, i);</span>
+        } else {
+<span class="fc" id="L82">            return bfprt(arr, pivotRange[1] + 1, end, i);</span>
+        }
+    }
+
+    /**
+     * Finds the median of medians as the pivot element.
+     *
+     * @param arr the input array
+     * @param begin the starting index
+     * @param end the ending index
+     * @return the median of medians
+     */
+    public static int medianOfMedians(int[] arr, int begin, int end) {
+<span class="fc" id="L95">        int num = end - begin + 1;</span>
+<span class="fc bfc" id="L96" title="All 2 branches covered.">        int offset = num % 5 == 0 ? 0 : 1;</span>
+<span class="fc" id="L97">        int[] mArr = new int[num / 5 + offset];</span>
+<span class="fc bfc" id="L98" title="All 2 branches covered.">        for (int i = 0; i &lt; mArr.length; i++) {</span>
+<span class="fc" id="L99">            mArr[i] = getMedian(arr, begin + i * 5, Math.min(end, begin + i * 5 + 4));</span>
+        }
+<span class="fc" id="L101">        return bfprt(mArr, 0, mArr.length - 1, mArr.length / 2);</span>
+    }
+
+    /**
+     * Partitions the array around a pivot.
+     *
+     * @param arr the input array
+     * @param begin the starting index
+     * @param end the ending index
+     * @param num the pivot element
+     * @return the range where the pivot is located
+     */
+    public static int[] partition(int[] arr, int begin, int end, int num) {
+<span class="fc" id="L114">        int small = begin - 1;</span>
+<span class="fc" id="L115">        int cur = begin;</span>
+<span class="fc" id="L116">        int big = end + 1;</span>
+<span class="fc bfc" id="L117" title="All 2 branches covered.">        while (cur != big) {</span>
+<span class="fc bfc" id="L118" title="All 2 branches covered.">            if (arr[cur] &lt; num) {</span>
+<span class="fc" id="L119">                swap(arr, ++small, cur++);</span>
+<span class="fc bfc" id="L120" title="All 2 branches covered.">            } else if (arr[cur] &gt; num) {</span>
+<span class="fc" id="L121">                swap(arr, --big, cur);</span>
+            } else {
+<span class="fc" id="L123">                cur++;</span>
+            }
+        }
+<span class="fc" id="L126">        return new int[] {small + 1, big - 1};</span>
+    }
+
+    /**
+     * Finds the median of the elements between the specified range.
+     *
+     * @param arr the input array
+     * @param begin the starting index
+     * @param end the ending index
+     * @return the median of the specified range
+     */
+    public static int getMedian(int[] arr, int begin, int end) {
+<span class="fc" id="L138">        insertionSort(arr, begin, end);</span>
+<span class="fc" id="L139">        int sum = begin + end;</span>
+<span class="fc" id="L140">        int mid = sum / 2 + (sum % 2);</span>
+<span class="fc" id="L141">        return arr[mid];</span>
+    }
+
+    /**
+     * Sorts a portion of the array using insertion sort.
+     *
+     * @param arr the input array
+     * @param begin the starting index
+     * @param end the ending index
+     */
+    public static void insertionSort(int[] arr, int begin, int end) {
+<span class="pc bpc" id="L152" title="2 of 4 branches missed.">        if (arr == null || arr.length &lt; 2) {</span>
+<span class="nc" id="L153">            return;</span>
+        }
+<span class="fc bfc" id="L155" title="All 2 branches covered.">        for (int i = begin + 1; i != end + 1; i++) {</span>
+<span class="fc bfc" id="L156" title="All 2 branches covered.">            for (int j = i; j != begin; j--) {</span>
+<span class="fc bfc" id="L157" title="All 2 branches covered.">                if (arr[j - 1] &gt; arr[j]) {</span>
+<span class="fc" id="L158">                    swap(arr, j - 1, j);</span>
+                } else {
+                    break;
+                }
+            }
+        }
+<span class="fc" id="L164">    }</span>
+
+    /**
+     * Swaps two elements in an array.
+     *
+     * @param arr the input array
+     * @param i the index of the first element
+     * @param j the index of the second element
+     */
+    public static void swap(int[] arr, int i, int j) {
+<span class="fc" id="L174">        int temp = arr[i];</span>
+<span class="fc" id="L175">        arr[i] = arr[j];</span>
+<span class="fc" id="L176">        arr[j] = temp;</span>
+<span class="fc" id="L177">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

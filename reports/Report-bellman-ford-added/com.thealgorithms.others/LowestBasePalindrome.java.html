@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LowestBasePalindrome.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.others</a> &gt; <span class="el_source">LowestBasePalindrome.java</span></div><h1>LowestBasePalindrome.java</h1><pre class="source lang-java linenums">package com.thealgorithms.others;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * @brief Class for finding the lowest base in which a given integer is a palindrome.
+     cf. https://oeis.org/A016026
+ */
+public final class LowestBasePalindrome {
+    private LowestBasePalindrome() {
+    }
+
+    /**
+     * Validates the base, ensuring it is greater than 1.
+     *
+     * @param base the base to be checked
+     * @throws IllegalArgumentException if the base is less than or equal to 1
+     */
+    private static void checkBase(int base) {
+<span class="fc bfc" id="L21" title="All 2 branches covered.">        if (base &lt;= 1) {</span>
+<span class="fc" id="L22">            throw new IllegalArgumentException(&quot;Base must be greater than 1.&quot;);</span>
+        }
+<span class="fc" id="L24">    }</span>
+
+    /**
+     * Validates the number, ensuring it is non-negative.
+     *
+     * @param number the number to be checked
+     * @throws IllegalArgumentException if the number is negative
+     */
+    private static void checkNumber(int number) {
+<span class="fc bfc" id="L33" title="All 2 branches covered.">        if (number &lt; 0) {</span>
+<span class="fc" id="L34">            throw new IllegalArgumentException(&quot;Number must be non-negative.&quot;);</span>
+        }
+<span class="fc" id="L36">    }</span>
+
+    /**
+     * Computes the digits of a given number in a specified base.
+     *
+     * @param number the number to be converted
+     * @param base the base to be used for the conversion
+     * @return a list of digits representing the number in the given base, with the most
+     *         significant digit at the end of the list
+     * @throws IllegalArgumentException if the number is negative or the base is less than 2
+     */
+    public static List&lt;Integer&gt; computeDigitsInBase(int number, int base) {
+<span class="fc" id="L48">        checkNumber(number);</span>
+<span class="fc" id="L49">        checkBase(base);</span>
+
+<span class="fc" id="L51">        List&lt;Integer&gt; digits = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L52" title="All 2 branches covered.">        while (number &gt; 0) {</span>
+<span class="fc" id="L53">            digits.add(number % base);</span>
+<span class="fc" id="L54">            number /= base;</span>
+        }
+<span class="fc" id="L56">        return digits;</span>
+    }
+
+    /**
+     * Checks if a list of integers is palindromic.
+     *
+     * @param list the list of integers to be checked
+     * @return {@code true} if the list is a palindrome, {@code false} otherwise
+     */
+    public static boolean isPalindromic(List&lt;Integer&gt; list) {
+<span class="fc" id="L66">        int size = list.size();</span>
+<span class="fc bfc" id="L67" title="All 2 branches covered.">        for (int i = 0; i &lt; size / 2; i++) {</span>
+<span class="fc bfc" id="L68" title="All 2 branches covered.">            if (!list.get(i).equals(list.get(size - 1 - i))) {</span>
+<span class="fc" id="L69">                return false;</span>
+            }
+        }
+<span class="fc" id="L72">        return true;</span>
+    }
+
+    /**
+     * Checks if the representation of a given number in a specified base is palindromic.
+     *
+     * @param number the number to be checked
+     * @param base the base in which the number will be represented
+     * @return {@code true} if the number is palindromic in the specified base, {@code false} otherwise
+     * @throws IllegalArgumentException if the number is negative or the base is less than 2
+     */
+    public static boolean isPalindromicInBase(int number, int base) {
+<span class="fc" id="L84">        checkNumber(number);</span>
+<span class="fc" id="L85">        checkBase(base);</span>
+
+<span class="fc bfc" id="L87" title="All 2 branches covered.">        if (number &lt;= 1) {</span>
+<span class="fc" id="L88">            return true;</span>
+        }
+
+<span class="fc bfc" id="L91" title="All 2 branches covered.">        if (number % base == 0) {</span>
+            // If the last digit of the number in the given base is 0, it can't be palindromic
+<span class="fc" id="L93">            return false;</span>
+        }
+
+<span class="fc" id="L96">        return isPalindromic(computeDigitsInBase(number, base));</span>
+    }
+
+    /**
+     * Finds the smallest base in which the representation of a given number is palindromic.
+     *
+     * @param number the number to be checked
+     * @return the smallest base in which the number is a palindrome
+     * @throws IllegalArgumentException if the number is negative
+     */
+    public static int lowestBasePalindrome(int number) {
+<span class="fc" id="L107">        checkNumber(number);</span>
+
+<span class="fc" id="L109">        int base = 2;</span>
+<span class="fc bfc" id="L110" title="All 2 branches covered.">        while (!isPalindromicInBase(number, base)) {</span>
+<span class="fc" id="L111">            base++;</span>
+        }
+<span class="fc" id="L113">        return base;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

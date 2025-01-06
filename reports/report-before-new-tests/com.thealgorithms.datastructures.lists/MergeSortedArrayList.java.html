@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MergeSortedArrayList.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.lists</a> &gt; <span class="el_source">MergeSortedArrayList.java</span></div><h1>MergeSortedArrayList.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.lists;
+
+import java.util.Collection;
+import java.util.List;
+
+/**
+ * Utility class for merging two sorted ArrayLists of integers into a single sorted collection.
+ *
+ * &lt;p&gt;This class provides a static `merge` method to combine two pre-sorted lists of integers into a
+ * single sorted list. It does so without modifying the input lists by adding elements from both lists in sorted order
+ * into the result list.&lt;/p&gt;
+ *
+ * &lt;p&gt;Example usage:&lt;/p&gt;
+ * &lt;pre&gt;
+ * List&lt;Integer&gt; listA = Arrays.asList(1, 3, 5, 7, 9);
+ * List&lt;Integer&gt; listB = Arrays.asList(2, 4, 6, 8, 10);
+ * List&lt;Integer&gt; result = new ArrayList&lt;&gt;();
+ * MergeSortedArrayList.merge(listA, listB, result);
+ * &lt;/pre&gt;
+ *
+ * &lt;p&gt;The resulting `result` list will be [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].&lt;/p&gt;
+ *
+ * &lt;p&gt;Note: This class cannot be instantiated as it is designed to be used only with its static `merge` method.&lt;/p&gt;
+ *
+ * &lt;p&gt;This implementation assumes the input lists are already sorted in ascending order.&lt;/p&gt;
+ *
+ * @author https://github.com/shellhub
+ * @see List
+ */
+public final class MergeSortedArrayList {
+
+    private MergeSortedArrayList() {
+    }
+
+    /**
+     * Merges two sorted lists of integers into a single sorted collection.
+     *
+     * &lt;p&gt;This method does not alter the original lists (`listA` and `listB`). Instead, it inserts elements from both
+     * lists into `listC` in a way that maintains ascending order.&lt;/p&gt;
+     *
+     * @param listA The first sorted list of integers.
+     * @param listB The second sorted list of integers.
+     * @param listC The collection to hold the merged result, maintaining sorted order.
+     * @throws NullPointerException if any of the input lists or result collection is null.
+     */
+    public static void merge(List&lt;Integer&gt; listA, List&lt;Integer&gt; listB, Collection&lt;Integer&gt; listC) {
+<span class="fc bfc" id="L47" title="All 6 branches covered.">        if (listA == null || listB == null || listC == null) {</span>
+<span class="fc" id="L48">            throw new NullPointerException(&quot;Input lists and result collection must not be null.&quot;);</span>
+        }
+
+<span class="fc" id="L51">        int pa = 0;</span>
+<span class="fc" id="L52">        int pb = 0;</span>
+
+<span class="fc bfc" id="L54" title="All 4 branches covered.">        while (pa &lt; listA.size() &amp;&amp; pb &lt; listB.size()) {</span>
+<span class="fc bfc" id="L55" title="All 2 branches covered.">            if (listA.get(pa) &lt;= listB.get(pb)) {</span>
+<span class="fc" id="L56">                listC.add(listA.get(pa++));</span>
+            } else {
+<span class="fc" id="L58">                listC.add(listB.get(pb++));</span>
+            }
+        }
+
+        // Add remaining elements from listA, if any
+<span class="fc bfc" id="L63" title="All 2 branches covered.">        while (pa &lt; listA.size()) {</span>
+<span class="fc" id="L64">            listC.add(listA.get(pa++));</span>
+        }
+        // Add remaining elements from listB, if any
+<span class="fc bfc" id="L67" title="All 2 branches covered.">        while (pb &lt; listB.size()) {</span>
+<span class="fc" id="L68">            listC.add(listB.get(pb++));</span>
+        }
+<span class="fc" id="L70">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

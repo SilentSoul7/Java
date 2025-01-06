@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RomanNumeralUtil.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.maths</a> &gt; <span class="el_source">RomanNumeralUtil.java</span></div><h1>RomanNumeralUtil.java</h1><pre class="source lang-java linenums">package com.thealgorithms.maths;
+
+/**
+ * Translates numbers into the Roman Numeral System.
+ *
+ * @see &lt;a href=&quot;https://en.wikipedia.org/wiki/Roman_numerals&quot;&gt;Roman
+ * numerals&lt;/a&gt;
+ * @author Sokratis Fotkatzikis
+ * @version 1.0
+ */
+public final class RomanNumeralUtil {
+    private RomanNumeralUtil() {
+    }
+
+    private static final int MIN_VALUE = 1;
+    private static final int MAX_VALUE = 5999;
+    // 1000-5999
+<span class="nc" id="L18">    private static final String[] RN_M = {</span>
+        &quot;&quot;,
+        &quot;M&quot;,
+        &quot;MM&quot;,
+        &quot;MMM&quot;,
+        &quot;MMMM&quot;,
+        &quot;MMMMM&quot;,
+    };
+    // 100-900
+<span class="nc" id="L27">    private static final String[] RN_C = {</span>
+        &quot;&quot;,
+        &quot;C&quot;,
+        &quot;CC&quot;,
+        &quot;CCC&quot;,
+        &quot;CD&quot;,
+        &quot;D&quot;,
+        &quot;DC&quot;,
+        &quot;DCC&quot;,
+        &quot;DCCC&quot;,
+        &quot;CM&quot;,
+    };
+    // 10-90
+<span class="nc" id="L40">    private static final String[] RN_X = {</span>
+        &quot;&quot;,
+        &quot;X&quot;,
+        &quot;XX&quot;,
+        &quot;XXX&quot;,
+        &quot;XL&quot;,
+        &quot;L&quot;,
+        &quot;LX&quot;,
+        &quot;LXX&quot;,
+        &quot;LXXX&quot;,
+        &quot;XC&quot;,
+    };
+    // 1-9
+<span class="nc" id="L53">    private static final String[] RN_I = {</span>
+        &quot;&quot;,
+        &quot;I&quot;,
+        &quot;II&quot;,
+        &quot;III&quot;,
+        &quot;IV&quot;,
+        &quot;V&quot;,
+        &quot;VI&quot;,
+        &quot;VII&quot;,
+        &quot;VIII&quot;,
+        &quot;IX&quot;,
+    };
+
+    public static String generate(int number) {
+<span class="nc bnc" id="L67" title="All 4 branches missed.">        if (number &lt; MIN_VALUE || number &gt; MAX_VALUE) {</span>
+<span class="nc" id="L68">            throw new IllegalArgumentException(String.format(&quot;The number must be in the range [%d, %d]&quot;, MIN_VALUE, MAX_VALUE));</span>
+        }
+
+<span class="nc" id="L71">        return (RN_M[number / 1000] + RN_C[number % 1000 / 100] + RN_X[number % 100 / 10] + RN_I[number % 10]);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

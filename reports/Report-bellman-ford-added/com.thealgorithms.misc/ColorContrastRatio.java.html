@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ColorContrastRatio.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.misc</a> &gt; <span class="el_source">ColorContrastRatio.java</span></div><h1>ColorContrastRatio.java</h1><pre class="source lang-java linenums">package com.thealgorithms.misc;
+
+import java.awt.Color;
+
+/**
+ * @brief A Java implementation of the official W3 documented procedure to
+ * calculate contrast ratio between colors on the web. This is used to calculate
+ * the readability of a foreground color on top of a background color.
+ * @since 2020-10-15
+ * @see &lt;a href=&quot;https://www.w3.org/TR/WCAG20-TECHS/G17.html#G17-procedure&quot;&gt;Color Contrast Ratio&lt;/a&gt;
+ * @author [Seth Falco](https://github.com/SethFalco)
+ */
+<span class="fc" id="L13">public class ColorContrastRatio {</span>
+
+    /**
+     * @brief Calculates the contrast ratio between two given colors.
+     * @param a Any color, used to get the red, green, and blue values.
+     * @param b Another color, which will be compared against the first color.
+     * @return The contrast ratio between the two colors.
+     */
+    public double getContrastRatio(Color a, Color b) {
+<span class="fc" id="L22">        final double aColorLuminance = getRelativeLuminance(a);</span>
+<span class="fc" id="L23">        final double bColorLuminance = getRelativeLuminance(b);</span>
+
+<span class="pc bpc" id="L25" title="1 of 2 branches missed.">        if (aColorLuminance &gt; bColorLuminance) {</span>
+<span class="nc" id="L26">            return (aColorLuminance + 0.05) / (bColorLuminance + 0.05);</span>
+        }
+
+<span class="fc" id="L29">        return (bColorLuminance + 0.05) / (aColorLuminance + 0.05);</span>
+    }
+
+    /**
+     * @brief Calculates the relative luminance of a given color.
+     * @param color Any color, used to get the red, green, and blue values.
+     * @return The relative luminance of the color.
+     * @see &lt;a href=&quot;https://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef&quot;&gt;More info on relative luminance.&lt;/a&gt;
+     */
+    public double getRelativeLuminance(Color color) {
+<span class="fc" id="L39">        final double red = getColor(color.getRed());</span>
+<span class="fc" id="L40">        final double green = getColor(color.getGreen());</span>
+<span class="fc" id="L41">        final double blue = getColor(color.getBlue());</span>
+
+<span class="fc" id="L43">        return 0.2126 * red + 0.7152 * green + 0.0722 * blue;</span>
+    }
+
+    /**
+     * @brief Calculates the final value for a color to be used in the relative luminance formula as described in step 1.
+     * @param color8Bit 8-bit representation of a color component value.
+     * @return Value for the provided color component to be used in the relative luminance formula.
+     */
+    public double getColor(int color8Bit) {
+<span class="fc" id="L52">        final double sRgb = getColorSRgb(color8Bit);</span>
+<span class="fc bfc" id="L53" title="All 2 branches covered.">        return (sRgb &lt;= 0.03928) ? sRgb / 12.92 : Math.pow((sRgb + 0.055) / 1.055, 2.4);</span>
+    }
+
+    /**
+     * @brief Calculates the Color sRGB value as denoted in step 1 of the procedure document.
+     * @param color8Bit 8-bit representation of a color component value.
+     * @return A percentile value of the color component.
+     */
+    private double getColorSRgb(double color8Bit) {
+<span class="fc" id="L62">        return color8Bit / 255.0;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

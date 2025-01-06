@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SlidingWindowMaximum.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.queues</a> &gt; <span class="el_source">SlidingWindowMaximum.java</span></div><h1>SlidingWindowMaximum.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.queues;
+
+import java.util.Deque;
+import java.util.LinkedList;
+
+/**
+ * The {@code SlidingWindowMaximum} class provides a method to efficiently compute
+ * the maximum element within every sliding window of size {@code k} in a given array.
+ *
+ * &lt;p&gt;The algorithm uses a deque to maintain the indices of useful elements within
+ * the current sliding window. The time complexity of this approach is O(n) since
+ * each element is processed at most twice.
+ *
+ * @author Hardvan
+ */
+public final class SlidingWindowMaximum {
+    private SlidingWindowMaximum() {
+    }
+
+    /**
+     * Returns an array of the maximum values for each sliding window of size {@code k}.
+     * &lt;p&gt;If {@code nums} has fewer elements than {@code k}, the result will be an empty array.
+     * &lt;p&gt;Example:
+     * &lt;pre&gt;
+     * Input: nums = [1, 3, -1, -3, 5, 3, 6, 7], k = 3
+     * Output: [3, 3, 5, 5, 6, 7]
+     * &lt;/pre&gt;
+     *
+     * @param nums the input array of integers
+     * @param k the size of the sliding window
+     * @return an array containing the maximum element for each sliding window
+     */
+    public static int[] maxSlidingWindow(int[] nums, int k) {
+<span class="fc" id="L34">        int n = nums.length;</span>
+<span class="fc bfc" id="L35" title="All 4 branches covered.">        if (n &lt; k || k == 0) {</span>
+<span class="fc" id="L36">            return new int[0];</span>
+        }
+
+<span class="fc" id="L39">        int[] result = new int[n - k + 1];</span>
+<span class="fc" id="L40">        Deque&lt;Integer&gt; deque = new LinkedList&lt;&gt;();</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">        for (int i = 0; i &lt; n; i++) {</span>
+            // Remove elements from the front of the deque if they are out of the current window
+<span class="fc bfc" id="L43" title="All 4 branches covered.">            if (!deque.isEmpty() &amp;&amp; deque.peekFirst() &lt; i - k + 1) {</span>
+<span class="fc" id="L44">                deque.pollFirst();</span>
+            }
+
+            // Remove elements from the back if they are smaller than the current element
+<span class="fc bfc" id="L48" title="All 4 branches covered.">            while (!deque.isEmpty() &amp;&amp; nums[deque.peekLast()] &lt; nums[i]) {</span>
+<span class="fc" id="L49">                deque.pollLast();</span>
+            }
+
+            // Add the current element's index to the deque
+<span class="fc" id="L53">            deque.offerLast(i);</span>
+
+            // Store the maximum element for the current window (starting from the k-1th element)
+<span class="fc bfc" id="L56" title="All 2 branches covered.">            if (i &gt;= k - 1) {</span>
+<span class="fc" id="L57">                result[i - k + 1] = nums[deque.peekFirst()];</span>
+            }
+        }
+
+<span class="fc" id="L61">        return result;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

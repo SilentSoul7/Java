@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>OctalToBinary.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.conversions</a> &gt; <span class="el_source">OctalToBinary.java</span></div><h1>OctalToBinary.java</h1><pre class="source lang-java linenums">package com.thealgorithms.conversions;
+
+/**
+ * A utility class to convert an octal (base-8) number into its binary (base-2) representation.
+ *
+ * &lt;p&gt;This class provides methods to:
+ * &lt;ul&gt;
+ *     &lt;li&gt;Convert an octal number to its binary equivalent&lt;/li&gt;
+ *     &lt;li&gt;Convert individual octal digits to binary&lt;/li&gt;
+ * &lt;/ul&gt;
+ *
+ * &lt;h2&gt;Octal to Binary Conversion:&lt;/h2&gt;
+ * &lt;p&gt;An octal number is converted to binary by converting each octal digit to its 3-bit binary equivalent.
+ * The result is a long representing the full binary equivalent of the octal number.&lt;/p&gt;
+ *
+ * &lt;h2&gt;Example Usage&lt;/h2&gt;
+ * &lt;pre&gt;
+ *   long binary = OctalToBinary.convertOctalToBinary(52); // Output: 101010 (52 in octal is 101010 in binary)
+ * &lt;/pre&gt;
+ *
+ * @author Bama Charan Chhandogi
+ * @see &lt;a href=&quot;https://en.wikipedia.org/wiki/Octal&quot;&gt;Octal Number System&lt;/a&gt;
+ * @see &lt;a href=&quot;https://en.wikipedia.org/wiki/Binary_number&quot;&gt;Binary Number System&lt;/a&gt;
+ */
+public final class OctalToBinary {
+    private OctalToBinary() {
+    }
+
+    /**
+     * Converts an octal number to its binary representation.
+     *
+     * &lt;p&gt;Each octal digit is individually converted to its 3-bit binary equivalent, and the binary
+     * digits are concatenated to form the final binary number.&lt;/p&gt;
+     *
+     * @param octalNumber the octal number to convert (non-negative integer)
+     * @return the binary equivalent as a long
+     */
+    public static long convertOctalToBinary(int octalNumber) {
+<span class="fc" id="L39">        long binaryNumber = 0;</span>
+<span class="fc" id="L40">        int digitPosition = 1;</span>
+
+<span class="fc bfc" id="L42" title="All 2 branches covered.">        while (octalNumber != 0) {</span>
+<span class="fc" id="L43">            int octalDigit = octalNumber % 10;</span>
+<span class="fc" id="L44">            long binaryDigit = convertOctalDigitToBinary(octalDigit);</span>
+
+<span class="fc" id="L46">            binaryNumber += binaryDigit * digitPosition;</span>
+
+<span class="fc" id="L48">            octalNumber /= 10;</span>
+<span class="fc" id="L49">            digitPosition *= 1000;</span>
+<span class="fc" id="L50">        }</span>
+
+<span class="fc" id="L52">        return binaryNumber;</span>
+    }
+
+    /**
+     * Converts a single octal digit (0-7) to its binary equivalent.
+     *
+     * &lt;p&gt;For example:
+     * &lt;ul&gt;
+     *     &lt;li&gt;Octal digit 7 is converted to binary 111&lt;/li&gt;
+     *     &lt;li&gt;Octal digit 3 is converted to binary 011&lt;/li&gt;
+     * &lt;/ul&gt;
+     * &lt;/p&gt;
+     *
+     * @param octalDigit a single octal digit (0-7)
+     * @return the binary equivalent as a long
+     */
+    public static long convertOctalDigitToBinary(int octalDigit) {
+<span class="fc" id="L69">        long binaryDigit = 0;</span>
+<span class="fc" id="L70">        int binaryMultiplier = 1;</span>
+
+<span class="fc bfc" id="L72" title="All 2 branches covered.">        while (octalDigit != 0) {</span>
+<span class="fc" id="L73">            int octalDigitRemainder = octalDigit % 2;</span>
+<span class="fc" id="L74">            binaryDigit += octalDigitRemainder * binaryMultiplier;</span>
+
+<span class="fc" id="L76">            octalDigit /= 2;</span>
+<span class="fc" id="L77">            binaryMultiplier *= 10;</span>
+<span class="fc" id="L78">        }</span>
+
+<span class="fc" id="L80">        return binaryDigit;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

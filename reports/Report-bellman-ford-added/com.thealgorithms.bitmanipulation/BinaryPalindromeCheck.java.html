@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BinaryPalindromeCheck.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.bitmanipulation</a> &gt; <span class="el_source">BinaryPalindromeCheck.java</span></div><h1>BinaryPalindromeCheck.java</h1><pre class="source lang-java linenums">package com.thealgorithms.bitmanipulation;
+
+/**
+ * This class contains a method to check if the binary representation of a number is a palindrome.
+ * &lt;p&gt;
+ *     A binary palindrome is a number whose binary representation is the same when read from left to right and right to left.
+ *     For example, the number 9 has a binary representation of 1001, which is a palindrome.
+ *     The number 10 has a binary representation of 1010, which is not a palindrome.
+ * &lt;/p&gt;
+ *
+ * @author Hardvan
+ */
+public final class BinaryPalindromeCheck {
+    private BinaryPalindromeCheck() {
+    }
+
+    /**
+     * Checks if the binary representation of a number is a palindrome.
+     *
+     * @param x The number to check.
+     * @return True if the binary representation is a palindrome, otherwise false.
+     */
+    public static boolean isBinaryPalindrome(int x) {
+<span class="fc" id="L24">        int reversed = reverseBits(x);</span>
+<span class="fc bfc" id="L25" title="All 2 branches covered.">        return x == reversed;</span>
+    }
+
+    /**
+     * Helper function to reverse all the bits of an integer.
+     *
+     * @param x The number to reverse the bits of.
+     * @return The number with reversed bits.
+     */
+    private static int reverseBits(int x) {
+<span class="fc" id="L35">        int result = 0;</span>
+<span class="fc bfc" id="L36" title="All 2 branches covered.">        while (x &gt; 0) {</span>
+<span class="fc" id="L37">            result &lt;&lt;= 1;</span>
+<span class="fc" id="L38">            result |= (x &amp; 1);</span>
+<span class="fc" id="L39">            x &gt;&gt;= 1;</span>
+        }
+<span class="fc" id="L41">        return result;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>KthElementFinder.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.heaps</a> &gt; <span class="el_source">KthElementFinder.java</span></div><h1>KthElementFinder.java</h1><pre class="source lang-java linenums">
+package com.thealgorithms.datastructures.heaps;
+
+import java.util.PriorityQueue;
+
+/**
+ * This class provides methods to find the Kth largest or Kth smallest element
+ * in an array using heaps. It leverages a min-heap to find the Kth largest element
+ * and a max-heap to find the Kth smallest element efficiently.
+ *
+ * @author Hardvan
+ */
+public final class KthElementFinder {
+    private KthElementFinder() {
+    }
+
+    /**
+     * Finds the Kth largest element in the given array.
+     * Uses a min-heap of size K to track the largest K elements.
+     *
+     * Time Complexity: O(n * log(k)), where n is the size of the input array.
+     * Space Complexity: O(k), as we maintain a heap of size K.
+     *
+     * @param nums the input array of integers
+     * @param k the desired Kth position (1-indexed, i.e., 1 means the largest element)
+     * @return the Kth largest element in the array
+     */
+    public static int findKthLargest(int[] nums, int k) {
+<span class="fc" id="L29">        PriorityQueue&lt;Integer&gt; minHeap = new PriorityQueue&lt;&gt;(k);</span>
+<span class="fc bfc" id="L30" title="All 2 branches covered.">        for (int num : nums) {</span>
+<span class="fc" id="L31">            minHeap.offer(num);</span>
+<span class="fc bfc" id="L32" title="All 2 branches covered.">            if (minHeap.size() &gt; k) {</span>
+<span class="fc" id="L33">                minHeap.poll();</span>
+            }
+        }
+<span class="fc" id="L36">        return minHeap.peek();</span>
+    }
+
+    /**
+     * Finds the Kth smallest element in the given array.
+     * Uses a max-heap of size K to track the smallest K elements.
+     *
+     * Time Complexity: O(n * log(k)), where n is the size of the input array.
+     * Space Complexity: O(k), as we maintain a heap of size K.
+     *
+     * @param nums the input array of integers
+     * @param k the desired Kth position (1-indexed, i.e., 1 means the smallest element)
+     * @return the Kth smallest element in the array
+     */
+    public static int findKthSmallest(int[] nums, int k) {
+<span class="fc" id="L51">        PriorityQueue&lt;Integer&gt; maxHeap = new PriorityQueue&lt;&gt;((a, b) -&gt; b - a);</span>
+<span class="fc bfc" id="L52" title="All 2 branches covered.">        for (int num : nums) {</span>
+<span class="fc" id="L53">            maxHeap.offer(num);</span>
+<span class="fc bfc" id="L54" title="All 2 branches covered.">            if (maxHeap.size() &gt; k) {</span>
+<span class="fc" id="L55">                maxHeap.poll();</span>
+            }
+        }
+<span class="fc" id="L58">        return maxHeap.peek();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

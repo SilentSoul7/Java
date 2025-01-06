@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CycleSort.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.sorts</a> &gt; <span class="el_source">CycleSort.java</span></div><h1>CycleSort.java</h1><pre class="source lang-java linenums">package com.thealgorithms.sorts;
+
+/**
+ * This class implements the cycle sort algorithm.
+ * Cycle sort is an in-place sorting algorithm, unstable, and efficient for scenarios with limited memory usage.
+ * @author Podshivalov Nikita (https://github.com/nikitap492)
+ */
+<span class="fc" id="L8">class CycleSort implements SortAlgorithm {</span>
+    /**
+     * Sorts an array of comparable elements using the cycle sort algorithm.
+     *
+     * @param &lt;T&gt;   The type of elements in the array, which must be comparable
+     * @param array The array to be sorted
+     * @return The sorted array
+     */
+    @Override
+    public &lt;T extends Comparable&lt;T&gt;&gt; T[] sort(final T[] array) {
+<span class="fc" id="L18">        final int length = array.length;</span>
+
+<span class="fc bfc" id="L20" title="All 2 branches covered.">        for (int cycleStart = 0; cycleStart &lt;= length - 2; cycleStart++) {</span>
+<span class="fc" id="L21">            T item = array[cycleStart];</span>
+<span class="fc" id="L22">            int pos = findPosition(array, cycleStart, item);</span>
+
+<span class="fc bfc" id="L24" title="All 2 branches covered.">            if (pos == cycleStart) {</span>
+<span class="fc" id="L25">                continue; // Item is already in the correct position</span>
+            }
+
+<span class="fc" id="L28">            item = placeItem(array, item, pos);</span>
+
+            // Rotate the rest of the cycle
+<span class="fc bfc" id="L31" title="All 2 branches covered.">            while (pos != cycleStart) {</span>
+<span class="fc" id="L32">                pos = findPosition(array, cycleStart, item);</span>
+<span class="fc" id="L33">                item = placeItem(array, item, pos);</span>
+            }
+        }
+<span class="fc" id="L36">        return array;</span>
+    }
+
+    /**
+     * Finds the correct position for the given item starting from cycleStart.
+     *
+     * @param &lt;T&gt;        The type of elements in the array, which must be comparable
+     * @param array      The array to be sorted
+     * @param cycleStart The starting index of the cycle
+     * @param item       The item whose position is to be found
+     * @return The correct position of the item
+     */
+    private &lt;T extends Comparable&lt;T&gt;&gt; int findPosition(final T[] array, final int cycleStart, final T item) {
+<span class="fc" id="L49">        int pos = cycleStart;</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">        for (int i = cycleStart + 1; i &lt; array.length; i++) {</span>
+<span class="fc bfc" id="L51" title="All 2 branches covered.">            if (SortUtils.less(array[i], item)) {</span>
+<span class="fc" id="L52">                pos++;</span>
+            }
+        }
+<span class="fc" id="L55">        return pos;</span>
+    }
+
+    /**
+     * Places the item in its correct position, handling duplicates, and returns the displaced item.
+     *
+     * @param &lt;T&gt;   The type of elements in the array, which must be comparable
+     * @param array The array being sorted
+     * @param item  The item to be placed
+     * @param pos   The position where the item is to be placed
+     * @return The displaced item
+     */
+    private &lt;T extends Comparable&lt;T&gt;&gt; T placeItem(final T[] array, final T item, int pos) {
+<span class="pc bpc" id="L68" title="1 of 2 branches missed.">        while (item.compareTo(array[pos]) == 0) {</span>
+<span class="nc" id="L69">            pos++;</span>
+        }
+<span class="fc" id="L71">        return replace(array, pos, item);</span>
+    }
+
+    /**
+     * Replaces an element in the array with the given item and returns the replaced item.
+     *
+     * @param &lt;T&gt;   The type of elements in the array, which must be comparable
+     * @param array The array in which the replacement will occur
+     * @param pos   The position at which the replacement will occur
+     * @param item  The item to be placed in the array
+     * @return The replaced item
+     */
+    private &lt;T extends Comparable&lt;T&gt;&gt; T replace(final T[] array, final int pos, final T item) {
+<span class="fc" id="L84">        final T replacedItem = array[pos];</span>
+<span class="fc" id="L85">        array[pos] = item;</span>
+<span class="fc" id="L86">        return replacedItem;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

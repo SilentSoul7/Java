@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RandomScheduling.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.scheduling</a> &gt; <span class="el_source">RandomScheduling.java</span></div><h1>RandomScheduling.java</h1><pre class="source lang-java linenums">package com.thealgorithms.scheduling;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
+
+/**
+ * RandomScheduling is an algorithm that assigns tasks in a random order.
+ * It doesn't consider priority, deadlines, or burst times, making it
+ * inefficient but useful in scenarios where fairness or unpredictability
+ * is required (e.g., load balancing in distributed systems).
+ *
+ * Use Case: Distributed systems where randomness helps avoid task starvation.
+ *
+ * @author Hardvan
+ */
+public final class RandomScheduling {
+
+    private final List&lt;String&gt; tasks;
+    private final Random random;
+
+    /**
+     * Constructs a new RandomScheduling instance.
+     *
+     * @param tasks A collection of task names to be scheduled.
+     * @param random A Random instance for generating random numbers.
+     */
+<span class="fc" id="L30">    public RandomScheduling(Collection&lt;String&gt; tasks, Random random) {</span>
+<span class="fc" id="L31">        this.tasks = new ArrayList&lt;&gt;(tasks);</span>
+<span class="fc" id="L32">        this.random = random;</span>
+<span class="fc" id="L33">    }</span>
+
+    /**
+     * Schedules the tasks randomly and returns the randomized order.
+     *
+     * @return A list representing the tasks in their randomized execution order.
+     */
+    public List&lt;String&gt; schedule() {
+<span class="fc" id="L41">        List&lt;String&gt; shuffledTasks = new ArrayList&lt;&gt;(tasks);</span>
+<span class="fc" id="L42">        Collections.shuffle(shuffledTasks, random);</span>
+<span class="fc" id="L43">        return shuffledTasks;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

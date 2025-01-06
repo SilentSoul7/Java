@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InsertionSort.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.sorts</a> &gt; <span class="el_source">InsertionSort.java</span></div><h1>InsertionSort.java</h1><pre class="source lang-java linenums">package com.thealgorithms.sorts;
+
+<span class="fc" id="L3">class InsertionSort implements SortAlgorithm {</span>
+
+    /**
+     * Sorts the given array using the standard Insertion Sort algorithm.
+     *
+     * @param array The array to be sorted
+     * @param &lt;T&gt;   The type of elements in the array, which must be comparable
+     * @return The sorted array
+     */
+    @Override
+    public &lt;T extends Comparable&lt;T&gt;&gt; T[] sort(T[] array) {
+<span class="fc" id="L14">        return sort(array, 0, array.length);</span>
+    }
+
+    /**
+     * Sorts a subarray of the given array using the standard Insertion Sort algorithm.
+     *
+     * @param array The array to be sorted
+     * @param lo    The starting index of the subarray
+     * @param hi    The ending index of the subarray (exclusive)
+     * @param &lt;T&gt;   The type of elements in the array, which must be comparable
+     * @return The sorted array
+     */
+    public &lt;T extends Comparable&lt;T&gt;&gt; T[] sort(T[] array, final int lo, final int hi) {
+<span class="pc bpc" id="L27" title="1 of 4 branches missed.">        if (array == null || lo &gt;= hi) {</span>
+<span class="fc" id="L28">            return array;</span>
+        }
+
+<span class="fc bfc" id="L31" title="All 2 branches covered.">        for (int i = lo + 1; i &lt; hi; i++) {</span>
+<span class="fc" id="L32">            final T key = array[i];</span>
+<span class="fc" id="L33">            int j = i - 1;</span>
+<span class="fc bfc" id="L34" title="All 4 branches covered.">            while (j &gt;= lo &amp;&amp; SortUtils.less(key, array[j])) {</span>
+<span class="fc" id="L35">                array[j + 1] = array[j];</span>
+<span class="fc" id="L36">                j--;</span>
+            }
+<span class="fc" id="L38">            array[j + 1] = key;</span>
+        }
+
+<span class="fc" id="L41">        return array;</span>
+    }
+
+    /**
+     * Sentinel sort is a function which on the first step finds the minimal element in the provided
+     * array and puts it to the zero position, such a trick gives us an ability to avoid redundant
+     * comparisons like `j &gt; 0` and swaps (we can move elements on position right, until we find
+     * the right position for the chosen element) on further step.
+     *
+     * @param array The array to be sorted
+     * @param &lt;T&gt;   The type of elements in the array, which must be comparable
+     * @return The sorted array
+     */
+    public &lt;T extends Comparable&lt;T&gt;&gt; T[] sentinelSort(T[] array) {
+<span class="pc bpc" id="L55" title="1 of 4 branches missed.">        if (array == null || array.length &lt;= 1) {</span>
+<span class="fc" id="L56">            return array;</span>
+        }
+
+<span class="fc" id="L59">        final int minElemIndex = findMinIndex(array);</span>
+<span class="fc" id="L60">        SortUtils.swap(array, 0, minElemIndex);</span>
+
+<span class="fc bfc" id="L62" title="All 2 branches covered.">        for (int i = 2; i &lt; array.length; i++) {</span>
+<span class="fc" id="L63">            final T currentValue = array[i];</span>
+<span class="fc" id="L64">            int j = i;</span>
+<span class="pc bpc" id="L65" title="1 of 4 branches missed.">            while (j &gt; 0 &amp;&amp; SortUtils.less(currentValue, array[j - 1])) {</span>
+<span class="fc" id="L66">                array[j] = array[j - 1];</span>
+<span class="fc" id="L67">                j--;</span>
+            }
+<span class="fc" id="L69">            array[j] = currentValue;</span>
+        }
+
+<span class="fc" id="L72">        return array;</span>
+    }
+
+    /**
+     * Finds the index of the minimum element in the array.
+     *
+     * @param array The array to be searched
+     * @param &lt;T&gt;   The type of elements in the array, which must be comparable
+     * @return The index of the minimum element
+     */
+    private &lt;T extends Comparable&lt;T&gt;&gt; int findMinIndex(final T[] array) {
+<span class="fc" id="L83">        int minIndex = 0;</span>
+<span class="fc bfc" id="L84" title="All 2 branches covered.">        for (int i = 1; i &lt; array.length; i++) {</span>
+<span class="fc bfc" id="L85" title="All 2 branches covered.">            if (SortUtils.less(array[i], array[minIndex])) {</span>
+<span class="fc" id="L86">                minIndex = i;</span>
+            }
+        }
+<span class="fc" id="L89">        return minIndex;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

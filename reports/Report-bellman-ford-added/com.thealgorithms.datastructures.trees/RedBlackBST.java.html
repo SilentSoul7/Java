@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RedBlackBST.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.trees</a> &gt; <span class="el_source">RedBlackBST.java</span></div><h1>RedBlackBST.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.trees;
+
+import java.util.Scanner;
+
+/**
+ * @author jack870131
+ */
+<span class="nc" id="L8">public class RedBlackBST {</span>
+
+    private static final int RED = 0;
+    private static final int BLACK = 1;
+
+    private class Node {
+
+<span class="nc" id="L15">        int key = -1;</span>
+<span class="nc" id="L16">        int color = BLACK;</span>
+<span class="nc" id="L17">        Node left = nil;</span>
+<span class="nc" id="L18">        Node right = nil;</span>
+<span class="nc" id="L19">        Node p = nil;</span>
+
+<span class="nc" id="L21">        Node(int key) {</span>
+<span class="nc" id="L22">            this.key = key;</span>
+<span class="nc" id="L23">        }</span>
+    }
+
+<span class="nc" id="L26">    private final Node nil = new Node(-1);</span>
+<span class="nc" id="L27">    private Node root = nil;</span>
+
+    public void printTree(Node node) {
+<span class="nc bnc" id="L30" title="All 2 branches missed.">        if (node == nil) {</span>
+<span class="nc" id="L31">            return;</span>
+        }
+<span class="nc" id="L33">        printTree(node.left);</span>
+<span class="nc bnc" id="L34" title="All 2 branches missed.">        System.out.print(((node.color == RED) ? &quot; R &quot; : &quot; B &quot;) + &quot;Key: &quot; + node.key + &quot; Parent: &quot; + node.p.key + &quot;\n&quot;);</span>
+<span class="nc" id="L35">        printTree(node.right);</span>
+<span class="nc" id="L36">    }</span>
+
+    public void printTreepre(Node node) {
+<span class="nc bnc" id="L39" title="All 2 branches missed.">        if (node == nil) {</span>
+<span class="nc" id="L40">            return;</span>
+        }
+<span class="nc bnc" id="L42" title="All 2 branches missed.">        System.out.print(((node.color == RED) ? &quot; R &quot; : &quot; B &quot;) + &quot;Key: &quot; + node.key + &quot; Parent: &quot; + node.p.key + &quot;\n&quot;);</span>
+<span class="nc" id="L43">        printTreepre(node.left);</span>
+<span class="nc" id="L44">        printTreepre(node.right);</span>
+<span class="nc" id="L45">    }</span>
+
+    private Node findNode(Node findNode, Node node) {
+<span class="nc bnc" id="L48" title="All 2 branches missed.">        if (root == nil) {</span>
+<span class="nc" id="L49">            return null;</span>
+        }
+<span class="nc bnc" id="L51" title="All 2 branches missed.">        if (findNode.key &lt; node.key) {</span>
+<span class="nc bnc" id="L52" title="All 2 branches missed.">            if (node.left != nil) {</span>
+<span class="nc" id="L53">                return findNode(findNode, node.left);</span>
+            }
+<span class="nc bnc" id="L55" title="All 2 branches missed.">        } else if (findNode.key &gt; node.key) {</span>
+<span class="nc bnc" id="L56" title="All 2 branches missed.">            if (node.right != nil) {</span>
+<span class="nc" id="L57">                return findNode(findNode, node.right);</span>
+            }
+<span class="nc bnc" id="L59" title="All 2 branches missed.">        } else if (findNode.key == node.key) {</span>
+<span class="nc" id="L60">            return node;</span>
+        }
+<span class="nc" id="L62">        return null;</span>
+    }
+
+    private void insert(Node node) {
+<span class="nc" id="L66">        Node temp = root;</span>
+<span class="nc bnc" id="L67" title="All 2 branches missed.">        if (root == nil) {</span>
+<span class="nc" id="L68">            root = node;</span>
+<span class="nc" id="L69">            node.color = BLACK;</span>
+<span class="nc" id="L70">            node.p = nil;</span>
+        } else {
+<span class="nc" id="L72">            node.color = RED;</span>
+            while (true) {
+<span class="nc bnc" id="L74" title="All 2 branches missed.">                if (node.key &lt; temp.key) {</span>
+<span class="nc bnc" id="L75" title="All 2 branches missed.">                    if (temp.left == nil) {</span>
+<span class="nc" id="L76">                        temp.left = node;</span>
+<span class="nc" id="L77">                        node.p = temp;</span>
+<span class="nc" id="L78">                        break;</span>
+                    } else {
+<span class="nc" id="L80">                        temp = temp.left;</span>
+                    }
+<span class="nc bnc" id="L82" title="All 2 branches missed.">                } else if (node.key &gt;= temp.key) {</span>
+<span class="nc bnc" id="L83" title="All 2 branches missed.">                    if (temp.right == nil) {</span>
+<span class="nc" id="L84">                        temp.right = node;</span>
+<span class="nc" id="L85">                        node.p = temp;</span>
+<span class="nc" id="L86">                        break;</span>
+                    } else {
+<span class="nc" id="L88">                        temp = temp.right;</span>
+                    }
+                }
+            }
+<span class="nc" id="L92">            fixTree(node);</span>
+        }
+<span class="nc" id="L94">    }</span>
+
+    private void fixTree(Node node) {
+<span class="nc bnc" id="L97" title="All 2 branches missed.">        while (node.p.color == RED) {</span>
+<span class="nc" id="L98">            Node y = nil;</span>
+<span class="nc bnc" id="L99" title="All 2 branches missed.">            if (node.p == node.p.p.left) {</span>
+<span class="nc" id="L100">                y = node.p.p.right;</span>
+
+<span class="nc bnc" id="L102" title="All 4 branches missed.">                if (y != nil &amp;&amp; y.color == RED) {</span>
+<span class="nc" id="L103">                    node.p.color = BLACK;</span>
+<span class="nc" id="L104">                    y.color = BLACK;</span>
+<span class="nc" id="L105">                    node.p.p.color = RED;</span>
+<span class="nc" id="L106">                    node = node.p.p;</span>
+<span class="nc" id="L107">                    continue;</span>
+                }
+<span class="nc bnc" id="L109" title="All 2 branches missed.">                if (node == node.p.right) {</span>
+<span class="nc" id="L110">                    node = node.p;</span>
+<span class="nc" id="L111">                    rotateLeft(node);</span>
+                }
+<span class="nc" id="L113">                node.p.color = BLACK;</span>
+<span class="nc" id="L114">                node.p.p.color = RED;</span>
+<span class="nc" id="L115">                rotateRight(node.p.p);</span>
+            } else {
+<span class="nc" id="L117">                y = node.p.p.left;</span>
+<span class="nc bnc" id="L118" title="All 4 branches missed.">                if (y != nil &amp;&amp; y.color == RED) {</span>
+<span class="nc" id="L119">                    node.p.color = BLACK;</span>
+<span class="nc" id="L120">                    y.color = BLACK;</span>
+<span class="nc" id="L121">                    node.p.p.color = RED;</span>
+<span class="nc" id="L122">                    node = node.p.p;</span>
+<span class="nc" id="L123">                    continue;</span>
+                }
+<span class="nc bnc" id="L125" title="All 2 branches missed.">                if (node == node.p.left) {</span>
+<span class="nc" id="L126">                    node = node.p;</span>
+<span class="nc" id="L127">                    rotateRight(node);</span>
+                }
+<span class="nc" id="L129">                node.p.color = BLACK;</span>
+<span class="nc" id="L130">                node.p.p.color = RED;</span>
+<span class="nc" id="L131">                rotateLeft(node.p.p);</span>
+            }
+<span class="nc" id="L133">        }</span>
+<span class="nc" id="L134">        root.color = BLACK;</span>
+<span class="nc" id="L135">    }</span>
+
+    void rotateLeft(Node node) {
+<span class="nc bnc" id="L138" title="All 2 branches missed.">        if (node.p != nil) {</span>
+<span class="nc bnc" id="L139" title="All 2 branches missed.">            if (node == node.p.left) {</span>
+<span class="nc" id="L140">                node.p.left = node.right;</span>
+            } else {
+<span class="nc" id="L142">                node.p.right = node.right;</span>
+            }
+<span class="nc" id="L144">            node.right.p = node.p;</span>
+<span class="nc" id="L145">            node.p = node.right;</span>
+<span class="nc bnc" id="L146" title="All 2 branches missed.">            if (node.right.left != nil) {</span>
+<span class="nc" id="L147">                node.right.left.p = node;</span>
+            }
+<span class="nc" id="L149">            node.right = node.right.left;</span>
+<span class="nc" id="L150">            node.p.left = node;</span>
+        } else {
+<span class="nc" id="L152">            Node right = root.right;</span>
+<span class="nc" id="L153">            root.right = right.left;</span>
+<span class="nc" id="L154">            right.left.p = root;</span>
+<span class="nc" id="L155">            root.p = right;</span>
+<span class="nc" id="L156">            right.left = root;</span>
+<span class="nc" id="L157">            right.p = nil;</span>
+<span class="nc" id="L158">            root = right;</span>
+        }
+<span class="nc" id="L160">    }</span>
+
+    void rotateRight(Node node) {
+<span class="nc bnc" id="L163" title="All 2 branches missed.">        if (node.p != nil) {</span>
+<span class="nc bnc" id="L164" title="All 2 branches missed.">            if (node == node.p.left) {</span>
+<span class="nc" id="L165">                node.p.left = node.left;</span>
+            } else {
+<span class="nc" id="L167">                node.p.right = node.left;</span>
+            }
+
+<span class="nc" id="L170">            node.left.p = node.p;</span>
+<span class="nc" id="L171">            node.p = node.left;</span>
+<span class="nc bnc" id="L172" title="All 2 branches missed.">            if (node.left.right != nil) {</span>
+<span class="nc" id="L173">                node.left.right.p = node;</span>
+            }
+<span class="nc" id="L175">            node.left = node.left.right;</span>
+<span class="nc" id="L176">            node.p.right = node;</span>
+        } else {
+<span class="nc" id="L178">            Node left = root.left;</span>
+<span class="nc" id="L179">            root.left = root.left.right;</span>
+<span class="nc" id="L180">            left.right.p = root;</span>
+<span class="nc" id="L181">            root.p = left;</span>
+<span class="nc" id="L182">            left.right = root;</span>
+<span class="nc" id="L183">            left.p = nil;</span>
+<span class="nc" id="L184">            root = left;</span>
+        }
+<span class="nc" id="L186">    }</span>
+
+    void transplant(Node target, Node with) {
+<span class="nc bnc" id="L189" title="All 2 branches missed.">        if (target.p == nil) {</span>
+<span class="nc" id="L190">            root = with;</span>
+<span class="nc bnc" id="L191" title="All 2 branches missed.">        } else if (target == target.p.left) {</span>
+<span class="nc" id="L192">            target.p.left = with;</span>
+        } else {
+<span class="nc" id="L194">            target.p.right = with;</span>
+        }
+<span class="nc" id="L196">        with.p = target.p;</span>
+<span class="nc" id="L197">    }</span>
+
+    Node treeMinimum(Node subTreeRoot) {
+<span class="nc bnc" id="L200" title="All 2 branches missed.">        while (subTreeRoot.left != nil) {</span>
+<span class="nc" id="L201">            subTreeRoot = subTreeRoot.left;</span>
+        }
+<span class="nc" id="L203">        return subTreeRoot;</span>
+    }
+
+    boolean delete(Node z) {
+<span class="nc" id="L207">        Node result = findNode(z, root);</span>
+<span class="nc bnc" id="L208" title="All 2 branches missed.">        if (result == null) {</span>
+<span class="nc" id="L209">            return false;</span>
+        }
+        Node x;
+<span class="nc" id="L212">        Node y = z;</span>
+<span class="nc" id="L213">        int yorigcolor = y.color;</span>
+
+<span class="nc bnc" id="L215" title="All 2 branches missed.">        if (z.left == nil) {</span>
+<span class="nc" id="L216">            x = z.right;</span>
+<span class="nc" id="L217">            transplant(z, z.right);</span>
+<span class="nc bnc" id="L218" title="All 2 branches missed.">        } else if (z.right == nil) {</span>
+<span class="nc" id="L219">            x = z.left;</span>
+<span class="nc" id="L220">            transplant(z, z.left);</span>
+        } else {
+<span class="nc" id="L222">            y = treeMinimum(z.right);</span>
+<span class="nc" id="L223">            yorigcolor = y.color;</span>
+<span class="nc" id="L224">            x = y.right;</span>
+<span class="nc bnc" id="L225" title="All 2 branches missed.">            if (y.p == z) {</span>
+<span class="nc" id="L226">                x.p = y;</span>
+            } else {
+<span class="nc" id="L228">                transplant(y, y.right);</span>
+<span class="nc" id="L229">                y.right = z.right;</span>
+<span class="nc" id="L230">                y.right.p = y;</span>
+            }
+<span class="nc" id="L232">            transplant(z, y);</span>
+<span class="nc" id="L233">            y.left = z.left;</span>
+<span class="nc" id="L234">            y.left.p = y;</span>
+<span class="nc" id="L235">            y.color = z.color;</span>
+        }
+<span class="nc bnc" id="L237" title="All 2 branches missed.">        if (yorigcolor == BLACK) {</span>
+<span class="nc" id="L238">            deleteFixup(x);</span>
+        }
+<span class="nc" id="L240">        return true;</span>
+    }
+
+    void deleteFixup(Node x) {
+<span class="nc bnc" id="L244" title="All 4 branches missed.">        while (x != root &amp;&amp; x.color == BLACK) {</span>
+<span class="nc bnc" id="L245" title="All 2 branches missed.">            if (x == x.p.left) {</span>
+<span class="nc" id="L246">                Node w = x.p.right;</span>
+<span class="nc bnc" id="L247" title="All 2 branches missed.">                if (w.color == RED) {</span>
+<span class="nc" id="L248">                    w.color = BLACK;</span>
+<span class="nc" id="L249">                    x.p.color = RED;</span>
+<span class="nc" id="L250">                    rotateLeft(x.p);</span>
+<span class="nc" id="L251">                    w = x.p.right;</span>
+                }
+<span class="nc bnc" id="L253" title="All 4 branches missed.">                if (w.left.color == BLACK &amp;&amp; w.right.color == BLACK) {</span>
+<span class="nc" id="L254">                    w.color = RED;</span>
+<span class="nc" id="L255">                    x = x.p;</span>
+<span class="nc" id="L256">                    continue;</span>
+<span class="nc bnc" id="L257" title="All 2 branches missed.">                } else if (w.right.color == BLACK) {</span>
+<span class="nc" id="L258">                    w.left.color = BLACK;</span>
+<span class="nc" id="L259">                    w.color = RED;</span>
+<span class="nc" id="L260">                    rotateRight(w);</span>
+<span class="nc" id="L261">                    w = x.p.right;</span>
+                }
+<span class="nc bnc" id="L263" title="All 2 branches missed.">                if (w.right.color == RED) {</span>
+<span class="nc" id="L264">                    w.color = x.p.color;</span>
+<span class="nc" id="L265">                    x.p.color = BLACK;</span>
+<span class="nc" id="L266">                    w.right.color = BLACK;</span>
+<span class="nc" id="L267">                    rotateLeft(x.p);</span>
+<span class="nc" id="L268">                    x = root;</span>
+                }
+<span class="nc" id="L270">            } else {</span>
+<span class="nc" id="L271">                Node w = x.p.left;</span>
+<span class="nc bnc" id="L272" title="All 2 branches missed.">                if (w.color == RED) {</span>
+<span class="nc" id="L273">                    w.color = BLACK;</span>
+<span class="nc" id="L274">                    x.p.color = RED;</span>
+<span class="nc" id="L275">                    rotateRight(x.p);</span>
+<span class="nc" id="L276">                    w = x.p.left;</span>
+                }
+<span class="nc bnc" id="L278" title="All 4 branches missed.">                if (w.right.color == BLACK &amp;&amp; w.left.color == BLACK) {</span>
+<span class="nc" id="L279">                    w.color = RED;</span>
+<span class="nc" id="L280">                    x = x.p;</span>
+<span class="nc" id="L281">                    continue;</span>
+<span class="nc bnc" id="L282" title="All 2 branches missed.">                } else if (w.left.color == BLACK) {</span>
+<span class="nc" id="L283">                    w.right.color = BLACK;</span>
+<span class="nc" id="L284">                    w.color = RED;</span>
+<span class="nc" id="L285">                    rotateLeft(w);</span>
+<span class="nc" id="L286">                    w = x.p.left;</span>
+                }
+<span class="nc bnc" id="L288" title="All 2 branches missed.">                if (w.left.color == RED) {</span>
+<span class="nc" id="L289">                    w.color = x.p.color;</span>
+<span class="nc" id="L290">                    x.p.color = BLACK;</span>
+<span class="nc" id="L291">                    w.left.color = BLACK;</span>
+<span class="nc" id="L292">                    rotateRight(x.p);</span>
+<span class="nc" id="L293">                    x = root;</span>
+                }
+<span class="nc" id="L295">            }</span>
+        }
+<span class="nc" id="L297">        x.color = BLACK;</span>
+<span class="nc" id="L298">    }</span>
+
+    public void insertDemo() {
+<span class="nc" id="L301">        Scanner scan = new Scanner(System.in);</span>
+<span class="nc" id="L302">        System.out.println(&quot;Add items&quot;);</span>
+
+        int item;
+        Node node;
+
+<span class="nc" id="L307">        item = scan.nextInt();</span>
+<span class="nc bnc" id="L308" title="All 2 branches missed.">        while (item != -999) {</span>
+<span class="nc" id="L309">            node = new Node(item);</span>
+<span class="nc" id="L310">            insert(node);</span>
+<span class="nc" id="L311">            item = scan.nextInt();</span>
+        }
+<span class="nc" id="L313">        printTree(root);</span>
+<span class="nc" id="L314">        System.out.println(&quot;Pre order&quot;);</span>
+<span class="nc" id="L315">        printTreepre(root);</span>
+<span class="nc" id="L316">        scan.close();</span>
+<span class="nc" id="L317">    }</span>
+
+    public void deleteDemo() {
+<span class="nc" id="L320">        Scanner scan = new Scanner(System.in);</span>
+<span class="nc" id="L321">        System.out.println(&quot;Delete items&quot;);</span>
+        int item;
+        Node node;
+<span class="nc" id="L324">        item = scan.nextInt();</span>
+<span class="nc" id="L325">        node = new Node(item);</span>
+<span class="nc" id="L326">        System.out.print(&quot;Deleting item &quot; + item);</span>
+<span class="nc bnc" id="L327" title="All 2 branches missed.">        if (delete(node)) {</span>
+<span class="nc" id="L328">            System.out.print(&quot;: deleted!&quot;);</span>
+        } else {
+<span class="nc" id="L330">            System.out.print(&quot;: does not exist!&quot;);</span>
+        }
+
+<span class="nc" id="L333">        System.out.println();</span>
+<span class="nc" id="L334">        printTree(root);</span>
+<span class="nc" id="L335">        System.out.println(&quot;Pre order&quot;);</span>
+<span class="nc" id="L336">        printTreepre(root);</span>
+<span class="nc" id="L337">        scan.close();</span>
+<span class="nc" id="L338">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

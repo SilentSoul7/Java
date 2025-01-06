@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>IntegerToEnglish.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.conversions</a> &gt; <span class="el_source">IntegerToEnglish.java</span></div><h1>IntegerToEnglish.java</h1><pre class="source lang-java linenums">package com.thealgorithms.conversions;
+
+import java.util.Map;
+
+/**
+ * A utility class to convert integers to their English word representation.
+ *
+ * &lt;p&gt;The class supports conversion of numbers from 0 to 2,147,483,647
+ * (the maximum value of a 32-bit signed integer). It divides the number
+ * into groups of three digits (thousands, millions, billions, etc.) and
+ * translates each group into words.&lt;/p&gt;
+ *
+ * &lt;h2&gt;Example Usage&lt;/h2&gt;
+ * &lt;pre&gt;
+ *   IntegerToEnglish.integerToEnglishWords(12345);
+ *   // Output: &quot;Twelve Thousand Three Hundred Forty Five&quot;
+ * &lt;/pre&gt;
+ *
+ * &lt;p&gt;This class uses two maps:&lt;/p&gt;
+ * &lt;ul&gt;
+ *   &lt;li&gt;BASE_NUMBERS_MAP: Holds English words for numbers 0-20, multiples of 10 up to 90, and 100.&lt;/li&gt;
+ *   &lt;li&gt;THOUSAND_POWER_MAP: Maps powers of 1000 (e.g., Thousand, Million, Billion).&lt;/li&gt;
+ * &lt;/ul&gt;
+ */
+public final class IntegerToEnglish {
+
+<span class="fc" id="L27">    private static final Map&lt;Integer, String&gt; BASE_NUMBERS_MAP = Map.ofEntries(Map.entry(0, &quot;&quot;), Map.entry(1, &quot;One&quot;), Map.entry(2, &quot;Two&quot;), Map.entry(3, &quot;Three&quot;), Map.entry(4, &quot;Four&quot;), Map.entry(5, &quot;Five&quot;), Map.entry(6, &quot;Six&quot;), Map.entry(7, &quot;Seven&quot;), Map.entry(8, &quot;Eight&quot;), Map.entry(9, &quot;Nine&quot;),</span>
+<span class="fc" id="L28">        Map.entry(10, &quot;Ten&quot;), Map.entry(11, &quot;Eleven&quot;), Map.entry(12, &quot;Twelve&quot;), Map.entry(13, &quot;Thirteen&quot;), Map.entry(14, &quot;Fourteen&quot;), Map.entry(15, &quot;Fifteen&quot;), Map.entry(16, &quot;Sixteen&quot;), Map.entry(17, &quot;Seventeen&quot;), Map.entry(18, &quot;Eighteen&quot;), Map.entry(19, &quot;Nineteen&quot;), Map.entry(20, &quot;Twenty&quot;),</span>
+<span class="fc" id="L29">        Map.entry(30, &quot;Thirty&quot;), Map.entry(40, &quot;Forty&quot;), Map.entry(50, &quot;Fifty&quot;), Map.entry(60, &quot;Sixty&quot;), Map.entry(70, &quot;Seventy&quot;), Map.entry(80, &quot;Eighty&quot;), Map.entry(90, &quot;Ninety&quot;), Map.entry(100, &quot;Hundred&quot;));</span>
+
+<span class="fc" id="L31">    private static final Map&lt;Integer, String&gt; THOUSAND_POWER_MAP = Map.ofEntries(Map.entry(1, &quot;Thousand&quot;), Map.entry(2, &quot;Million&quot;), Map.entry(3, &quot;Billion&quot;));</span>
+
+    private IntegerToEnglish() {
+    }
+
+    /**
+     * Converts numbers less than 1000 into English words.
+     *
+     * @param number the integer value (0-999) to convert
+     * @return the English word representation of the input number
+     */
+    private static String convertToWords(int number) {
+<span class="fc" id="L43">        int remainder = number % 100;</span>
+<span class="fc" id="L44">        StringBuilder result = new StringBuilder();</span>
+
+<span class="fc bfc" id="L46" title="All 2 branches covered.">        if (remainder &lt;= 20) {</span>
+<span class="fc" id="L47">            result.append(BASE_NUMBERS_MAP.get(remainder));</span>
+<span class="fc bfc" id="L48" title="All 2 branches covered.">        } else if (BASE_NUMBERS_MAP.containsKey(remainder)) {</span>
+<span class="fc" id="L49">            result.append(BASE_NUMBERS_MAP.get(remainder));</span>
+        } else {
+<span class="fc" id="L51">            int tensDigit = remainder / 10;</span>
+<span class="fc" id="L52">            int onesDigit = remainder % 10;</span>
+<span class="fc" id="L53">            String tens = BASE_NUMBERS_MAP.getOrDefault(tensDigit * 10, &quot;&quot;);</span>
+<span class="fc" id="L54">            String ones = BASE_NUMBERS_MAP.getOrDefault(onesDigit, &quot;&quot;);</span>
+<span class="fc" id="L55">            result.append(tens);</span>
+<span class="pc bpc" id="L56" title="2 of 4 branches missed.">            if (ones != null &amp;&amp; !ones.isEmpty()) {</span>
+<span class="fc" id="L57">                result.append(&quot; &quot;).append(ones);</span>
+            }
+        }
+
+<span class="fc" id="L61">        int hundredsDigit = number / 100;</span>
+<span class="fc bfc" id="L62" title="All 2 branches covered.">        if (hundredsDigit &gt; 0) {</span>
+<span class="fc bfc" id="L63" title="All 2 branches covered.">            if (result.length() &gt; 0) {</span>
+<span class="fc" id="L64">                result.insert(0, &quot; &quot;);</span>
+            }
+<span class="fc" id="L66">            result.insert(0, String.format(&quot;%s Hundred&quot;, BASE_NUMBERS_MAP.get(hundredsDigit)));</span>
+        }
+
+<span class="fc" id="L69">        return result.toString().trim();</span>
+    }
+
+    /**
+     * Converts a non-negative integer to its English word representation.
+     *
+     * @param number the integer to convert (0-2,147,483,647)
+     * @return the English word representation of the input number
+     */
+    public static String integerToEnglishWords(int number) {
+<span class="fc bfc" id="L79" title="All 2 branches covered.">        if (number == 0) {</span>
+<span class="fc" id="L80">            return &quot;Zero&quot;;</span>
+        }
+
+<span class="fc" id="L83">        StringBuilder result = new StringBuilder();</span>
+<span class="fc" id="L84">        int index = 0;</span>
+
+<span class="fc bfc" id="L86" title="All 2 branches covered.">        while (number &gt; 0) {</span>
+<span class="fc" id="L87">            int remainder = number % 1000;</span>
+<span class="fc" id="L88">            number /= 1000;</span>
+
+<span class="fc bfc" id="L90" title="All 2 branches covered.">            if (remainder &gt; 0) {</span>
+<span class="fc" id="L91">                String subResult = convertToWords(remainder);</span>
+<span class="pc bpc" id="L92" title="1 of 2 branches missed.">                if (!subResult.isEmpty()) {</span>
+<span class="fc bfc" id="L93" title="All 2 branches covered.">                    if (index &gt; 0) {</span>
+<span class="fc" id="L94">                        subResult += &quot; &quot; + THOUSAND_POWER_MAP.get(index);</span>
+                    }
+<span class="fc bfc" id="L96" title="All 2 branches covered.">                    if (result.length() &gt; 0) {</span>
+<span class="fc" id="L97">                        result.insert(0, &quot; &quot;);</span>
+                    }
+<span class="fc" id="L99">                    result.insert(0, subResult);</span>
+                }
+            }
+
+<span class="fc" id="L103">            index++;</span>
+<span class="fc" id="L104">        }</span>
+
+<span class="fc" id="L106">        return result.toString().trim();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CrossCorrelation.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.maths</a> &gt; <span class="el_source">CrossCorrelation.java</span></div><h1>CrossCorrelation.java</h1><pre class="source lang-java linenums">package com.thealgorithms.maths;
+
+/**
+ * Class for linear cross-correlation of two discrete signals
+ *
+ * @author Athina-Frederiki Swinkels
+ * @version 1.0
+ */
+
+public final class CrossCorrelation {
+    private CrossCorrelation() {
+    }
+
+    /**
+     * Discrete linear cross-correlation function.
+     * Input and output signals have starting index 0.
+     *
+     * @param x The first discrete signal
+     * @param y The second discrete signal
+     * @return The result of the cross-correlation of signals x,y. The result is also a signal.
+     */
+    public static double[] crossCorrelation(double[] x, double[] y) {
+        // The result signal's length is the sum of the input signals' lengths minus 1
+<span class="fc" id="L24">        double[] result = new double[x.length + y.length - 1];</span>
+<span class="fc" id="L25">        int n = result.length;</span>
+
+        /*
+        To find the cross-correlation between 2 discrete signals x &amp; y, we start by &quot;placing&quot; the second signal
+        y under the first signal x, shifted to the left so that the last value of y meets the first value of x
+        and for every new position (i++) of the result signal, we shift y signal one position to the right, until
+        the first y-value meets the last x-value. The result-value for each position is the sum of all x*y meeting
+        values.
+        Here's an example:
+        x=[1,2,1,1]
+        y=[1,1,2,1]
+
+        i=0:      [1,2,1,1]
+            [1,1,2,1]               result[0]=1*1=1
+
+        i=1:       [1,2,1,1]
+               [1,1,2,1]            result[1]=1*2+2*1=4
+
+        i=2:       [1,2,1,1]
+                 [1,1,2,1]          result[2]=1*1+2*2+1*1=6
+
+        i=3:       [1,2,1,1]
+                   [1,1,2,1]        result[3]=1*1+2*1+1*2+1*1=6
+
+        i=4:       [1,2,1,1]
+                     [1,1,2,1]      result[4]=2*1+1*1+1*2=5
+
+        i=5:       [1,2,1,1]
+                       [1,1,2,1]    result[5]=1*1+1*1=2
+
+        i=1:       [1,2,1,1]
+                         [1,1,2,1]  result[6]=1*1=1
+
+        result=[1,4,6,6,5,2,1]
+
+
+
+
+        To find the result[i] value for each i:0-&gt;n-1, the positions of x-signal in which the 2 signals meet
+        are calculated: kMin&lt;=k&lt;=kMax.
+        The variable 'yStart' indicates the starting index of y in each sum calculation.
+        The variable 'count' increases the index of y-signal by 1, to move to the next value.
+         */
+<span class="fc" id="L68">        int yStart = y.length;</span>
+<span class="fc bfc" id="L69" title="All 2 branches covered.">        for (int i = 0; i &lt; n; i++) {</span>
+<span class="fc" id="L70">            result[i] = 0;</span>
+
+<span class="fc" id="L72">            int kMin = Math.max(i - (y.length - 1), 0);</span>
+<span class="fc" id="L73">            int kMax = Math.min(i, x.length - 1);</span>
+
+<span class="fc bfc" id="L75" title="All 2 branches covered.">            if (i &lt; y.length) {</span>
+<span class="fc" id="L76">                yStart--;</span>
+            }
+
+<span class="fc" id="L79">            int count = 0;</span>
+<span class="fc bfc" id="L80" title="All 2 branches covered.">            for (int k = kMin; k &lt;= kMax; k++) {</span>
+<span class="fc" id="L81">                result[i] += x[k] * y[yStart + count];</span>
+<span class="fc" id="L82">                count++;</span>
+            }
+        }
+
+        // The calculated cross-correlation of x &amp; y signals is returned here.
+<span class="fc" id="L87">        return result;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

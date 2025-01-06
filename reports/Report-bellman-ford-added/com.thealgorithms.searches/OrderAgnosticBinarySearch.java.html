@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>OrderAgnosticBinarySearch.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.searches</a> &gt; <span class="el_source">OrderAgnosticBinarySearch.java</span></div><h1>OrderAgnosticBinarySearch.java</h1><pre class="source lang-java linenums">package com.thealgorithms.searches;
+
+// URL: https://www.geeksforgeeks.org/order-agnostic-binary-search/
+
+/* Order Agnostic Binary Search is an algorithm where we do not know whether the given
+   sorted array is ascending or descending order.
+   We declare a boolean variable to find whether the array is ascending order.
+   In the while loop, we use the two pointer method (start and end) to get the middle element.
+   if the middle element is equal to our target element, then that is the answer.
+   If not, then we check if the array is ascending or descending order.
+   Depending upon the condition, respective statements will be executed and we will get our answer.
+ */
+
+public final class OrderAgnosticBinarySearch {
+    private OrderAgnosticBinarySearch() {
+    }
+
+    static int binSearchAlgo(int[] arr, int start, int end, int target) {
+
+        // Checking whether the given array is ascending order
+<span class="fc bfc" id="L21" title="All 2 branches covered.">        boolean ascOrd = arr[start] &lt; arr[end];</span>
+
+<span class="fc bfc" id="L23" title="All 2 branches covered.">        while (start &lt;= end) {</span>
+<span class="fc" id="L24">            int middle = start + (end - start) / 2;</span>
+
+            // Check if the desired element is present at the middle position
+<span class="fc bfc" id="L27" title="All 2 branches covered.">            if (arr[middle] == target) {</span>
+<span class="fc" id="L28">                return middle; // returns the index of the middle element</span>
+            }
+<span class="fc bfc" id="L30" title="All 2 branches covered.">            if (ascOrd) {</span>
+                // Ascending order
+<span class="fc bfc" id="L32" title="All 2 branches covered.">                if (arr[middle] &lt; target) {</span>
+<span class="fc" id="L33">                    start = middle + 1;</span>
+                } else {
+<span class="fc" id="L35">                    end = middle - 1;</span>
+                }
+            } else {
+                // Descending order
+<span class="fc bfc" id="L39" title="All 2 branches covered.">                if (arr[middle] &gt; target) {</span>
+<span class="fc" id="L40">                    start = middle + 1;</span>
+                } else {
+<span class="fc" id="L42">                    end = middle - 1;</span>
+                }
+            }
+<span class="fc" id="L45">        }</span>
+        // Element is not present
+<span class="fc" id="L47">        return -1;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>QuickSort.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.sorts</a> &gt; <span class="el_source">QuickSort.java</span></div><h1>QuickSort.java</h1><pre class="source lang-java linenums">package com.thealgorithms.sorts;
+
+/**
+ * @author Varun Upadhyay (https://github.com/varunu28)
+ * @author Podshivalov Nikita (https://github.com/nikitap492)
+ * @see SortAlgorithm
+ */
+<span class="fc" id="L8">public class QuickSort implements SortAlgorithm {</span>
+
+    /**
+     * This method implements the Generic Quick Sort
+     *
+     * @param array The array to be sorted Sorts the array in increasing order
+     */
+    @Override
+    public &lt;T extends Comparable&lt;T&gt;&gt; T[] sort(T[] array) {
+<span class="fc" id="L17">        doSort(array, 0, array.length - 1);</span>
+<span class="fc" id="L18">        return array;</span>
+    }
+
+    /**
+     * The sorting process
+     *
+     * @param left The first index of an array
+     * @param right The last index of an array
+     * @param array The array to be sorted
+     */
+    private static &lt;T extends Comparable&lt;T&gt;&gt; void doSort(T[] array, final int left, final int right) {
+<span class="fc bfc" id="L29" title="All 2 branches covered.">        if (left &lt; right) {</span>
+<span class="fc" id="L30">            final int pivot = randomPartition(array, left, right);</span>
+<span class="fc" id="L31">            doSort(array, left, pivot - 1);</span>
+<span class="fc" id="L32">            doSort(array, pivot, right);</span>
+        }
+<span class="fc" id="L34">    }</span>
+
+    /**
+     * Randomize the array to avoid the basically ordered sequences
+     *
+     * @param array The array to be sorted
+     * @param left The first index of an array
+     * @param right The last index of an array
+     * @return the partition index of the array
+     */
+    private static &lt;T extends Comparable&lt;T&gt;&gt; int randomPartition(T[] array, final int left, final int right) {
+<span class="fc" id="L45">        final int randomIndex = left + (int) (Math.random() * (right - left + 1));</span>
+<span class="fc" id="L46">        SortUtils.swap(array, randomIndex, right);</span>
+<span class="fc" id="L47">        return partition(array, left, right);</span>
+    }
+
+    /**
+     * This method finds the partition index for an array
+     *
+     * @param array The array to be sorted
+     * @param left The first index of an array
+     * @param right The last index of an array Finds the partition index of an
+     * array
+     */
+    private static &lt;T extends Comparable&lt;T&gt;&gt; int partition(T[] array, int left, int right) {
+<span class="fc" id="L59">        final int mid = (left + right) &gt;&gt;&gt; 1;</span>
+<span class="fc" id="L60">        final T pivot = array[mid];</span>
+
+<span class="fc bfc" id="L62" title="All 2 branches covered.">        while (left &lt;= right) {</span>
+<span class="fc bfc" id="L63" title="All 2 branches covered.">            while (SortUtils.less(array[left], pivot)) {</span>
+<span class="fc" id="L64">                ++left;</span>
+            }
+<span class="fc bfc" id="L66" title="All 2 branches covered.">            while (SortUtils.less(pivot, array[right])) {</span>
+<span class="fc" id="L67">                --right;</span>
+            }
+<span class="fc bfc" id="L69" title="All 2 branches covered.">            if (left &lt;= right) {</span>
+<span class="fc" id="L70">                SortUtils.swap(array, left, right);</span>
+<span class="fc" id="L71">                ++left;</span>
+<span class="fc" id="L72">                --right;</span>
+            }
+        }
+<span class="fc" id="L75">        return left;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

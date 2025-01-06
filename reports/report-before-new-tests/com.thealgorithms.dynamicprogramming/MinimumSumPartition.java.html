@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MinimumSumPartition.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.dynamicprogramming</a> &gt; <span class="el_source">MinimumSumPartition.java</span></div><h1>MinimumSumPartition.java</h1><pre class="source lang-java linenums">package com.thealgorithms.dynamicprogramming;
+
+import java.util.Arrays;
+
+/*
+Given an array of non-negative integers , partition the array in two subset that
+difference in sum of elements for both subset minimum.
+Return the minimum difference in sum of these subsets you can achieve.
+
+Input:  array[] = {1, 6, 11, 4}
+Output: 0
+Explanation:
+Subset1 = {1, 4, 6}, sum of Subset1 = 11
+Subset2 = {11}, sum of Subset2 = 11
+
+Input:  array[] = {36, 7, 46, 40}
+Output: 23
+Explanation:
+Subset1 = {7, 46} ;  sum of Subset1 = 53
+Subset2 = {36, 40} ; sum of Subset2  = 76
+ */
+public final class MinimumSumPartition {
+    private MinimumSumPartition() {
+    }
+
+    private static void throwIfInvalidInput(final int[] array) {
+<span class="fc bfc" id="L27" title="All 4 branches covered.">        if (Arrays.stream(array).anyMatch(a -&gt; a &lt; 0)) {</span>
+<span class="fc" id="L28">            throw new IllegalArgumentException(&quot;Input array should not contain negative number(s).&quot;);</span>
+        }
+<span class="fc" id="L30">    }</span>
+
+    public static int minimumSumPartition(final int[] array) {
+<span class="fc" id="L33">        throwIfInvalidInput(array);</span>
+<span class="fc" id="L34">        int sum = Arrays.stream(array).sum();</span>
+<span class="fc" id="L35">        boolean[] dp = new boolean[sum / 2 + 1];</span>
+<span class="fc" id="L36">        dp[0] = true; // Base case , don't select any element from array</span>
+
+        // Find the closest sum of subset array that we can achieve which is closest to half of sum of full array
+<span class="fc" id="L39">        int closestPartitionSum = 0;</span>
+
+<span class="fc bfc" id="L41" title="All 2 branches covered.">        for (int i = 0; i &lt; array.length; i++) {</span>
+<span class="fc bfc" id="L42" title="All 2 branches covered.">            for (int j = sum / 2; j &gt; 0; j--) {</span>
+<span class="fc bfc" id="L43" title="All 2 branches covered.">                if (array[i] &lt;= j) {</span>
+<span class="fc bfc" id="L44" title="All 4 branches covered.">                    dp[j] = dp[j] || dp[j - array[i]];</span>
+                }
+<span class="fc bfc" id="L46" title="All 2 branches covered.">                if (dp[j]) {</span>
+<span class="fc" id="L47">                    closestPartitionSum = Math.max(closestPartitionSum, j);</span>
+                }
+            }
+        }
+        /*
+        Difference in sum = Big partition sum  - Small partition sum
+                          = ( Total sum - Small partition sum) - Small partition sum
+         */
+<span class="fc" id="L55">        return sum - (2 * closestPartitionSum);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WordPatternMatcher.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.backtracking</a> &gt; <span class="el_source">WordPatternMatcher.java</span></div><h1>WordPatternMatcher.java</h1><pre class="source lang-java linenums">package com.thealgorithms.backtracking;
+
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * Class to determine if a pattern matches a string using backtracking.
+ *
+ * Example:
+ * Pattern: &quot;abab&quot;
+ * Input String: &quot;JavaPythonJavaPython&quot;
+ * Output: true
+ *
+ * Pattern: &quot;aaaa&quot;
+ * Input String: &quot;JavaJavaJavaJava&quot;
+ * Output: true
+ *
+ * Pattern: &quot;aabb&quot;
+ * Input String: &quot;JavaPythonPythonJava&quot;
+ * Output: false
+ */
+public final class WordPatternMatcher {
+    private WordPatternMatcher() {
+    }
+
+    /**
+     * Determines if the given pattern matches the input string using backtracking.
+     *
+     * @param pattern The pattern to match.
+     * @param inputString The string to match against the pattern.
+     * @return True if the pattern matches the string, False otherwise.
+     */
+    public static boolean matchWordPattern(String pattern, String inputString) {
+<span class="fc" id="L34">        Map&lt;Character, String&gt; patternMap = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L35">        Map&lt;String, Character&gt; strMap = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L36">        return backtrack(pattern, inputString, 0, 0, patternMap, strMap);</span>
+    }
+
+    /**
+     * Backtracking helper function to check if the pattern matches the string.
+     *
+     * @param pattern The pattern string.
+     * @param inputString The string to match against the pattern.
+     * @param patternIndex Current index in the pattern.
+     * @param strIndex Current index in the input string.
+     * @param patternMap Map to store pattern characters to string mappings.
+     * @param strMap Map to store string to pattern character mappings.
+     * @return True if the pattern matches, False otherwise.
+     */
+    private static boolean backtrack(String pattern, String inputString, int patternIndex, int strIndex, Map&lt;Character, String&gt; patternMap, Map&lt;String, Character&gt; strMap) {
+<span class="fc bfc" id="L51" title="All 4 branches covered.">        if (patternIndex == pattern.length() &amp;&amp; strIndex == inputString.length()) {</span>
+<span class="fc" id="L52">            return true;</span>
+        }
+<span class="fc bfc" id="L54" title="All 4 branches covered.">        if (patternIndex == pattern.length() || strIndex == inputString.length()) {</span>
+<span class="fc" id="L55">            return false;</span>
+        }
+
+<span class="fc" id="L58">        char currentChar = pattern.charAt(patternIndex);</span>
+<span class="fc bfc" id="L59" title="All 2 branches covered.">        if (patternMap.containsKey(currentChar)) {</span>
+<span class="fc" id="L60">            String mappedStr = patternMap.get(currentChar);</span>
+<span class="fc bfc" id="L61" title="All 2 branches covered.">            if (inputString.startsWith(mappedStr, strIndex)) {</span>
+<span class="fc" id="L62">                return backtrack(pattern, inputString, patternIndex + 1, strIndex + mappedStr.length(), patternMap, strMap);</span>
+            } else {
+<span class="fc" id="L64">                return false;</span>
+            }
+        }
+
+<span class="fc bfc" id="L68" title="All 2 branches covered.">        for (int end = strIndex + 1; end &lt;= inputString.length(); end++) {</span>
+<span class="fc" id="L69">            String substring = inputString.substring(strIndex, end);</span>
+<span class="pc bpc" id="L70" title="1 of 2 branches missed.">            if (strMap.containsKey(substring)) {</span>
+<span class="nc" id="L71">                continue;</span>
+            }
+
+<span class="fc" id="L74">            patternMap.put(currentChar, substring);</span>
+<span class="fc" id="L75">            strMap.put(substring, currentChar);</span>
+<span class="fc bfc" id="L76" title="All 2 branches covered.">            if (backtrack(pattern, inputString, patternIndex + 1, end, patternMap, strMap)) {</span>
+<span class="fc" id="L77">                return true;</span>
+            }
+
+<span class="fc" id="L80">            patternMap.remove(currentChar);</span>
+<span class="fc" id="L81">            strMap.remove(substring);</span>
+        }
+
+<span class="fc" id="L84">        return false;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

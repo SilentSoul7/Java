@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AnytoAny.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.conversions</a> &gt; <span class="el_source">AnytoAny.java</span></div><h1>AnytoAny.java</h1><pre class="source lang-java linenums">package com.thealgorithms.conversions;
+
+/**
+ * A utility class for converting numbers from any base to any other base.
+ *
+ * This class provides a method to convert a source number from a given base
+ * to a destination number in another base. Valid bases range from 2 to 10.
+ */
+public final class AnytoAny {
+    private AnytoAny() {
+    }
+
+    /**
+     * Converts a number from a source base to a destination base.
+     *
+     * @param sourceNumber The number in the source base (as an integer).
+     * @param sourceBase The base of the source number (between 2 and 10).
+     * @param destBase The base to which the number should be converted (between 2 and 10).
+     * @throws IllegalArgumentException if the bases are not between 2 and 10.
+     * @return The converted number in the destination base (as an integer).
+     */
+    public static int convertBase(int sourceNumber, int sourceBase, int destBase) {
+<span class="pc bpc" id="L23" title="2 of 8 branches missed.">        if (sourceBase &lt; 2 || sourceBase &gt; 10 || destBase &lt; 2 || destBase &gt; 10) {</span>
+<span class="fc" id="L24">            throw new IllegalArgumentException(&quot;Bases must be between 2 and 10.&quot;);</span>
+        }
+
+<span class="fc" id="L27">        int decimalValue = toDecimal(sourceNumber, sourceBase);</span>
+<span class="fc" id="L28">        return fromDecimal(decimalValue, destBase);</span>
+    }
+
+    /**
+     * Converts a number from a given base to its decimal representation (base 10).
+     *
+     * @param number The number in the original base.
+     * @param base The base of the given number.
+     * @return The decimal representation of the number.
+     */
+    private static int toDecimal(int number, int base) {
+<span class="fc" id="L39">        int decimalValue = 0;</span>
+<span class="fc" id="L40">        int multiplier = 1;</span>
+
+<span class="fc bfc" id="L42" title="All 2 branches covered.">        while (number != 0) {</span>
+<span class="fc" id="L43">            decimalValue += (number % 10) * multiplier;</span>
+<span class="fc" id="L44">            multiplier *= base;</span>
+<span class="fc" id="L45">            number /= 10;</span>
+        }
+<span class="fc" id="L47">        return decimalValue;</span>
+    }
+
+    /**
+     * Converts a decimal (base 10) number to a specified base.
+     *
+     * @param decimal The decimal number to convert.
+     * @param base The destination base for conversion.
+     * @return The number in the specified base.
+     */
+    private static int fromDecimal(int decimal, int base) {
+<span class="fc" id="L58">        int result = 0;</span>
+<span class="fc" id="L59">        int multiplier = 1;</span>
+
+<span class="fc bfc" id="L61" title="All 2 branches covered.">        while (decimal != 0) {</span>
+<span class="fc" id="L62">            result += (decimal % base) * multiplier;</span>
+<span class="fc" id="L63">            multiplier *= 10;</span>
+<span class="fc" id="L64">            decimal /= base;</span>
+        }
+<span class="fc" id="L66">        return result;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EdmondsBlossomAlgorithm.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.graphs</a> &gt; <span class="el_source">EdmondsBlossomAlgorithm.java</span></div><h1>EdmondsBlossomAlgorithm.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.graphs;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+
+/**
+ * The EdmondsBlossomAlgorithm class implements Edmonds' Blossom Algorithm
+ * to find the maximum matching in a general graph. The algorithm efficiently
+ * handles cases where the graph contains odd-length cycles by contracting
+ * &quot;blossoms&quot; and finding augmenting paths.
+ *&lt;p&gt;
+ * &lt;a href=&quot;https://stanford.edu/~rezab/classes/cme323/S16/projects_reports/shoemaker_vare.pdf&quot;&gt;Documentation of Algorithm (Stanford University)&lt;/a&gt;
+ * &lt;p&gt;&lt;/p&gt;
+ * &lt;a href=&quot;https://en.wikipedia.org/wiki/Blossom_algorithm&quot;&gt;Wikipedia Documentation&lt;/a&gt;
+ */
+public final class EdmondsBlossomAlgorithm {
+
+    private EdmondsBlossomAlgorithm() {
+    }
+
+    private static final int UNMATCHED = -1; // Constant to represent unmatched vertices
+
+    /**
+     * Finds the maximum matching in a general graph (Edmonds Blossom Algorithm).
+     *
+     * @param edges A list of edges in the graph.
+     * @param vertexCount The number of vertices in the graph.
+     * @return A list of matched pairs of vertices.
+     */
+    public static List&lt;int[]&gt; maximumMatching(Iterable&lt;int[]&gt; edges, int vertexCount) {
+<span class="fc" id="L34">        List&lt;List&lt;Integer&gt;&gt; graph = new ArrayList&lt;&gt;(vertexCount);</span>
+
+        // Initialize each vertex's adjacency list.
+<span class="fc bfc" id="L37" title="All 2 branches covered.">        for (int i = 0; i &lt; vertexCount; i++) {</span>
+<span class="fc" id="L38">            graph.add(new ArrayList&lt;&gt;());</span>
+        }
+
+        // Populate the graph with the edges
+<span class="fc bfc" id="L42" title="All 2 branches covered.">        for (int[] edge : edges) {</span>
+<span class="fc" id="L43">            int u = edge[0];</span>
+<span class="fc" id="L44">            int v = edge[1];</span>
+<span class="fc" id="L45">            graph.get(u).add(v);</span>
+<span class="fc" id="L46">            graph.get(v).add(u);</span>
+<span class="fc" id="L47">        }</span>
+
+        // Initial matching array and auxiliary data structures
+<span class="fc" id="L50">        int[] match = new int[vertexCount];</span>
+<span class="fc" id="L51">        Arrays.fill(match, UNMATCHED); // All vertices are initially unmatched</span>
+<span class="fc" id="L52">        int[] parent = new int[vertexCount];</span>
+<span class="fc" id="L53">        int[] base = new int[vertexCount];</span>
+<span class="fc" id="L54">        boolean[] inBlossom = new boolean[vertexCount]; // Indicates if a vertex is part of a blossom</span>
+<span class="fc" id="L55">        boolean[] inQueue = new boolean[vertexCount]; // Tracks vertices in the BFS queue</span>
+
+        // Main logic for finding maximum matching
+<span class="fc bfc" id="L58" title="All 2 branches covered.">        for (int u = 0; u &lt; vertexCount; u++) {</span>
+<span class="fc bfc" id="L59" title="All 2 branches covered.">            if (match[u] == UNMATCHED) {</span>
+                // BFS initialization
+<span class="fc" id="L61">                Arrays.fill(parent, UNMATCHED);</span>
+<span class="fc bfc" id="L62" title="All 2 branches covered.">                for (int i = 0; i &lt; vertexCount; i++) {</span>
+<span class="fc" id="L63">                    base[i] = i; // Each vertex is its own base initially</span>
+                }
+<span class="fc" id="L65">                Arrays.fill(inBlossom, false);</span>
+<span class="fc" id="L66">                Arrays.fill(inQueue, false);</span>
+
+<span class="fc" id="L68">                Queue&lt;Integer&gt; queue = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L69">                queue.add(u);</span>
+<span class="fc" id="L70">                inQueue[u] = true;</span>
+
+<span class="fc" id="L72">                boolean augmentingPathFound = false;</span>
+
+                // BFS to find augmenting paths
+<span class="fc bfc" id="L75" title="All 4 branches covered.">                while (!queue.isEmpty() &amp;&amp; !augmentingPathFound) {</span>
+<span class="fc" id="L76">                    int current = queue.poll(); // Use a different name for clarity</span>
+<span class="fc bfc" id="L77" title="All 2 branches covered.">                    for (int y : graph.get(current)) {</span>
+                        // Skip if we are looking at the same edge as the current match
+<span class="fc bfc" id="L79" title="All 2 branches covered.">                        if (match[current] == y) {</span>
+<span class="fc" id="L80">                            continue;</span>
+                        }
+
+<span class="fc bfc" id="L83" title="All 2 branches covered.">                        if (base[current] == base[y]) {</span>
+<span class="fc" id="L84">                            continue; // Avoid self-loops</span>
+                        }
+
+<span class="fc bfc" id="L87" title="All 2 branches covered.">                        if (parent[y] == UNMATCHED) {</span>
+                            // Case 1: y is unmatched, we've found an augmenting path
+<span class="fc bfc" id="L89" title="All 2 branches covered.">                            if (match[y] == UNMATCHED) {</span>
+<span class="fc" id="L90">                                parent[y] = current;</span>
+<span class="fc" id="L91">                                augmentingPathFound = true;</span>
+<span class="fc" id="L92">                                updateMatching(match, parent, y); // Augment along this path</span>
+<span class="fc" id="L93">                                break;</span>
+                            }
+
+                            // Case 2: y is matched, add y's match to the queue
+<span class="fc" id="L97">                            int z = match[y];</span>
+<span class="fc" id="L98">                            parent[y] = current;</span>
+<span class="fc" id="L99">                            parent[z] = y;</span>
+<span class="pc bpc" id="L100" title="1 of 2 branches missed.">                            if (!inQueue[z]) {</span>
+<span class="fc" id="L101">                                queue.add(z);</span>
+<span class="fc" id="L102">                                inQueue[z] = true;</span>
+                            }
+<span class="fc" id="L104">                        } else {</span>
+                            // Case 3: Both x and y have a parent; check for a cycle/blossom
+<span class="fc" id="L106">                            int baseU = findBase(base, parent, current, y);</span>
+<span class="pc bpc" id="L107" title="1 of 2 branches missed.">                            if (baseU != UNMATCHED) {</span>
+<span class="fc" id="L108">                                contractBlossom(new BlossomData(new BlossomAuxData(queue, parent, base, inBlossom, match, inQueue), current, y, baseU));</span>
+                            }
+                        }
+<span class="fc" id="L111">                    }</span>
+<span class="fc" id="L112">                }</span>
+            }
+        }
+
+        // Create result list of matched pairs
+<span class="fc" id="L117">        List&lt;int[]&gt; matchingResult = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L118" title="All 2 branches covered.">        for (int v = 0; v &lt; vertexCount; v++) {</span>
+<span class="fc bfc" id="L119" title="All 4 branches covered.">            if (match[v] != UNMATCHED &amp;&amp; v &lt; match[v]) {</span>
+<span class="fc" id="L120">                matchingResult.add(new int[] {v, match[v]});</span>
+            }
+        }
+
+<span class="fc" id="L124">        return matchingResult;</span>
+    }
+
+    /**
+     * Updates the matching along the augmenting path found.
+     *
+     * @param match The matching array.
+     * @param parent The parent array used during the BFS.
+     * @param u The starting node of the augmenting path.
+     */
+    private static void updateMatching(int[] match, int[] parent, int u) {
+<span class="fc bfc" id="L135" title="All 2 branches covered.">        while (u != UNMATCHED) {</span>
+<span class="fc" id="L136">            int v = parent[u];</span>
+<span class="fc" id="L137">            int next = match[v];</span>
+<span class="fc" id="L138">            match[v] = u;</span>
+<span class="fc" id="L139">            match[u] = v;</span>
+<span class="fc" id="L140">            u = next;</span>
+<span class="fc" id="L141">        }</span>
+<span class="fc" id="L142">    }</span>
+
+    /**
+     * Finds the base of a node in the blossom.
+     *
+     * @param base The base array.
+     * @param parent The parent array.
+     * @param u One end of the edge.
+     * @param v The other end of the edge.
+     * @return The base of the node or UNMATCHED.
+     */
+    private static int findBase(int[] base, int[] parent, int u, int v) {
+<span class="fc" id="L154">        boolean[] visited = new boolean[base.length];</span>
+
+        // Mark ancestors of u
+<span class="fc" id="L157">        int currentU = u;</span>
+        while (true) {
+<span class="fc" id="L159">            currentU = base[currentU]; // Move assignment out of the condition</span>
+<span class="fc" id="L160">            visited[currentU] = true;</span>
+<span class="pc bpc" id="L161" title="1 of 2 branches missed.">            if (parent[currentU] == UNMATCHED) {</span>
+<span class="fc" id="L162">                break;</span>
+            }
+<span class="nc" id="L164">            currentU = parent[currentU]; // Move assignment out of the condition</span>
+        }
+
+        // Find the common ancestor of v
+<span class="fc" id="L168">        int currentV = v;</span>
+        while (true) {
+<span class="fc" id="L170">            currentV = base[currentV]; // Move assignment out of the condition</span>
+<span class="fc bfc" id="L171" title="All 2 branches covered.">            if (visited[currentV]) {</span>
+<span class="fc" id="L172">                return currentV;</span>
+            }
+<span class="fc" id="L174">            currentV = parent[currentV]; // Move assignment out of the condition</span>
+        }
+    }
+
+    /**
+     * Contracts a blossom and updates the base array.
+     *
+     * @param blossomData The data containing the parameters related to the blossom contraction.
+     */
+    private static void contractBlossom(BlossomData blossomData) {
+<span class="pc bpc" id="L184" title="1 of 2 branches missed.">        for (int x = blossomData.u; blossomData.auxData.base[x] != blossomData.lca; x = blossomData.auxData.parent[blossomData.auxData.match[x]]) {</span>
+<span class="nc" id="L185">            int baseX = blossomData.auxData.base[x];</span>
+<span class="nc" id="L186">            int matchBaseX = blossomData.auxData.base[blossomData.auxData.match[x]];</span>
+
+            // Split the inner assignment into two separate assignments
+<span class="nc" id="L189">            blossomData.auxData.inBlossom[baseX] = true;</span>
+<span class="nc" id="L190">            blossomData.auxData.inBlossom[matchBaseX] = true;</span>
+        }
+
+<span class="fc bfc" id="L193" title="All 2 branches covered.">        for (int x = blossomData.v; blossomData.auxData.base[x] != blossomData.lca; x = blossomData.auxData.parent[blossomData.auxData.match[x]]) {</span>
+<span class="fc" id="L194">            int baseX = blossomData.auxData.base[x];</span>
+<span class="fc" id="L195">            int matchBaseX = blossomData.auxData.base[blossomData.auxData.match[x]];</span>
+
+            // Split the inner assignment into two separate assignments
+<span class="fc" id="L198">            blossomData.auxData.inBlossom[baseX] = true;</span>
+<span class="fc" id="L199">            blossomData.auxData.inBlossom[matchBaseX] = true;</span>
+        }
+
+        // Update the base for all marked vertices
+<span class="fc bfc" id="L203" title="All 2 branches covered.">        for (int i = 0; i &lt; blossomData.auxData.base.length; i++) {</span>
+<span class="fc bfc" id="L204" title="All 2 branches covered.">            if (blossomData.auxData.inBlossom[blossomData.auxData.base[i]]) {</span>
+<span class="fc" id="L205">                blossomData.auxData.base[i] = blossomData.lca; // Contract to the lowest common ancestor</span>
+<span class="fc bfc" id="L206" title="All 2 branches covered.">                if (!blossomData.auxData.inQueue[i]) {</span>
+<span class="fc" id="L207">                    blossomData.auxData.queue.add(i); // Add to queue if not already present</span>
+<span class="fc" id="L208">                    blossomData.auxData.inQueue[i] = true;</span>
+                }
+            }
+        }
+<span class="fc" id="L212">    }</span>
+
+    /**
+     * Auxiliary data class to encapsulate common parameters for the blossom operations.
+     */
+    static class BlossomAuxData {
+        Queue&lt;Integer&gt; queue; // Queue for BFS traversal
+        int[] parent; // Parent array to store the paths
+        int[] base; // Base array to track the base of each vertex
+        boolean[] inBlossom; // Flags to indicate if a vertex is in a blossom
+        int[] match; // Array to store matches for each vertex
+        boolean[] inQueue; // Flags to track vertices in the BFS queue
+
+<span class="fc" id="L225">        BlossomAuxData(Queue&lt;Integer&gt; queue, int[] parent, int[] base, boolean[] inBlossom, int[] match, boolean[] inQueue) {</span>
+<span class="fc" id="L226">            this.queue = queue;</span>
+<span class="fc" id="L227">            this.parent = parent;</span>
+<span class="fc" id="L228">            this.base = base;</span>
+<span class="fc" id="L229">            this.inBlossom = inBlossom;</span>
+<span class="fc" id="L230">            this.match = match;</span>
+<span class="fc" id="L231">            this.inQueue = inQueue;</span>
+<span class="fc" id="L232">        }</span>
+    }
+
+    /**
+     * BlossomData class with reduced parameters.
+     */
+    static class BlossomData {
+        BlossomAuxData auxData; // Use the auxiliary data class
+        int u; // One vertex in the edge
+        int v; // Another vertex in the edge
+        int lca; // Lowest Common Ancestor
+
+<span class="fc" id="L244">        BlossomData(BlossomAuxData auxData, int u, int v, int lca) {</span>
+<span class="fc" id="L245">            this.auxData = auxData;</span>
+<span class="fc" id="L246">            this.u = u;</span>
+<span class="fc" id="L247">            this.v = v;</span>
+<span class="fc" id="L248">            this.lca = lca;</span>
+<span class="fc" id="L249">        }</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

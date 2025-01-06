@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DuplicateBrackets.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.stacks</a> &gt; <span class="el_source">DuplicateBrackets.java</span></div><h1>DuplicateBrackets.java</h1><pre class="source lang-java linenums">package com.thealgorithms.stacks;
+
+import java.util.Stack;
+
+/**
+ * Class for detecting unnecessary or redundant brackets in a mathematical expression.
+ * Assumes the expression is balanced (i.e., all opening brackets have matching closing brackets).
+ */
+public final class DuplicateBrackets {
+    private DuplicateBrackets() {
+    }
+
+    /**
+     * Checks for extra or redundant brackets in a given expression.
+     *
+     * @param expression the string representing the expression to be checked
+     * @return true if there are extra or redundant brackets, false otherwise
+     * @throws IllegalArgumentException if the input string is null
+     */
+    public static boolean check(String expression) {
+<span class="fc bfc" id="L21" title="All 2 branches covered.">        if (expression == null) {</span>
+<span class="fc" id="L22">            throw new IllegalArgumentException(&quot;Input expression cannot be null.&quot;);</span>
+        }
+
+<span class="fc" id="L25">        Stack&lt;Character&gt; stack = new Stack&lt;&gt;();</span>
+<span class="fc bfc" id="L26" title="All 2 branches covered.">        for (int i = 0; i &lt; expression.length(); i++) {</span>
+<span class="fc" id="L27">            char ch = expression.charAt(i);</span>
+<span class="fc bfc" id="L28" title="All 2 branches covered.">            if (ch == ')') {</span>
+<span class="pc bpc" id="L29" title="1 of 4 branches missed.">                if (stack.isEmpty() || stack.peek() == '(') {</span>
+<span class="fc" id="L30">                    return true;</span>
+                }
+<span class="pc bpc" id="L32" title="1 of 4 branches missed.">                while (!stack.isEmpty() &amp;&amp; stack.peek() != '(') {</span>
+<span class="fc" id="L33">                    stack.pop();</span>
+                }
+<span class="pc bpc" id="L35" title="1 of 2 branches missed.">                if (!stack.isEmpty()) {</span>
+<span class="fc" id="L36">                    stack.pop();</span>
+                }
+            } else {
+<span class="fc" id="L39">                stack.push(ch);</span>
+            }
+        }
+<span class="fc" id="L42">        return false;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

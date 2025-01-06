@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WaveSort.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.sorts</a> &gt; <span class="el_source">WaveSort.java</span></div><h1>WaveSort.java</h1><pre class="source lang-java linenums">package com.thealgorithms.sorts;
+
+/**
+ * The WaveSort algorithm sorts an array so that every alternate element is greater than its adjacent elements.
+ * This implementation also provides a method to check if an array is wave sorted.
+ */
+<span class="fc" id="L7">public class WaveSort implements SortAlgorithm {</span>
+    /**
+     * Sorts the given array such that every alternate element is greater than its adjacent elements.
+     *
+     * @param array The array to be sorted.
+     * @param &lt;T&gt; The type of elements in the array, which must be Comparable.
+     * @return The sorted array.
+     */
+    @Override
+    public &lt;T extends Comparable&lt;T&gt;&gt; T[] sort(T[] array) {
+<span class="fc bfc" id="L17" title="All 2 branches covered.">        for (int i = 0; i &lt; array.length; i += 2) {</span>
+<span class="fc bfc" id="L18" title="All 4 branches covered.">            if (i &gt; 0 &amp;&amp; SortUtils.less(array[i], array[i - 1])) {</span>
+<span class="fc" id="L19">                SortUtils.swap(array, i, i - 1);</span>
+            }
+<span class="fc bfc" id="L21" title="All 4 branches covered.">            if (i &lt; array.length - 1 &amp;&amp; SortUtils.less(array[i], array[i + 1])) {</span>
+<span class="fc" id="L22">                SortUtils.swap(array, i, i + 1);</span>
+            }
+        }
+<span class="fc" id="L25">        return array;</span>
+    }
+
+    /**
+     * Checks if the given array is wave sorted. An array is wave sorted if every alternate element is greater than its adjacent elements.
+     *
+     * @param array The array to check.
+     * @param &lt;T&gt; The type of elements in the array, which must be Comparable.
+     * @return true if the array is wave sorted, false otherwise.
+     */
+    public &lt;T extends Comparable&lt;T&gt;&gt; boolean isWaveSorted(T[] array) {
+<span class="fc bfc" id="L36" title="All 2 branches covered.">        for (int i = 0; i &lt; array.length; i += 2) {</span>
+<span class="fc bfc" id="L37" title="All 4 branches covered.">            if (i &gt; 0 &amp;&amp; SortUtils.less(array[i], array[i - 1])) {</span>
+<span class="fc" id="L38">                return false;</span>
+            }
+<span class="fc bfc" id="L40" title="All 4 branches covered.">            if (i &lt; array.length - 1 &amp;&amp; SortUtils.less(array[i], array[i + 1])) {</span>
+<span class="fc" id="L41">                return false;</span>
+            }
+        }
+<span class="fc" id="L44">        return true;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WiggleSort.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.sorts</a> &gt; <span class="el_source">WiggleSort.java</span></div><h1>WiggleSort.java</h1><pre class="source lang-java linenums">package com.thealgorithms.sorts;
+
+import static com.thealgorithms.maths.Ceil.ceil;
+import static com.thealgorithms.maths.Floor.floor;
+import static com.thealgorithms.searches.QuickSelect.select;
+
+import java.util.Arrays;
+
+/**
+ * A wiggle sort implementation based on John L.s' answer in
+ * https://cs.stackexchange.com/questions/125372/how-to-wiggle-sort-an-array-in-linear-time-complexity
+ * Also have a look at:
+ * https://cs.stackexchange.com/questions/125372/how-to-wiggle-sort-an-array-in-linear-time-complexity?noredirect=1&amp;lq=1
+ * Not all arrays are wiggle-sortable. This algorithm will find some obviously not wiggle-sortable
+ * arrays and throw an error, but there are some exceptions that won't be caught, for example [1, 2,
+ * 2].
+ */
+<span class="fc" id="L18">public class WiggleSort implements SortAlgorithm {</span>
+
+    @Override
+    public &lt;T extends Comparable&lt;T&gt;&gt; T[] sort(T[] unsorted) {
+<span class="fc" id="L22">        return wiggleSort(unsorted);</span>
+    }
+
+    private int mapIndex(int index, int n) {
+<span class="fc" id="L26">        return ((2 * index + 1) % (n | 1));</span>
+    }
+
+    /**
+     * Modified Dutch National Flag Sort. See also: sorts/DutchNationalFlagSort
+     *
+     * @param sortThis array to sort into group &quot;greater&quot;, &quot;equal&quot; and &quot;smaller&quot; than median
+     * @param median   defines the groups
+     * @param &lt;T&gt;      extends interface Comparable
+     */
+    private &lt;T extends Comparable&lt;T&gt;&gt; void triColorSort(T[] sortThis, T median) {
+<span class="fc" id="L37">        int n = sortThis.length;</span>
+<span class="fc" id="L38">        int i = 0;</span>
+<span class="fc" id="L39">        int j = 0;</span>
+<span class="fc" id="L40">        int k = n - 1;</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">        while (j &lt;= k) {</span>
+<span class="fc bfc" id="L42" title="All 2 branches covered.">            if (0 &lt; sortThis[mapIndex(j, n)].compareTo(median)) {</span>
+<span class="fc" id="L43">                SortUtils.swap(sortThis, mapIndex(j, n), mapIndex(i, n));</span>
+<span class="fc" id="L44">                i++;</span>
+<span class="fc" id="L45">                j++;</span>
+<span class="fc bfc" id="L46" title="All 2 branches covered.">            } else if (0 &gt; sortThis[mapIndex(j, n)].compareTo(median)) {</span>
+<span class="fc" id="L47">                SortUtils.swap(sortThis, mapIndex(j, n), mapIndex(k, n));</span>
+<span class="fc" id="L48">                k--;</span>
+            } else {
+<span class="fc" id="L50">                j++;</span>
+            }
+        }
+<span class="fc" id="L53">    }</span>
+
+    private &lt;T extends Comparable&lt;T&gt;&gt; T[] wiggleSort(T[] sortThis) {
+        // find the median using quickSelect (if the result isn't in the array, use the next greater
+        // value)
+        T median;
+
+<span class="fc" id="L60">        median = select(Arrays.asList(sortThis), (int) floor(sortThis.length / 2.0));</span>
+
+<span class="fc" id="L62">        int numMedians = 0;</span>
+
+<span class="fc bfc" id="L64" title="All 2 branches covered.">        for (T sortThi : sortThis) {</span>
+<span class="fc bfc" id="L65" title="All 2 branches covered.">            if (0 == sortThi.compareTo(median)) {</span>
+<span class="fc" id="L66">                numMedians++;</span>
+            }
+        }
+        // added condition preventing off-by-one errors for odd arrays.
+        // https://cs.stackexchange.com/questions/150886/how-to-find-wiggle-sortable-arrays-did-i-misunderstand-john-l-s-answer?noredirect=1&amp;lq=1
+<span class="fc bfc" id="L71" title="All 4 branches covered.">        if (sortThis.length % 2 == 1 &amp;&amp; numMedians == ceil(sortThis.length / 2.0)) {</span>
+<span class="fc" id="L72">            T smallestValue = select(Arrays.asList(sortThis), 0);</span>
+<span class="pc bpc" id="L73" title="1 of 2 branches missed.">            if (!(0 == smallestValue.compareTo(median))) {</span>
+<span class="nc" id="L74">                throw new IllegalArgumentException(&quot;For odd Arrays if the median appears ceil(n/2) times, &quot;</span>
+                    + &quot;the median has to be the smallest values in the array.&quot;);
+            }
+        }
+<span class="pc bpc" id="L78" title="1 of 2 branches missed.">        if (numMedians &gt; ceil(sortThis.length / 2.0)) {</span>
+<span class="nc" id="L79">            throw new IllegalArgumentException(&quot;No more than half the number of values may be the same.&quot;);</span>
+        }
+
+<span class="fc" id="L82">        triColorSort(sortThis, median);</span>
+<span class="fc" id="L83">        return sortThis;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

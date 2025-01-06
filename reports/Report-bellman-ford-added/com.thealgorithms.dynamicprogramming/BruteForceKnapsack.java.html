@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BruteForceKnapsack.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.dynamicprogramming</a> &gt; <span class="el_source">BruteForceKnapsack.java</span></div><h1>BruteForceKnapsack.java</h1><pre class="source lang-java linenums">package com.thealgorithms.dynamicprogramming;
+
+/**
+ * A naive recursive implementation of the 0-1 Knapsack problem.
+ *
+ * &lt;p&gt;The 0-1 Knapsack problem is a classic optimization problem where you are
+ * given a set of items, each with a weight and a value, and a knapsack with a
+ * fixed capacity. The goal is to determine the maximum value that can be
+ * obtained by selecting a subset of the items such that the total weight does
+ * not exceed the knapsack's capacity. Each item can either be included (1) or
+ * excluded (0), hence the name &quot;0-1&quot; Knapsack.&lt;/p&gt;
+ *
+ * &lt;p&gt;This class provides a brute-force recursive approach to solving the
+ * problem. It evaluates all possible combinations of items to find the optimal
+ * solution, but this approach has exponential time complexity and is not
+ * suitable for large input sizes.&lt;/p&gt;
+ *
+ * &lt;p&gt;&lt;b&gt;Time Complexity:&lt;/b&gt; O(2^n), where n is the number of items.&lt;/p&gt;
+ *
+ * &lt;p&gt;&lt;b&gt;Space Complexity:&lt;/b&gt; O(n), due to the recursive function call stack.&lt;/p&gt;
+ */
+public final class BruteForceKnapsack {
+    private BruteForceKnapsack() {
+    }
+
+    /**
+     * Solves the 0-1 Knapsack problem using a recursive brute-force approach.
+     *
+     * @param w   the total capacity of the knapsack
+     * @param wt  an array where wt[i] represents the weight of the i-th item
+     * @param val an array where val[i] represents the value of the i-th item
+     * @param n   the number of items available for selection
+     * @return    the maximum value that can be obtained with the given capacity
+     *
+     * &lt;p&gt;The function uses recursion to explore all possible subsets of items.
+     * For each item, it has two choices: either include it in the knapsack
+     * (if it fits) or exclude it. It returns the maximum value obtainable
+     * through these two choices.&lt;/p&gt;
+     *
+     * &lt;p&gt;&lt;b&gt;Base Cases:&lt;/b&gt;
+     * &lt;ul&gt;
+     * &lt;li&gt;If no items are left (n == 0), the maximum value is 0.&lt;/li&gt;
+     * &lt;li&gt;If the knapsack's remaining capacity is 0 (w == 0), no more items can
+     * be included, and the value is 0.&lt;/li&gt;
+     * &lt;/ul&gt;&lt;/p&gt;
+     *
+     * &lt;p&gt;&lt;b&gt;Recursive Steps:&lt;/b&gt;
+     * &lt;ul&gt;
+     * &lt;li&gt;If the weight of the n-th item exceeds the current capacity, it is
+     * excluded from the solution, and the function proceeds with the remaining
+     * items.&lt;/li&gt;
+     * &lt;li&gt;Otherwise, the function considers two possibilities: include the n-th
+     * item or exclude it, and returns the maximum value of these two scenarios.&lt;/li&gt;
+     * &lt;/ul&gt;&lt;/p&gt;
+     */
+    static int knapSack(int w, int[] wt, int[] val, int n) {
+<span class="fc bfc" id="L57" title="All 4 branches covered.">        if (n == 0 || w == 0) {</span>
+<span class="fc" id="L58">            return 0;</span>
+        }
+
+<span class="fc bfc" id="L61" title="All 2 branches covered.">        if (wt[n - 1] &gt; w) {</span>
+<span class="fc" id="L62">            return knapSack(w, wt, val, n - 1);</span>
+        } else {
+<span class="fc" id="L64">            return Math.max(knapSack(w, wt, val, n - 1), val[n - 1] + knapSack(w - wt[n - 1], wt, val, n - 1));</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

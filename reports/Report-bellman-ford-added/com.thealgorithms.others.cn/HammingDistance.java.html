@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HammingDistance.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.others.cn</a> &gt; <span class="el_source">HammingDistance.java</span></div><h1>HammingDistance.java</h1><pre class="source lang-java linenums">package com.thealgorithms.others.cn;
+
+public final class HammingDistance {
+    private HammingDistance() {
+    }
+
+    private static void checkChar(char inChar) {
+<span class="fc bfc" id="L8" title="All 4 branches covered.">        if (inChar != '0' &amp;&amp; inChar != '1') {</span>
+<span class="fc" id="L9">            throw new IllegalArgumentException(&quot;Input must be a binary string.&quot;);</span>
+        }
+<span class="fc" id="L11">    }</span>
+
+    public static int compute(char charA, char charB) {
+<span class="fc" id="L14">        checkChar(charA);</span>
+<span class="fc" id="L15">        checkChar(charB);</span>
+<span class="fc bfc" id="L16" title="All 2 branches covered.">        return charA == charB ? 0 : 1;</span>
+    }
+
+    public static int compute(String bitsStrA, String bitsStrB) {
+<span class="fc bfc" id="L20" title="All 2 branches covered.">        if (bitsStrA.length() != bitsStrB.length()) {</span>
+<span class="fc" id="L21">            throw new IllegalArgumentException(&quot;Input strings must have the same length.&quot;);</span>
+        }
+
+<span class="fc" id="L24">        int totalErrorBitCount = 0;</span>
+
+<span class="fc bfc" id="L26" title="All 2 branches covered.">        for (int i = 0; i &lt; bitsStrA.length(); i++) {</span>
+<span class="fc" id="L27">            totalErrorBitCount += compute(bitsStrA.charAt(i), bitsStrB.charAt(i));</span>
+        }
+
+<span class="fc" id="L30">        return totalErrorBitCount;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

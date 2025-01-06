@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JobSequencing.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.greedyalgorithms</a> &gt; <span class="el_source">JobSequencing.java</span></div><h1>JobSequencing.java</h1><pre class="source lang-java linenums">package com.thealgorithms.greedyalgorithms;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+
+// Problem Link: https://en.wikipedia.org/wiki/Job-shop_scheduling
+
+public final class JobSequencing {
+    private JobSequencing() {
+    }
+
+    // Define a Job class that implements Comparable for sorting by profit in descending order
+    static class Job implements Comparable&lt;Job&gt; {
+        char id;
+        int deadline;
+        int profit;
+
+        // Compare jobs by profit in descending order
+        @Override
+        public int compareTo(Job otherJob) {
+<span class="fc" id="L21">            return otherJob.profit - this.profit;</span>
+        }
+
+<span class="fc" id="L24">        Job(char id, int deadline, int profit) {</span>
+<span class="fc" id="L25">            this.id = id;</span>
+<span class="fc" id="L26">            this.deadline = deadline;</span>
+<span class="fc" id="L27">            this.profit = profit;</span>
+<span class="fc" id="L28">        }</span>
+    }
+
+    // Function to print the job sequence
+    public static String findJobSequence(ArrayList&lt;Job&gt; jobs, int size) {
+<span class="fc" id="L33">        Boolean[] slots = new Boolean[size];</span>
+<span class="fc" id="L34">        Arrays.fill(slots, Boolean.FALSE);</span>
+
+<span class="fc" id="L36">        int[] result = new int[size];</span>
+
+        // Iterate through jobs to find the optimal job sequence
+<span class="fc bfc" id="L39" title="All 2 branches covered.">        for (int i = 0; i &lt; size; i++) {</span>
+<span class="fc bfc" id="L40" title="All 2 branches covered.">            for (int j = jobs.get(i).deadline - 1; j &gt;= 0; j--) {</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">                if (!slots[j]) {</span>
+<span class="fc" id="L42">                    result[j] = i;</span>
+<span class="fc" id="L43">                    slots[j] = Boolean.TRUE;</span>
+<span class="fc" id="L44">                    break;</span>
+                }
+            }
+        }
+
+        // Create a StringBuilder to build the job sequence string
+<span class="fc" id="L50">        StringBuilder jobSequenceBuilder = new StringBuilder();</span>
+<span class="fc" id="L51">        jobSequenceBuilder.append(&quot;Job Sequence: &quot;);</span>
+<span class="fc bfc" id="L52" title="All 2 branches covered.">        for (int i = 0; i &lt; jobs.size(); i++) {</span>
+<span class="fc bfc" id="L53" title="All 2 branches covered.">            if (slots[i]) {</span>
+<span class="fc" id="L54">                jobSequenceBuilder.append(jobs.get(result[i]).id).append(&quot; -&gt; &quot;);</span>
+            }
+        }
+
+        // Remove the trailing &quot; -&gt; &quot; from the job sequence
+<span class="pc bpc" id="L59" title="1 of 2 branches missed.">        if (jobSequenceBuilder.length() &gt;= 4) {</span>
+<span class="fc" id="L60">            jobSequenceBuilder.setLength(jobSequenceBuilder.length() - 4);</span>
+        }
+
+        // Return the job sequence as a string
+<span class="fc" id="L64">        return jobSequenceBuilder.toString();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

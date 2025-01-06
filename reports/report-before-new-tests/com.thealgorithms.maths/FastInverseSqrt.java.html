@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FastInverseSqrt.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.maths</a> &gt; <span class="el_source">FastInverseSqrt.java</span></div><h1>FastInverseSqrt.java</h1><pre class="source lang-java linenums">package com.thealgorithms.maths;
+
+/**
+ * @author &lt;a href=&quot;https://github.com/siddhant2002&quot;&gt;Siddhant Swarup Mallick&lt;/a&gt;
+ * Program description - To find out the inverse square root of the given number
+ * &lt;a href=&quot;https://en.wikipedia.org/wiki/Fast_inverse_square_root&quot;&gt;Wikipedia&lt;/a&gt;
+ */
+public final class FastInverseSqrt {
+    private FastInverseSqrt() {
+    }
+    /**
+     * Returns the inverse square root of the given number upto 6 - 8 decimal places.
+     * calculates the inverse square root of the given number and returns true if calculated answer
+     * matches with given answer else returns false
+     *
+     * OUTPUT :
+     * Input - number = 4522
+     * Output: it calculates the inverse squareroot of a number and returns true with it matches the
+     * given answer else returns false. 1st approach Time Complexity : O(1) Auxiliary Space Complexity :
+     * O(1) Input - number = 4522 Output: it calculates the inverse squareroot of a number and returns
+     * true with it matches the given answer else returns false. 2nd approach Time Complexity : O(1)
+     * Auxiliary Space Complexity : O(1)
+     */
+    public static boolean inverseSqrt(float number) {
+<span class="fc" id="L25">        float x = number;</span>
+<span class="fc" id="L26">        float xhalf = 0.5f * x;</span>
+<span class="fc" id="L27">        int i = Float.floatToIntBits(x);</span>
+<span class="fc" id="L28">        i = 0x5f3759df - (i &gt;&gt; 1);</span>
+<span class="fc" id="L29">        x = Float.intBitsToFloat(i);</span>
+<span class="fc" id="L30">        x = x * (1.5f - xhalf * x * x);</span>
+<span class="pc bpc" id="L31" title="1 of 2 branches missed.">        return x == ((float) 1 / (float) Math.sqrt(number));</span>
+    }
+
+    /**
+     * Returns the inverse square root of the given number upto 14 - 16 decimal places.
+     * calculates the inverse square root of the given number and returns true if calculated answer
+     * matches with given answer else returns false
+     */
+    public static boolean inverseSqrt(double number) {
+<span class="nc" id="L40">        double x = number;</span>
+<span class="nc" id="L41">        double xhalf = 0.5d * x;</span>
+<span class="nc" id="L42">        long i = Double.doubleToLongBits(x);</span>
+<span class="nc" id="L43">        i = 0x5fe6ec85e7de30daL - (i &gt;&gt; 1);</span>
+<span class="nc" id="L44">        x = Double.longBitsToDouble(i);</span>
+<span class="nc bnc" id="L45" title="All 2 branches missed.">        for (int it = 0; it &lt; 4; it++) {</span>
+<span class="nc" id="L46">            x = x * (1.5d - xhalf * x * x);</span>
+        }
+<span class="nc" id="L48">        x *= number;</span>
+<span class="nc bnc" id="L49" title="All 2 branches missed.">        return x == 1 / Math.sqrt(number);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

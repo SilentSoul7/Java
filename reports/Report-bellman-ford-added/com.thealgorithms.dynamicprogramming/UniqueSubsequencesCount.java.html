@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UniqueSubsequencesCount.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.dynamicprogramming</a> &gt; <span class="el_source">UniqueSubsequencesCount.java</span></div><h1>UniqueSubsequencesCount.java</h1><pre class="source lang-java linenums">package com.thealgorithms.dynamicprogramming;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
+/**
+ * Utility class to find the number of unique subsequences that can be
+ * produced from a given string.
+ *
+ * &lt;p&gt; This class contains static methods to compute the unique subsequence count
+ * using dynamic programming and recursion. It ensures that duplicate characters
+ * are not counted multiple times in the subsequences.&lt;/p&gt;
+ *
+ * &lt;p&gt; Author: https://github.com/Tuhinm2002 &lt;/p&gt;
+ */
+public final class UniqueSubsequencesCount {
+
+    /**
+     * Private constructor to prevent instantiation of this utility class.
+     * This class should only be used in a static context.
+     *
+     * @throws UnsupportedOperationException if attempted to instantiate.
+     */
+<span class="nc" id="L25">    private UniqueSubsequencesCount() {</span>
+<span class="nc" id="L26">        throw new UnsupportedOperationException(&quot;Utility class&quot;);</span>
+    }
+
+    /**
+     * Finds the number of unique subsequences that can be generated from
+     * the given string.
+     *
+     * &lt;p&gt; This method initializes a dynamic programming (DP) array and invokes
+     * the recursive helper function to compute the subsequence count.&lt;/p&gt;
+     *
+     * @param str the input string from which subsequences are generated
+     * @return the total count of unique subsequences
+     */
+    public static int countSubseq(String str) {
+
+        // DP array initialized to store intermediate results
+<span class="fc" id="L42">        int[] dp = new int[str.length() + 1];</span>
+<span class="fc" id="L43">        Arrays.fill(dp, -1);</span>
+
+        // Calls the recursive function to compute the result
+<span class="fc" id="L46">        return countSubsequences(str, 0, dp);</span>
+    }
+
+    /**
+     * Recursive helper function to count the number of unique subsequences
+     * starting from the given index.
+     *
+     * &lt;p&gt; Uses a HashSet to avoid counting duplicate characters within
+     * a single subsequence.&lt;/p&gt;
+     *
+     * @param st the input string
+     * @param idx the current index from which to calculate subsequences
+     * @param dp dynamic programming array used to memoize results
+     * @return the total number of unique subsequences starting from the
+     *         current index
+     */
+    public static int countSubsequences(String st, int idx, int[] dp) {
+
+        // Base case: when index exceeds the string length
+<span class="fc bfc" id="L65" title="All 2 branches covered.">        if (idx &gt;= st.length()) {</span>
+<span class="fc" id="L66">            return 0;</span>
+        }
+
+        // If result is already calculated, return the memoized value
+<span class="fc bfc" id="L70" title="All 2 branches covered.">        if (dp[idx] != -1) {</span>
+<span class="fc" id="L71">            return dp[idx];</span>
+        }
+
+        // Set to store characters to avoid duplicates
+<span class="fc" id="L75">        Set&lt;Character&gt; set = new HashSet&lt;&gt;();</span>
+
+<span class="fc" id="L77">        int res = 0;</span>
+
+        // Iterate over the string starting from current index
+<span class="fc bfc" id="L80" title="All 2 branches covered.">        for (int j = idx; j &lt; st.length(); j++) {</span>
+
+            // If character is already in the set, skip it
+<span class="fc bfc" id="L83" title="All 2 branches covered.">            if (set.contains(st.charAt(j))) {</span>
+<span class="fc" id="L84">                continue;</span>
+            }
+
+            // Add character to set and recursively calculate subsequences
+<span class="fc" id="L88">            set.add(st.charAt(j));</span>
+
+            // 1 for the current subsequence + recursive call for the rest of the string
+<span class="fc" id="L91">            res = 1 + countSubsequences(st, j + 1, dp) + res;</span>
+        }
+
+        // Memoize the result
+<span class="fc" id="L95">        dp[idx] = res;</span>
+<span class="fc" id="L96">        return dp[idx];</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

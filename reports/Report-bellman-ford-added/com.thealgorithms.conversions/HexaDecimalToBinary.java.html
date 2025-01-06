@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HexaDecimalToBinary.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.conversions</a> &gt; <span class="el_source">HexaDecimalToBinary.java</span></div><h1>HexaDecimalToBinary.java</h1><pre class="source lang-java linenums">package com.thealgorithms.conversions;
+
+/**
+ * Utility class for converting hexadecimal numbers to binary representation.
+ * &lt;p&gt;
+ * A hexadecimal number consists of digits from {@code [0-9]} and {@code [A-F]} (case-insensitive),
+ * while binary representation uses only {@code [0, 1]}.
+ * &lt;p&gt;
+ * This class provides methods to:
+ * &lt;ul&gt;
+ *   &lt;li&gt;Convert a hexadecimal string to its binary string equivalent.&lt;/li&gt;
+ *   &lt;li&gt;Ensure the binary output is padded to 8 bits (1 byte).&lt;/li&gt;
+ * &lt;/ul&gt;
+ * &lt;p&gt;
+ * Example:
+ * &lt;ul&gt;
+ *   &lt;li&gt;{@code &quot;A1&quot;} → {@code &quot;10100001&quot;}&lt;/li&gt;
+ *   &lt;li&gt;{@code &quot;1&quot;} → {@code &quot;00000001&quot;}&lt;/li&gt;
+ * &lt;/ul&gt;
+ *
+ * &lt;p&gt;This class assumes that the input hexadecimal string is valid.&lt;/p&gt;
+ */
+<span class="nc" id="L23">public class HexaDecimalToBinary {</span>
+
+    /**
+     * Converts a hexadecimal string to its binary string equivalent.
+     * The binary output is padded to a minimum of 8 bits (1 byte).
+     * Steps:
+     * &lt;ol&gt;
+     *     &lt;li&gt;Convert the hexadecimal string to an integer.&lt;/li&gt;
+     *     &lt;li&gt;Convert the integer to a binary string.&lt;/li&gt;
+     *     &lt;li&gt;Pad the binary string to ensure it is at least 8 bits long.&lt;/li&gt;
+     *     &lt;li&gt;Return the padded binary string.&lt;/li&gt;
+     * &lt;/ol&gt;
+     *
+     * @param numHex the hexadecimal string (e.g., &quot;A1&quot;, &quot;7F&quot;)
+     * @throws NumberFormatException if the input string is not a valid hexadecimal number
+     * @return the binary string representation, padded to 8 bits (e.g., &quot;10100001&quot;)
+     */
+    public String convert(String numHex) {
+<span class="nc" id="L41">        int conHex = Integer.parseInt(numHex, 16);</span>
+<span class="nc" id="L42">        String binary = Integer.toBinaryString(conHex);</span>
+<span class="nc" id="L43">        return completeDigits(binary);</span>
+    }
+
+    /**
+     * Pads the binary string to ensure it is at least 8 bits long.
+     * If the binary string is shorter than 8 bits, it adds leading zeros.
+     *
+     * @param binNum the binary string to pad
+     * @return the padded binary string with a minimum length of 8
+     */
+    public String completeDigits(String binNum) {
+<span class="nc" id="L54">        final int byteSize = 8;</span>
+<span class="nc" id="L55">        StringBuilder binNumBuilder = new StringBuilder(binNum);</span>
+<span class="nc bnc" id="L56" title="All 2 branches missed.">        while (binNumBuilder.length() &lt; byteSize) {</span>
+<span class="nc" id="L57">            binNumBuilder.insert(0, &quot;0&quot;);</span>
+        }
+<span class="nc" id="L59">        binNum = binNumBuilder.toString();</span>
+<span class="nc" id="L60">        return binNum;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

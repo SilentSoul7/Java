@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MonoAlphabetic.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.ciphers</a> &gt; <span class="el_source">MonoAlphabetic.java</span></div><h1>MonoAlphabetic.java</h1><pre class="source lang-java linenums">package com.thealgorithms.ciphers;
+
+public final class MonoAlphabetic {
+
+<span class="nc" id="L5">    private MonoAlphabetic() {</span>
+<span class="nc" id="L6">        throw new UnsupportedOperationException(&quot;Utility class&quot;);</span>
+    }
+
+    // Encryption method
+    public static String encrypt(String data, String key) {
+<span class="pc bpc" id="L11" title="1 of 2 branches missed.">        if (!data.matches(&quot;[A-Z]+&quot;)) {</span>
+<span class="nc" id="L12">            throw new IllegalArgumentException(&quot;Input data contains invalid characters. Only uppercase A-Z are allowed.&quot;);</span>
+        }
+<span class="fc" id="L14">        StringBuilder sb = new StringBuilder();</span>
+
+        // Encrypt each character
+<span class="fc bfc" id="L17" title="All 2 branches covered.">        for (char c : data.toCharArray()) {</span>
+<span class="fc" id="L18">            int idx = charToPos(c); // Get the index of the character</span>
+<span class="fc" id="L19">            sb.append(key.charAt(idx)); // Map to the corresponding character in the key</span>
+        }
+<span class="fc" id="L21">        return sb.toString();</span>
+    }
+
+    // Decryption method
+    public static String decrypt(String data, String key) {
+<span class="fc" id="L26">        StringBuilder sb = new StringBuilder();</span>
+
+        // Decrypt each character
+<span class="fc bfc" id="L29" title="All 2 branches covered.">        for (char c : data.toCharArray()) {</span>
+<span class="fc" id="L30">            int idx = key.indexOf(c); // Find the index of the character in the key</span>
+<span class="pc bpc" id="L31" title="1 of 2 branches missed.">            if (idx == -1) {</span>
+<span class="nc" id="L32">                throw new IllegalArgumentException(&quot;Input data contains invalid characters.&quot;);</span>
+            }
+<span class="fc" id="L34">            sb.append(posToChar(idx)); // Convert the index back to the original character</span>
+        }
+<span class="fc" id="L36">        return sb.toString();</span>
+    }
+
+    // Helper method: Convert a character to its position in the alphabet
+    private static int charToPos(char c) {
+<span class="fc" id="L41">        return c - 'A'; // Subtract 'A' to get position (0 for A, 1 for B, etc.)</span>
+    }
+
+    // Helper method: Convert a position in the alphabet to a character
+    private static char posToChar(int pos) {
+<span class="fc" id="L46">        return (char) (pos + 'A'); // Add 'A' to convert position back to character</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ModuloPowerOfTwo.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.bitmanipulation</a> &gt; <span class="el_source">ModuloPowerOfTwo.java</span></div><h1>ModuloPowerOfTwo.java</h1><pre class="source lang-java linenums">package com.thealgorithms.bitmanipulation;
+
+/**
+ * This class provides a method to compute the remainder
+ * of a number when divided by a power of two (2^n)
+ * without using division or modulo operations.
+ *
+ * @author Hardvan
+ */
+public final class ModuloPowerOfTwo {
+    private ModuloPowerOfTwo() {
+    }
+
+    /**
+     * Computes the remainder of a given integer when divided by 2^n.
+     *
+     * @param x the input number
+     * @param n the exponent (power of two)
+     * @return the remainder of x divided by 2^n
+     */
+    public static int moduloPowerOfTwo(int x, int n) {
+<span class="fc bfc" id="L22" title="All 2 branches covered.">        if (n &lt;= 0) {</span>
+<span class="fc" id="L23">            throw new IllegalArgumentException(&quot;The exponent must be positive&quot;);</span>
+        }
+
+<span class="fc" id="L26">        return x &amp; ((1 &lt;&lt; n) - 1);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

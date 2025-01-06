@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RadixSort.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.sorts</a> &gt; <span class="el_source">RadixSort.java</span></div><h1>RadixSort.java</h1><pre class="source lang-java linenums">package com.thealgorithms.sorts;
+
+import com.thealgorithms.maths.NumberOfDigits;
+import java.util.Arrays;
+
+/**
+ * This class provides an implementation of the radix sort algorithm.
+ * It sorts an array of nonnegative integers in increasing order.
+ */
+public final class RadixSort {
+    private static final int BASE = 10;
+
+    private RadixSort() {
+    }
+
+    /**
+     * Sorts an array of nonnegative integers using the radix sort algorithm.
+     *
+     * @param array the array to be sorted
+     * @return the sorted array
+     * @throws IllegalArgumentException if any negative integers are found
+     */
+    public static int[] sort(int[] array) {
+<span class="fc bfc" id="L24" title="All 2 branches covered.">        if (array.length == 0) {</span>
+<span class="fc" id="L25">            return array;</span>
+        }
+
+<span class="fc" id="L28">        checkForNegativeInput(array);</span>
+<span class="fc" id="L29">        radixSort(array);</span>
+<span class="fc" id="L30">        return array;</span>
+    }
+
+    /**
+     * Checks if the array contains any negative integers.
+     *
+     * @param array the array to be checked
+     * @throws IllegalArgumentException if any negative integers are found
+     */
+    private static void checkForNegativeInput(int[] array) {
+<span class="fc bfc" id="L40" title="All 2 branches covered.">        for (int number : array) {</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">            if (number &lt; 0) {</span>
+<span class="fc" id="L42">                throw new IllegalArgumentException(&quot;Array contains non-positive integers.&quot;);</span>
+            }
+        }
+<span class="fc" id="L45">    }</span>
+
+    private static void radixSort(int[] array) {
+<span class="fc" id="L48">        final int max = Arrays.stream(array).max().getAsInt();</span>
+<span class="fc bfc" id="L49" title="All 2 branches covered.">        for (int i = 0, exp = 1; i &lt; NumberOfDigits.numberOfDigits(max); i++, exp *= BASE) {</span>
+<span class="fc" id="L50">            countingSortByDigit(array, exp);</span>
+        }
+<span class="fc" id="L52">    }</span>
+
+    /**
+     * A utility method to perform counting sort of array[] according to the digit represented by exp.
+     *
+     * @param array the array to be sorted
+     * @param exp   the exponent representing the current digit position
+     */
+    private static void countingSortByDigit(int[] array, int exp) {
+<span class="fc" id="L61">        int[] count = countDigits(array, exp);</span>
+<span class="fc" id="L62">        accumulateCounts(count);</span>
+<span class="fc" id="L63">        int[] output = buildOutput(array, exp, count);</span>
+<span class="fc" id="L64">        copyOutput(array, output);</span>
+<span class="fc" id="L65">    }</span>
+
+    private static int[] countDigits(int[] array, int exp) {
+<span class="fc" id="L68">        int[] count = new int[BASE];</span>
+<span class="fc bfc" id="L69" title="All 2 branches covered.">        for (int i = 0; i &lt; array.length; i++) {</span>
+<span class="fc" id="L70">            count[getDigit(array[i], exp)]++;</span>
+        }
+<span class="fc" id="L72">        return count;</span>
+    }
+
+    private static int getDigit(int number, int position) {
+<span class="fc" id="L76">        return (number / position) % BASE;</span>
+    }
+
+    private static void accumulateCounts(int[] count) {
+<span class="fc bfc" id="L80" title="All 2 branches covered.">        for (int i = 1; i &lt; BASE; i++) {</span>
+<span class="fc" id="L81">            count[i] += count[i - 1];</span>
+        }
+<span class="fc" id="L83">    }</span>
+
+    private static int[] buildOutput(int[] array, int exp, int[] count) {
+<span class="fc" id="L86">        int[] output = new int[array.length];</span>
+<span class="fc bfc" id="L87" title="All 2 branches covered.">        for (int i = array.length - 1; i &gt;= 0; i--) {</span>
+<span class="fc" id="L88">            int digit = getDigit(array[i], exp);</span>
+<span class="fc" id="L89">            output[count[digit] - 1] = array[i];</span>
+<span class="fc" id="L90">            count[digit]--;</span>
+        }
+<span class="fc" id="L92">        return output;</span>
+    }
+
+    private static void copyOutput(int[] array, int[] output) {
+<span class="fc" id="L96">        System.arraycopy(output, 0, array, 0, array.length);</span>
+<span class="fc" id="L97">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

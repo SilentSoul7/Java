@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LCA.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.trees</a> &gt; <span class="el_source">LCA.java</span></div><h1>LCA.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.trees;
+
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public final class LCA {
+    private LCA() {
+    }
+
+<span class="nc" id="L10">    private static final Scanner SCANNER = new Scanner(System.in);</span>
+
+    public static void main(String[] args) {
+        // The adjacency list representation of a tree:
+<span class="nc" id="L14">        ArrayList&lt;ArrayList&lt;Integer&gt;&gt; adj = new ArrayList&lt;&gt;();</span>
+
+        // v is the number of vertices and e is the number of edges
+<span class="nc" id="L17">        int v = SCANNER.nextInt();</span>
+<span class="nc" id="L18">        int e = v - 1;</span>
+
+<span class="nc bnc" id="L20" title="All 2 branches missed.">        for (int i = 0; i &lt; v; i++) {</span>
+<span class="nc" id="L21">            adj.add(new ArrayList&lt;Integer&gt;());</span>
+        }
+
+        // Storing the given tree as an adjacency list
+        int to;
+        int from;
+<span class="nc bnc" id="L27" title="All 2 branches missed.">        for (int i = 0; i &lt; e; i++) {</span>
+<span class="nc" id="L28">            to = SCANNER.nextInt();</span>
+<span class="nc" id="L29">            from = SCANNER.nextInt();</span>
+
+<span class="nc" id="L31">            adj.get(to).add(from);</span>
+<span class="nc" id="L32">            adj.get(from).add(to);</span>
+        }
+
+        // parent[v1] gives parent of a vertex v1
+<span class="nc" id="L36">        int[] parent = new int[v];</span>
+
+        // depth[v1] gives depth of vertex v1 with respect to the root
+<span class="nc" id="L39">        int[] depth = new int[v];</span>
+
+        // Assuming the tree to be rooted at 0, hence calculating parent and depth of every vertex
+<span class="nc" id="L42">        dfs(adj, 0, -1, parent, depth);</span>
+
+        // Inputting the two vertices whose LCA is to be calculated
+<span class="nc" id="L45">        int v1 = SCANNER.nextInt();</span>
+<span class="nc" id="L46">        int v2 = SCANNER.nextInt();</span>
+
+        // Outputting the LCA
+<span class="nc" id="L49">        System.out.println(getLCA(v1, v2, depth, parent));</span>
+<span class="nc" id="L50">    }</span>
+
+    /**
+     * Depth first search to calculate parent and depth of every vertex
+     *
+     * @param adj The adjacency list representation of the tree
+     * @param s The source vertex
+     * @param p Parent of source
+     * @param parent An array to store parents of all vertices
+     * @param depth An array to store depth of all vertices
+     */
+    private static void dfs(ArrayList&lt;ArrayList&lt;Integer&gt;&gt; adj, int s, int p, int[] parent, int[] depth) {
+<span class="nc bnc" id="L62" title="All 2 branches missed.">        for (int adjacent : adj.get(s)) {</span>
+<span class="nc bnc" id="L63" title="All 2 branches missed.">            if (adjacent != p) {</span>
+<span class="nc" id="L64">                parent[adjacent] = s;</span>
+<span class="nc" id="L65">                depth[adjacent] = 1 + depth[s];</span>
+<span class="nc" id="L66">                dfs(adj, adjacent, s, parent, depth);</span>
+            }
+<span class="nc" id="L68">        }</span>
+<span class="nc" id="L69">    }</span>
+
+    /**
+     * Method to calculate Lowest Common Ancestor
+     *
+     * @param v1 The first vertex
+     * @param v2 The second vertex
+     * @param depth An array with depths of all vertices
+     * @param parent An array with parents of all vertices
+     * @return Returns a vertex that is LCA of v1 and v2
+     */
+    private static int getLCA(int v1, int v2, int[] depth, int[] parent) {
+<span class="nc bnc" id="L81" title="All 2 branches missed.">        if (depth[v1] &lt; depth[v2]) {</span>
+<span class="nc" id="L82">            int temp = v1;</span>
+<span class="nc" id="L83">            v1 = v2;</span>
+<span class="nc" id="L84">            v2 = temp;</span>
+        }
+<span class="nc bnc" id="L86" title="All 2 branches missed.">        while (depth[v1] != depth[v2]) {</span>
+<span class="nc" id="L87">            v1 = parent[v1];</span>
+        }
+<span class="nc bnc" id="L89" title="All 2 branches missed.">        if (v1 == v2) {</span>
+<span class="nc" id="L90">            return v1;</span>
+        }
+<span class="nc bnc" id="L92" title="All 2 branches missed.">        while (v1 != v2) {</span>
+<span class="nc" id="L93">            v1 = parent[v1];</span>
+<span class="nc" id="L94">            v2 = parent[v2];</span>
+        }
+<span class="nc" id="L96">        return v1;</span>
+    }
+}
+/*
+ * Input:
+ * 10
+ * 0 1
+ * 0 2
+ * 1 5
+ * 5 6
+ * 2 4
+ * 2 3
+ * 3 7
+ * 7 9
+ * 7 8
+ * 9 4
+ * Output:
+ * 2
+ */
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

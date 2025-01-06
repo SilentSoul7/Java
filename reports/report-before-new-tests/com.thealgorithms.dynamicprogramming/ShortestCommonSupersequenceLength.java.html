@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ShortestCommonSupersequenceLength.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.dynamicprogramming</a> &gt; <span class="el_source">ShortestCommonSupersequenceLength.java</span></div><h1>ShortestCommonSupersequenceLength.java</h1><pre class="source lang-java linenums">package com.thealgorithms.dynamicprogramming;
+
+/**
+ * Class that provides methods to calculate the length of the shortest
+ * supersequence of two given strings. The shortest supersequence is the smallest string
+ * that contains both given strings as subsequences.
+ */
+final class ShortestCommonSupersequenceLength {
+    private ShortestCommonSupersequenceLength() {
+    }
+
+    /**
+     * Finds the length of the shortest supersequence of two given strings.
+     * The shortest supersequence is defined as the smallest string that contains both
+     * given strings as subsequences.
+     *
+     * @param x The first input string.
+     * @param y The second input string.
+     * @return The length of the shortest supersequence of the two strings.
+     */
+    static int shortestSuperSequence(String x, String y) {
+<span class="fc" id="L22">        int m = x.length();</span>
+<span class="fc" id="L23">        int n = y.length();</span>
+
+        // find lcs
+<span class="fc" id="L26">        int l = lcs(x, y, m, n);</span>
+
+        // Result is sum of input string
+        // lengths - length of lcs
+<span class="fc" id="L30">        return m + n - l;</span>
+    }
+
+    /**
+     * Calculates the length of the longest common subsequence (LCS) between two strings.
+     * The LCS is the longest sequence that can be derived from both strings by deleting some
+     * (or none) of the characters without changing the order of the remaining characters.
+     *
+     * @param x The first input string.
+     * @param y The second input string.
+     * @param m The length of the first input string.
+     * @param n The length of the second input string.
+     * @return The length of the longest common subsequence of the two strings.
+     */
+    static int lcs(String x, String y, int m, int n) {
+<span class="fc" id="L45">        int[][] lN = new int[m + 1][n + 1];</span>
+        int i;
+        int j;
+
+        // Following steps build lN[m + 1][n + 1]
+        // in bottom up fashion. Note that
+        // lN[i][j] contains length of lNCS
+        // of x[0..i - 1]and y[0..j - 1]
+<span class="fc bfc" id="L53" title="All 2 branches covered.">        for (i = 0; i &lt;= m; i++) {</span>
+<span class="fc bfc" id="L54" title="All 2 branches covered.">            for (j = 0; j &lt;= n; j++) {</span>
+<span class="fc bfc" id="L55" title="All 4 branches covered.">                if (i == 0 || j == 0) {</span>
+<span class="fc" id="L56">                    lN[i][j] = 0;</span>
+<span class="fc bfc" id="L57" title="All 2 branches covered.">                } else if (x.charAt(i - 1) == y.charAt(j - 1)) {</span>
+<span class="fc" id="L58">                    lN[i][j] = lN[i - 1][j - 1] + 1;</span>
+                } else {
+<span class="fc" id="L60">                    lN[i][j] = Math.max(lN[i - 1][j], lN[i][j - 1]);</span>
+                }
+            }
+        }
+
+        // lN[m][n] contains length of LCS
+        // for x[0..n - 1] and y[0..m - 1]
+<span class="fc" id="L67">        return lN[m][n];</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

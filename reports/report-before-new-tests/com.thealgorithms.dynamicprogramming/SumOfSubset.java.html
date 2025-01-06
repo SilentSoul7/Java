@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SumOfSubset.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.dynamicprogramming</a> &gt; <span class="el_source">SumOfSubset.java</span></div><h1>SumOfSubset.java</h1><pre class="source lang-java linenums">package com.thealgorithms.dynamicprogramming;
+
+/**
+ * A utility class that contains the Sum of Subset problem solution using
+ * recursion.
+ *
+ * The Sum of Subset problem determines whether a subset of elements from a
+ * given array sums up to a specific target value.
+ *
+ * Wikipedia: https://en.wikipedia.org/wiki/Subset_sum_problem
+ */
+public final class SumOfSubset {
+
+    private SumOfSubset() {
+    }
+
+    /**
+     * Determines if there exists a subset of elements in the array `arr` that
+     * adds up to the given `key` value using recursion.
+     *
+     * @param arr The array of integers.
+     * @param num The index of the current element being considered.
+     * @param key The target sum we are trying to achieve.
+     * @return true if a subset of `arr` adds up to `key`, false otherwise.
+     *
+     *         This is a recursive solution that checks for two possibilities at
+     *         each step:
+     *         1. Include the current element in the subset and check if the
+     *         remaining elements can sum up to the remaining target.
+     *         2. Exclude the current element and check if the remaining elements
+     *         can sum up to the target without this element.
+     */
+    public static boolean subsetSum(int[] arr, int num, int key) {
+<span class="fc bfc" id="L34" title="All 2 branches covered.">        if (key == 0) {</span>
+<span class="fc" id="L35">            return true;</span>
+        }
+<span class="fc bfc" id="L37" title="All 4 branches covered.">        if (num &lt; 0 || key &lt; 0) {</span>
+<span class="fc" id="L38">            return false;</span>
+        }
+
+<span class="fc" id="L41">        boolean include = subsetSum(arr, num - 1, key - arr[num]);</span>
+<span class="fc" id="L42">        boolean exclude = subsetSum(arr, num - 1, key);</span>
+<span class="fc bfc" id="L43" title="All 4 branches covered.">        return include || exclude;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

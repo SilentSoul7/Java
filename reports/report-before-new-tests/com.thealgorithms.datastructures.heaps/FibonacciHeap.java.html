@@ -1,0 +1,455 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FibonacciHeap.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.heaps</a> &gt; <span class="el_source">FibonacciHeap.java</span></div><h1>FibonacciHeap.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.heaps;
+
+/**
+ * The {@code FibonacciHeap} class implements a Fibonacci Heap data structure,
+ * which is a collection of trees that satisfy the minimum heap property.
+ * This heap allows for efficient merging of heaps, as well as faster
+ * decrease-key and delete operations compared to other heap data structures.
+ *
+ * &lt;p&gt;Key features of the Fibonacci Heap include:
+ * &lt;ul&gt;
+ *   &lt;li&gt;Amortized O(1) time complexity for insert and decrease-key operations.&lt;/li&gt;
+ *   &lt;li&gt;Amortized O(log n) time complexity for delete and delete-min operations.&lt;/li&gt;
+ *   &lt;li&gt;Meld operation that combines two heaps in O(1) time.&lt;/li&gt;
+ *   &lt;li&gt;Potential function that helps analyze the amortized time complexity.&lt;/li&gt;
+ * &lt;/ul&gt;
+ *
+ * &lt;p&gt;This implementation maintains additional statistics such as the total number
+ * of link and cut operations performed during the lifetime of the heap, which can
+ * be accessed through static methods.
+ *
+ * &lt;p&gt;The Fibonacci Heap is composed of nodes represented by the inner class
+ * {@code HeapNode}. Each node maintains a key, rank, marked status, and pointers
+ * to its children and siblings. Nodes can be linked and cut as part of the heap
+ * restructuring processes.
+ *
+ * @see HeapNode
+ */
+public class FibonacciHeap {
+
+<span class="fc" id="L30">    private static final double GOLDEN_RATIO = (1 + Math.sqrt(5)) / 2;</span>
+    private HeapNode min;
+<span class="fc" id="L32">    private static int totalLinks = 0;</span>
+<span class="fc" id="L33">    private static int totalCuts = 0;</span>
+<span class="fc" id="L34">    private int numOfTrees = 0;</span>
+<span class="fc" id="L35">    private int numOfHeapNodes = 0;</span>
+<span class="fc" id="L36">    private int markedHeapNodesCounter = 0;</span>
+
+    /*
+     * a constructor for an empty Heap
+     * set the min to be null
+     */
+<span class="fc" id="L42">    public FibonacciHeap() {</span>
+<span class="fc" id="L43">        this.min = null;</span>
+<span class="fc" id="L44">    }</span>
+
+    /*
+     * a constructor for a Heap with one element
+     * set the min to be the HeapNode with the given key
+     * @pre key&gt;=0
+     * @post empty == false
+     */
+<span class="fc" id="L52">    public FibonacciHeap(int key) {</span>
+<span class="fc" id="L53">        this.min = new HeapNode(key);</span>
+<span class="fc" id="L54">        this.numOfTrees++;</span>
+<span class="fc" id="L55">        this.numOfHeapNodes++;</span>
+<span class="fc" id="L56">    }</span>
+
+    /*
+     * check if the heap is empty
+     * $ret == true - if the tree is empty
+     */
+    public boolean empty() {
+<span class="fc bfc" id="L63" title="All 2 branches covered.">        return (this.min == null);</span>
+    }
+
+    /**
+     * Creates a node (of type HeapNode) which contains the given key, and inserts it into the heap.
+     *
+     * @pre key&gt;=0
+     * @post (numOfnodes = = $prev numOfnodes + 1)
+     * @post empty == false
+     * $ret = the HeapNode we inserted
+     */
+    public HeapNode insert(int key) {
+<span class="fc" id="L75">        HeapNode toInsert = new HeapNode(key); // creates the node</span>
+<span class="fc bfc" id="L76" title="All 2 branches covered.">        if (this.empty()) {</span>
+<span class="fc" id="L77">            this.min = toInsert;</span>
+        } else { // tree is not empty
+<span class="fc" id="L79">            min.setNext(toInsert);</span>
+<span class="fc" id="L80">            this.updateMin(toInsert);</span>
+        }
+<span class="fc" id="L82">        this.numOfHeapNodes++;</span>
+<span class="fc" id="L83">        this.numOfTrees++;</span>
+<span class="fc" id="L84">        return toInsert;</span>
+    }
+
+    /**
+     * Delete the node containing the minimum key in the heap
+     * updates new min
+     *
+     * @post (numOfnodes = = $prev numOfnodes - 1)
+     */
+    public void deleteMin() {
+<span class="pc bpc" id="L94" title="1 of 2 branches missed.">        if (this.empty()) {</span>
+<span class="nc" id="L95">            return;</span>
+        }
+<span class="fc bfc" id="L97" title="All 2 branches covered.">        if (this.numOfHeapNodes == 1) { // if there is only one tree</span>
+<span class="fc" id="L98">            this.min = null;</span>
+<span class="fc" id="L99">            this.numOfTrees--;</span>
+<span class="fc" id="L100">            this.numOfHeapNodes--;</span>
+<span class="fc" id="L101">            return;</span>
+        }
+        // change all children's parent to null//
+<span class="pc bpc" id="L104" title="1 of 2 branches missed.">        if (this.min.child != null) { // min has a child</span>
+<span class="nc" id="L105">            HeapNode child = this.min.child;</span>
+<span class="nc" id="L106">            HeapNode tmpChild = child;</span>
+<span class="nc" id="L107">            child.parent = null;</span>
+<span class="nc bnc" id="L108" title="All 2 branches missed.">            while (child.next != tmpChild) {</span>
+<span class="nc" id="L109">                child = child.next;</span>
+<span class="nc" id="L110">                child.parent = null;</span>
+            }
+        }
+        // delete the node//
+<span class="pc bpc" id="L114" title="1 of 2 branches missed.">        if (this.numOfTrees &gt; 1) {</span>
+<span class="fc" id="L115">            (this.min.prev).next = this.min.next;</span>
+<span class="fc" id="L116">            (this.min.next).prev = this.min.prev;</span>
+<span class="pc bpc" id="L117" title="1 of 2 branches missed.">            if (this.min.child != null) {</span>
+<span class="nc" id="L118">                (this.min.prev).setNext(this.min.child);</span>
+            }
+        } else { // this.numOfTrees = 1
+<span class="nc" id="L121">            this.min = this.min.child;</span>
+        }
+<span class="fc" id="L123">        this.numOfHeapNodes--;</span>
+<span class="fc" id="L124">        this.successiveLink(this.min.getNext());</span>
+<span class="fc" id="L125">    }</span>
+
+    /**
+     * Return the node of the heap whose key is minimal.
+     * $ret == null if (empty==true)
+     */
+    public HeapNode findMin() {
+<span class="fc" id="L132">        return this.min;</span>
+    }
+
+    /**
+     * Meld the heap with heap2
+     *
+     * @pre heap2 != null
+     * @post (numOfnodes = = $prev numOfnodes + heap2.numOfnodes)
+     */
+    public void meld(FibonacciHeap heap2) {
+<span class="pc bpc" id="L142" title="1 of 2 branches missed.">        if (heap2.empty()) {</span>
+<span class="nc" id="L143">            return;</span>
+        }
+<span class="pc bpc" id="L145" title="1 of 2 branches missed.">        if (this.empty()) {</span>
+<span class="nc" id="L146">            this.min = heap2.min;</span>
+        } else {
+<span class="fc" id="L148">            this.min.setNext(heap2.min);</span>
+<span class="fc" id="L149">            this.updateMin(heap2.min);</span>
+        }
+<span class="fc" id="L151">        this.numOfTrees += heap2.numOfTrees;</span>
+<span class="fc" id="L152">        this.numOfHeapNodes += heap2.numOfHeapNodes;</span>
+<span class="fc" id="L153">    }</span>
+
+    /**
+     * Return the number of elements in the heap
+     * $ret == 0 if heap is empty
+     */
+    public int size() {
+<span class="fc" id="L160">        return this.numOfHeapNodes;</span>
+    }
+
+    /**
+     * Return a counters array, where the value of the i-th index is the number of trees with rank i
+     * in the heap. returns an empty array for an empty heap
+     */
+    public int[] countersRep() {
+<span class="pc bpc" id="L168" title="1 of 2 branches missed.">        if (this.empty()) {</span>
+<span class="nc" id="L169">            return new int[0]; /// return an empty array</span>
+        }
+<span class="fc" id="L171">        int[] rankArray = new int[(int) Math.floor(Math.log(this.size()) / Math.log(GOLDEN_RATIO)) + 1]; // creates the array</span>
+<span class="fc" id="L172">        rankArray[this.min.rank]++;</span>
+<span class="fc" id="L173">        HeapNode curr = this.min.next;</span>
+<span class="fc bfc" id="L174" title="All 2 branches covered.">        while (curr != this.min) {</span>
+<span class="fc" id="L175">            rankArray[curr.rank]++;</span>
+<span class="fc" id="L176">            curr = curr.next;</span>
+        }
+<span class="fc" id="L178">        return rankArray;</span>
+    }
+
+    /**
+     * Deletes the node x from the heap (using decreaseKey(x) to -1)
+     *
+     * @pre heap contains x
+     * @post (numOfnodes = = $prev numOfnodes - 1)
+     */
+    public void delete(HeapNode x) {
+<span class="fc" id="L188">        this.decreaseKey(x, x.getKey() + 1); // change key to be the minimal (-1)</span>
+<span class="fc" id="L189">        this.deleteMin(); // delete it</span>
+<span class="fc" id="L190">    }</span>
+
+    /**
+     * The function decreases the key of the node x by delta.
+     *
+     * @pre x.key &gt;= delta (we don't realize it when calling from delete())
+     * @pre heap contains x
+     */
+    private void decreaseKey(HeapNode x, int delta) {
+<span class="fc" id="L199">        int newKey = x.getKey() - delta;</span>
+<span class="fc" id="L200">        x.key = newKey;</span>
+<span class="pc bpc" id="L201" title="1 of 2 branches missed.">        if (x.isRoot()) { // no parent to x</span>
+<span class="fc" id="L202">            this.updateMin(x);</span>
+<span class="fc" id="L203">            return;</span>
+        }
+<span class="nc bnc" id="L205" title="All 2 branches missed.">        if (x.getKey() &gt;= x.parent.getKey()) {</span>
+<span class="nc" id="L206">            return;</span>
+        } // we don't need to cut
+<span class="nc" id="L208">        HeapNode prevParent = x.parent;</span>
+<span class="nc" id="L209">        this.cut(x);</span>
+<span class="nc" id="L210">        this.cascadingCuts(prevParent);</span>
+<span class="nc" id="L211">    }</span>
+
+    /**
+     * returns the current potential of the heap, which is:
+     * Potential = #trees + 2*#markedNodes
+     */
+    public int potential() {
+<span class="fc" id="L218">        return numOfTrees + (2 * markedHeapNodesCounter);</span>
+    }
+
+    /**
+     * This static function returns the total number of link operations made during the run-time of
+     * the program. A link operation is the operation which gets as input two trees of the same
+     * rank, and generates a tree of rank bigger by one.
+     */
+    public static int totalLinks() {
+<span class="nc" id="L227">        return totalLinks;</span>
+    }
+
+    /**
+     * This static function returns the total number of cut operations made during the run-time of
+     * the program. A cut operation is the operation which disconnects a subtree from its parent
+     * (during decreaseKey/delete methods).
+     */
+    public static int totalCuts() {
+<span class="nc" id="L236">        return totalCuts;</span>
+    }
+
+    /*
+     * updates the min of the heap (if needed)
+     * @pre this.min == @param (posMin) if and only if (posMin.key &lt; this.min.key)
+     */
+    private void updateMin(HeapNode posMin) {
+<span class="fc bfc" id="L244" title="All 2 branches covered.">        if (posMin.getKey() &lt; this.min.getKey()) {</span>
+<span class="fc" id="L245">            this.min = posMin;</span>
+        }
+<span class="fc" id="L247">    }</span>
+
+    /*
+     * Recursively &quot;runs&quot; all the way up from @param (curr) and mark the nodes.
+     * stop the recursion if we had arrived to a marked node or to a root.
+     * if we arrived to a marked node, we cut it and continue recursively.
+     * called after a node was cut.
+     * @post (numOfnodes == $prev numOfnodes)
+     */
+    private void cascadingCuts(HeapNode curr) {
+<span class="nc bnc" id="L257" title="All 2 branches missed.">        if (!curr.isMarked()) { // stop the recursion</span>
+<span class="nc" id="L258">            curr.mark();</span>
+<span class="nc bnc" id="L259" title="All 2 branches missed.">            if (!curr.isRoot()) {</span>
+<span class="nc" id="L260">                this.markedHeapNodesCounter++;</span>
+            }
+        } else {
+<span class="nc bnc" id="L263" title="All 2 branches missed.">            if (curr.isRoot()) {</span>
+<span class="nc" id="L264">                return;</span>
+            }
+<span class="nc" id="L266">            HeapNode prevParent = curr.parent;</span>
+<span class="nc" id="L267">            this.cut(curr);</span>
+<span class="nc" id="L268">            this.cascadingCuts(prevParent);</span>
+        }
+<span class="nc" id="L270">    }</span>
+
+    /*
+     * cut a node (and his &quot;subtree&quot;) from his origin tree and connect it to the heap as a new tree.
+     * called after a node was cut.
+     * @post (numOfnodes == $prev numOfnodes)
+     */
+    private void cut(HeapNode curr) {
+<span class="nc" id="L278">        curr.parent.rank--;</span>
+<span class="nc bnc" id="L279" title="All 2 branches missed.">        if (curr.marked) {</span>
+<span class="nc" id="L280">            this.markedHeapNodesCounter--;</span>
+<span class="nc" id="L281">            curr.marked = false;</span>
+        }
+<span class="nc bnc" id="L283" title="All 2 branches missed.">        if (curr.parent.child == curr) { // we should change the parent's child</span>
+<span class="nc bnc" id="L284" title="All 2 branches missed.">            if (curr.next == curr) { // curr do not have brothers</span>
+<span class="nc" id="L285">                curr.parent.child = null;</span>
+            } else { // curr have brothers
+<span class="nc" id="L287">                curr.parent.child = curr.next;</span>
+            }
+        }
+<span class="nc" id="L290">        curr.prev.next = curr.next;</span>
+<span class="nc" id="L291">        curr.next.prev = curr.prev;</span>
+<span class="nc" id="L292">        curr.next = curr;</span>
+<span class="nc" id="L293">        curr.prev = curr;</span>
+<span class="nc" id="L294">        curr.parent = null;</span>
+<span class="nc" id="L295">        this.min.setNext(curr);</span>
+<span class="nc" id="L296">        this.updateMin(curr);</span>
+<span class="nc" id="L297">        this.numOfTrees++;</span>
+<span class="nc" id="L298">        totalCuts++;</span>
+<span class="nc" id="L299">    }</span>
+
+    /*
+     *
+     */
+    private void successiveLink(HeapNode curr) {
+<span class="fc" id="L305">        HeapNode[] buckets = this.toBuckets(curr);</span>
+<span class="fc" id="L306">        this.min = this.fromBuckets(buckets);</span>
+<span class="fc" id="L307">    }</span>
+
+    /*
+     *
+     */
+    private HeapNode[] toBuckets(HeapNode curr) {
+<span class="fc" id="L313">        HeapNode[] buckets = new HeapNode[(int) Math.floor(Math.log(this.size()) / Math.log(GOLDEN_RATIO)) + 1];</span>
+<span class="fc" id="L314">        curr.prev.next = null;</span>
+        HeapNode tmpCurr;
+<span class="fc bfc" id="L316" title="All 2 branches covered.">        while (curr != null) {</span>
+<span class="fc" id="L317">            tmpCurr = curr;</span>
+<span class="fc" id="L318">            curr = curr.next;</span>
+<span class="fc" id="L319">            tmpCurr.next = tmpCurr;</span>
+<span class="fc" id="L320">            tmpCurr.prev = tmpCurr;</span>
+<span class="fc bfc" id="L321" title="All 2 branches covered.">            while (buckets[tmpCurr.rank] != null) {</span>
+<span class="fc" id="L322">                tmpCurr = this.link(tmpCurr, buckets[tmpCurr.rank]);</span>
+<span class="fc" id="L323">                buckets[tmpCurr.rank - 1] = null;</span>
+            }
+<span class="fc" id="L325">            buckets[tmpCurr.rank] = tmpCurr;</span>
+        }
+<span class="fc" id="L327">        return buckets;</span>
+    }
+
+    /*
+     *
+     */
+    private HeapNode fromBuckets(HeapNode[] buckets) {
+<span class="fc" id="L334">        HeapNode tmpMin = null;</span>
+<span class="fc" id="L335">        this.numOfTrees = 0;</span>
+<span class="fc bfc" id="L336" title="All 2 branches covered.">        for (int i = 0; i &lt; buckets.length; i++) {</span>
+<span class="fc bfc" id="L337" title="All 2 branches covered.">            if (buckets[i] != null) {</span>
+<span class="fc" id="L338">                this.numOfTrees++;</span>
+<span class="fc bfc" id="L339" title="All 2 branches covered.">                if (tmpMin == null) {</span>
+<span class="fc" id="L340">                    tmpMin = buckets[i];</span>
+<span class="fc" id="L341">                    tmpMin.next = tmpMin;</span>
+<span class="fc" id="L342">                    tmpMin.prev = tmpMin;</span>
+                } else {
+<span class="fc" id="L344">                    tmpMin.setNext(buckets[i]);</span>
+<span class="pc bpc" id="L345" title="1 of 2 branches missed.">                    if (buckets[i].getKey() &lt; tmpMin.getKey()) {</span>
+<span class="nc" id="L346">                        tmpMin = buckets[i];</span>
+                    }
+                }
+            }
+        }
+<span class="fc" id="L351">        return tmpMin;</span>
+    }
+
+    /*
+     * link between two nodes (and their trees)
+     * defines the smaller node to be the parent
+     */
+    private HeapNode link(HeapNode c1, HeapNode c2) {
+<span class="pc bpc" id="L359" title="1 of 2 branches missed.">        if (c1.getKey() &gt; c2.getKey()) {</span>
+<span class="nc" id="L360">            HeapNode c3 = c1;</span>
+<span class="nc" id="L361">            c1 = c2;</span>
+<span class="nc" id="L362">            c2 = c3;</span>
+        }
+<span class="fc bfc" id="L364" title="All 2 branches covered.">        if (c1.child == null) {</span>
+<span class="fc" id="L365">            c1.child = c2;</span>
+        } else {
+<span class="fc" id="L367">            c1.child.setNext(c2);</span>
+        }
+<span class="fc" id="L369">        c2.parent = c1;</span>
+<span class="fc" id="L370">        c1.rank++;</span>
+<span class="fc" id="L371">        totalLinks++;</span>
+<span class="fc" id="L372">        return c1;</span>
+    }
+
+    /**
+     * public class HeapNode
+     * each HeapNode belongs to a heap (Inner class)
+     */
+    public class HeapNode {
+
+        public int key;
+        private int rank;
+        private boolean marked;
+        private HeapNode child;
+        private HeapNode next;
+        private HeapNode prev;
+        private HeapNode parent;
+
+        /*
+         * a constructor for a heapNode withe key @param (key)
+         * prev == next == this
+         * parent == child == null
+         */
+<span class="fc" id="L394">        public HeapNode(int key) {</span>
+<span class="fc" id="L395">            this.key = key;</span>
+<span class="fc" id="L396">            this.marked = false;</span>
+<span class="fc" id="L397">            this.next = this;</span>
+<span class="fc" id="L398">            this.prev = this;</span>
+<span class="fc" id="L399">        }</span>
+
+        /*
+         * returns the key of the node.
+         */
+        public int getKey() {
+<span class="fc" id="L405">            return this.key;</span>
+        }
+
+        /*
+         * checks whether the node is marked
+         * $ret = true if one child has been cut
+         */
+        private boolean isMarked() {
+<span class="nc" id="L413">            return this.marked;</span>
+        }
+
+        /*
+         * mark a node (after a child was cut)
+         * @inv root.mark() == false.
+         */
+        private void mark() {
+<span class="nc bnc" id="L421" title="All 2 branches missed.">            if (this.isRoot()) {</span>
+<span class="nc" id="L422">                return;</span>
+            } // check if the node is a root
+<span class="nc" id="L424">            this.marked = true;</span>
+<span class="nc" id="L425">        }</span>
+
+        /*
+         * add the node @param (newNext) to be between this and this.next
+         * works fine also if @param (newNext) does not &quot;stands&quot; alone
+         */
+        private void setNext(HeapNode newNext) {
+<span class="fc" id="L432">            HeapNode tmpNext = this.next;</span>
+<span class="fc" id="L433">            this.next = newNext;</span>
+<span class="fc" id="L434">            this.next.prev.next = tmpNext;</span>
+<span class="fc" id="L435">            tmpNext.prev = newNext.prev;</span>
+<span class="fc" id="L436">            this.next.prev = this;</span>
+<span class="fc" id="L437">        }</span>
+
+        /*
+         * returns the next node to this node
+         */
+        private HeapNode getNext() {
+<span class="fc" id="L443">            return this.next;</span>
+        }
+
+        /*
+         * check if the node is a root
+         * root definition - this.parent == null (uppest in his tree)
+         */
+        private boolean isRoot() {
+<span class="pc bpc" id="L451" title="1 of 2 branches missed.">            return (this.parent == null);</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SolovayStrassenPrimalityTest.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.maths</a> &gt; <span class="el_source">SolovayStrassenPrimalityTest.java</span></div><h1>SolovayStrassenPrimalityTest.java</h1><pre class="source lang-java linenums">package com.thealgorithms.maths;
+
+import java.util.Random;
+
+/**
+ * This class implements the Solovay-Strassen primality test,
+ * which is a probabilistic algorithm to determine whether a number is prime.
+ * The algorithm is based on properties of the Jacobi symbol and modular exponentiation.
+ *
+ * For more information, go to {@link https://en.wikipedia.org/wiki/Solovay%E2%80%93Strassen_primality_test}
+ */
+final class SolovayStrassenPrimalityTest {
+
+    private final Random random;
+
+    /**
+     * Constructs a SolovayStrassenPrimalityTest instance with a specified seed for randomness.
+     *
+     * @param seed the seed for generating random numbers
+     */
+<span class="fc" id="L21">    private SolovayStrassenPrimalityTest(int seed) {</span>
+<span class="fc" id="L22">        random = new Random(seed);</span>
+<span class="fc" id="L23">    }</span>
+
+    /**
+     * Factory method to create an instance of SolovayStrassenPrimalityTest.
+     *
+     * @param seed the seed for generating random numbers
+     * @return a new instance of SolovayStrassenPrimalityTest
+     */
+    public static SolovayStrassenPrimalityTest getSolovayStrassenPrimalityTest(int seed) {
+<span class="fc" id="L32">        return new SolovayStrassenPrimalityTest(seed);</span>
+    }
+
+    /**
+     * Calculates modular exponentiation using the method of exponentiation by squaring.
+     *
+     * @param base the base number
+     * @param exponent the exponent
+     * @param mod the modulus
+     * @return (base^exponent) mod mod
+     */
+    private static long calculateModularExponentiation(long base, long exponent, long mod) {
+<span class="fc" id="L44">        long x = 1; // This will hold the result of (base^exponent) % mod</span>
+<span class="fc" id="L45">        long y = base; // This holds the current base value being squared</span>
+
+<span class="fc bfc" id="L47" title="All 2 branches covered.">        while (exponent &gt; 0) {</span>
+            // If exponent is odd, multiply the current base (y) with x
+<span class="fc bfc" id="L49" title="All 2 branches covered.">            if (exponent % 2 == 1) {</span>
+<span class="fc" id="L50">                x = x * y % mod; // Update result with current base</span>
+            }
+            // Square the base for the next iteration
+<span class="fc" id="L53">            y = y * y % mod; // Update base to be y^2</span>
+<span class="fc" id="L54">            exponent = exponent / 2; // Halve the exponent for next iteration</span>
+        }
+
+<span class="fc" id="L57">        return x % mod; // Return final result after all iterations</span>
+    }
+
+    /**
+     * Computes the Jacobi symbol (a/n), which is a generalization of the Legendre symbol.
+     *
+     * @param a the numerator
+     * @param num the denominator (must be an odd positive integer)
+     * @return the Jacobi symbol value: 1, -1, or 0
+     */
+    public int calculateJacobi(long a, long num) {
+        // Check if num is non-positive or even; Jacobi symbol is not defined in these cases
+<span class="fc bfc" id="L69" title="All 4 branches covered.">        if (num &lt;= 0 || num % 2 == 0) {</span>
+<span class="fc" id="L70">            return 0;</span>
+        }
+
+<span class="fc" id="L73">        a = a % num; // Reduce a modulo num to simplify calculations</span>
+<span class="fc" id="L74">        int jacobi = 1; // Initialize Jacobi symbol value</span>
+
+<span class="fc bfc" id="L76" title="All 2 branches covered.">        while (a != 0) {</span>
+            // While a is even, reduce it and adjust jacobi based on properties of num
+<span class="fc bfc" id="L78" title="All 2 branches covered.">            while (a % 2 == 0) {</span>
+<span class="fc" id="L79">                a /= 2; // Divide a by 2 until it becomes odd</span>
+<span class="fc" id="L80">                long nMod8 = num % 8; // Get num modulo 8 to check conditions for jacobi adjustment</span>
+<span class="fc bfc" id="L81" title="All 4 branches covered.">                if (nMod8 == 3 || nMod8 == 5) {</span>
+<span class="fc" id="L82">                    jacobi = -jacobi; // Flip jacobi sign based on properties of num modulo 8</span>
+                }
+<span class="fc" id="L84">            }</span>
+
+<span class="fc" id="L86">            long temp = a; // Temporarily store value of a</span>
+<span class="fc" id="L87">            a = num; // Set a to be num for next iteration</span>
+<span class="fc" id="L88">            num = temp; // Set num to be previous value of a</span>
+
+            // Adjust jacobi based on properties of both numbers when both are odd and congruent to 3 modulo 4
+<span class="fc bfc" id="L91" title="All 4 branches covered.">            if (a % 4 == 3 &amp;&amp; num % 4 == 3) {</span>
+<span class="fc" id="L92">                jacobi = -jacobi; // Flip jacobi sign again based on congruences</span>
+            }
+
+<span class="fc" id="L95">            a = a % num; // Reduce a modulo num for next iteration of Jacobi computation</span>
+<span class="fc" id="L96">        }</span>
+
+<span class="fc bfc" id="L98" title="All 2 branches covered.">        return (num == 1) ? jacobi : 0; // If num reduces to 1, return jacobi value, otherwise return 0 (not defined)</span>
+    }
+
+    /**
+     * Performs the Solovay-Strassen primality test on a given number.
+     *
+     * @param num the number to be tested for primality
+     * @param iterations the number of iterations to run for accuracy
+     * @return true if num is likely prime, false if it is composite
+     */
+    public boolean solovayStrassen(long num, int iterations) {
+<span class="fc bfc" id="L109" title="All 2 branches covered.">        if (num &lt;= 1) {</span>
+<span class="fc" id="L110">            return false; // Numbers &lt;=1 are not prime by definition.</span>
+        }
+<span class="fc bfc" id="L112" title="All 2 branches covered.">        if (num &lt;= 3) {</span>
+<span class="fc" id="L113">            return true; // Numbers &lt;=3 are prime.</span>
+        }
+
+<span class="fc bfc" id="L116" title="All 2 branches covered.">        for (int i = 0; i &lt; iterations; i++) {</span>
+<span class="fc" id="L117">            long r = Math.abs(random.nextLong() % (num - 1)) + 2; // Generate a non-negative random number.</span>
+<span class="fc" id="L118">            long a = r % (num - 1) + 1; // Choose random 'a' in range [1, n-1].</span>
+
+<span class="fc" id="L120">            long jacobi = (num + calculateJacobi(a, num)) % num;</span>
+            // Calculate Jacobi symbol and adjust it modulo n.
+
+<span class="fc" id="L123">            long mod = calculateModularExponentiation(a, (num - 1) / 2, num);</span>
+            // Calculate modular exponentiation: a^((n-1)/2) mod n.
+
+<span class="fc bfc" id="L126" title="All 4 branches covered.">            if (jacobi == 0 || mod != jacobi) {</span>
+<span class="fc" id="L127">                return false; // If Jacobi symbol is zero or doesn't match modular result, n is composite.</span>
+            }
+        }
+
+<span class="fc" id="L131">        return true; // If no contradictions found after all iterations, n is likely prime.</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

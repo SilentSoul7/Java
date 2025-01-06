@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Manacher.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.strings</a> &gt; <span class="el_source">Manacher.java</span></div><h1>Manacher.java</h1><pre class="source lang-java linenums">package com.thealgorithms.strings;
+
+/**
+ * Wikipedia: https://en.wikipedia.org/wiki/Longest_palindromic_substring#Manacher's_algorithm
+ */
+public final class Manacher {
+
+    private Manacher() {
+    }
+
+    /**
+     * Finds the longest palindromic substring using Manacher's Algorithm
+     *
+     * @param s The input string
+     * @return The longest palindromic substring in {@code s}
+     */
+    public static String longestPalindrome(String s) {
+<span class="fc" id="L18">        final String processedString = preprocess(s);</span>
+<span class="fc" id="L19">        int[] palindromeLengths = new int[processedString.length()];</span>
+<span class="fc" id="L20">        int center = 0;</span>
+<span class="fc" id="L21">        int rightBoundary = 0;</span>
+<span class="fc" id="L22">        int maxLen = 0;</span>
+<span class="fc" id="L23">        int centerIndex = 0;</span>
+
+<span class="fc bfc" id="L25" title="All 2 branches covered.">        for (int i = 1; i &lt; processedString.length() - 1; i++) {</span>
+<span class="fc" id="L26">            int mirror = 2 * center - i;</span>
+
+<span class="fc bfc" id="L28" title="All 2 branches covered.">            if (i &lt; rightBoundary) {</span>
+<span class="fc" id="L29">                palindromeLengths[i] = Math.min(rightBoundary - i, palindromeLengths[mirror]);</span>
+            }
+
+<span class="fc bfc" id="L32" title="All 2 branches covered.">            while (processedString.charAt(i + 1 + palindromeLengths[i]) == processedString.charAt(i - 1 - palindromeLengths[i])) {</span>
+<span class="fc" id="L33">                palindromeLengths[i]++;</span>
+            }
+
+<span class="fc bfc" id="L36" title="All 2 branches covered.">            if (i + palindromeLengths[i] &gt; rightBoundary) {</span>
+<span class="fc" id="L37">                center = i;</span>
+<span class="fc" id="L38">                rightBoundary = i + palindromeLengths[i];</span>
+            }
+
+<span class="fc bfc" id="L41" title="All 2 branches covered.">            if (palindromeLengths[i] &gt; maxLen) {</span>
+<span class="fc" id="L42">                maxLen = palindromeLengths[i];</span>
+<span class="fc" id="L43">                centerIndex = i;</span>
+            }
+        }
+
+<span class="fc" id="L47">        final int start = (centerIndex - maxLen) / 2;</span>
+<span class="fc" id="L48">        return s.substring(start, start + maxLen);</span>
+    }
+
+    /**
+     * Preprocesses the input string by inserting a special character ('#') between each character
+     * and adding '^' at the start and '$' at the end to avoid boundary conditions.
+     *
+     * @param s The original string
+     * @return The preprocessed string with additional characters
+     */
+    private static String preprocess(String s) {
+<span class="fc bfc" id="L59" title="All 2 branches covered.">        if (s.isEmpty()) {</span>
+<span class="fc" id="L60">            return &quot;^$&quot;;</span>
+        }
+<span class="fc" id="L62">        StringBuilder sb = new StringBuilder(&quot;^&quot;);</span>
+<span class="fc bfc" id="L63" title="All 2 branches covered.">        for (char c : s.toCharArray()) {</span>
+<span class="fc" id="L64">            sb.append('#').append(c);</span>
+        }
+<span class="fc" id="L66">        sb.append(&quot;#$&quot;);</span>
+<span class="fc" id="L67">        return sb.toString();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

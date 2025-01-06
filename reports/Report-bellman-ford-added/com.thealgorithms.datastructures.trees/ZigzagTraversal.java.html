@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ZigzagTraversal.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.trees</a> &gt; <span class="el_source">ZigzagTraversal.java</span></div><h1>ZigzagTraversal.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.trees;
+
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.List;
+
+/**
+ * Given a binary tree.
+ * This code returns the zigzag level order traversal of its nodes' values.
+ * Binary tree:
+ *                               7
+ *                   /                         \
+ *                6                           3
+ *         /                \             /             \
+ *      2                    4         10                19
+ * Zigzag traversal:
+ * [[7], [3, 6], [2, 4, 10, 19]]
+ * &lt;p&gt;
+ * This solution implements the breadth-first search (BFS) algorithm using a queue.
+ * 1. The algorithm starts with a root node. This node is added to a queue.
+ * 2. While the queue is not empty:
+ *  - each time we enter the while-loop we get queue size. Queue size refers to the number of nodes
+ * at the current level.
+ *  - we traverse all the level nodes in 2 ways: from left to right OR from right to left
+ *    (this state is stored on `prevLevelFromLeftToRight` variable)
+ *  - if the current node has children we add them to a queue
+ *  - add level with nodes to a result.
+ * &lt;p&gt;
+ * Complexities:
+ * O(N) - time, where N is the number of nodes in a binary tree
+ * O(N) - space, where N is the number of nodes in a binary tree
+ *
+ * @author Albina Gimaletdinova on 11/01/2023
+ */
+public final class ZigzagTraversal {
+    private ZigzagTraversal() {
+    }
+    public static List&lt;List&lt;Integer&gt;&gt; traverse(BinaryTree.Node root) {
+<span class="fc bfc" id="L41" title="All 2 branches covered.">        if (root == null) {</span>
+<span class="fc" id="L42">            return List.of();</span>
+        }
+
+<span class="fc" id="L45">        List&lt;List&lt;Integer&gt;&gt; result = new ArrayList&lt;&gt;();</span>
+
+        // create a queue
+<span class="fc" id="L48">        Deque&lt;BinaryTree.Node&gt; q = new ArrayDeque&lt;&gt;();</span>
+<span class="fc" id="L49">        q.offer(root);</span>
+        // start with writing nodes from left to right
+<span class="fc" id="L51">        boolean prevLevelFromLeftToRight = false;</span>
+
+<span class="fc bfc" id="L53" title="All 2 branches covered.">        while (!q.isEmpty()) {</span>
+<span class="fc" id="L54">            int nodesOnLevel = q.size();</span>
+<span class="fc" id="L55">            List&lt;Integer&gt; level = new LinkedList&lt;&gt;();</span>
+            // traverse all the level nodes
+<span class="fc bfc" id="L57" title="All 2 branches covered.">            for (int i = 0; i &lt; nodesOnLevel; i++) {</span>
+<span class="fc" id="L58">                BinaryTree.Node node = q.poll();</span>
+<span class="fc bfc" id="L59" title="All 2 branches covered.">                if (prevLevelFromLeftToRight) {</span>
+<span class="fc" id="L60">                    level.add(0, node.data);</span>
+                } else {
+<span class="fc" id="L62">                    level.add(node.data);</span>
+                }
+<span class="fc bfc" id="L64" title="All 2 branches covered.">                if (node.left != null) {</span>
+<span class="fc" id="L65">                    q.offer(node.left);</span>
+                }
+<span class="fc bfc" id="L67" title="All 2 branches covered.">                if (node.right != null) {</span>
+<span class="fc" id="L68">                    q.offer(node.right);</span>
+                }
+            }
+            // the next level node traversal will be from the other side
+<span class="fc bfc" id="L72" title="All 2 branches covered.">            prevLevelFromLeftToRight = !prevLevelFromLeftToRight;</span>
+<span class="fc" id="L73">            result.add(level);</span>
+<span class="fc" id="L74">        }</span>
+<span class="fc" id="L75">        return result;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BoyerMoore.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.others</a> &gt; <span class="el_source">BoyerMoore.java</span></div><h1>BoyerMoore.java</h1><pre class="source lang-java linenums">package com.thealgorithms.others;
+import java.util.Optional;
+
+/**
+ * Utility class implementing Boyer-Moore's Voting Algorithm to find the majority element
+ * in an array. The majority element is defined as the element that appears more than n/2 times
+ * in the array, where n is the length of the array.
+ *
+ * For more information on the algorithm, refer to:
+ * https://en.wikipedia.org/wiki/Boyer%E2%80%93Moore_majority_vote_algorithm
+ */
+public final class BoyerMoore {
+    private BoyerMoore() {
+    }
+
+    /**
+     * Finds the majority element in the given array if it exists.
+     *
+     * @param array the input array
+     * @return an Optional containing the majority element if it exists, otherwise an empty Optional
+     */
+    public static Optional&lt;Integer&gt; findMajorityElement(int[] array) {
+<span class="pc bpc" id="L23" title="1 of 4 branches missed.">        if (array == null || array.length == 0) {</span>
+<span class="fc" id="L24">            return Optional.empty();</span>
+        }
+
+<span class="fc" id="L27">        int candidate = findCandidate(array);</span>
+<span class="fc" id="L28">        int count = countOccurrences(candidate, array);</span>
+
+<span class="fc bfc" id="L30" title="All 2 branches covered.">        if (isMajority(count, array.length)) {</span>
+<span class="fc" id="L31">            return Optional.of(candidate);</span>
+        }
+<span class="fc" id="L33">        return Optional.empty();</span>
+    }
+
+    /**
+     * Identifies the potential majority candidate using Boyer-Moore's Voting Algorithm.
+     *
+     * @param array the input array
+     * @return the candidate for the majority element
+     */
+    private static int findCandidate(final int[] array) {
+<span class="fc" id="L43">        int count = 0;</span>
+<span class="fc" id="L44">        int candidate = -1;</span>
+<span class="fc bfc" id="L45" title="All 2 branches covered.">        for (int value : array) {</span>
+<span class="fc bfc" id="L46" title="All 2 branches covered.">            if (count == 0) {</span>
+<span class="fc" id="L47">                candidate = value;</span>
+            }
+<span class="fc bfc" id="L49" title="All 2 branches covered.">            count += (value == candidate) ? 1 : -1;</span>
+        }
+<span class="fc" id="L51">        return candidate;</span>
+    }
+
+    /**
+     * Counts the occurrences of the candidate element in the array.
+     *
+     * @param candidate the candidate element
+     * @param array the input array
+     * @return the number of times the candidate appears in the array
+     */
+    private static int countOccurrences(final int candidate, final int[] array) {
+<span class="fc" id="L62">        int count = 0;</span>
+<span class="fc bfc" id="L63" title="All 2 branches covered.">        for (int value : array) {</span>
+<span class="fc bfc" id="L64" title="All 2 branches covered.">            if (value == candidate) {</span>
+<span class="fc" id="L65">                count++;</span>
+            }
+        }
+<span class="fc" id="L68">        return count;</span>
+    }
+
+    /**
+     * Determines if the count of the candidate element is more than n/2, where n is the length of the array.
+     *
+     * @param count the number of occurrences of the candidate
+     * @param totalCount the total number of elements in the array
+     * @return true if the candidate is the majority element, false otherwise
+     */
+    private static boolean isMajority(int count, int totalCount) {
+<span class="fc bfc" id="L79" title="All 2 branches covered.">        return 2 * count &gt; totalCount;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ClimbingStairs.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.dynamicprogramming</a> &gt; <span class="el_source">ClimbingStairs.java</span></div><h1>ClimbingStairs.java</h1><pre class="source lang-java linenums">package com.thealgorithms.dynamicprogramming;
+
+/*
+ * A dynamic programming solution for the &quot;Climbing Stairs&quot; problem.
+ * Returns the no. of distinct ways to climb to the top
+ * of a staircase when you can climb either 1 or 2 steps at a time.
+ *
+ * For example, if there are 5 steps, the possible ways to climb the
+ * staircase are:
+ * 1. 1-1-1-1-1
+ * 2. 1-1-1-2
+ * 3. 1-2-1-1
+ * 4. 2-1-1-1
+ * 5. 2-2-1
+ * 6. 1-1-2-1
+ * 7. 1-2-2
+ * 8. 2-1-2
+ * Ans: 8 ways
+ */
+public final class ClimbingStairs {
+
+    private ClimbingStairs() {
+    }
+
+    /**
+     * Calculates the no. of distinct ways to climb a staircase with n steps.
+     *
+     * @param n the no. of steps in the staircase (non-negative integer)
+     * @return the no. of distinct ways to climb to the top
+     *         - Returns 0 if n is 0 (no steps to climb).
+     *         - Returns 1 if n is 1 (only one way to climb).
+     *         - For n &gt; 1, it returns the total no. of ways to climb.
+     */
+    public static int numberOfWays(int n) {
+
+        // Base case: if there are no steps or only one step, return n.
+<span class="fc bfc" id="L37" title="All 4 branches covered.">        if (n == 1 || n == 0) {</span>
+<span class="fc" id="L38">            return n;</span>
+        }
+
+<span class="fc" id="L41">        int prev = 1; // Ways to reach the step before the current one (step 1)</span>
+<span class="fc" id="L42">        int curr = 1; // Ways to reach the current step (step 2)</span>
+        int next; // Total ways to reach the next step
+
+<span class="fc bfc" id="L45" title="All 2 branches covered.">        for (int i = 2; i &lt;= n; i++) { // step 2 to n</span>
+<span class="fc" id="L46">            next = curr + prev;</span>
+
+            // Move the pointers to the next step
+<span class="fc" id="L49">            prev = curr;</span>
+<span class="fc" id="L50">            curr = next;</span>
+        }
+
+<span class="fc" id="L53">        return curr; // Ways to reach the nth step</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

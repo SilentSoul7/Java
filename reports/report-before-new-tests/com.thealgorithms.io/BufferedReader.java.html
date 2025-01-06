@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BufferedReader.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.io</a> &gt; <span class="el_source">BufferedReader.java</span></div><h1>BufferedReader.java</h1><pre class="source lang-java linenums">package com.thealgorithms.io;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
+/**
+ * Mimics the actions of the Original buffered reader
+ * implements other actions, such as peek(n) to lookahead,
+ * block() to read a chunk of size {BUFFER SIZE}
+ * &lt;p&gt;
+ * Author: Kumaraswamy B.G (Xoma Dev)
+ */
+public class BufferedReader {
+
+    private static final int DEFAULT_BUFFER_SIZE = 5;
+
+    /**
+     * The maximum number of bytes the buffer can hold.
+     * Value is changed when encountered Eof to not
+     * cause overflow read of 0 bytes
+     */
+
+    private int bufferSize;
+    private final byte[] buffer;
+
+    /**
+     * posRead -&gt; indicates the next byte to read
+     */
+<span class="fc" id="L30">    private int posRead = 0;</span>
+<span class="fc" id="L31">    private int bufferPos = 0;</span>
+
+<span class="fc" id="L33">    private boolean foundEof = false;</span>
+
+    private InputStream input;
+
+    public BufferedReader(byte[] input) throws IOException {
+<span class="nc" id="L38">        this(new ByteArrayInputStream(input));</span>
+<span class="nc" id="L39">    }</span>
+
+    public BufferedReader(InputStream input) throws IOException {
+<span class="fc" id="L42">        this(input, DEFAULT_BUFFER_SIZE);</span>
+<span class="fc" id="L43">    }</span>
+
+<span class="fc" id="L45">    public BufferedReader(InputStream input, int bufferSize) throws IOException {</span>
+<span class="fc" id="L46">        this.input = input;</span>
+<span class="pc bpc" id="L47" title="1 of 2 branches missed.">        if (input.available() == -1) {</span>
+<span class="nc" id="L48">            throw new IOException(&quot;Empty or already closed stream provided&quot;);</span>
+        }
+
+<span class="fc" id="L51">        this.bufferSize = bufferSize;</span>
+<span class="fc" id="L52">        buffer = new byte[bufferSize];</span>
+<span class="fc" id="L53">    }</span>
+
+    /**
+     * Reads a single byte from the stream
+     */
+    public int read() throws IOException {
+<span class="fc bfc" id="L59" title="All 2 branches covered.">        if (needsRefill()) {</span>
+<span class="pc bpc" id="L60" title="1 of 2 branches missed.">            if (foundEof) {</span>
+<span class="nc" id="L61">                return -1;</span>
+            }
+            // the buffer is empty, or the buffer has
+            // been completely read and needs to be refilled
+<span class="fc" id="L65">            refill();</span>
+        }
+<span class="fc" id="L67">        return buffer[posRead++] &amp; 0xff; // read and un-sign it</span>
+    }
+
+    /**
+     * Number of bytes not yet been read
+     */
+
+    public int available() throws IOException {
+<span class="fc" id="L75">        int available = input.available();</span>
+<span class="fc bfc" id="L76" title="All 2 branches covered.">        if (needsRefill()) {</span>
+            // since the block is already empty,
+            // we have no responsibility yet
+<span class="fc" id="L79">            return available;</span>
+        }
+<span class="fc" id="L81">        return bufferPos - posRead + available;</span>
+    }
+
+    /**
+     * Returns the next character
+     */
+
+    public int peek() throws IOException {
+<span class="fc" id="L89">        return peek(1);</span>
+    }
+
+    /**
+     * Peeks and returns a value located at next {n}
+     */
+
+    public int peek(int n) throws IOException {
+<span class="fc" id="L97">        int available = available();</span>
+<span class="fc bfc" id="L98" title="All 2 branches covered.">        if (n &gt;= available) {</span>
+<span class="fc" id="L99">            throw new IOException(&quot;Out of range, available %d, but trying with %d&quot;.formatted(available, n));</span>
+        }
+<span class="fc" id="L101">        pushRefreshData();</span>
+
+<span class="pc bpc" id="L103" title="1 of 2 branches missed.">        if (n &gt;= bufferSize) {</span>
+<span class="nc" id="L104">            throw new IllegalAccessError(&quot;Cannot peek %s, maximum upto %s (Buffer Limit)&quot;.formatted(n, bufferSize));</span>
+        }
+<span class="fc" id="L106">        return buffer[n];</span>
+    }
+
+    /**
+     * Removes the already read bytes from the buffer
+     * in-order to make space for new bytes to be filled up.
+     * &lt;p&gt;
+     * This may also do the job to read first time data (the whole buffer is empty)
+     */
+
+    private void pushRefreshData() throws IOException {
+<span class="fc bfc" id="L117" title="All 2 branches covered.">        for (int i = posRead, j = 0; i &lt; bufferSize; i++, j++) {</span>
+<span class="fc" id="L118">            buffer[j] = buffer[i];</span>
+        }
+
+<span class="fc" id="L121">        bufferPos -= posRead;</span>
+<span class="fc" id="L122">        posRead = 0;</span>
+
+        // fill out the spaces that we've
+        // emptied
+<span class="fc" id="L126">        justRefill();</span>
+<span class="fc" id="L127">    }</span>
+
+    /**
+     * Reads one complete block of size {bufferSize}
+     * if found eof, the total length of an array will
+     * be that of what's available
+     *
+     * @return a completed block
+     */
+    public byte[] readBlock() throws IOException {
+<span class="fc" id="L137">        pushRefreshData();</span>
+
+<span class="fc" id="L139">        byte[] cloned = new byte[bufferSize];</span>
+        // arraycopy() function is better than clone()
+<span class="pc bpc" id="L141" title="1 of 2 branches missed.">        if (bufferPos &gt;= 0) {</span>
+<span class="fc" id="L142">            System.arraycopy(buffer, 0, cloned, 0,</span>
+                // important to note that, bufferSize does not stay constant
+                // once the class is defined. See justRefill() function
+                bufferSize);
+        }
+        // we assume that already a chunk
+        // has been read
+<span class="fc" id="L149">        refill();</span>
+<span class="fc" id="L150">        return cloned;</span>
+    }
+
+    private boolean needsRefill() {
+<span class="fc bfc" id="L154" title="All 4 branches covered.">        return bufferPos == 0 || posRead == bufferSize;</span>
+    }
+
+    private void refill() throws IOException {
+<span class="fc" id="L158">        posRead = 0;</span>
+<span class="fc" id="L159">        bufferPos = 0;</span>
+<span class="fc" id="L160">        justRefill();</span>
+<span class="fc" id="L161">    }</span>
+
+    private void justRefill() throws IOException {
+<span class="fc" id="L164">        assertStreamOpen();</span>
+
+        // try to fill in the maximum we can until
+        // we reach EOF
+<span class="fc bfc" id="L168" title="All 2 branches covered.">        while (bufferPos &lt; bufferSize) {</span>
+<span class="fc" id="L169">            int read = input.read();</span>
+<span class="fc bfc" id="L170" title="All 2 branches covered.">            if (read == -1) {</span>
+                // reached end-of-file, no more data left
+                // to be read
+<span class="fc" id="L173">                foundEof = true;</span>
+                // rewrite the BUFFER_SIZE, to know that we've reached
+                // EOF when requested refill
+<span class="fc" id="L176">                bufferSize = bufferPos;</span>
+            }
+<span class="fc" id="L178">            buffer[bufferPos++] = (byte) read;</span>
+<span class="fc" id="L179">        }</span>
+<span class="fc" id="L180">    }</span>
+
+    private void assertStreamOpen() {
+<span class="pc bpc" id="L183" title="1 of 2 branches missed.">        if (input == null) {</span>
+<span class="nc" id="L184">            throw new IllegalStateException(&quot;Input Stream already closed!&quot;);</span>
+        }
+<span class="fc" id="L186">    }</span>
+
+    public void close() throws IOException {
+<span class="nc bnc" id="L189" title="All 2 branches missed.">        if (input != null) {</span>
+            try {
+<span class="nc" id="L191">                input.close();</span>
+            } finally {
+<span class="nc" id="L193">                input = null;</span>
+            }
+        }
+<span class="nc" id="L196">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

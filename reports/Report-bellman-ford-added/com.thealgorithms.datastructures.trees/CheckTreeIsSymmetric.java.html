@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CheckTreeIsSymmetric.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.trees</a> &gt; <span class="el_source">CheckTreeIsSymmetric.java</span></div><h1>CheckTreeIsSymmetric.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.trees;
+
+import com.thealgorithms.datastructures.trees.BinaryTree.Node;
+
+/**
+ * Check if a binary tree is symmetric or not.
+ * A binary tree is a symmetric tree if the left and right subtree of root are mirror image.
+ * Below is a symmetric tree
+ *                               1
+ *                   /                         \
+ *                2                           2
+ *         /                \             /             \
+ *      3                    4         4                3
+ *
+ * Below is not symmetric because values is different in last level
+ *                               1
+ *                   /                         \
+ *                 2                           2
+ *         /                \             /             \
+ *      3                    5         4                3
+ * &lt;p&gt;
+ * Approach:
+ * Recursively check for left and right subtree of root
+ * 1. left subtrees root's values should be equal right subtree's root value
+ * 2. recursively check with left subtrees' left child VS right subtree's right child AND
+ * left subtree's right child VS right subtree left child
+ * Complexity
+ * 1. Time: O(n)
+ * 2. Space: O(lg(n)) for height of tree
+ *
+ * @author kumanoit on 10/10/22 IST 12:52 AM
+ */
+public final class CheckTreeIsSymmetric {
+    private CheckTreeIsSymmetric() {
+    }
+
+    public static boolean isSymmetric(Node root) {
+<span class="fc bfc" id="L38" title="All 2 branches covered.">        if (root == null) {</span>
+<span class="fc" id="L39">            return true;</span>
+        }
+<span class="fc" id="L41">        return isSymmetric(root.left, root.right);</span>
+    }
+
+    private static boolean isSymmetric(Node leftSubtreeRoot, Node rightSubtreeRoot) {
+<span class="pc bpc" id="L45" title="1 of 4 branches missed.">        if (leftSubtreeRoot == null &amp;&amp; rightSubtreeRoot == null) {</span>
+<span class="fc" id="L46">            return true;</span>
+        }
+
+<span class="fc bfc" id="L49" title="All 2 branches covered.">        if (isInvalidSubtree(leftSubtreeRoot, rightSubtreeRoot)) {</span>
+<span class="fc" id="L50">            return false;</span>
+        }
+
+<span class="pc bpc" id="L53" title="1 of 4 branches missed.">        return isSymmetric(leftSubtreeRoot.right, rightSubtreeRoot.left) &amp;&amp; isSymmetric(leftSubtreeRoot.left, rightSubtreeRoot.right);</span>
+    }
+
+    private static boolean isInvalidSubtree(Node leftSubtreeRoot, Node rightSubtreeRoot) {
+<span class="pc bpc" id="L57" title="2 of 6 branches missed.">        return leftSubtreeRoot == null || rightSubtreeRoot == null || leftSubtreeRoot.data != rightSubtreeRoot.data;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

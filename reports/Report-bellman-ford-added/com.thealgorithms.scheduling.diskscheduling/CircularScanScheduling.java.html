@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CircularScanScheduling.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.scheduling.diskscheduling</a> &gt; <span class="el_source">CircularScanScheduling.java</span></div><h1>CircularScanScheduling.java</h1><pre class="source lang-java linenums">package com.thealgorithms.scheduling.diskscheduling;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+/**
+ * Circular Scan Scheduling (C-SCAN) is a disk scheduling algorithm that
+ * works by moving the disk arm in one direction to service requests until
+ * it reaches the end of the disk. Once it reaches the end, instead of reversing
+ * direction like in the SCAN algorithm, the arm moves back to the starting point
+ * without servicing any requests. This ensures a more uniform wait time for all
+ * requests, especially those near the disk edges. The algorithm then continues in
+ * the same direction, making it effective for balancing service time across all disk sectors.
+ */
+public class CircularScanScheduling {
+    private int currentPosition;
+    private boolean movingUp;
+    private final int diskSize;
+
+<span class="fc" id="L21">    public CircularScanScheduling(int startPosition, boolean movingUp, int diskSize) {</span>
+<span class="fc" id="L22">        this.currentPosition = startPosition;</span>
+<span class="fc" id="L23">        this.movingUp = movingUp;</span>
+<span class="fc" id="L24">        this.diskSize = diskSize;</span>
+<span class="fc" id="L25">    }</span>
+
+    public List&lt;Integer&gt; execute(List&lt;Integer&gt; requests) {
+<span class="fc bfc" id="L28" title="All 2 branches covered.">        if (requests.isEmpty()) {</span>
+<span class="fc" id="L29">            return new ArrayList&lt;&gt;(); // Return empty list if there are no requests</span>
+        }
+
+<span class="fc" id="L32">        List&lt;Integer&gt; sortedRequests = new ArrayList&lt;&gt;(requests);</span>
+<span class="fc" id="L33">        Collections.sort(sortedRequests);</span>
+
+<span class="fc" id="L35">        List&lt;Integer&gt; result = new ArrayList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L37" title="All 2 branches covered.">        if (movingUp) {</span>
+            // Moving up: process requests &gt;= current position
+<span class="fc bfc" id="L39" title="All 2 branches covered.">            for (int request : sortedRequests) {</span>
+<span class="pc bpc" id="L40" title="1 of 4 branches missed.">                if (request &gt;= currentPosition &amp;&amp; request &lt; diskSize) {</span>
+<span class="fc" id="L41">                    result.add(request);</span>
+                }
+<span class="fc" id="L43">            }</span>
+
+            // Jump to the smallest request and continue processing from the start
+<span class="fc bfc" id="L46" title="All 2 branches covered.">            for (int request : sortedRequests) {</span>
+<span class="fc bfc" id="L47" title="All 2 branches covered.">                if (request &lt; currentPosition) {</span>
+<span class="fc" id="L48">                    result.add(request);</span>
+                }
+<span class="fc" id="L50">            }</span>
+        } else {
+            // Moving down: process requests &lt;= current position in reverse order
+<span class="fc bfc" id="L53" title="All 2 branches covered.">            for (int i = sortedRequests.size() - 1; i &gt;= 0; i--) {</span>
+<span class="fc" id="L54">                int request = sortedRequests.get(i);</span>
+<span class="fc bfc" id="L55" title="All 2 branches covered.">                if (request &lt;= currentPosition) {</span>
+<span class="fc" id="L56">                    result.add(request);</span>
+                }
+            }
+
+            // Jump to the largest request and continue processing in reverse order
+<span class="fc bfc" id="L61" title="All 2 branches covered.">            for (int i = sortedRequests.size() - 1; i &gt;= 0; i--) {</span>
+<span class="fc" id="L62">                int request = sortedRequests.get(i);</span>
+<span class="fc bfc" id="L63" title="All 2 branches covered.">                if (request &gt; currentPosition) {</span>
+<span class="fc" id="L64">                    result.add(request);</span>
+                }
+            }
+        }
+
+        // Set final position to the last request processed
+<span class="pc bpc" id="L70" title="1 of 2 branches missed.">        if (!result.isEmpty()) {</span>
+<span class="fc" id="L71">            currentPosition = result.get(result.size() - 1);</span>
+        }
+<span class="fc" id="L73">        return result;</span>
+    }
+
+    public int getCurrentPosition() {
+<span class="fc" id="L77">        return currentPosition;</span>
+    }
+
+    public boolean isMovingUp() {
+<span class="fc" id="L81">        return movingUp;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

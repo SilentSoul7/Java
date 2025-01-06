@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CohenSutherland.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.lineclipping</a> &gt; <span class="el_source">CohenSutherland.java</span></div><h1>CohenSutherland.java</h1><pre class="source lang-java linenums">package com.thealgorithms.lineclipping;
+
+import com.thealgorithms.lineclipping.utils.Line;
+import com.thealgorithms.lineclipping.utils.Point;
+
+/**
+ * @author shikarisohan
+ * @since 10/4/24
+ * Cohen-Sutherland Line Clipping Algorithm
+ *
+ * This algorithm is used to clip a line segment to a rectangular window.
+ * It assigns a region code to each endpoint of the line segment, and
+ * then efficiently determines whether the line segment is fully inside,
+ * fully outside, or partially inside the window.
+ *
+ * Reference:
+ * https://en.wikipedia.org/wiki/Cohen%E2%80%93Sutherland_algorithm
+ *
+ * Clipping window boundaries are defined as (xMin, yMin) and (xMax, yMax).
+ * The algorithm computes the clipped line segment if it's partially or
+ * fully inside the clipping window.
+ */
+public class CohenSutherland {
+
+    // Region codes for the 9 regions
+    private static final int INSIDE = 0; // 0000
+    private static final int LEFT = 1; // 0001
+    private static final int RIGHT = 2; // 0010
+    private static final int BOTTOM = 4; // 0100
+    private static final int TOP = 8; // 1000
+
+    // Define the clipping window
+    double xMin;
+    double yMin;
+    double xMax;
+    double yMax;
+
+<span class="fc" id="L38">    public CohenSutherland(double xMin, double yMin, double xMax, double yMax) {</span>
+<span class="fc" id="L39">        this.xMin = xMin;</span>
+<span class="fc" id="L40">        this.yMin = yMin;</span>
+<span class="fc" id="L41">        this.xMax = xMax;</span>
+<span class="fc" id="L42">        this.yMax = yMax;</span>
+<span class="fc" id="L43">    }</span>
+
+    // Compute the region code for a point (x, y)
+    private int computeCode(double x, double y) {
+<span class="fc" id="L47">        int code = INSIDE;</span>
+
+<span class="fc bfc" id="L49" title="All 2 branches covered.">        if (x &lt; xMin) // to the left of rectangle</span>
+        {
+<span class="fc" id="L51">            code |= LEFT;</span>
+<span class="fc bfc" id="L52" title="All 2 branches covered.">        } else if (x &gt; xMax) // to the right of rectangle</span>
+        {
+<span class="fc" id="L54">            code |= RIGHT;</span>
+        }
+<span class="fc bfc" id="L56" title="All 2 branches covered.">        if (y &lt; yMin) // below the rectangle</span>
+        {
+<span class="fc" id="L58">            code |= BOTTOM;</span>
+<span class="fc bfc" id="L59" title="All 2 branches covered.">        } else if (y &gt; yMax) // above the rectangle</span>
+        {
+<span class="fc" id="L61">            code |= TOP;</span>
+        }
+
+<span class="fc" id="L64">        return code;</span>
+    }
+
+    // Cohen-Sutherland algorithm to return the clipped line
+    public Line cohenSutherlandClip(Line line) {
+<span class="fc" id="L69">        double x1 = line.start.x;</span>
+<span class="fc" id="L70">        double y1 = line.start.y;</span>
+<span class="fc" id="L71">        double x2 = line.end.x;</span>
+<span class="fc" id="L72">        double y2 = line.end.y;</span>
+
+<span class="fc" id="L74">        int code1 = computeCode(x1, y1);</span>
+<span class="fc" id="L75">        int code2 = computeCode(x2, y2);</span>
+<span class="fc" id="L76">        boolean accept = false;</span>
+
+        while (true) {
+<span class="fc bfc" id="L79" title="All 4 branches covered.">            if ((code1 == 0) &amp;&amp; (code2 == 0)) {</span>
+                // Both points are inside the rectangle
+<span class="fc" id="L81">                accept = true;</span>
+<span class="fc" id="L82">                break;</span>
+<span class="fc bfc" id="L83" title="All 2 branches covered.">            } else if ((code1 &amp; code2) != 0) {</span>
+                // Both points are outside the rectangle in the same region
+<span class="fc" id="L85">                break;</span>
+            } else {
+                // Some segment of the line is inside the rectangle
+<span class="fc" id="L88">                double x = 0;</span>
+<span class="fc" id="L89">                double y = 0;</span>
+
+                // Pick an endpoint that is outside the rectangle
+<span class="fc bfc" id="L92" title="All 2 branches covered.">                int codeOut = (code1 != 0) ? code1 : code2;</span>
+
+                // Find the intersection point using the line equation
+<span class="fc bfc" id="L95" title="All 2 branches covered.">                if ((codeOut &amp; TOP) != 0) {</span>
+                    // Point is above the rectangle
+<span class="fc" id="L97">                    x = x1 + (x2 - x1) * (yMax - y1) / (y2 - y1);</span>
+<span class="fc" id="L98">                    y = yMax;</span>
+<span class="pc bpc" id="L99" title="1 of 2 branches missed.">                } else if ((codeOut &amp; BOTTOM) != 0) {</span>
+                    // Point is below the rectangle
+<span class="fc" id="L101">                    x = x1 + (x2 - x1) * (yMin - y1) / (y2 - y1);</span>
+<span class="fc" id="L102">                    y = yMin;</span>
+<span class="nc bnc" id="L103" title="All 2 branches missed.">                } else if ((codeOut &amp; RIGHT) != 0) {</span>
+                    // Point is to the right of the rectangle
+<span class="nc" id="L105">                    y = y1 + (y2 - y1) * (xMax - x1) / (x2 - x1);</span>
+<span class="nc" id="L106">                    x = xMax;</span>
+<span class="nc bnc" id="L107" title="All 2 branches missed.">                } else if ((codeOut &amp; LEFT) != 0) {</span>
+                    // Point is to the left of the rectangle
+<span class="nc" id="L109">                    y = y1 + (y2 - y1) * (xMin - x1) / (x2 - x1);</span>
+<span class="nc" id="L110">                    x = xMin;</span>
+                }
+
+                // Replace the point outside the rectangle with the intersection point
+<span class="fc bfc" id="L114" title="All 2 branches covered.">                if (codeOut == code1) {</span>
+<span class="fc" id="L115">                    x1 = x;</span>
+<span class="fc" id="L116">                    y1 = y;</span>
+<span class="fc" id="L117">                    code1 = computeCode(x1, y1);</span>
+                } else {
+<span class="fc" id="L119">                    x2 = x;</span>
+<span class="fc" id="L120">                    y2 = y;</span>
+<span class="fc" id="L121">                    code2 = computeCode(x2, y2);</span>
+                }
+<span class="fc" id="L123">            }</span>
+        }
+
+<span class="fc bfc" id="L126" title="All 2 branches covered.">        if (accept) {</span>
+<span class="fc" id="L127">            return new Line(new Point(x1, y1), new Point(x2, y2));</span>
+        } else {
+
+<span class="fc" id="L130">            return null; // The line is fully rejected</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

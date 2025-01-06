@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PageRank.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.others</a> &gt; <span class="el_source">PageRank.java</span></div><h1>PageRank.java</h1><pre class="source lang-java linenums">package com.thealgorithms.others;
+
+import java.util.Scanner;
+
+<span class="nc" id="L5">class PageRank {</span>
+
+    public static void main(String[] args) {
+        int nodes;
+        int i;
+        int j;
+<span class="nc" id="L11">        Scanner in = new Scanner(System.in);</span>
+<span class="nc" id="L12">        System.out.print(&quot;Enter the Number of WebPages: &quot;);</span>
+<span class="nc" id="L13">        nodes = in.nextInt();</span>
+<span class="nc" id="L14">        PageRank p = new PageRank();</span>
+<span class="nc" id="L15">        System.out.println(&quot;Enter the Adjacency Matrix with 1-&gt;PATH &amp; 0-&gt;NO PATH Between two WebPages: &quot;);</span>
+<span class="nc bnc" id="L16" title="All 2 branches missed.">        for (i = 1; i &lt;= nodes; i++) {</span>
+<span class="nc bnc" id="L17" title="All 2 branches missed.">            for (j = 1; j &lt;= nodes; j++) {</span>
+<span class="nc" id="L18">                p.path[i][j] = in.nextInt();</span>
+<span class="nc bnc" id="L19" title="All 2 branches missed.">                if (j == i) {</span>
+<span class="nc" id="L20">                    p.path[i][j] = 0;</span>
+                }
+            }
+        }
+<span class="nc" id="L24">        p.calc(nodes);</span>
+<span class="nc" id="L25">    }</span>
+
+<span class="nc" id="L27">    public int[][] path = new int[10][10];</span>
+<span class="nc" id="L28">    public double[] pagerank = new double[10];</span>
+
+    public void calc(double totalNodes) {
+        double initialPageRank;
+<span class="nc" id="L32">        double outgoingLinks = 0;</span>
+<span class="nc" id="L33">        double dampingFactor = 0.85;</span>
+<span class="nc" id="L34">        double[] tempPageRank = new double[10];</span>
+        int externalNodeNumber;
+        int internalNodeNumber;
+<span class="nc" id="L37">        int k = 1; // For Traversing</span>
+<span class="nc" id="L38">        int iterationStep = 1;</span>
+<span class="nc" id="L39">        initialPageRank = 1 / totalNodes;</span>
+<span class="nc" id="L40">        System.out.printf(&quot; Total Number of Nodes :&quot; + totalNodes + &quot;\t Initial PageRank  of All Nodes :&quot; + initialPageRank + &quot;\n&quot;);</span>
+
+        // 0th ITERATION _ OR _ INITIALIZATION PHASE //
+<span class="nc bnc" id="L43" title="All 2 branches missed.">        for (k = 1; k &lt;= totalNodes; k++) {</span>
+<span class="nc" id="L44">            this.pagerank[k] = initialPageRank;</span>
+        }
+<span class="nc" id="L46">        System.out.print(&quot;\n Initial PageRank Values , 0th Step \n&quot;);</span>
+
+<span class="nc bnc" id="L48" title="All 2 branches missed.">        for (k = 1; k &lt;= totalNodes; k++) {</span>
+<span class="nc" id="L49">            System.out.printf(&quot; Page Rank of &quot; + k + &quot; is :\t&quot; + this.pagerank[k] + &quot;\n&quot;);</span>
+        }
+
+<span class="nc bnc" id="L52" title="All 2 branches missed.">        while (iterationStep &lt;= 2) { // Iterations</span>
+            // Store the PageRank for All Nodes in Temporary Array
+<span class="nc bnc" id="L54" title="All 2 branches missed.">            for (k = 1; k &lt;= totalNodes; k++) {</span>
+<span class="nc" id="L55">                tempPageRank[k] = this.pagerank[k];</span>
+<span class="nc" id="L56">                this.pagerank[k] = 0;</span>
+            }
+
+<span class="nc bnc" id="L59" title="All 2 branches missed.">            for (internalNodeNumber = 1; internalNodeNumber &lt;= totalNodes; internalNodeNumber++) {</span>
+<span class="nc bnc" id="L60" title="All 2 branches missed.">                for (externalNodeNumber = 1; externalNodeNumber &lt;= totalNodes; externalNodeNumber++) {</span>
+<span class="nc bnc" id="L61" title="All 2 branches missed.">                    if (this.path[externalNodeNumber][internalNodeNumber] == 1) {</span>
+<span class="nc" id="L62">                        k = 1;</span>
+<span class="nc" id="L63">                        outgoingLinks = 0; // Count the Number of Outgoing Links for each externalNodeNumber</span>
+<span class="nc bnc" id="L64" title="All 2 branches missed.">                        while (k &lt;= totalNodes) {</span>
+<span class="nc bnc" id="L65" title="All 2 branches missed.">                            if (this.path[externalNodeNumber][k] == 1) {</span>
+<span class="nc" id="L66">                                outgoingLinks = outgoingLinks + 1; // Counter for Outgoing Links</span>
+                            }
+<span class="nc" id="L68">                            k = k + 1;</span>
+                        }
+                        // Calculate PageRank
+<span class="nc" id="L71">                        this.pagerank[internalNodeNumber] += tempPageRank[externalNodeNumber] * (1 / outgoingLinks);</span>
+                    }
+                }
+<span class="nc" id="L74">                System.out.printf(&quot;\n After &quot; + iterationStep + &quot;th Step \n&quot;);</span>
+
+<span class="nc bnc" id="L76" title="All 2 branches missed.">                for (k = 1; k &lt;= totalNodes; k++) {</span>
+<span class="nc" id="L77">                    System.out.printf(&quot; Page Rank of &quot; + k + &quot; is :\t&quot; + this.pagerank[k] + &quot;\n&quot;);</span>
+                }
+
+<span class="nc" id="L80">                iterationStep = iterationStep + 1;</span>
+            }
+
+            // Add the Damping Factor to PageRank
+<span class="nc bnc" id="L84" title="All 2 branches missed.">            for (k = 1; k &lt;= totalNodes; k++) {</span>
+<span class="nc" id="L85">                this.pagerank[k] = (1 - dampingFactor) + dampingFactor * this.pagerank[k];</span>
+            }
+
+            // Display PageRank
+<span class="nc" id="L89">            System.out.print(&quot;\n Final Page Rank : \n&quot;);</span>
+<span class="nc bnc" id="L90" title="All 2 branches missed.">            for (k = 1; k &lt;= totalNodes; k++) {</span>
+<span class="nc" id="L91">                System.out.printf(&quot; Page Rank of &quot; + k + &quot; is :\t&quot; + this.pagerank[k] + &quot;\n&quot;);</span>
+            }
+        }
+<span class="nc" id="L94">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

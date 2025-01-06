@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PrimMST.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.graphs</a> &gt; <span class="el_source">PrimMST.java</span></div><h1>PrimMST.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.graphs;
+
+/**
+ * A Java program for Prim's Minimum Spanning Tree (MST) algorithm.
+ * Adjacency matrix representation of the graph.
+ */
+<span class="fc" id="L7">public class PrimMST {</span>
+
+    // Number of vertices in the graph
+    private static final int V = 5;
+
+    // A utility function to find the vertex with the minimum key
+    // value, from the set of vertices not yet included in the MST
+    int minKey(int[] key, Boolean[] mstSet) {
+<span class="fc" id="L15">        int min = Integer.MAX_VALUE;</span>
+<span class="fc" id="L16">        int minIndex = -1;</span>
+
+<span class="fc bfc" id="L18" title="All 2 branches covered.">        for (int v = 0; v &lt; V; v++) {</span>
+<span class="fc bfc" id="L19" title="All 4 branches covered.">            if (!mstSet[v] &amp;&amp; key[v] &lt; min) {</span>
+<span class="fc" id="L20">                min = key[v];</span>
+<span class="fc" id="L21">                minIndex = v;</span>
+            }
+        }
+
+<span class="fc" id="L25">        return minIndex;</span>
+    }
+
+    // Function to construct MST for a graph using adjacency matrix representation
+    public int[] primMST(int[][] graph) {
+<span class="fc" id="L30">        int[] parent = new int[V]; // Array to store constructed MST</span>
+<span class="fc" id="L31">        int[] key = new int[V]; // Key values to pick minimum weight edge</span>
+<span class="fc" id="L32">        Boolean[] mstSet = new Boolean[V]; // Vertices not yet included in MST</span>
+
+        // Initialize all keys as INFINITE and mstSet[] as false
+<span class="fc bfc" id="L35" title="All 2 branches covered.">        for (int i = 0; i &lt; V; i++) {</span>
+<span class="fc" id="L36">            key[i] = Integer.MAX_VALUE;</span>
+<span class="fc" id="L37">            mstSet[i] = Boolean.FALSE;</span>
+        }
+
+        // Always include the first vertex in MST
+<span class="fc" id="L41">        key[0] = 0; // Make key 0 to pick the first vertex</span>
+<span class="fc" id="L42">        parent[0] = -1; // First node is always root of MST</span>
+
+        // The MST will have V vertices
+<span class="fc bfc" id="L45" title="All 2 branches covered.">        for (int count = 0; count &lt; V - 1; count++) {</span>
+            // Pick the minimum key vertex not yet included in MST
+<span class="fc" id="L47">            int u = minKey(key, mstSet);</span>
+<span class="fc" id="L48">            mstSet[u] = Boolean.TRUE;</span>
+
+            // Update key value and parent index of adjacent vertices of the picked vertex
+<span class="fc bfc" id="L51" title="All 2 branches covered.">            for (int v = 0; v &lt; V; v++) {</span>
+<span class="fc bfc" id="L52" title="All 6 branches covered.">                if (graph[u][v] != 0 &amp;&amp; !mstSet[v] &amp;&amp; graph[u][v] &lt; key[v]) {</span>
+<span class="fc" id="L53">                    parent[v] = u;</span>
+<span class="fc" id="L54">                    key[v] = graph[u][v];</span>
+                }
+            }
+        }
+
+<span class="fc" id="L59">        return parent; // Return the MST parent array</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

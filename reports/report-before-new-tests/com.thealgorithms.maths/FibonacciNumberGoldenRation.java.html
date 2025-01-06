@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FibonacciNumberGoldenRation.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.maths</a> &gt; <span class="el_source">FibonacciNumberGoldenRation.java</span></div><h1>FibonacciNumberGoldenRation.java</h1><pre class="source lang-java linenums">package com.thealgorithms.maths;
+
+/**
+ * This class provides methods for calculating Fibonacci numbers using Binet's formula.
+ * Binet's formula is based on the golden ratio and allows computing Fibonacci numbers efficiently.
+ *
+ * @see &lt;a href=&quot;https://en.wikipedia.org/wiki/Fibonacci_sequence#Binet's_formula&quot;&gt;Binet's formula on Wikipedia&lt;/a&gt;
+ */
+public final class FibonacciNumberGoldenRation {
+    private FibonacciNumberGoldenRation() {
+        // Private constructor to prevent instantiation of this utility class.
+    }
+
+    /**
+     * Compute the limit for 'n' that fits in a long data type.
+     * Reducing the limit to 70 due to potential floating-point arithmetic errors
+     * that may result in incorrect results for larger inputs.
+     */
+    public static final int MAX_ARG = 70;
+
+    /**
+     * Calculates the nth Fibonacci number using Binet's formula.
+     *
+     * @param n The index of the Fibonacci number to calculate.
+     * @return The nth Fibonacci number as a long.
+     * @throws IllegalArgumentException if the input 'n' is negative or exceeds the range of a long data type.
+     */
+    public static long compute(int n) {
+<span class="fc bfc" id="L29" title="All 2 branches covered.">        if (n &lt; 0) {</span>
+<span class="fc" id="L30">            throw new IllegalArgumentException(&quot;Input 'n' must be a non-negative integer.&quot;);</span>
+        }
+
+<span class="fc bfc" id="L33" title="All 2 branches covered.">        if (n &gt; MAX_ARG) {</span>
+<span class="fc" id="L34">            throw new IllegalArgumentException(&quot;Input 'n' is too big to give accurate result.&quot;);</span>
+        }
+
+<span class="fc bfc" id="L37" title="All 2 branches covered.">        if (n &lt;= 1) {</span>
+<span class="fc" id="L38">            return n;</span>
+        }
+
+        // Calculate the nth Fibonacci number using the golden ratio formula
+<span class="fc" id="L42">        final double sqrt5 = Math.sqrt(5);</span>
+<span class="fc" id="L43">        final double phi = (1 + sqrt5) / 2;</span>
+<span class="fc" id="L44">        final double psi = (1 - sqrt5) / 2;</span>
+<span class="fc" id="L45">        final double result = (Math.pow(phi, n) - Math.pow(psi, n)) / sqrt5;</span>
+
+        // Round to the nearest integer and return as a long
+<span class="fc" id="L48">        return Math.round(result);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

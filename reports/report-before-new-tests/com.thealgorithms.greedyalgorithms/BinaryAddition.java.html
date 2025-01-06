@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BinaryAddition.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.greedyalgorithms</a> &gt; <span class="el_source">BinaryAddition.java</span></div><h1>BinaryAddition.java</h1><pre class="source lang-java linenums">package com.thealgorithms.greedyalgorithms;
+
+import java.util.Collections;
+
+/**
+ * BinaryAddition class to perform binary addition of two binary strings.
+ */
+<span class="fc" id="L8">public class BinaryAddition {</span>
+    /**
+     * Computes the sum of two binary characters and a carry.
+     * @param a First binary character ('0' or '1').
+     * @param b Second binary character ('0' or '1').
+     * @param carry The carry from the previous operation ('0' or '1').
+     * @return The sum as a binary character ('0' or '1').
+     */
+    public char sum(char a, char b, char carry) {
+<span class="fc" id="L17">        int count = 0;</span>
+<span class="fc bfc" id="L18" title="All 2 branches covered.">        if (a == '1') {</span>
+<span class="fc" id="L19">            count++;</span>
+        }
+<span class="fc bfc" id="L21" title="All 2 branches covered.">        if (b == '1') {</span>
+<span class="fc" id="L22">            count++;</span>
+        }
+<span class="fc bfc" id="L24" title="All 2 branches covered.">        if (carry == '1') {</span>
+<span class="fc" id="L25">            count++;</span>
+        }
+<span class="fc bfc" id="L27" title="All 2 branches covered.">        return count % 2 == 0 ? '0' : '1';</span>
+    }
+    /**
+     * Computes the carry for the next higher bit from two binary characters and a carry.
+     * @param a First binary character ('0' or '1').
+     * @param b Second binary character ('0' or '1').
+     * @param carry The carry from the previous operation ('0' or '1').
+     * @return The carry for the next bit ('0' or '1').
+     */
+    public char carry(char a, char b, char carry) {
+<span class="fc" id="L37">        int count = 0;</span>
+<span class="fc bfc" id="L38" title="All 2 branches covered.">        if (a == '1') {</span>
+<span class="fc" id="L39">            count++;</span>
+        }
+<span class="fc bfc" id="L41" title="All 2 branches covered.">        if (b == '1') {</span>
+<span class="fc" id="L42">            count++;</span>
+        }
+<span class="fc bfc" id="L44" title="All 2 branches covered.">        if (carry == '1') {</span>
+<span class="fc" id="L45">            count++;</span>
+        }
+<span class="fc bfc" id="L47" title="All 2 branches covered.">        return count &gt;= 2 ? '1' : '0';</span>
+    }
+    /**
+     * Adds two binary strings and returns their sum as a binary string.
+     * @param a First binary string.
+     * @param b Second binary string.
+     * @return Binary string representing the sum of the two binary inputs.
+     */
+    public String addBinary(String a, String b) {
+        // Padding the shorter string with leading zeros
+<span class="fc" id="L57">        int maxLength = Math.max(a.length(), b.length());</span>
+<span class="fc" id="L58">        a = String.join(&quot;&quot;, Collections.nCopies(maxLength - a.length(), &quot;0&quot;)) + a;</span>
+<span class="fc" id="L59">        b = String.join(&quot;&quot;, Collections.nCopies(maxLength - b.length(), &quot;0&quot;)) + b;</span>
+<span class="fc" id="L60">        StringBuilder result = new StringBuilder();</span>
+<span class="fc" id="L61">        char carry = '0';</span>
+        // Iterating over the binary strings from the least significant to the most significant bit
+<span class="fc bfc" id="L63" title="All 2 branches covered.">        for (int i = maxLength - 1; i &gt;= 0; i--) {</span>
+<span class="fc" id="L64">            char sum = sum(a.charAt(i), b.charAt(i), carry);</span>
+<span class="fc" id="L65">            carry = carry(a.charAt(i), b.charAt(i), carry);</span>
+<span class="fc" id="L66">            result.append(sum);</span>
+        }
+        // If there's a remaining carry, append it
+<span class="fc bfc" id="L69" title="All 2 branches covered.">        if (carry == '1') {</span>
+<span class="fc" id="L70">            result.append('1');</span>
+        }
+        // Reverse the result as we constructed it from the least significant bit
+<span class="fc" id="L73">        return result.reverse().toString();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

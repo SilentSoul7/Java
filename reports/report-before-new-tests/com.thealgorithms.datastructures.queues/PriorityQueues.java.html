@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PriorityQueues.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java</a> &gt; <a href="index.source.html" class="el_package">com.thealgorithms.datastructures.queues</a> &gt; <span class="el_source">PriorityQueues.java</span></div><h1>PriorityQueues.java</h1><pre class="source lang-java linenums">package com.thealgorithms.datastructures.queues;
+
+/**
+ * This class implements a PriorityQueue.
+ *
+ * &lt;p&gt;
+ * A priority queue adds elements into positions based on their priority. So the
+ * most important elements are placed at the front/on the top. In this example I
+ * give numbers that are bigger, a higher priority. Queues in theory have no
+ * fixed size but when using an array implementation it does.
+ * &lt;p&gt;
+ * Additional contibutions made by: PuneetTri(https://github.com/PuneetTri)
+ */
+class PriorityQueue {
+
+    /**
+     * The max size of the queue
+     */
+    private int maxSize;
+    /**
+     * The array for the queue
+     */
+    private int[] queueArray;
+    /**
+     * How many items are in the queue
+     */
+    private int nItems;
+
+    /**
+     * Default Constructor
+     */
+
+<span class="nc" id="L33">    PriorityQueue() {</span>
+        /* If capacity is not defined, default size of 11 would be used
+         *  capacity=max+1 because we cant access 0th element of PQ, and to
+         *  accomodate (max)th elements we need capacity to be max+1.
+         *  Parent is at position k, child at position (k*2,k*2+1), if we
+         *  use position 0 in our queue, its child would be at:
+         *  (0*2, 0*2+1) -&gt; (0,0). This is why we start at position 1
+         */
+<span class="nc" id="L41">        int size = 11; // Default value of 11</span>
+<span class="nc" id="L42">        maxSize = size + 1;</span>
+<span class="nc" id="L43">        queueArray = new int[maxSize];</span>
+<span class="nc" id="L44">        nItems = 0;</span>
+<span class="nc" id="L45">    }</span>
+
+    /**
+     * Parameterized Constructor
+     *
+     * @param size Size of the queue
+     */
+
+<span class="fc" id="L53">    PriorityQueue(int size) {</span>
+<span class="fc" id="L54">        maxSize = size + 1;</span>
+<span class="fc" id="L55">        queueArray = new int[maxSize];</span>
+<span class="fc" id="L56">        nItems = 0;</span>
+<span class="fc" id="L57">    }</span>
+
+    /**
+     * Helper function for the max-heap implementation of PQ
+     * Function would help demote parent node to their correct
+     * position
+     *
+     * @param pos Position of newly added element at bottom
+     */
+    private void swim(int pos) {
+        // Check if parent is smaller than child node
+<span class="fc bfc" id="L68" title="All 4 branches covered.">        while (pos &gt; 1 &amp;&amp; (queueArray[pos / 2] &lt; queueArray[pos])) {</span>
+            // In such case swap value of child with parent
+<span class="fc" id="L70">            int temp = queueArray[pos];</span>
+<span class="fc" id="L71">            queueArray[pos] = queueArray[pos / 2];</span>
+<span class="fc" id="L72">            queueArray[pos / 2] = temp;</span>
+<span class="fc" id="L73">            pos = pos / 2; // Jump to position of parent node</span>
+<span class="fc" id="L74">        }</span>
+        // Promotion of child node will go on until it becomes smaller than the parent
+<span class="fc" id="L76">    }</span>
+
+    /**
+     * Helper function for the max-heap implementation of PQ
+     * Function would help demote parent node to their correct
+     * position
+     *
+     * @param pos Position of element at top
+     */
+    private void sink(int pos) {
+        // Check if node's position is that of parent node
+<span class="fc bfc" id="L87" title="All 2 branches covered.">        while (2 * pos &lt;= nItems) {</span>
+<span class="fc" id="L88">            int current = 2 * pos; // Jump to the positon of child node</span>
+            // Compare both the children for the greater one
+<span class="pc bpc" id="L90" title="1 of 4 branches missed.">            if (current &lt; nItems &amp;&amp; queueArray[current] &lt; queueArray[current + 1]) {</span>
+<span class="nc" id="L91">                current++;</span>
+            }
+            // If the parent node is greater, sink operation is complete. Break the loop
+<span class="fc bfc" id="L94" title="All 2 branches covered.">            if (queueArray[pos] &gt;= queueArray[current]) {</span>
+<span class="fc" id="L95">                break;</span>
+            }
+
+            // If not exchange the value of parent with child
+<span class="fc" id="L99">            int temp = queueArray[pos];</span>
+<span class="fc" id="L100">            queueArray[pos] = queueArray[current];</span>
+<span class="fc" id="L101">            queueArray[current] = temp;</span>
+<span class="fc" id="L102">            pos = current; // Exchange parent position to child position in the array</span>
+<span class="fc" id="L103">        }</span>
+<span class="fc" id="L104">    }</span>
+
+    /**
+     * Inserts an element in it's appropriate place
+     *
+     * @param value Value to be inserted
+     */
+    public void insert(int value) {
+        // Print overflow message if the capacity is full
+<span class="pc bpc" id="L113" title="1 of 2 branches missed.">        if (isFull()) {</span>
+<span class="nc" id="L114">            throw new RuntimeException(&quot;Queue is full&quot;);</span>
+        } else {
+<span class="fc" id="L116">            queueArray[++nItems] = value;</span>
+<span class="fc" id="L117">            swim(nItems); // Swim up the element to its correct position</span>
+        }
+<span class="fc" id="L119">    }</span>
+
+    /**
+     * Dequeue the element with the max priority from PQ
+     *
+     * @return The element removed
+     */
+    public int remove() {
+<span class="pc bpc" id="L127" title="1 of 2 branches missed.">        if (isEmpty()) {</span>
+<span class="nc" id="L128">            throw new RuntimeException(&quot;Queue is Empty&quot;);</span>
+        } else {
+<span class="fc" id="L130">            int max = queueArray[1]; // By defintion of our max-heap, value at queueArray[1] pos is</span>
+                                     // the greatest
+
+            // Swap max and last element
+<span class="fc" id="L134">            int temp = queueArray[1];</span>
+<span class="fc" id="L135">            queueArray[1] = queueArray[nItems];</span>
+<span class="fc" id="L136">            queueArray[nItems] = temp;</span>
+<span class="fc" id="L137">            queueArray[nItems--] = 0; // Nullify the last element from the priority queue</span>
+<span class="fc" id="L138">            sink(1); // Sink the element in order</span>
+
+<span class="fc" id="L140">            return max;</span>
+        }
+    }
+
+    /**
+     * Checks what's at the front of the queue
+     *
+     * @return element at the front of the queue
+     */
+    public int peek() {
+<span class="fc" id="L150">        return queueArray[1];</span>
+    }
+
+    /**
+     * Returns true if the queue is empty
+     *
+     * @return true if the queue is empty
+     */
+    public boolean isEmpty() {
+<span class="fc bfc" id="L159" title="All 2 branches covered.">        return (nItems == 0);</span>
+    }
+
+    /**
+     * Returns true if the queue is full
+     *
+     * @return true if the queue is full
+     */
+    public boolean isFull() {
+<span class="fc bfc" id="L168" title="All 2 branches covered.">        return (nItems == maxSize - 1);</span>
+    }
+
+    /**
+     * Returns the number of elements in the queue
+     *
+     * @return number of elements in the queue
+     */
+    public int getSize() {
+<span class="fc" id="L177">        return nItems;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
